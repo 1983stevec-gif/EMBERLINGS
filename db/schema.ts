@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
 export const players=sqliteTable('players',{
- userId:text('user_id').primaryKey(),username:text('username').notNull(),usernameKey:text('username_key').notNull(),
+ userId:text('user_id').primaryKey(),recoveryHash:text('recovery_hash'),username:text('username').notNull(),usernameKey:text('username_key').notNull(),
  petKind:integer('pet_kind').notNull().default(0),petShiny:integer('pet_shiny').notNull().default(0),seenAt:integer('seen_at').notNull(),createdAt:integer('created_at').notNull()
 },t=>[uniqueIndex('players_username_unique').on(t.usernameKey)]);
 export const requests=sqliteTable('friend_requests',{
@@ -12,3 +12,5 @@ export const friendships=sqliteTable('friendships',{
 export const matches=sqliteTable('matches',{
  id:text('id').primaryKey(),hostId:text('host_id').notNull().references(()=>players.userId),guestId:text('guest_id').notNull().references(()=>players.userId),mode:text('mode').notNull(),status:text('status').notNull().default('invited'),data:text('data').notNull(),version:integer('version').notNull().default(0),createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull()
 },t=>[index('matches_host_status').on(t.hostId,t.status),index('matches_guest_status').on(t.guestId,t.status)]);
+
+export const gameSessions=sqliteTable('game_sessions',{tokenHash:text('token_hash').primaryKey(),userId:text('user_id').notNull().references(()=>players.userId),expiresAt:integer('expires_at').notNull(),createdAt:integer('created_at').notNull()},t=>[index('sessions_user').on(t.userId),index('sessions_expiry').on(t.expiresAt)]);

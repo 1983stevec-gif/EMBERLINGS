@@ -15,6 +15,13 @@
       "when": 1792969277125,
       "tag": "0001_colorful_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792971368895,
+      "tag": "0002_absent_mad_thinker",
+      "breakpoints": true
     }
   ]
 }
