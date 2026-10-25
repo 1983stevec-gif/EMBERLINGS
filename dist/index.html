@@ -162,7 +162,7 @@ function createArena(config){
  return a;
 }
 function mountArena(config){
- stopArena();frame(`<div class="arenaHeader"><button class="back" data-go="${config.back}">‹ ${config.back==='home'?'Adventure HQ':config.back==='training'?'Training Field':'Leave Battle'}</button><button class="button alt" id="arenaPause">Ⅱ Pause</button></div><div class="arenaHeader"><h2>${config.title}</h2><span class="arenaVersion">${config.mode==='battle'?'3D BATTLE':'ACTION TRAINING'}</span></div><p class="arenaGoal">${config.goal}</p><div class="arenaHud"><span id="arenaPlayerHp"></span><span id="arenaEnemyHp"></span><span id="arenaEnergy"></span></div><canvas id="arenaCanvas" class="arenaCanvas" width="1600" height="880" tabindex="0" aria-label="Walkable arena. Move with the joystick, WASD, arrow keys, or tap the ground."></canvas><div class="arenaMessage" id="arenaMessage" role="status"></div><div class="arenaControls"><div class="joystick" id="arenaStick" role="group" aria-label="Movement joystick. Drag and hold to walk."><div class="joystickKnob" id="arenaKnob"></div></div><div class="arenaButtons">${config.mode==='hub'?'<button class="button gold" id="arenaEnter" style="grid-column:span 2">Walk to a station</button>':['dojo','element','obstacle','camp'].includes(config.mode)?'<button class="button" data-act="dodge" style="grid-column:span 2">💨 Dash · Shift</button>':'<button class="button" data-act="basic">⚔️ Strike · Space</button><button class="button" data-act="skill">✨ Blast · E</button><button class="button" data-act="dodge">💨 Dash · Shift</button><button class="button gold" data-act="ultimate">🌟 Ultimate · Q</button>'}</div></div><p class="arenaHint">${config.hint}</p><p class="arenaHint arenaControlHelp">Computer: WASD / arrow keys to walk. Space to strike, E to blast, Shift to dash, Q for ultimate. iPad: hold the joystick and an action with separate thumbs. Tap empty ground to walk there. Pause anytime.</p>`);
+ stopArena();frame(`<div class="arenaHeader"><button class="back" data-go="${config.back}">‹ ${config.back==='home'?'Adventure HQ':config.back==='training'?'Training Field':'Leave Battle'}</button><button class="button alt" id="arenaPause">Ⅱ Pause</button></div><div class="arenaHeader"><h2>${config.title}</h2><span class="arenaVersion">${config.mode==='battle'?'3D ART PASS 1':'ACTION TRAINING'}</span></div><p class="arenaGoal">${config.goal}</p><div class="arenaHud"><span id="arenaPlayerHp"></span><span id="arenaEnemyHp"></span><span id="arenaEnergy"></span></div><canvas id="arenaCanvas" class="arenaCanvas" width="1600" height="880" tabindex="0" aria-label="Walkable arena. Move with the joystick, WASD, arrow keys, or tap the ground."></canvas><div class="arenaMessage" id="arenaMessage" role="status"></div><div class="arenaControls"><div class="joystick" id="arenaStick" role="group" aria-label="Movement joystick. Drag and hold to walk."><div class="joystickKnob" id="arenaKnob"></div></div><div class="arenaButtons">${config.mode==='hub'?'<button class="button gold" id="arenaEnter" style="grid-column:span 2">Walk to a station</button>':['dojo','element','obstacle','camp'].includes(config.mode)?'<button class="button" data-act="dodge" style="grid-column:span 2">💨 Dash · Shift</button>':'<button class="button" data-act="basic">⚔️ Strike · Space</button><button class="button" data-act="skill">✨ Blast · E</button><button class="button" data-act="dodge">💨 Dash · Shift</button><button class="button gold" data-act="ultimate">🌟 Ultimate · Q</button>'}</div></div><p class="arenaHint">${config.hint}</p><p class="arenaHint arenaControlHelp">Computer: WASD / arrow keys to walk. Space to strike, E to blast, Shift to dash, Q for ultimate. iPad: hold the joystick and an action with separate thumbs. Tap empty ground to walk there. Pause anytime.</p>`);
  const a=arena=createArena(config);a.canvas=$('#arenaCanvas');if(config.mode==='battle'){a.paused=true;a.ready=false;arenaMessage(a,'Loading 3D arena…');initArena3D(a)}else{a.ready=true;a.ctx=a.canvas.getContext('2d');a.ctx.setTransform(2,0,0,2,0,0)}bindArenaInput(a);updateArenaUI(a);drawArena(a);
  let previous=performance.now();function loop(now){if(arena!==a||a.done)return;const dt=Math.min(.045,Math.max(0,(now-previous)/1000));previous=now;if(!a.paused&&!document.hidden)tickArena(a,dt);if(arena!==a||a.done)return;drawArena(a);updateArenaUI(a);a.raf=requestAnimationFrame(loop)}a.raf=requestAnimationFrame(loop);
 }
@@ -194,6 +194,7 @@ function arenaAction(a,action){
  const foe=a.foes.filter(f=>f.hp>0).sort((f,g)=>distance(p,f)-distance(p,g))[0];
  let dx=p.faceX,dy=p.faceY;if(foe){const d=distance(p,foe);if(d>0){dx=(foe.x-p.x)/d;dy=(foe.y-p.y)/d}}
  const c=state.owned.find(c=>c.id===a.creatureId),base=meta(c).power+3*c.level;
+ p.attackAt=a.time;
  if(action==='basic'){
   a.cool.basic=.48;a.effects.push({x:p.x+dx*38,y:p.y+dy*38,r:43,life:.18,color:'#a8f6ff'});
   if(foe&&distance(p,foe)<94&&!a.obstacles.some(o=>{const x=(p.x+foe.x)/2,y=(p.y+foe.y)/2;return x>o.x&&x<o.x+o.w&&y>o.y&&y<o.y+o.h})){hurtFoe(a,foe,base);a.energy=Math.min(100,a.energy+20);a.combo++}else arenaMessage(a,'Move closer! Strike has a short reach.');
@@ -203,8 +204,8 @@ function arenaAction(a,action){
   a.energy=0;a.cool.ultimate=2;a.effects.push({x:p.x,y:p.y,r:220,life:.7,color:'#ffdc70'});let hit=false;for(const f of a.foes)if(f.hp>0&&distance(p,f)<240){hurtFoe(a,f,Math.round(base*3.1+30));hit=true}arenaMessage(a,hit?'🌟 Ultimate burst!':'Ultimate burst missed. Get within the glowing range!');
  }
 }
-function hurtFoe(a,f,damage){if(f.hp<=0)return;f.hp=Math.max(0,f.hp-Math.round(damage*(f.shield>0?.6:1)));f.hit=.16;a.effects.push({x:f.x,y:f.y-25,text:'−'+damage,life:.65,color:'#fff'});if(f.hp<=0){a.progress++;a.energy=Math.min(100,a.energy+20);arenaMessage(a,f.dummy?'Target broken!':f.name+' defeated!')}}
-function hurtPlayer(a,damage){const p=a.player;if(p.invul>0)return;p.hp=Math.max(0,p.hp-damage);p.invul=.7;a.effects.push({x:p.x,y:p.y-28,text:'−'+damage,life:.6,color:'#ff8c98'});arenaMessage(a,'Hit! Walk or dash away from red warnings.');}
+function hurtFoe(a,f,damage){if(f.hp<=0)return;f.hitAt=a.time;f.hp=Math.max(0,f.hp-Math.round(damage*(f.shield>0?.6:1)));f.hit=.16;a.effects.push({x:f.x,y:f.y-25,text:'−'+damage,life:.65,color:'#fff'});if(f.hp<=0){a.progress++;a.energy=Math.min(100,a.energy+20);arenaMessage(a,f.dummy?'Target broken!':f.name+' defeated!')}}
+function hurtPlayer(a,damage){const p=a.player;if(p.invul>0)return;p.hitAt=a.time;p.hp=Math.max(0,p.hp-damage);p.invul=.7;a.effects.push({x:p.x,y:p.y-28,text:'−'+damage,life:.6,color:'#ff8c98'});arenaMessage(a,'Hit! Walk or dash away from red warnings.');}
 function tickArena(a,dt){
  if(a.done||a.paused)return;const p=a.player;a.time+=dt;a.messageTime=Math.max(0,a.messageTime-dt);p.invul=Math.max(0,p.invul-dt);p.dash=Math.max(0,p.dash-dt);for(const k in a.cool)a.cool[k]=Math.max(0,a.cool[k]-dt);
  let mx=a.stick.x+(a.keys.has('d')||a.keys.has('arrowright')?1:0)-(a.keys.has('a')||a.keys.has('arrowleft')?1:0),my=a.stick.y+(a.keys.has('s')||a.keys.has('arrowdown')?1:0)-(a.keys.has('w')||a.keys.has('arrowup')?1:0);
@@ -214,7 +215,7 @@ function tickArena(a,dt){
  for(const action of new Set(a.held.values()))arenaAction(a,action);if(a.keys.has(' '))arenaAction(a,'basic');
  for(const f of a.foes){if(f.hp<=0)continue;f.hit=Math.max(0,f.hit-dt);f.shield=Math.max(0,f.shield-dt);if(f.dummy)continue;
   const d=distance(p,f);if(d>118){const dx=(p.x-f.x)/d,dy=(p.y-f.y)/d;moveActor(a,f,dx*dt*(f.boss?62:83),dy*dt*(f.boss?62:83))}else{moveActor(a,f,Math.cos(a.time)*dt*18,Math.sin(a.time)*dt*18)}
-  f.clock-=dt;if(f.clock<=0){f.clock=f.boss?1.9:2.6;f.turn++;const special=f.turn%3===0;a.hazards.push({x:p.x,y:p.y,r:f.boss?(special?100:70):(special?65:48),left:f.boss?1:.95,max:f.boss?1:.95,damage:Math.round(f.damage*(special?1.6:1)),foe:f,special});if(special&&a.mode==='battle')arenaMessage(a,'⚠️ '+combat.enemy.ability+'! Leave the red circle!')}
+  f.clock-=dt;if(f.clock<=0){f.clock=f.boss?1.9:2.6;f.turn++;f.attackAt=a.time;const special=f.turn%3===0;a.hazards.push({x:p.x,y:p.y,r:f.boss?(special?100:70):(special?65:48),left:f.boss?1:.95,max:f.boss?1:.95,damage:Math.round(f.damage*(special?1.6:1)),foe:f,special});if(special&&a.mode==='battle')arenaMessage(a,'⚠️ '+combat.enemy.ability+'! Leave the red circle!')}
  }
  if(a.mode==='dojo'&&a.progress<3&&!a.pickups.length&&!a.hazards.length){a.drillClock-=dt;if(a.drillClock<=0){a.drillClock=1.4;a.hazards.push({x:p.x,y:p.y,r:65,left:1.05,max:1.05,damage:10,drill:true})}}
  for(const h of a.hazards){h.left-=dt;if(h.left>0)continue;const caught=distance(p,h)<h.r+p.r,safe=!caught||p.invul>0;
@@ -267,14 +268,58 @@ function drawArena(a){
  if(a.paused){g.fillStyle='#050d28bb';g.fillRect(0,0,800,440);text('PAUSED',400,210,36);text('Tap Resume when you are ready',400,250,19)}
 }
 
+// Shared asset template; each actor gets an independent skeleton and AnimationMixer.
+let flaminyxAssetPromise=null;
+function loadFlaminyxAsset(){
+ if(!flaminyxAssetPromise)flaminyxAssetPromise=Promise.all([import('./vendor/GLTFLoader.js'),import('./vendor/utils/SkeletonUtils.js')]).then(async([loader,skeleton])=>({gltf:await new loader.GLTFLoader().loadAsync('./models/flaminyx.glb'),clone:skeleton.clone})).catch(()=>null);
+ return flaminyxAssetPromise;
+}
+function importedFlaminyx(T,asset,shiny){
+ if(!asset)return null;
+ const model=asset.clone(asset.gltf.scene);model.scale.setScalar(43);
+ model.traverse(node=>{if(node.isMesh){node.castShadow=true;node.receiveShadow=true;const materials=Array.isArray(node.material)?node.material:[node.material];const copies=materials.map(m=>{const copy=m.clone();if(shiny&&['Amber fur','Golden cheek fur'].includes(m.name))copy.color.setHex(0xf2cd5c);return copy});node.material=Array.isArray(node.material)?copies:copies[0]}});
+ const mixer=new T.AnimationMixer(model),actions={};
+ for(const clip of asset.gltf.animations){const action=mixer.clipAction(clip);if(clip.name==='Attack'||clip.name==='Hit'){action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.timeScale=clip.duration/(clip.name==='Attack'?.4:.3)}actions[clip.name]=action}
+ model.userData.imported=true;model.userData.animation={mixer,actions,current:null,lastTime:0};return model;
+}
+function updateImportedAnimation(model,actor,moving,time){
+ const state=model.userData.animation;if(!state)return;
+ const clip=actor.hitAt!==undefined&&time-actor.hitAt<.3?'Hit':actor.attackAt!==undefined&&time-actor.attackAt<.4?'Attack':moving?'Walk':'Idle';
+ if(state.current!==clip){if(state.current)state.actions[state.current]?.fadeOut(.09);state.actions[clip]?.reset().fadeIn(.09).play();state.current=clip}
+ state.mixer.update(Math.max(0,Math.min(.05,time-state.lastTime)));state.lastTime=time;
+}
+function decorateMeadow(T,scene,boss){
+ const palette=boss?{ground:0x433653,edge:0x443a5b,grass:0x816598,leaves:0x6b5386,stone:0x68617c}: {ground:0x668c56,edge:0x385e45,grass:0x89ad61,leaves:0x4d8968,stone:0x8d9b89};
+ const mat=color=>new T.MeshStandardMaterial({color,roughness:.95});
+ const groundGeo=new T.PlaneGeometry(800,440,32,20),colors=[],position=groundGeo.attributes.position;
+ for(let i=0;i<position.count;i++){const x=position.getX(i),y=position.getY(i),noise=(Math.sin(x*.043+y*.071)+Math.cos(y*.091-x*.019))*.018;const color=new T.Color(palette.ground);color.offsetHSL(noise,noise,.018+noise);colors.push(color.r,color.g,color.b)}
+ groundGeo.setAttribute('color',new T.Float32BufferAttribute(colors,3));const floor=new T.Mesh(groundGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=.3;floor.receiveShadow=true;scene.add(floor);
+ // Instanced foliage stays outside the playable boundaries. It adds scenery, not invisible collision.
+ const treePositions=[[-455,-190],[-445,10],[-450,190],[450,-175],[445,40],[450,195],[-310,-275],[-80,-270],[150,-280],[340,-275]];
+ const trunks=new T.InstancedMesh(new T.CylinderGeometry(5,8,42,7),mat(0x655747),treePositions.length);
+ const crowns=new T.InstancedMesh(new T.IcosahedronGeometry(35,1),mat(palette.leaves),treePositions.length*2);
+ const dummy=new T.Object3D();
+ treePositions.forEach(([x,z],i)=>{dummy.position.set(x,20,z);dummy.scale.set(1,1,1);dummy.rotation.set(0,0,0);dummy.updateMatrix();trunks.setMatrixAt(i,dummy.matrix);for(let j=0;j<2;j++){dummy.position.set(x+(j?12:-8),57+j*16,z);dummy.scale.set(1,j?1.1:.8,.9);dummy.rotation.set(0,i*.8,j*.12);dummy.updateMatrix();crowns.setMatrixAt(i*2+j,dummy.matrix)}});
+ trunks.castShadow=crowns.castShadow=true;scene.add(trunks,crowns);
+ const rockPositions=Array.from({length:30},(_,i)=>({x:-420+(i%10)*94,z:i<10?-245:i<20?245:(i%2?-435:435),side:i>=20}));
+ const rocks=new T.InstancedMesh(new T.DodecahedronGeometry(1,0),mat(palette.stone),rockPositions.length);
+ rockPositions.forEach((p,i)=>{dummy.position.set(p.side?p.z:p.x,6,p.side?-185+(i-20)*40:p.z);dummy.rotation.set(i*.2,i*.9,i*.3);dummy.scale.set(9+i%4*2,6+i%3*3,8+i%3*3);dummy.updateMatrix();rocks.setMatrixAt(i,dummy.matrix)});rocks.castShadow=true;rocks.receiveShadow=true;scene.add(rocks);
+ const grass=new T.InstancedMesh(new T.ConeGeometry(3,12,3),mat(palette.grass),120);
+ for(let i=0;i<120;i++){const x=-385+(i%40)*19.5,z=i<40?-214:i<80?214:(i%2?-394:394);dummy.position.set(i<80?x:z,5,i<80?z:-200+(i-80)*10);dummy.scale.set(1,.6+(i%5)*.18,1);dummy.rotation.set(0,i*1.7,(i%3-1)*.16);dummy.updateMatrix();grass.setMatrixAt(i,dummy.matrix)}scene.add(grass);
+ const petals=new T.InstancedMesh(new T.IcosahedronGeometry(2.4,0),new T.MeshStandardMaterial({color:boss?0xcc9bf0:0xffd887,emissive:boss?0x281032:0x33220a,roughness:.7}),35);
+ for(let i=0;i<35;i++){dummy.position.set(-365+(i%18)*42,8,i<18?-210:210);dummy.scale.set(1,1,1);dummy.rotation.set(0,i,0);dummy.updateMatrix();petals.setMatrixAt(i,dummy.matrix)}scene.add(petals);
+ return {trunks,crowns,rocks,grass,petals};
+}
+
 // True WebGL 3D presentation; the existing combat simulation remains authoritative.
 let threeLibrary=null;
 async function initArena3D(a){
  try{
   const T=await (threeLibrary||(threeLibrary=import('./vendor/three.module.min.js')));
   if(arena!==a)return;
+  const needsHero=getCreature().kind===0||(!combat.boss&&combat.enemy.kind===0);let heroAsset=null;if(needsHero){let timeout;try{heroAsset=await Promise.race([loadFlaminyxAsset(),new Promise(resolve=>{timeout=setTimeout(()=>resolve(null),8000)})])}finally{clearTimeout(timeout)}}if(arena!==a)return;
   const renderer=new T.WebGLRenderer({canvas:a.canvas,antialias:true,alpha:false,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(800,440,false);renderer.outputColorSpace=T.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(800,440,false);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
   const scene=new T.Scene(),boss=combat.boss;scene.background=new T.Color(boss?'#17152d':'#183a49');scene.fog=new T.Fog(scene.background,1000,1900);
   const camera=new T.PerspectiveCamera(43,800/440,1,2200);camera.position.set(0,545,520);camera.lookAt(0,0,0);camera.updateMatrixWorld();
   scene.add(new T.HemisphereLight(0xd6f7ff,boss?0x402645:0x23483a,2.2));
@@ -284,20 +329,20 @@ async function initArena3D(a){
   const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.78,...extra});
   function box(x,y,z,w,h,d,color){const m=new T.Mesh(new T.BoxGeometry(w,h,d),material(color));m.position.set(x,y,z);m.receiveShadow=true;m.castShadow=true;scene.add(m);return m}
   box(0,-18,0,850,34,490,boss?0x35304e:0x294d48);
-  const ground=new T.Mesh(new T.PlaneGeometry(800,440),material(boss?0x403256:0x438269));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.position.y=.1;scene.add(ground);
+  const ground=new T.Mesh(new T.PlaneGeometry(800,440),material(boss?0x403256:0x438269));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.position.y=.1;scene.add(ground);ground.visible=false;decorateMeadow(T,scene,boss);
   // Raised arena edges and cover use the same footprints as collision detection.
   box(0,7,-225,820,14,12,0x94b6ac);box(0,5,225,820,10,12,0x94b6ac);box(-405,7,0,12,14,450,0x7b9e99);box(405,7,0,12,14,450,0x7b9e99);
   for(const o of a.obstacles){box(o.x+o.w/2-400,27,o.y+o.h/2-220,o.w,54,o.h,0x667b88);const crystal=new T.Mesh(new T.OctahedronGeometry(19),material(0x8ee9ff,{emissive:0x2b7999,emissiveIntensity:.6}));crystal.position.set(o.x+o.w/2-400,72,o.y+o.h/2-220);scene.add(crystal)}
   // Arena paving and distant crystals add depth without changing walkable geometry.
-  const grid=new T.GridHelper(800,16,boss?0x8f76bd:0x8fbe9a,boss?0x544065:0x4d9177);grid.scale.z=.55;grid.position.y=.3;scene.add(grid);
+  const grid=new T.GridHelper(800,16,boss?0x8f76bd:0x8fbe9a,boss?0x544065:0x4d9177);grid.scale.z=.55;grid.position.y=.3;grid.visible=false;scene.add(grid);
   for(let i=0;i<12;i++){const side=i%2?1:-1,x=-360+Math.floor(i/2)*140,z=side*260;const gem=new T.Mesh(new T.ConeGeometry(12+i%3*3,45+i%4*9,5),material(boss?0xb180ed:0x83d8d3,{emissive:boss?0x3a165b:0x174540}));gem.position.set(x,22,z);scene.add(gem)}
-  const pc=state.owned.find(c=>c.id===a.creatureId);data.player=creatureModel3D(T,pc.kind,false,pc.shiny);scene.add(data.player);
+  const pc=state.owned.find(c=>c.id===a.creatureId);data.player=(pc.kind===0?importedFlaminyx(T,heroAsset,pc.shiny):null)||creatureModel3D(T,pc.kind,false,pc.shiny);a.canvas.dataset.playerAsset=data.player.userData.imported?'Flaminyx GLB':'Procedural';scene.add(data.player);
   data.playerRing=new T.Mesh(new T.RingGeometry(23,26,40),new T.MeshBasicMaterial({color:0xa1ffe0,side:T.DoubleSide,transparent:true,opacity:.9}));data.playerRing.rotation.x=-Math.PI/2;data.playerRing.position.y=1;scene.add(data.playerRing);
-  for(const f of a.foes){const model=creatureModel3D(T,combat.enemy.kind,f.boss,false,combat.level);scene.add(model);data.models.set(f,model);const ring=new T.Mesh(new T.RingGeometry(f.boss?33:23,f.boss?37:26,40),new T.MeshBasicMaterial({color:f.boss?0xffca67:0xff7a94,side:T.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(f.x-400,1,f.y-220);scene.add(ring);model.userData.factionRing=ring}
+  for(const f of a.foes){const model=(!f.boss&&combat.enemy.kind===0?importedFlaminyx(T,heroAsset,false):null)||creatureModel3D(T,combat.enemy.kind,f.boss,false,combat.level);scene.add(model);data.models.set(f,model);const ring=new T.Mesh(new T.RingGeometry(f.boss?33:23,f.boss?37:26,40),new T.MeshBasicMaterial({color:f.boss?0xffca67:0xff7a94,side:T.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(f.x-400,1,f.y-220);scene.add(ring);model.userData.factionRing=ring}
   a.pick3D=(nx,ny)=>{data.ray.setFromCamera(new T.Vector2(nx*2-1,1-ny*2),camera);if(!data.ray.ray.intersectPlane(data.plane,data.point))return null;return {x:arenaClamp(data.point.x+400,25,775),y:arenaClamp(data.point.z+220,25,415)}};
-  a.dispose3D=()=>{const geometries=new Set(),materials=new Set(),textures=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);if(m.map)textures.add(m.map)}});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss();a.g3d=null};
+  a.dispose3D=()=>{for(const model of [data.player,...data.models.values()]){const animation=model.userData.animation;if(animation){animation.mixer.stopAllAction();animation.mixer.uncacheRoot(model)}}const geometries=new Set(),materials=new Set(),textures=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);if(m.map)textures.add(m.map)}});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.forceContextLoss();a.g3d=null};
   a.canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();if(arena===a){a.paused=true;a.keys.clear();a.held.clear();arenaMessage(a,'3D graphics paused. Leave and re-enter the battle to reload.');$('#arenaPause').disabled=true}},{signal:a.events.signal});
-  a.ready=true;a.paused=false;arenaMessage(a,'3D battle ready! Move close to strike and escape the red circles.');
+  a.ready=true;a.paused=false;arenaMessage(a,heroAsset?'New Flaminyx art ready! Walk, strike and dodge.':'3D battle ready! Move close to strike and escape the red circles.');
  }catch(error){
   if(arena!==a)return;
   // A device without usable WebGL can still play the same battle in compatibility view.
@@ -329,7 +374,8 @@ function creatureModel3D(T,kind,boss=false,shiny=false,bossLevel=0){
 function renderArena3D(a){
  const d=a.g3d;if(!d)return;const {T,scene,camera,renderer}=d,p=a.player;
  function actor(model,actor,player=false){model.visible=player||actor.hp>0;if(!model.visible)return;const moving=player?(a.target||Math.hypot(a.stick.x,a.stick.y)>.1||a.keys.size>0):distance(p,actor)>118;
-  model.position.set(actor.x-400,(moving?Math.abs(Math.sin(a.time*10))*2:Math.sin(a.time*2)*.7),actor.y-220);model.rotation.y=player?Math.atan2(p.faceX,p.faceY):Math.atan2(p.x-actor.x,p.y-actor.y);
+  model.position.set(actor.x-400,model.userData.imported?0:(moving?Math.abs(Math.sin(a.time*10))*2:Math.sin(a.time*2)*.7),actor.y-220);model.rotation.y=player?Math.atan2(p.faceX,p.faceY):Math.atan2(p.x-actor.x,p.y-actor.y);
+  updateImportedAnimation(model,actor,!!moving,a.time);if(player&&model.userData.animation)a.canvas.dataset.playerAnimation=model.userData.animation.current;
   (model.userData.limbs||[]).forEach((leg,i)=>leg.rotation.x=moving?Math.sin(a.time*10+i%2*Math.PI)*.3:0);if(model.userData.tail)model.userData.tail.rotation.z=Math.sin(a.time*4)*.16;
  }
  actor(d.player,p,true);d.playerRing.position.set(p.x-400,1,p.y-220);d.playerRing.material.opacity=p.invul>0?.4+.4*Math.sin(a.time*30):.8;
@@ -347,7 +393,7 @@ function renderArena3D(a){
  for(const e of a.effects)if(!e.text)visual(e,'ring',e.x,e.y,e.r,e.color,1);
  if(a.target)visual(a.target,'ring',a.target.x,a.target.y,9,0xc2ffdf,.2);
  for(const [key,node] of d.visuals)if(!active.has(key)){d.dynamic.remove(node);node.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});d.visuals.delete(key)}
- renderer.render(scene,camera);
+ renderer.render(scene,camera);a.canvas.dataset.renderCalls=String(renderer.info.render.calls);a.canvas.dataset.renderTriangles=String(renderer.info.render.triangles);
 }
 
 go('home');})();

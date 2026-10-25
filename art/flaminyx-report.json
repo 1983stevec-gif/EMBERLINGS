@@ -1,0 +1,16 @@
+{
+  "asset": "Flaminyx",
+  "tool": "Blender 4.5.9 LTS",
+  "triangles": 4856,
+  "vertices": 2500,
+  "bones": 10,
+  "materials": 7,
+  "animation_clips": [
+    "Idle",
+    "Walk",
+    "Attack",
+    "Hit"
+  ],
+  "glb_bytes": 246988,
+  "original_art": true
+}
