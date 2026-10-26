@@ -190,7 +190,7 @@ function mountArena(config){
 function bindArenaInput(a){
  if(a.mode==='expedition')return bindRidingInput(a);
  const signal=a.events.signal,on=(el,name,fn)=>el.addEventListener(name,fn,{signal});
- const clear=()=>{a.keys.clear();a.held.clear();a.stick={x:0,y:0};a.target=null;const knob=$('#arenaKnob');if(knob)knob.style.transform='translate(0,0)'};
+ const clear=()=>{a.keys.clear();a.held.clear();a.stick={x:0,y:0};a.target=null;const knob=$('#arenaKnob');if(knob)knob.style.transform='translate(0,0)';if(a.mode==='online'&&a.net)requestOnlineSend(a)};
  function pause(value){if(a.mode==='online'){clear();return}a.paused=value;clear();$('#arenaPause').textContent=value?'▶ Resume':'Ⅱ Pause'}
  on($('#arenaPause'),'click',()=>a.mode==='online'?leaveOnline(a):pause(!a.paused));if(a.mode==='online')$('#arenaPause').textContent='Leave Match';on(window,'blur',()=>pause(true));on(document,'visibilitychange',()=>{if(document.hidden)pause(true)});
  const controlKeys=['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' ','shift','e','q'];
@@ -209,7 +209,7 @@ function nearestStation(a){return trainingStations.reduce((best,s)=>!best||dista
 function blocked(a,x,y,r){return a.obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h)}
 function moveActor(a,p,dx,dy){const x=arenaClamp(p.x+dx,22,a.mode==='expedition'?5978:778),y=arenaClamp(p.y+dy,24,a.mode==='expedition'?5976:416);if(!blocked(a,x,p.y,p.r))p.x=x;if(!blocked(a,p.x,y,p.r))p.y=y}
 function arenaAction(a,action){
- if(a.done||a.paused||arena!==a||a.mode==='hub'||!(action in a.cool)||a.cool[action]>0)return;if(a.mode==='online'){if(a.net){a.net.pending=action;a.cool[action]=.12}return}
+ if(a.done||a.paused||arena!==a||a.mode==='hub'||!(action in a.cool)||a.cool[action]>0)return;if(a.mode==='online'){queueOnlineAction(a,action);return}
  const p=a.player;
  if(a.mode==='expedition'&&expeditionAction(a,action))return;
  if(action==='dodge'){a.cool.dodge=1.3;p.dash=.2;p.invul=.34;if(a.target){const d=distance(p,a.target);if(d>1){p.faceX=(a.target.x-p.x)/d;p.faceY=(a.target.y-p.y)/d}}arenaMessage(a,'Dash! Escape red circles.');return}
@@ -271,13 +271,13 @@ function presentArenaFrame(a,now){
  const stats=a.renderStats||(a.renderStats={start:now,count:0});if(drew)stats.count++;if(now-stats.start>=1500){arenaMetric(a.canvas,'renderFps',(stats.count*1000/(now-stats.start)).toFixed(1));arenaMetric(a.canvas,'renderedFrames',String(a.renderedFrames||0));a.renderStats={start:now,count:0}}
 }
 function updateArenaUI(a){
- if(arena!==a)return;$('#arenaPause').disabled=a.ready===false;const p=a.player,foe=a.foes.find(f=>f.hp>0);
+ if(arena!==a)return;$('#arenaPause').disabled=a.ready===false;const p=a.player,foe=a.foes.find(f=>f.hp>0);if(a.mode==='online'&&a.net){arenaMetric(a.canvas,'localX',p.x.toFixed(1));arenaMetric(a.canvas,'localY',p.y.toFixed(1));arenaMetric(a.canvas,'serverX',String(p.serverX));arenaMetric(a.canvas,'serverY',String(p.serverY));}
  arenaText('#arenaPlayerHp',`❤️ ${Math.ceil(p.hp)} / ${p.maxhp}`);
  arenaText('#arenaEnemyHp',a.mode==='expedition'?rideEncounterLabel(a):a.mode==='online'?a.foes.map(f=>`${f.ally?'Ally: ':''}${f.name} HP ${Math.ceil(f.hp)} / ${f.maxhp}`).join(' · '):a.mode==='battle'?`${combat.enemy.name} Lv.${combat.level} · HP ${Math.ceil(a.foes[0].hp)} / ${a.foes[0].maxhp}`:a.mode==='hub'?'Explore 7 stations':`${a.progress} / ${a.total}${a.mode==='tower'?' · Wave '+a.wave:''}${a.mode==='camp'&&a.progress===3?' · Return to camp!':''}`);
  arenaText('#arenaEnergy',a.mode==='expedition'?`🎒 ${a.bag.length}/3 · ${Math.floor(a.travel/10)}m ridden`:a.mode==='hub'?'Walk to a station':`⚡ ${Math.round(a.energy)}%`);
  arenaText('#arenaMessage',a.paused?(a.ready===false?'Loading EMBERLINGS 3D arena…':'Paused — tap Resume to continue.'):a.messageTime>0||a.time<3?a.message:'');
  if(a.mode==='hub'){const s=nearestStation(a);arenaText('#arenaEnter',distance(p,s)<72?'Enter '+s.name:'Walk to a station');$('#arenaEnter').disabled=distance(p,s)>=72}
- document.querySelectorAll('[data-act]').forEach(b=>{const k=b.dataset.act;if(a.mode==='expedition'){b.disabled=a.paused||a.ready===false;const label={basic:'🎒 Catch · '+a.bag.length+'/3',skill:'📣 Whistle · E',dodge:'🐾 Gallop · Shift'}[k];if(b.textContent!==label)b.textContent=label;return;}b.disabled=a.ready===false||a.paused||(a.mode==='online'&&a.player.hp<=0)||(k==='skill'&&a.energy<25)||(k==='ultimate'&&a.energy<100);const label={basic:'⚔️ Strike',skill:'✨ Blast · 25 ⚡',dodge:'💨 Dash',ultimate:'🌟 Ultimate · 100 ⚡'}[k]+(a.cool[k]>.08?' · '+a.cool[k].toFixed(1)+'s':'');if(b.textContent!==label)b.textContent=label});
+ document.querySelectorAll('[data-act]').forEach(b=>{const k=b.dataset.act;if(a.mode==='expedition'){b.disabled=a.paused||a.ready===false;const label={basic:'🎒 Catch · '+a.bag.length+'/3',skill:'📣 Whistle · E',dodge:'🐾 Gallop · Shift'}[k];if(b.textContent!==label)b.textContent=label;return;}b.disabled=a.ready===false||a.paused||(a.mode==='online'&&(a.player.hp<=0||performance.now()<a.net?.startsAt))||(k==='skill'&&a.energy<25)||(k==='ultimate'&&a.energy<100);const label={basic:'⚔️ Strike',skill:'✨ Blast · 25 ⚡',dodge:'💨 Dash',ultimate:'🌟 Ultimate · 100 ⚡'}[k]+(a.cool[k]>.08?' · '+a.cool[k].toFixed(1)+'s':'');if(b.textContent!==label)b.textContent=label});
 }
 function drawArena(a){
  if(a.mode==='expedition'&&a.rideFallback)return drawRidingFallback(a);
@@ -507,33 +507,47 @@ function showLobby(match){
 }
 function startOnlineMatch(match){
  stopSocialViews();stopArena();view='online';scrollTo(0,0);mountArena({mode:'online',onlineMode:match.mode,match,snapshot:match.state,selfId:match.selfId,title:match.mode==='duel'?'⚔️ Online Duel':'🤝 Co-op: Rift Guardian',back:'friends',hint:'Move, strike, blast and dash. Both players share this live arena. Online matches continue if you leave the tab.',goal:match.mode==='duel'?'Defeat your friend’s Mythling. Balanced Level 12 stats.':'Work together to defeat the Rift Guardian.'});
- const a=arena;a.net={id:match.id,selfId:match.selfId,seq:(match.state.players.find(p=>p.id===match.selfId)?.seq||0)+1,pending:null,timer:0,latestVersion:-1,errors:0,ended:false};applyOnlineSnapshot(a,match);pumpOnline(a);
+ const a=arena;a.net={id:match.id,selfId:match.selfId,seq:(match.state.players.find(p=>p.id===match.selfId)?.seq||0)+1,actions:[],timer:0,latestVersion:-1,errors:0,ended:false,inFlight:false,urgent:false,sent:new Map(),motion:[],frameId:match.state.players.find(p=>p.id===match.selfId)?.motionFrameId||0,lastSentFrame:match.state.players.find(p=>p.id===match.selfId)?.motionFrameId||0,resetMovement:true,lastAckAt:performance.now(),startsAt:performance.now()+Math.max(0,match.state.startAt-match.state.clockMs),localDash:0,correction:null,lastIntent:'',lastSend:-Infinity,rtt:0};applyOnlineSnapshot(a,match);pumpOnline(a);
 }
 function applyOnlineSnapshot(a,match){
  if(arena!==a||!a.net||match.version<a.net.latestVersion)return;a.net.latestVersion=match.version;
  if(match.status!=='active'||match.state?.result){finishOnline(a,match);return}
  const snapshot=match.state,me=snapshot.players.find(p=>p.id===a.net.selfId);if(!me)return;a.serverSnapshot=snapshot;a.onlineMode=snapshot.mode;
  const apply=(target,source)=>{if(target.hitSerial!==undefined&&target.hitSerial!==source.hitSerial)target.hitAt=a.time;if(target.attackSerial!==undefined&&target.attackSerial!==source.attackSerial)target.attackAt=a.time;target.serverX=source.x;target.serverY=source.y;target.hp=source.hp;target.maxhp=source.maxhp;target.kind=source.kind;target.shiny=source.shiny;target.hitSerial=source.hitSerial;target.attackSerial=source.attackSerial;target.faceX=source.faceX??1;target.faceY=source.faceY??0;target.moving=!!source.input&&(Math.hypot(source.input.x,source.input.y)>.1||!!source.input.target)};
- apply(a.player,me);a.energy=me.energy;a.cool={...me.cool};
+ apply(a.player,me);a.energy=me.energy;for(const k in a.cool)a.cool[k]=Math.max(a.cool[k],Math.max(0,(me.cool[k]||0)-(a.net.rtt||0)/1000));
+ const now=performance.now(),n=a.net,ack=n.sent.get(me.seq),expected=replayOnlineMovement(a,me,ack,now),dx=expected.x-a.player.x,dy=expected.y-a.player.y;n.startsAt=now+Math.max(0,snapshot.startAt-snapshot.clockMs-n.rtt/2);n.lastAckAt=now;
+ if(!n.received||me.hp<=0||Math.hypot(dx,dy)>96){a.player.x=expected.x;a.player.y=expected.y;n.correction=null}else n.correction=Math.hypot(dx,dy)>1?{x:dx,y:dy}:null;
+ n.received=true;for(const seq of n.sent.keys())if(seq<me.seq)n.sent.delete(seq);arenaMetric(a.canvas,'prediction','local');arenaMetric(a.canvas,'networkRtt',String(n.rtt));
  const sources=snapshot.players.filter(p=>p.id!==me.id).map(p=>({...p,name:p.username,ally:snapshot.mode==='coop',boss:false}));if(snapshot.foe)sources.push({...snapshot.foe,name:'Rift Guardian',boss:true,level:25});
  a.foes=sources.map(source=>{const old=a.foes.find(f=>f.id===source.id)||{...source,r:source.boss?27:20};apply(old,source);old.name=source.name;old.ally=source.ally;old.boss=!!source.boss;return old});
  a.hazards=snapshot.hazards.map(h=>({...h}));a.shots=snapshot.shots.map(s=>({...s}));a.pickups=[];a.obstacles=snapshot.mode?COVER_CLIENT:[];
  const countdown=Math.ceil((snapshot.startAt-snapshot.clockMs)/1000);if(countdown>0)arenaMessage(a,'Battle starts in '+countdown+'…');
 }
 const COVER_CLIENT=[{x:340,y:85,w:55,h:65},{x:365,y:300,w:55,h:65}];
+// Move the local player immediately. The server remains authoritative for position, health and actions.
+function onlineIntent(a){let x=a.stick.x+(a.keys.has('d')||a.keys.has('arrowright')?1:0)-(a.keys.has('a')||a.keys.has('arrowleft')?1:0),y=a.stick.y+(a.keys.has('s')||a.keys.has('arrowdown')?1:0)-(a.keys.has('w')||a.keys.has('arrowup')?1:0);const length=Math.hypot(x,y);if(length>1){x/=length;y/=length}return {x,y,target:length>.05?null:a.target?{...a.target}:null};}
+function onlineIntentKey(input){return [input.x.toFixed(2),input.y.toFixed(2),input.target?.x.toFixed(1)||'',input.target?.y.toFixed(1)||''].join(',');}
+function moveOnlinePrediction(a,p,input,dt,dash=0){let x=input.x,y=input.y,targetDistance=null;if(!x&&!y&&input.target){const d=distance(p,input.target);if(d>5){x=(input.target.x-p.x)/d;y=(input.target.y-p.y)/d;targetDistance=d}else if(dash<=0)return false}if(Math.hypot(x,y)>.05){p.faceX=x;p.faceY=y}if(dash>0){x=p.faceX;y=p.faceY}if(Math.hypot(x,y)>.05){const step=dash>0?590*dt:targetDistance===null?175*dt:Math.min(175*dt,Math.max(0,targetDistance-4));moveActor(a,p,x*step,y*step);return true}return false;}
+function requestOnlineSend(a){if(arena!==a||!a.net||a.done||a.net.ended)return;a.net.urgent=true;if(a.net.inFlight)return;clearTimeout(a.net.timer);a.net.timer=setTimeout(()=>pumpOnline(a),Math.max(0,50-(performance.now()-(a.net.lastSend??-Infinity))));}
+function queueOnlineAction(a,action){const n=a.net,now=performance.now();if(!n||now<n.startsAt||a.player.hp<=0||now-n.lastAckAt>1000)return;const cooldown={basic:.48,skill:1.1,dodge:1.3,ultimate:2}[action];if(action==='skill'&&a.energy<25||action==='ultimate'&&a.energy<100)return;if(n.actions.length>=4||n.actions.includes(action))return;n.actions.push(action);a.cool[action]=cooldown;if(action==='dodge')n.localDash=.19;else a.player.attackAt=a.time;requestOnlineSend(a);}
+function replayOnlineMovement(a,source,ack,now){const p={...source,r:16},n=a.net;if(Number.isSafeInteger(source.motionFrameId)){for(const part of n.motion)if(part.id>source.motionFrameId)moveOnlinePrediction(a,p,part.input,(part.end-part.start)/1000,part.dash);return p}if(!ack||now-ack.at>1000)return p;for(const part of n.motion){const start=Math.max(ack.at,part.start),end=Math.min(now,part.end);if(end>start)moveOnlinePrediction(a,p,part.input,(end-start)/1000,part.dash)}return p;}
 async function pumpOnline(a){
- if(arena!==a||a.done||!a.net)return;const input={seq:a.net.seq++,x:a.onlineMove?.x||0,y:a.onlineMove?.y||0,target:a.target?{...a.target}:null,action:a.net.pending};a.net.pending=null;
- try{const match=await onlineApi('/matches/'+a.net.id+'/input',input,a.events.signal);if(arena!==a)return;a.net.errors=0;applyOnlineSnapshot(a,match)}catch(error){if(arena!==a||error.name==='AbortError')return;a.net.errors++;arenaMessage(a,'Reconnecting… '+error.message)}
- if(arena===a&&!a.done)a.net.timer=setTimeout(()=>pumpOnline(a),a.net.errors?900:250);
+ const n=a.net;if(arena!==a||a.done||!n||n.inFlight||n.ended)return;clearTimeout(n.timer);n.inFlight=true;n.urgent=false;const began=performance.now(),intent=onlineIntent(a),frames=n.resetMovement?[]:n.motion.filter(part=>part.id>n.lastSentFrame).slice(-60).map(part=>[part.id,Math.max(.1,Math.min(50,Math.round((part.end-part.start)*10)/10)),Number(part.input.x.toFixed(3)),Number(part.input.y.toFixed(3)),part.input.target?Number(part.input.target.x.toFixed(1)):null,part.input.target?Number(part.input.target.y.toFixed(1)):null]),input=n.retryInput||{seq:n.seq++,x:intent.x,y:intent.y,target:intent.target,action:n.actions.shift()||null,frames,resetMovement:n.resetMovement};if(!n.retryInput){n.resetMovement=false;if(frames.length)n.lastSentFrame=frames.at(-1)[0]}if(!n.sent.has(input.seq))n.sent.set(input.seq,{at:began,input});n.lastSend=began;n.lastIntent=onlineIntentKey(input);
+ const requestAbort=new AbortController(),abort=()=>requestAbort.abort();a.events.signal.addEventListener('abort',abort,{once:true});const timeout=setTimeout(abort,5000);
+ try{const match=await onlineApi('/matches/'+n.id+'/input',input,requestAbort.signal);if(arena!==a)return;n.rtt=Math.round(performance.now()-began);n.errors=0;n.retryInput=null;n.lastAckAt=performance.now();applyOnlineSnapshot(a,match)}catch(error){if(arena!==a||a.events.signal.aborted)return;n.errors++;n.retryInput=input;arenaMessage(a,'Reconnecting… Movement will resume when the connection returns.')}finally{clearTimeout(timeout);a.events.signal.removeEventListener('abort',abort);n.inFlight=false;}
+ if(arena===a&&!a.done&&!n.ended)n.timer=setTimeout(()=>pumpOnline(a),n.errors?Math.min(1500,300*n.errors):n.urgent?0:Math.max(0,100-(performance.now()-began)));
 }
 function tickOnlineArena(a,dt){
- a.time+=dt;a.messageTime=Math.max(0,a.messageTime-dt);for(const k in a.cool)a.cool[k]=Math.max(0,a.cool[k]-dt);
- let x=a.stick.x+(a.keys.has('d')||a.keys.has('arrowright')?1:0)-(a.keys.has('a')||a.keys.has('arrowleft')?1:0),y=a.stick.y+(a.keys.has('s')||a.keys.has('arrowdown')?1:0)-(a.keys.has('w')||a.keys.has('arrowup')?1:0);const len=Math.hypot(x,y);if(len>1){x/=len;y/=len}if(Math.hypot(x,y)>.05)a.target=null;a.onlineMove={x,y};
- for(const p of [a.player,...a.foes]){if(Number.isFinite(p.serverX)){p.x+=(p.serverX-p.x)*Math.min(1,dt*12);p.y+=(p.serverY-p.y)*Math.min(1,dt*12)}}
- if(Math.hypot(x,y)>.05){a.player.faceX=x;a.player.faceY=y;a.player.moving=true}
+ const n=a.net;if(!n)return;const now=performance.now();a.time+=dt;a.messageTime=Math.max(0,a.messageTime-dt);for(const k in a.cool)a.cool[k]=Math.max(0,a.cool[k]-dt);
+ const intent=onlineIntent(a);if(Math.hypot(intent.x,intent.y)>.05)a.target=null;a.onlineMove={x:intent.x,y:intent.y};const signature=onlineIntentKey(intent);if(signature!==n.lastIntent)requestOnlineSend(a);
+ const stalled=now-n.lastAckAt>1000;if(stalled&&!n.stalled)arenaMessage(a,'Connection is slow. Reconnecting…');n.stalled=stalled;
+ if(now>=n.startsAt&&!stalled&&a.player.hp>0){n.motion.push({id:++n.frameId,start:now-dt*1000,end:now,input:intent,dash:n.localDash});a.player.moving=moveOnlinePrediction(a,a.player,intent,dt,n.localDash);n.localDash=Math.max(0,n.localDash-dt);const c=n.correction;if(c){const fraction=1-Math.exp(-dt*18),dx=c.x*fraction,dy=c.y*fraction;moveActor(a,a.player,dx,dy);c.x-=dx;c.y-=dy;if(Math.hypot(c.x,c.y)<.3)n.correction=null}if(a.target&&distance(a.player,a.target)<=5){a.target=null;requestOnlineSend(a)}}else a.player.moving=false;
+ n.motion=n.motion.filter(part=>part.end>now-2000);
+ for(const p of a.foes)if(Number.isFinite(p.serverX)){p.x+=(p.serverX-p.x)*Math.min(1,dt*16);p.y+=(p.serverY-p.y)*Math.min(1,dt*16)}
  for(const action of new Set(a.held.values()))arenaAction(a,action);if(a.keys.has(' '))arenaAction(a,'basic');
  a.hazards.forEach(h=>h.left=Math.max(.01,h.left-dt));a.shots.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt});
 }
+
 function finishOnline(a,match){
  if(a.done)return;a.done=true;if(a.net)a.net.ended=true;const result=match.state?.result,won=result?.winners?.includes(a.net.selfId),reason=result?.reason||match.status;
  stopArena();view='online-result';frame(`<section class="hero center"><h1>${won?'🏆 Victory!':reason==='draw'?'🤝 Draw':'Match finished'}</h1><p>${escapeHtml(reason==='victory'?(won?(a.onlineMode==='coop'?'Your team won!':'You won!'):'Your friend won this round.'):reason.replaceAll('_',' '))}</p><p class="small muted">Friendly matches do not change your campaign progress or spend coins.</p><button class="button gold" data-go="friends">Back to Friends</button><button class="button alt" data-go="home">Adventure HQ</button></section>`);
