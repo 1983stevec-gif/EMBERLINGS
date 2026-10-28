@@ -18,3 +18,15 @@ export const MOVE_PROFILES=[
 ];
 export function moveProfile(kind){return MOVE_PROFILES[kind]||MOVE_PROFILES[0]}
 export function skillShots(p,kind,base,dx,dy){const m=moveProfile(kind);if(!m.count)return [];const angle=Math.atan2(dy,dx);return Array.from({length:m.count},(_,i)=>{const a=angle+(i-(m.count-1)/2)*m.spread;return {x:p.x+dx*22,y:p.y+dy*22,vx:Math.cos(a)*m.speed,vy:Math.sin(a)*m.speed,r:m.radius,life:1.8,damage:Math.round(base*m.power),color:m.color,pierce:m.mode==='pierce'?2:0,bounces:m.mode==='bounce'?1:0,hitIds:[]}})}
+
+export const MUTATIONS=[
+ {id:'spark',name:'Spark',damage:.10,coins:.10,cost:2500,color:'#ffe47e',icon:'✧'},
+ {id:'flame',name:'Flame',damage:.20,coins:.20,cost:10000,color:'#ff9a63',icon:'🔥'},
+ {id:'frost',name:'Frost',damage:.25,coins:.15,cost:25000,color:'#9cecff',icon:'❄'},
+ {id:'storm',name:'Storm',damage:.35,coins:.30,cost:75000,color:'#b3a2ff',icon:'ϟ'},
+ {id:'shadow',name:'Shadow',damage:.50,coins:.40,cost:200000,color:'#e3a1fb',icon:'☾'},
+ {id:'cosmic',name:'Cosmic',damage:.75,coins:.60,cost:500000,color:'#ffadd8',icon:'✦'}
+];
+export function mutationTrait(c){return MUTATIONS.find(m=>m.id===c?.mutation)||null}
+export function mutationDamage(c,base){return Math.round(base*(1+(mutationTrait(c)?.damage||0)))}
+export function mutationCoins(c){return 1+(mutationTrait(c)?.coins||0)}
