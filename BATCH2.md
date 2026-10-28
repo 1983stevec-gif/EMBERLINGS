@@ -19,3 +19,7 @@ Checks (project root):
 - TypeScript and the production build.
 
 Existing campaign, all five bosses, training, fusion, movement prediction, combat and social tests are also run in the parent QA workspace.
+
+## Mutation earnings upgrade
+
+User-requested Vault multipliers replace the original percentage coin bonuses: Spark 2×, Flame 5×, Frost 10×, Storm 25×, Shadow 100×, Cosmic 1,000×. These multiply the otherwise normal rarity/shiny/Rebirth rate exactly once. Damage bonuses, prices, saved trait IDs and save key stay unchanged. Existing mutated creatures automatically use the new rates; no repurchase or conversion is needed. Coin labels show the multiplier in Inventory, battles and Mutation Vault.
