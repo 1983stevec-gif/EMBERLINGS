@@ -1,0 +1,20 @@
+import {rarityRank,mutationCoins} from './combat-rules.js';
+export const SHOP_ITEMS=[
+{id:'cover-ember',category:'Binders',name:'Emberbound Cover',cost:600,type:'cover',value:'ember',description:'Warm leather binder and gold page edges.'},
+{id:'cover-moon',category:'Binders',name:'Moonweave Cover',cost:900,type:'cover',value:'moon',description:'Violet binder with a silver moon seal.'},
+{id:'sleeve-frost',category:'Sleeves',name:'Frostglass Sleeves',cost:500,type:'sleeve',value:'frost',description:'Ice-blue borders around your collection and battle cards.'},
+{id:'sleeve-gold',category:'Sleeves',name:'Gilded Sleeves',cost:1200,type:'sleeve',value:'gold',description:'Golden borders for your Mythling cards.'},
+{id:'fx-sparks',category:'Battle effects',name:'Cinder Trail',cost:700,type:'effect',value:'sparks',description:'Orange attack streaks in your card battles.'},
+{id:'fx-stars',category:'Battle effects',name:'Starlight Impact',cost:900,type:'effect',value:'stars',description:'Violet star impacts in your card battles.'},
+{id:'training-pass',category:'Training',name:'Academy Pass',cost:120,type:'pass',description:'Adds one rewarded training session beyond the daily cap.'},
+{id:'xp',category:'Progression',name:'Study Scroll · 50 EXP',cost:100,type:'xp',description:'50 EXP for your active partner.'},
+{id:'profile-explorer',category:'Profile',name:'Rift Explorer Badge',cost:400,type:'profile',value:'Rift Explorer',description:'Equip this title on Home and your Friends profile.'},
+{id:'collectible-founder',category:'Collectibles',name:'First Light Emblem',cost:1500,type:'collectible',value:'First Light',description:'One collectible emblem per player, displayed in your collection cabinet.'}
+];
+export function migrateCards(state){state.discovered=state.discovered||[];for(const c of state.owned)if(!state.discovered.includes(c.kind))state.discovered.push(c.kind);if(!state.cardStarterGrant){for(let i=state.owned.length;i<5;i++)state.owned.push({id:'academy-starter-'+i,kind:[0,2,4,1,9][i],level:1,xp:0,rarity:'Common',starterGift:true});state.cardStarterGrant=true}for(const c of state.owned)if(!state.discovered.includes(c.kind))state.discovered.push(c.kind);state.cosmetics=state.cosmetics||{owned:[],cover:'classic',sleeve:'classic',effect:'classic',profile:''};state.items=state.items||{trainingPasses:0};state.cardEdition=3;return state}
+export function balancedVaultRate(c,rebirth=1){if(!c)return 0;return [.001,.0016,.0025,.0035,.005,.0065,.008][rarityRank(c)]*(1+Math.min(100,Math.max(1,c.level||1))*.005)*(c.shiny?1.1:1)*(1+Math.log10(mutationCoins(c))*.5)*Math.min(2,Math.sqrt(rebirth))}
+export function vaultAccrual(pending,lastAt,now,rate){return Math.max(0,Number(pending)||0)+Math.min(7200000,Math.max(0,now-lastAt))*rate/1000}
+export function islandOpen(index,rebirth){return index<=Math.max(0,Math.floor(rebirth||0))}
+export function practiceBudget(state,now){const day=Math.floor(now/86400000);if(!state.practiceBudget||state.practiceBudget.day<day)state.practiceBudget={day,used:0};return state.practiceBudget}
+export function practiceReward(state,c,score,now){if(score<3)return {xp:0,attack:0};const b=practiceBudget(state,now);if(b.used>=5){if(!(state.items?.trainingPasses>0))return {xp:0,attack:0};state.items.trainingPasses--}b.used++;const xp=15+Math.min(5,score)*3;const attack=(c.academyAttack||0)<5?1:0;c.academyAttack=Math.min(5,(c.academyAttack||0)+attack);c.bonus=(c.bonus||0)+attack;return {xp,attack}}
+export function purchaseShopItem(state,id){const item=SHOP_ITEMS.find(x=>x.id===id);if(!item||state.coins<item.cost)throw Error('Not enough coins');const permanent=['cover','sleeve','effect','profile','collectible'].includes(item.type);if(permanent&&state.cosmetics.owned.includes(id))throw Error('Already owned');state.coins-=item.cost;if(permanent){state.cosmetics.owned.push(id);if(item.type!=='collectible')state.cosmetics[item.type]=item.value}else if(item.type==='pass')state.items.trainingPasses=(state.items.trainingPasses||0)+1;return item}
