@@ -104,14 +104,16 @@ function positionLevel(i){let r=regionsFor(i),n=i-regions[r][1];return {x:(r===0
  };
  el.onpointermove=e=>{
   const old=pointers.get(e.pointerId);if(!old)return;
+  const scrollTouch=el.classList.contains('uiMap')&&e.pointerType==='touch'&&pointers.size===1;
+  if(scrollTouch&&Math.abs(e.clientY-old.startY)>=Math.abs(e.clientX-old.startX))return;
   if(!suppressClick&&Math.hypot(e.clientX-old.startX,e.clientY-old.startY)<=7)return;
   suppressClick=true;pointers.set(e.pointerId,{...old,x:e.clientX,y:e.clientY});
-  if(pointers.size===2){const a=[...pointers.values()];m.z=startZoom*Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)/Math.max(1,startDistance)}else{m.x+=e.clientX-old.x;m.y+=e.clientY-old.y}clamp();
+  if(pointers.size===2){const a=[...pointers.values()];m.z=startZoom*Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)/Math.max(1,startDistance)}else{m.x+=e.clientX-old.x;if(!scrollTouch)m.y+=e.clientY-old.y}clamp();
  };
  const end=e=>{pointers.delete(e.pointerId);if(e.type==='pointercancel')suppressClick=true};
  el.onpointerup=el.onpointercancel=el.onlostpointercapture=end;
  el.onpointerleave=e=>{if(!el.hasPointerCapture(e.pointerId))end(e)};
- el.addEventListener('wheel',e=>{e.preventDefault();m.z+=e.deltaY>0?-.08:.08;clamp()},{passive:false});
+ el.addEventListener('wheel',e=>{if(el.classList.contains('uiMap')&&!e.ctrlKey&&!e.metaKey)return;e.preventDefault();m.z+=e.deltaY>0?-.08:.08;clamp()},{passive:false});
  el.addEventListener('click',e=>{const node=e.target.closest('[data-level]');if(!node)return;if(suppressClick&&e.detail!==0){suppressClick=false;return}startBattle(Number(node.dataset.level))});
  document.querySelectorAll('[data-map]').forEach(x=>x.onclick=()=>{if(x.dataset.map==='in')m.z+=.15;else if(x.dataset.map==='out')m.z-=.15;else{const p=positionLevel(limit());m.x=el.clientWidth/2-(p.x+24)*m.z;m.y=el.clientHeight/2-(p.y+24)*m.z}clamp()});
  const p=positionLevel(limit());if(p.x*m.z+m.x<0||p.x*m.z+m.x>el.clientWidth-50||p.y*m.z+m.y<0||p.y*m.z+m.y>el.clientHeight-50){m.x=el.clientWidth/2-(p.x+24)*m.z;m.y=el.clientHeight/2-(p.y+24)*m.z}clamp();

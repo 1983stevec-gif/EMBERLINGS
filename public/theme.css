@@ -430,7 +430,7 @@ body.uiExact:has(.uiXVault) #app{background:#0e1636}
 .uiXChip{z-index:3;display:flex;align-items:center;justify-content:center;gap:.5em;background:#0b0f15e6;border:1px solid #9a7a42;border-radius:8px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
 .uiXChip b{color:#ffd27a;font-weight:500}.uiXChip.on{border-color:#ffd27a;box-shadow:0 0 10px #ffb04a88}
 .uiXCurrent{z-index:3;background:linear-gradient(180deg,#16233a,#0f1828);border:1px solid #5a6a8a;border-radius:6px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
-#uiQuest{position:absolute;inset:0;pointer-events:none}#uiQuest>*{pointer-events:auto}#uiQuest .uiTxt{pointer-events:none}
+.uiXMap > #uiQuest{position:absolute;inset:0;pointer-events:none}.uiXMap > #uiQuest > *{pointer-events:auto}.uiXMap > #uiQuest .uiTxt{pointer-events:none}
 .uiXRegion{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.04em;color:#f3e3c2}
 .uiXLevel{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.08em;color:#ddd2bb}
 .uiXArt{position:absolute;overflow:hidden;border-radius:4px;border:2px solid #d9b77a;z-index:2}
@@ -782,3 +782,16 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
  .uiMenuMain{display:none!important}
 }
 @media(max-width:480px){body.uiTheme .nav{gap:4px;padding-left:6px;padding-right:6px}body.uiTheme .nav button{font-size:12px}}
+
+/* Keep the responsive quest panel in page flow; only the painted desktop canvas uses overlays. */
+.uiHQ > .uiQuest{position:relative;inset:auto;min-width:0;pointer-events:auto;touch-action:pan-y pinch-zoom;scroll-margin-block:90px 125px}
+.uiMapTools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#0e1625;border-top:1px solid var(--ui-goldline)}
+.uiMapTools .uiLegend,.uiMapTools .uiZoom{position:static;inset:auto;z-index:auto;flex-wrap:wrap;margin:0}
+.uiMapTools .uiLegend{gap:12px;padding:8px 10px;pointer-events:auto}
+.uiMapTools .uiZoom{margin-left:auto}
+.uiMapTools .uiZoom button{min-width:44px;min-height:44px;height:auto}
+.uiHQ .uiBegin{flex-shrink:0;min-height:52px;scroll-margin-block:100px 130px}
+@media(max-width:640px){.uiMapTools{gap:8px;padding:10px}.uiMapTools .uiLegend{width:100%;justify-content:center;font-size:12px;gap:10px}.uiMapTools .uiZoom{width:100%;justify-content:center;margin-left:0}.uiHQ > .uiQuest{padding:20px 14px}}
+
+/* Vertical gestures scroll the page; horizontal drags still explore the map. */
+.uiHQ .uiMap.mapWrap{touch-action:pan-y pinch-zoom}

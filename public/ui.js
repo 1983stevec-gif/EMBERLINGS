@@ -212,8 +212,8 @@ function map() {
   const labels = B.regions.map(r => { const pts = []; for (let l = r[1]; l <= r[2]; l++) pts.push(nodeCenter(l)); const cx = (Math.min(...pts.map(p => p[0])) + Math.max(...pts.map(p => p[0]))) / 2, by = Math.max(...pts.map(p => p[1])); return `<div class="uiRegion" style="left:${cx - 150}px;top:${by + 48}px"><strong>${esc(r[0])}</strong><span>${r[1]} – ${r[2]}</span></div>`; }).join('');
   return `<section class="uiHQ"><div class="uiMapPanel uiFrame"><div class="mapWrap uiMap" id="mapWrap" data-ui-art="map"><div class="world" id="world">${mapSVG()}${labels}${mapNodes()}</div>
    <div class="uiMapTitle"><h1>Adventure HQ</h1><p>Choose your next adventure.</p></div>
-   <div class="uiCompassRose" aria-hidden="true"><span>N</span><b>✦</b></div>
-   <div class="uiLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div>
+   <div class="uiCompassRose" aria-hidden="true"><span>N</span><b>✦</b></div></div>
+   <div class="uiMapTools" role="group" aria-label="Adventure map controls"><div class="uiLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div>
    <div class="uiZoom mapControls"><button data-map="out" aria-label="Zoom out">−</button><button data-map="in" aria-label="Zoom in">+</button><button data-map="current">Current level (${max})</button></div></div></div>
    <aside class="uiQuest uiFrame" id="uiQuest">${questPanel(selected)}</aside>
    <div class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${cleared} / 100 levels complete</span><span class="uiTrack"><i class="uiTrackFill" style="width:${cleared}%"></i>${[10, 25, 45, 70, 100].map(p => `<b style="left:${p}%" class="${(B.state.cleared || []).includes(p) ? 'on' : ''}"></b>`).join('')}</span><span class="uiMilestones">Boss milestones <em>10 · 25 · 45 · 70 · 100</em></span></div></section>`;
