@@ -5,7 +5,7 @@
 :root{--ui-bg:#0b0e14;--ui-panel:#121822;--ui-panel2:#0e131b;--ui-gold:#e9b75a;--ui-gold2:#c98a2c;--ui-goldline:#7a5a2a;--ui-text:#efe6d2;--ui-muted:#b9ae98;--ui-display:Cinzel,'Trajan Pro',Georgia,serif;--ui-serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
 body.uiTheme{background:radial-gradient(ellipse at 50% 0,#1c2230 0,#0b0e14 60%) fixed,#0b0e14;color:var(--ui-text)}
 body.uiTheme #app{max-width:1240px;padding-top:0}
-body.uiTheme.uiWide #app{max-width:1580px}
+body.uiTheme.uiFull #app{max-width:1580px}
 .uiTheme h1,.uiTheme h2,.uiTheme h3{font-family:var(--ui-display);color:#f3dfb0;letter-spacing:.03em}
 .uiTheme h1{text-shadow:0 2px 0 #0008}
 .uiTheme .muted,.uiTheme .small{color:var(--ui-muted)}
@@ -176,8 +176,8 @@ body:has(.cardArena) .uiTop{display:none}
 @media(max-width:640px){.uiLegend{left:8px;right:8px;bottom:62px;gap:10px;font-size:12px;justify-content:center}.uiZoom{right:8px;bottom:8px}.uiCompassRose{display:none}.uiMapTitle h1{font-size:28px}.uiMapTitle p{font-size:15px}.uiBegin{font-size:22px}}
 
 /* Inner screens (Vault mockup): navy, ornate gold frames, slim header, bottom navigation */
-body.uiTheme:not(.uiWide){background:radial-gradient(ellipse at 50% 0,#1d2a5e 0,#111a3e 45%,#0b1230 100%) fixed}
-body.uiTheme:not(.uiWide) .panel,body.uiTheme:not(.uiWide) .hero,body.uiTheme:not(.uiWide) .tile{background:linear-gradient(180deg,#17224d,#121b40);border:2px solid #3b4a8a;border-radius:10px;box-shadow:inset 0 0 0 1px #0a1030,inset 0 0 40px #0a103080,0 10px 24px #0008}
+body.uiTheme:not(.uiDark){background:radial-gradient(ellipse at 50% 0,#1d2a5e 0,#111a3e 45%,#0b1230 100%) fixed}
+body.uiTheme:not(.uiDark) .panel,body.uiTheme:not(.uiDark) .hero,body.uiTheme:not(.uiDark) .tile{background:linear-gradient(180deg,#17224d,#121b40);border:2px solid #3b4a8a;border-radius:10px;box-shadow:inset 0 0 0 1px #0a1030,inset 0 0 40px #0a103080,0 10px 24px #0008}
 .uiTopSlim{background:none;border:0;box-shadow:none;position:relative;justify-content:space-between;padding:14px 20px 6px;border-bottom:1px solid #2a3870}
 .uiTopSlim .uiBrand img{width:48px;height:48px}
 .uiBrandText{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
@@ -249,3 +249,96 @@ body.uiTheme:not(.uiWide) .back{font-family:var(--ui-serif);color:#cfd8f5;letter
 .uiVaultHead{grid-template-columns:minmax(0,1fr) auto minmax(280px,460px)}
 .uiVaultTitle h1{white-space:nowrap}.uiVaultTitle h1::after{width:clamp(0px,8vw,150px)}
 @media(max-width:640px){.uiKicker{letter-spacing:.18em;font-size:12px}.uiVaultTitle h1{white-space:normal}.uiVaultTitle h1::after{display:none}}
+
+/* My Card Binder */
+.uiBinderHead{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:8px 0 14px}
+.uiBinderHead h1{display:inline;font-family:var(--ui-serif);font-weight:700;font-size:clamp(30px,3.4vw,44px);color:#fff;letter-spacing:0;margin:0 18px 0 0}
+.uiBinderHead span{font-family:var(--ui-serif);font-size:18px;color:#d6dcef}
+.uiPillBtn{background:#0e1636;border:2px solid #e9b75a;color:#f3d48a;border-radius:99px;padding:10px 24px;font-family:var(--ui-serif);font-size:17px;cursor:pointer;white-space:nowrap}
+.uiPillBtn:hover{background:#1a2450}
+.uiBinderBar{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:0 0 18px}
+.uiSearch{display:flex;align-items:center;gap:10px;flex:1 1 300px;max-width:350px;background:#0e1636;border:1px solid #4a5a9a;border-radius:6px;padding:0 14px}
+.uiSearch input{flex:1;background:none!important;border:0!important;color:#fff;font-family:var(--ui-serif);font-size:16px;padding:12px 0;outline:none}
+.uiSelect{background:#0e1636!important;border:1px solid #4a5a9a!important;color:#fff!important;border-radius:6px!important;padding:12px 16px!important;font-family:var(--ui-serif);font-size:16px;min-width:170px;min-height:46px}
+.uiMore{position:relative}.uiMore summary{list-style:none;cursor:pointer;background:#0e1636;border:1px solid #4a5a9a;border-radius:6px;padding:12px 26px;color:#fff;font-family:var(--ui-serif);font-size:16px}
+.uiMore summary::-webkit-details-marker{display:none}
+.uiMore>div{position:absolute;z-index:20;top:52px;left:0;display:grid;gap:10px;padding:14px;background:#121b40;border:1px solid #e9b75a;border-radius:8px;min-width:220px;box-shadow:0 12px 30px #000a}
+.uiMore label{display:grid;gap:4px;font-family:var(--ui-serif);color:#dbe2f6}
+.uiTheme .magicalBinder{max-width:none;margin:0 0 10px;padding:16px 64px 16px 64px;background:linear-gradient(90deg,#0f1a3c,#15224d 6%,#13204a 94%,#0f1a3c);border:2px solid #2a3a74;border-radius:14px;box-shadow:inset 0 0 0 6px #0d1634,inset 0 0 0 7px #3a4a84,0 18px 40px #000a;perspective:1600px}
+.uiTheme .binderPages{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:0!important;padding:0!important;background:#0d1634!important;border:1px solid #2a3a74;border-radius:6px}
+.uiTheme .binderPocket{position:relative;border:1px solid #2a3a74!important;border-radius:0!important;padding:30px 12px 14px!important;background:linear-gradient(180deg,#14214a,#101a3e)!important;box-shadow:inset 0 0 0 1px #0a1230!important}
+.uiPocketNo{position:absolute;top:6px;left:8px;z-index:2;background:#0b1230;border:1px solid #3a4a84;border-radius:8px;padding:1px 9px;font-family:var(--ui-serif);font-size:14px;color:#fff}
+.uiTheme .binderPocket .mythCard{border:5px solid #e3b95a!important;border-radius:9px;box-shadow:0 0 0 1px #6a4a10,0 8px 16px #0009}
+.uiTheme .binderPocket .cardSpecies,.uiTheme .binderPocket .cardEdition,.uiTheme .binderPocket .cardMeta,.uiTheme .binderPocket .cardTraits{display:none}
+.uiTheme .binderRings{display:flex!important;left:20px!important;top:16%!important;bottom:16%!important}
+.uiTheme .binderRings i{width:34px!important;height:20px!important;border:5px solid #d9a64a!important;border-radius:50%;box-shadow:0 2px 3px #000a,inset 0 1px 2px #fff6}
+.uiTheme .binderHand{display:none!important}
+.uiBinderTabs{position:absolute;right:-6px;top:14%;display:flex;flex-direction:column;gap:6px;z-index:4}
+.uiBinderTabs button{width:52px;height:74px;border-radius:0 14px 14px 0;border:2px solid color-mix(in srgb,var(--tab) 70%,#000);background:linear-gradient(90deg,#0f1a3c,color-mix(in srgb,var(--tab) 35%,#0f1a3c));font-size:24px;cursor:pointer;box-shadow:2px 4px 8px #0008}
+.uiBinderTabs button.on{transform:translateX(6px);border-color:#ffd27a;box-shadow:0 0 14px var(--tab)}
+.uiTheme .binderCover{display:none;place-items:center;background:radial-gradient(ellipse at 50% 40%,#1d2c62,#0d1634 75%)!important;border:3px solid #d9a64a;box-shadow:inset 0 0 0 10px #0d1634,inset 0 0 0 12px #d9a64a88!important;z-index:8;transform-origin:left center;backface-visibility:hidden}
+.uiCoverFrame{display:grid;place-items:center;gap:10px}
+.uiCoverFrame img{width:min(420px,60%);height:auto;border-radius:12px;box-shadow:0 0 40px #ff8a2a66,0 10px 24px #000c}
+.uiCoverFrame small{font-family:var(--ui-display);letter-spacing:.3em;text-transform:uppercase;color:#e9c27a;font-size:14px}
+.uiTheme .binderOpening .binderCover{display:grid!important;animation:uiCoverFlip 1.5s cubic-bezier(.55,.05,.35,1) forwards!important}
+@keyframes uiCoverFlip{0%,38%{transform:rotateY(0)}99%{opacity:1}100%{transform:rotateY(-178deg);opacity:0;visibility:hidden}}
+.uiTheme .binderOpening .binderPages{animation:uiPagesIn 1.5s ease-out}
+@keyframes uiPagesIn{0%,45%{opacity:0}100%{opacity:1}}
+.uiTheme .binderPager{gap:40px}.uiTheme .binderPager .button{background:#1a2758;border:1px solid #4a5a9a;color:#dbe2f6;text-transform:none;font-family:var(--ui-serif);font-size:17px;padding:10px 30px;box-shadow:none}
+.uiTheme .binderPager span{font-family:var(--ui-serif);font-size:18px;color:#fff}
+.uiPagerHint{text-align:center;color:#a9b4d8;font-family:var(--ui-serif);margin:0 0 20px}
+@media(max-width:1100px){.uiTheme .binderPages{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:640px){.uiTheme .binderPages{grid-template-columns:repeat(2,minmax(0,1fr))!important}.uiTheme .magicalBinder{padding:10px 40px 10px 34px}.uiBinderTabs button{width:36px;height:52px;font-size:17px}.uiBinderHead{flex-wrap:wrap}.uiSearch{max-width:none}}
+
+/* Card Vault (deck builder) */
+.uiDeckBuilder{display:grid;grid-template-columns:minmax(0,1fr) 540px;gap:22px;align-items:start}
+.uiCVHead{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:space-between}
+.uiCVHead h1{margin:0;font-family:var(--ui-serif);font-size:clamp(36px,4vw,60px);font-weight:700;color:#fff;letter-spacing:0;border-bottom:1px solid #b89a5a;display:inline-block;padding-bottom:4px}
+.uiCVHead p{font-family:var(--ui-serif);font-size:19px;color:#dbe2f6;margin:8px 0 0}
+.uiCVTools{display:flex;gap:12px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+.uiCVTabs{display:flex;justify-content:flex-end;margin:10px 0}.uiCVTabs .shopCategories{display:flex;gap:8px;margin:0}
+.uiTab{min-width:120px;padding:9px 18px;background:#0e1636;border:1px solid #4a5a9a;color:#fff;border-radius:6px;font-family:var(--ui-serif);font-size:16px;cursor:pointer}
+.uiTab.on{background:linear-gradient(180deg,#ffd27a,#e9a23a);color:#2a1405;border-color:#ffe2a0}
+.uiCVGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 16px;padding:18px!important;background:#101a3e!important}
+.uiTheme .uiCVGrid .deckChoice{position:relative;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0;text-align:center}
+.uiCVGrid .mythCard{border:4px solid #e3b95a!important;max-width:none!important}
+.uiTick{position:absolute;top:-8px;right:-6px;z-index:5;width:34px;height:34px;border-radius:50%;background:#1a1408;border:2px solid #e9b75a;color:#ffd27a;display:grid;place-items:center;font-weight:900;font-size:18px}
+.uiOwned{display:block;margin:6px 0 2px;font-family:var(--ui-serif);color:#c8d1ec;font-size:13px}
+.uiTheme .deckCounter{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:0;border:1px solid #4a5a9a;border-radius:8px;overflow:hidden;background:#0b1230}
+.uiTheme .deckCounter .button{min-width:0;padding:6px;border-radius:0;background:none;color:#e9b75a;border:0;box-shadow:none;font-size:20px;font-family:var(--ui-serif)}
+.uiTheme .deckCounter strong{font-family:var(--ui-serif);font-weight:500;color:#fff;font-size:16px;border-left:1px solid #4a5a9a;border-right:1px solid #4a5a9a;padding:7px 0}
+.uiCVPager{display:flex;gap:20px;align-items:center;margin:12px 0}.uiCVPager button{background:none;border:0;color:#e9b75a;font-size:30px;cursor:pointer}.uiCVPager button:disabled{opacity:.3}.uiCVPager span{font-family:var(--ui-serif);font-size:18px;color:#fff}
+.uiDeckSide{padding:22px!important;background:linear-gradient(180deg,#121b40,#0e1636)!important;border:2px solid #3a4a84!important;position:sticky;top:10px}
+.uiDSHead{display:flex;justify-content:space-between;align-items:center}.uiDSHead h2{margin:0;font-family:var(--ui-serif);font-weight:700;font-size:32px;text-transform:uppercase;color:#fff;letter-spacing:.02em}
+.uiDSHead .uiPillBtn{border-radius:6px;border-color:#b89a5a;color:#fff}
+.uiSavedDrawer{margin-top:12px}.uiSavedDrawer .panel{margin:0}
+.uiDSMeta{display:flex;align-items:center;gap:10px;margin:14px 0;font-family:var(--ui-serif);color:#dbe2f6;flex-wrap:wrap}.uiDSMeta b{color:#ffd27a;font-size:18px}
+.uiDeckName{display:flex;align-items:center;gap:6px;flex:1;min-width:200px;border:1px solid #4a5a9a;border-radius:6px;background:#0b1230;padding:0 12px}
+.uiDeckName input{flex:1;background:none!important;border:0!important;color:#fff;font-family:var(--ui-serif);font-size:19px;padding:9px 0;max-width:none!important}
+.uiLegal .ok{color:#8fe08a;font-size:13px}.uiLegal .bad{color:#ff9a8a;font-size:13px}
+.uiComp{display:flex;gap:3px;height:12px;border-radius:6px;overflow:hidden}.uiComp i{background:var(--c)}
+.uiCompLbl{display:flex;justify-content:space-between;font-family:var(--ui-serif);font-size:13px;color:#dbe2f6;margin:6px 4px 12px}.uiCompLbl b{font-size:16px;color:#fff;margin-right:4px}
+.uiDeckList{display:grid;gap:6px;max-height:430px;overflow:auto;padding-right:4px}
+.uiDeckLine{display:grid;grid-template-columns:70px 26px 1fr auto auto;align-items:center;gap:12px;border:1px solid #3a4a84;border-radius:4px;background:#0f1838;padding:3px 14px 3px 3px;font-family:var(--ui-serif)}
+.uiDeckLine strong{color:#fff;font-size:16px;font-weight:600}.uiDeckLine small{color:#b9c4e6;font-size:11px;letter-spacing:.08em;text-transform:uppercase}.uiDeckLine b{color:#fff;font-size:18px;font-weight:500}
+.uiThumb{position:relative;height:34px;overflow:hidden;border-radius:3px;display:grid;place-items:center}.uiThumb .mythlingArt{position:absolute!important;inset:-60% 0 auto!important;width:100%!important;height:auto!important;aspect-ratio:1}
+.uiDot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:radial-gradient(circle,color-mix(in srgb,var(--c) 70%,#fff),var(--c));box-shadow:0 0 0 2px #0b1230,0 0 0 3px var(--c)}
+.uiMerfling{border-top:1px solid #3a4a84;margin-top:16px;padding-top:12px}.uiMerHead{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap}.uiMerHead h3{margin:0;font-family:var(--ui-serif);font-size:22px;color:#fff;letter-spacing:0}.uiMerHead small{color:#dbe2f6;font-family:var(--ui-serif)}
+.uiMerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.uiMer{display:flex;align-items:center;gap:12px;border:1px solid #3a4a84;border-radius:6px;padding:9px 12px;cursor:pointer;font-family:var(--ui-serif);color:#fff;background:#0f1838}
+.uiMer input{position:absolute;opacity:0;pointer-events:none}.uiMer:has(input:checked){border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c),0 0 12px color-mix(in srgb,var(--c) 50%,transparent);background:color-mix(in srgb,var(--c) 18%,#0f1838)}
+.uiMer:has(input:focus-visible){outline:2px solid #ffd27a}
+.uiDSActions{display:grid;grid-template-columns:1fr 1fr 1.8fr;gap:10px;margin-top:16px;border-top:1px solid #3a4a84;padding-top:16px}
+.uiDSActions .uiBtnLine{margin:0;text-transform:none;font-family:var(--ui-serif);font-size:17px;letter-spacing:0;border:1px solid #b89a5a;background:#0b1230}
+.uiDSActions .uiSave{margin:0;text-transform:none;font-family:var(--ui-serif);font-size:22px;letter-spacing:0}
+.uiRulesLink{display:block;margin:12px auto 0}
+.uiEmpty{grid-column:1/-1;text-align:center;color:#c8d1ec}
+@media(max-width:1250px){.uiDeckBuilder{grid-template-columns:1fr}.uiDeckSide{position:static}}
+@media(max-width:700px){.uiCVGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.uiDSActions{grid-template-columns:1fr 1fr}.uiDSActions .uiSave{grid-column:1/-1}.uiMerGrid{grid-template-columns:1fr 1fr}}
+
+/* Navy top bar on inner screens (Card Vault / My Binder mockups) */
+body.uiTheme:not(.uiDark) .uiTop:not(.uiTopSlim){background:linear-gradient(180deg,#121b40,#0d1534);border-bottom:1px solid #2a3870;box-shadow:0 8px 22px #0006}
+body.uiTheme:not(.uiDark) .uiTop:not(.uiTopSlim) .coins{background:#0e1636;border-color:#b89a5a}
+.uiDSHead h2{font-size:clamp(22px,2vw,32px);white-space:nowrap}
+.uiMer .elementIcon{display:none}
+.uiCVGrid .cardSpecies,.uiCVGrid .cardMeta,.uiCVGrid .cardTraits,.uiCVGrid .cardEdition,.uiCVGrid .printedMove:nth-child(n+2){display:none}

@@ -7,7 +7,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 const ELEMENT_ICONS = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
 const ELEMENT_COLORS = { Fire: '#e67e4e', Moon: '#a796dc', Nature: '#72b987', Lightning: '#e3c857', Water: '#64b5d6', Crystal: '#cba0d8', Ice: '#9bd5dd', Shadow: '#9276b5', Wind: '#86cbb6' };
-const NAV = [['home', 'Home'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['map', 'Adventure HQ'], ['friends', 'Friends']];
+const NAV = [['home', 'Home'], ['packs', 'Packs'], ['inventory', 'My Binder'], ['map', 'Adventure HQ'], ['friends', 'Friends']];
+const SLIM_VIEWS = ['vault'];
+const FULL_VIEWS = ['home', 'map', 'inventory', 'index', 'decks'];
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 /* Optional painted artwork: put files in public/art/ui/ and list their keys in public/art/ui/manifest.json (for example ["hero","map"]). */
@@ -19,12 +21,12 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 /* ---------------------------------------------------------------- Header */
 function head() {
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
-  const navView = ['index'].includes(v) ? 'inventory' : ['decks', 'rules', 'cardBattle', 'cardResult'].includes(v) ? 'map' : ['trading'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
-  if (!['home', 'map'].includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img src="/branding/emberlings-icon-192.png" alt="" width="40" height="40"><span class="uiBrandText"><span>EMBERLINGS</span><small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
+  const navView = ['index', 'decks'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult'].includes(v) ? 'map' : ['trading'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img src="/branding/emberlings-icon-192.png" alt="" width="40" height="40"><span class="uiBrandText"><span>EMBERLINGS</span><small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
   return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img src="/branding/emberlings-icon-192.png" alt="" width="40" height="40"><span>EMBERLINGS</span></button>
-  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
+  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => [g, g === 'inventory' && v === 'decks' ? 'Card Vault' : t]).map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
-  <button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button></div></header>`;
+  ${v === 'home' ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' ? '' : '-->'}</div></header>`;
 }
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
@@ -225,10 +227,116 @@ function afterMap() {
   bindQuest(); applyArt();
 }
 
+
+/* ---------------------------------------------------------------- My Card Binder (inventory / index) */
+const TAB_ELEMENTS = [['Fire', '🔥'], ['Water', '💧'], ['Nature', '🍃'], ['Moon', '🌙'], ['', '✦']];
+function binderLayout({ index, page }) {
+  const heading = $('.binderHeading'), filters = $('.binderFilters'), book = $('.magicalBinder'); if (!heading || !filters || !book || $('.uiBinderHead')) return;
+  const st = B.state, f = B.binderState(), count = index ? `${(st.discovered || []).length} / ${B.species.length} species` : `${st.owned.length} cards`;
+  const swap = $('button[data-go]', heading);
+  const head = document.createElement('div'); head.className = 'uiBinderHead';
+  head.innerHTML = `<div><h1>${index ? 'Mythling Index' : 'My Card Binder'}</h1><span>${count} · ${index ? 'Discover every species' : 'Every copy has its own place'}</span></div>`;
+  if (swap) { swap.className = 'uiPillBtn'; swap.innerHTML = index ? '📚 My Binder' : '📖 Species Index'; head.appendChild(swap); }
+  heading.replaceWith(head); $('.back')?.remove();
+  // Toolbar: search, element, rarity, more filters (mutation, level), sort.
+  const bar = document.createElement('div'); bar.className = 'uiBinderBar';
+  bar.innerHTML = `<label class="uiSearch"><span aria-hidden="true">🔍</span><input id="uiBinderSearch" type="search" placeholder="Search cards…" value="${esc(f.q || '')}" aria-label="Search cards"></label>`;
+  const labels = $$('label', filters), sel = id => $('#' + id);
+  const add = (id, cls) => { const s = sel(id); if (s) { s.classList.add('uiSelect'); if (cls) s.classList.add(cls); bar.appendChild(s); } };
+  add('filterElement'); add('filterRarity');
+  const more = document.createElement('details'); more.className = 'uiMore'; more.innerHTML = '<summary>⚲ More filters</summary><div></div>';
+  for (const id of ['filterMutation', 'filterLevel']) { const lab = sel(id)?.closest('label'); if (lab) $('div', more).appendChild(lab); }
+  if (f.mutation || f.level || f.island) more.open = true;
+  bar.appendChild(more); add('binderSort');
+  const sortSel = sel('binderSort'); if (sortSel) for (const o of sortSel.options) if (/newest/i.test(o.text)) o.text = 'Newest first';
+  filters.replaceWith(bar);
+  let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
+  // Book: numbered pockets, side tabs and the logo cover.
+  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * 12 + i + 1).padStart(2, '0')}</span>`));
+  book.insertAdjacentHTML('beforeend', `<nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="--tab:${ELEMENT_COLORS[el] || '#e9b75a'}">${ic}</button>`).join('')}</nav>`);
+  $$('[data-tab-el]', book).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); B.binderFilter('element', b.dataset.tabEl); }));
+  const cover = $('.binderCover', book);
+  if (cover) cover.innerHTML = `<span class="uiCoverFrame"><img src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086"><small>${index ? 'Field Index' : 'Mythling Archive'}</small></span>`;
+  const pager = $('.binderPager');
+  if (pager) {
+    const [prev, label, next] = [$('#binderPrev'), $('span', pager), $('#binderNext')];
+    if (prev) prev.innerHTML = '‹ Previous'; if (next) next.innerHTML = 'Next ›';
+    if (label) label.textContent = label.textContent.replace(/Page (\d+) \/ (\d+)/, 'Page $1 of $2');
+    pager.insertAdjacentHTML('afterend', '<p class="uiPagerHint">Select a card to inspect · Use arrow keys to turn pages</p>');
+  }
+}
+addEventListener('keydown', e => {
+  if (!['inventory', 'index'].includes(B.view) || /INPUT|SELECT|TEXTAREA/.test(e.target?.tagName)) return;
+  if (e.key === 'ArrowRight') $('#binderNext:not(:disabled)')?.click(); else if (e.key === 'ArrowLeft') $('#binderPrev:not(:disabled)')?.click();
+});
+
+/* ---------------------------------------------------------------- Card Vault (deck builder) */
+const deckView = { q: '', el: '', sort: 'name', page: 0 };
+function deckLayout() {
+  const hero = $('#app .hero'), library = $('.deckLibrary'); if (!hero || !library || $('.uiDeckBuilder')) return;
+  const summary = B.deckSummary(), inDeck = summary.filter(x => x.count), total = inDeck.reduce((n, x) => n + x.count, 0);
+  const basic = inDeck.filter(x => !x.trainer && !x.stage).reduce((n, x) => n + x.count, 0), evo = inDeck.filter(x => !x.trainer && x.stage).reduce((n, x) => n + x.count, 0), tr = total - basic - evo;
+  const actionBtns = ['equipBestDeck', 'autoDeck', 'savePocketDeck'].map(id => document.getElementById(id));
+  const tabs = $('.shopCategories'), energy = $('.energyChoices'), saves = $('.deckSaves'), err = $('#deckError'), nameInput = $('#deckPresetName');
+  const wrap = document.createElement('section'); wrap.className = 'uiDeckBuilder';
+  wrap.innerHTML = `<div class="uiVaultCol"><div class="uiCVHead"><div><h1>Card Vault</h1><p>Your collection. Your next winning deck.</p></div>
+     <div class="uiCVTools"><label class="uiSearch"><span aria-hidden="true">🔍</span><input id="uiDeckSearch" type="search" placeholder="Search your cards…" value="${esc(deckView.q)}" aria-label="Search your cards"></label>
+     <select id="uiDeckEl" class="uiSelect" aria-label="Element"><option value="">All elements</option>${Object.keys(ELEMENT_COLORS).map(e => `<option ${deckView.el === e ? 'selected' : ''}>${e}</option>`).join('')}</select>
+     <select id="uiDeckSort" class="uiSelect" aria-label="Sort"><option value="name">Sort: Name</option><option value="deck" ${deckView.sort === 'deck' ? 'selected' : ''}>Sort: In deck</option><option value="owned" ${deckView.sort === 'owned' ? 'selected' : ''}>Sort: Owned</option></select></div></div>
+     <div class="uiCVTabs"></div><div class="uiCVGrid uiFrame"></div><div class="uiCVPager"><button id="uiCVPrev" aria-label="Previous page">‹</button><span id="uiCVPage"></span><button id="uiCVNext" aria-label="Next page">›</button></div></div>
+   <aside class="uiDeckSide uiFrame"><div class="uiDSHead"><h2>Your battle deck</h2><button class="uiPillBtn" id="uiSavedBtn">🗂 Saved Decks</button></div><div class="uiSavedDrawer" hidden></div>
+     <div class="uiDSMeta"><span class="uiDeckName"></span><b>${total} / 20</b> cards <span class="uiLegal"></span></div>
+     <div class="uiComp"><i style="flex:${basic || .01};--c:#f08a4a"></i><i style="flex:${evo || .01};--c:#4aa3ff"></i><i style="flex:${tr || .01};--c:#a98aff"></i></div>
+     <div class="uiCompLbl"><span><b>${basic}</b> Basic</span><span><b>${evo}</b> Evolution</span><span><b>${tr}</b> Trainer</span></div>
+     <div class="uiDeckList">${inDeck.map(x => `<div class="uiDeckLine"><span class="uiThumb">${x.trainer ? '📜' : B.art({ kind: x.kind })}</span><span class="uiDot" style="--c:${ELEMENT_COLORS[x.element] || '#9bb6a0'}">${x.trainer ? '✚' : ELEMENT_ICONS[x.element] || '✦'}</span><strong>${esc(x.trainer ? x.name : B.species[x.kind]?.name || x.name)}</strong><small>${x.trainer ? 'Trainer' : x.stage ? 'Stage ' + x.stage : 'Basic'}</small><b>×${x.count}</b></div>`).join('') || '<p class="small">Your deck is empty. Add cards with ＋.</p>'}</div>
+     <div class="uiMerfling"><div class="uiMerHead"><h3>Merfling Zone</h3><small>Choose up to 3 types · Auto when empty</small></div><div class="uiMerGrid"></div></div>
+     <div class="uiDSActions"></div><button class="uiLink uiRulesLink" data-go="rules">📖 Battle Rules</button></aside>`;
+  hero.replaceWith(wrap); $('.back')?.remove();
+  if (tabs) { $('.uiCVTabs', wrap).appendChild(tabs); $$('button', tabs).forEach(b => { b.className = 'uiTab' + (b.classList.contains('gold') || /gold/.test(b.className) ? ' on' : ''); }); }
+  $$('[data-deck-filter]').forEach(b => { if (b.getAttribute('data-deck-filter') === (window.__fxDeckFilter || '')) b.classList.add('on'); });
+  if (energy) { const g = $('.uiMerGrid', wrap); $$('label', energy).forEach(l => { const el = $('input', l)?.dataset.deckEnergy; l.classList.add('uiMer'); l.style.setProperty('--c', ELEMENT_COLORS[el] || '#aaa'); l.insertAdjacentHTML('afterbegin', `<span class="uiDot" style="--c:${ELEMENT_COLORS[el] || '#aaa'}">${ELEMENT_ICONS[el] || '✦'}</span>`); g.appendChild(l); }); energy.closest('.panel')?.remove(); }
+  if (err) { const ok = /legal/i.test(err.textContent); $('.uiLegal', wrap).innerHTML = `<span class="${ok ? 'ok' : 'bad'}">${ok ? '✓ Legal deck · Ready to save' : esc(err.textContent)}</span>`; err.hidden = true; wrap.appendChild(err); }
+  if (nameInput) { nameInput.closest('label')?.classList.add('uiSr'); const holder = $('.uiDeckName', wrap); holder.appendChild(nameInput); nameInput.insertAdjacentHTML('afterend', '<span aria-hidden="true">✎</span>'); }
+  const acts = $('.uiDSActions', wrap);
+  for (const b of actionBtns) { if (b) { const id = b.id; b.className = id === 'savePocketDeck' ? 'uiBtnGold uiSave' : 'uiBtnLine'; acts.appendChild(b); } }
+  $('#equipBestDeck') && ($('#equipBestDeck').textContent = 'Equip Best'); $('#savePocketDeck') && ($('#savePocketDeck').textContent = 'Save Deck');
+  $$('.deckActions').forEach(d => d.remove());
+  if (saves) { $('.uiSavedDrawer', wrap).appendChild(saves); }
+  $('#uiSavedBtn').onclick = () => { const d = $('.uiSavedDrawer', wrap); d.hidden = !d.hidden; };
+  if ($('#deckPresetMenu')?.children.length) $('.uiSavedDrawer', wrap).hidden = false;
+  // Library cards: owned count, -/+ "N in deck", tick when in deck.
+  const cards = $$('.deckChoice', library).map(sec => {
+    const counter = $('.deckCounter', sec), strong = $('strong', counter), small = $('small', counter), n = parseInt(strong?.textContent, 10) || 0;
+    const art = $('.mythlingArt', sec), name = (art?.getAttribute('aria-label') || $('.cardTop strong', sec)?.textContent || '').split(' · ')[0];
+    if (strong) strong.textContent = `${n} in deck`;
+    if (small) { small.className = 'uiOwned'; small.textContent = 'Owned: ' + small.textContent.replace(/\D/g, ''); sec.insertBefore(small, counter); }
+    if (n) sec.insertAdjacentHTML('afterbegin', '<span class="uiTick" aria-label="In deck">✓</span>');
+    const owned = parseInt(small?.textContent.replace(/\D/g, ''), 10) || 0;
+    return { sec, n, owned, name: name.toLowerCase(), el: B.species.find(s => s.name === name)?.element || '' };
+  });
+  const grid = $('.uiCVGrid', wrap); library.remove();
+  const paint = () => {
+    let list = cards.filter(c => (!deckView.q || c.name.includes(deckView.q)) && (!deckView.el || c.el === deckView.el));
+    if (deckView.sort === 'deck') list.sort((a, b) => b.n - a.n); else if (deckView.sort === 'owned') list.sort((a, b) => b.owned - a.owned); else list.sort((a, b) => a.name.localeCompare(b.name));
+    const per = innerWidth < 700 ? 4 : 8, pages = Math.max(1, Math.ceil(list.length / per)); deckView.page = Math.min(deckView.page, pages - 1);
+    grid.replaceChildren(...list.slice(deckView.page * per, deckView.page * per + per).map(c => c.sec));
+    if (!list.length) grid.innerHTML = '<p class="uiEmpty">No cards match.</p>';
+    $('#uiCVPage').textContent = `${deckView.page + 1} / ${pages}`; $('#uiCVPrev').disabled = deckView.page === 0; $('#uiCVNext').disabled = deckView.page >= pages - 1;
+  };
+  paint();
+  $('#uiCVPrev').onclick = () => { deckView.page--; paint(); }; $('#uiCVNext').onclick = () => { deckView.page++; paint(); };
+  $('#uiDeckSearch').oninput = e => { deckView.q = e.target.value.trim().toLowerCase(); deckView.page = 0; paint(); };
+  $('#uiDeckEl').onchange = e => { deckView.el = e.target.value; deckView.page = 0; paint(); };
+  $('#uiDeckSort').onchange = e => { deckView.sort = e.target.value; paint(); };
+  B.bind();
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   document.body.classList.add('uiTheme');
-  document.body.classList.toggle('uiWide', ['home', 'map'].includes(B.view));
+  document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));
+  document.body.classList.toggle('uiDark', ['home', 'map'].includes(B.view));
+  document.body.classList.toggle('uiFull', FULL_VIEWS.includes(B.view));
   const u = $('#uiUser'); if (u) u.onclick = () => userMenu(u);
   if (B.view === 'home') afterHome();
   if (B.view === 'vault') vaultLayout();
@@ -285,6 +393,8 @@ function vaultLayout() {
 if (B) {
   window.EmberUI = { head, home, map, afterMap, selectLevel };
   window.addEventListener('ember:frame', onFrame);
+  window.addEventListener('ember:binderReady', e => binderLayout(e.detail));
+  window.addEventListener('ember:decksReady', () => deckLayout());
   // Repaint the screen that was drawn before this module loaded.
   if (['home', 'map'].includes(B.view)) B.go(B.view);
   else { const top = $('.top'); if (top) { top.outerHTML = head(); B.bind(); } onFrame(); }
