@@ -11,10 +11,11 @@ git clone https://github.com/1983stevec-gif/EMBERLINGS.git
 cd EMBERLINGS
 npm ci
 npm run build
+npm run db:local
 npm start -- --port 8848
 ```
 
-Open http://127.0.0.1:8848/. Read [HANDOFF.md](HANDOFF.md) before making changes.
+Open http://127.0.0.1:8848/. `npm run db:local` sets up the local database for usernames, friends and trades; run it again after pulling updates (it is safe to repeat). Read [HANDOFF.md](HANDOFF.md) before making changes.
 
 Before editing on either computer: git pull --ff-only
 
