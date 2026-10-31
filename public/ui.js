@@ -399,6 +399,24 @@ function onFrame() {
   document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));
   document.body.classList.toggle('uiDark', ['home', 'map'].includes(B.view));
   document.body.classList.toggle('uiFull', FULL_VIEWS.includes(B.view));
+
+  // Decorate the existing bottom controls without replacing handlers or trade badges.
+  const selectedNav = $('.uiTop .uiNav [aria-current="page"]')?.dataset.go;
+  const bottomNav = $('#app > .nav');
+  if (bottomNav) {
+    bottomNav.setAttribute('aria-label', 'Main');
+    for (const button of $('button[data-go]', bottomNav)) {
+      const destination = button.dataset.go;
+      const icon = $('.ico', button);
+      if (icon && NAV_ART[destination]) icon.outerHTML = navIcon(destination);
+      for (const node of button.childNodes) {
+        if (node.nodeType === 3 && node.textContent.trim() === 'Inventory') node.textContent = 'My Binder';
+      }
+      button.classList.toggle('active', destination === selectedNav);
+      if (destination === selectedNav) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    }
+  }
   const u = $('#uiUser'); if (u) u.onclick = () => userMenu(u);
   if (B.view === 'home') afterHome();
   if (B.view === 'vault') vaultLayout();

@@ -767,3 +767,18 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 @media(min-width:900px) and (max-width:1250px){.uiTopIn{gap:10px;padding-left:14px;padding-right:14px}.uiTop .uiNav{gap:5px}.uiTop .uiNav button,.uiTop .uiNav button.active{min-width:76px;padding:7px 9px;font-size:15px}.uiTop .uiUserName{display:none}.uiTop .uiBrand .uiLogo{--logo-h:42px}}
 @media(max-width:899px){.uiTopIn{padding:9px 12px;gap:9px}.uiTop .uiNav{order:3;flex:1 0 100%;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.uiTop .uiNav button,.uiTop .uiNav button.active{min-width:0;min-height:68px;padding:5px 2px;font-size:13px}.uiNavEmblem{width:31px;height:31px}.uiNavLabel{white-space:normal;text-align:center}.uiTop .uiRight{margin-left:auto;gap:6px}}
 @media(prefers-reduced-motion:reduce){.uiTop .uiNav button{transition:none}.uiTop .uiNav button:hover{transform:none}}
+
+/* Tablet/phone: one destination menu, anchored at the bottom. */
+@media(max-width:1366px){
+ .uiTop .uiNav{display:none!important}
+ .uiTopIn{min-height:64px;flex-wrap:nowrap}
+ body.uiTheme .nav,body.uiTheme.uiExact .nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:#0c1430f5;border-top:1px solid #897044;box-shadow:0 -6px 24px #05091b70}
+ body.uiTheme .nav button,body.uiTheme:not(.uiWide) .nav button{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;width:100%;min-width:0;min-height:68px;padding:5px 3px;border:1px solid #716044;border-radius:9px;background:linear-gradient(180deg,#25345c,#131c38);color:#eee3ca;font-family:var(--ui-serif);font-size:15px;line-height:1.15;box-shadow:inset 0 1px 0 #ffffff16,0 3px 0 #080e21}
+ body.uiTheme .nav button.active{border-color:#f1c76a;color:#ffe2a0;background:linear-gradient(180deg,#454155,#222640);box-shadow:inset 0 0 0 2px #e9b75a25}
+ body.uiTheme .nav button:hover{border-color:#e8c071}
+ body.uiTheme .nav button:focus-visible{outline:3px solid #fff0bb;outline-offset:2px}
+ body.uiTheme .nav .uiNavEmblem{width:34px;height:34px}
+ body.uiTheme #app,body.uiTheme.uiExact #app{padding-bottom:calc(104px + env(safe-area-inset-bottom))!important}
+ .uiMenuMain{display:none!important}
+}
+@media(max-width:480px){body.uiTheme .nav{gap:4px;padding-left:6px;padding-right:6px}body.uiTheme .nav button{font-size:12px}}
