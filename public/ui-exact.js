@@ -240,12 +240,53 @@ function welcomeExact() {
   setTimeout(() => input.focus(), 50);
 }
 
+
+/* ---------------------------------------------------------------- Mythling Packs (mockup 1536 × 1024) */
+// The painted stats match packCatalog. The game's own [data-buy] buttons are moved onto the painted button spots.
+const PACK_BTNS = { pack: [322, 390, 521, 437], star: [757, 390, 968, 437], crystal: [1204, 390, 1405, 442], mythic: [321, 711, 523, 766], legend: [757, 711, 967, 767], celestial: [1204, 711, 1405, 767], hacker: [1194, 843, 1389, 899] };
+const PACK_COST = { pack: 150, star: 350, crystal: 750, mythic: 1500, legend: 3000, celestial: 6000, hacker: 600000 };
+function packsExact() {
+  const app = $('#app'); if (!$('[data-buy]') || $('.uiXPacks')) return;
+  const W = 1536, H = 1024, p = box(W, H), st = B.state;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXPacksPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/packs.webp', 'uiXPacks', `
+   ${logoAt(W, H, 216, 13, 44)}
+   ${hot(p(530, 18, 610, 58), 'data-go="home"', 'Home')}${hot(p(618, 18, 712, 58), 'data-go="packs" aria-current="page"', 'Packs')}${hot(p(722, 18, 838, 58), 'data-go="inventory"', 'My Binder')}${hot(p(848, 18, 1000, 58), 'data-go="map"', 'Adventure HQ')}${hot(p(1010, 18, 1100, 58), 'data-go="friends"', 'Friends')}
+   ${text(p(1237, 22, 1300, 52), W, coinPx(st.coins, 22, 4), 'uiXCoins', fmt(st.coins))}
+   <h1 class="uiSr">Mythling Packs</h1>
+   ${Object.keys(PACK_BTNS).map(id => `<div class="uiXPackSlot" data-pack-slot="${id}" style="${p(...PACK_BTNS[id])};${fs(W, id === 'hacker' ? 17 : 16)}"></div>`).join('')}
+   <div class="uiXPackNotice" style="${p(300, 944, 1240, 994)};${fs(W, 15)}"></div>`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  for (const b of $$('[data-buy]')) {
+    const id = b.dataset.buy, slot = $(`[data-pack-slot="${id}"]`, wrap); if (!slot) continue;
+    const name = b.textContent.trim(), need = PACK_COST[id] - st.coins;
+    b.className = 'uiXPackBtn'; b.innerHTML = need > 0 ? `${esc(name)}<small>Need ${fmt(need)} more coins</small>` : esc(name);
+    if (need > 0) b.setAttribute('aria-label', `${name}. Need ${fmt(need)} more coins`);
+    slot.append(b);
+  }
+  // Free quest-reward packs and an unfinished reveal sit in the footer line.
+  const notice = $('.uiXPackNotice', wrap), resume = $('#resumePack'), rewards = $$('[data-quest-pack]');
+  if (resume || rewards.length) {
+    notice.classList.add('on');
+    if (resume) { resume.className = 'uiXPackBtn'; resume.textContent = 'Resume pack reveal'; notice.append(resume); }
+    for (const r of rewards) { r.className = 'uiXPackBtn'; r.textContent = r.textContent.replace(' · 5 Mythlings', ''); notice.append(r); }
+  }
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+}
+// Phones: the painted pack wrapper replaces the emoji on each pack card.
+const PACK_IDS = ['pack', 'star', 'crystal', 'mythic', 'legend', 'celestial', 'hacker'];
+function packsNarrow() {
+  $$('.packTier').forEach((t, i) => { const icon = t.firstElementChild; if (icon && !t.querySelector('.uiPackArt') && PACK_IDS[i]) icon.outerHTML = `<img class="uiPackArt" src="/art/ui/pack-${PACK_IDS[i]}.webp" alt="" width="160" height="285">`; });
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username'].includes(B.view);
+  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs'].includes(B.view);
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
+  // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
+  if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });
   if (!exact && B.view === 'username') welcomeNarrow();
   if (exact) { const c = $('.uiX'); if (c) ro.observe(c); fitCards(); const u = $('#uiUser'); if (u && !u.dataset.bound) { u.dataset.bound = '1'; } }
 }
@@ -254,7 +295,7 @@ if (B && UI) {
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
   let wasWide = wide();
-  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }

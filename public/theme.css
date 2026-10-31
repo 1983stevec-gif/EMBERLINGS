@@ -548,3 +548,14 @@ body.uiExact:has(.uiXWelcome){background:#0a1430!important}
 .uiQuestArt .uiWorldArt{border-radius:inherit}
 @keyframes uiWorldIn{from{opacity:0;transform:translateY(-50%) scale(1.06)}to{opacity:1;transform:translateY(-50%) scale(1)}}
 .reduceMotion .uiWorldArt .mythlingArt{animation:none}
+/* Packs */
+.uiExactPage.uiXPacksPage{width:min(100vw,calc(100dvh * 1536 / 1024))}
+body.uiExact:has(.uiXPacks){background:#0b1230!important}
+.uiXPackSlot{z-index:3;display:flex}
+.uiXPackBtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15em;width:100%;height:100%;margin:0;padding:0;border-radius:6px;border:1px solid #ffe2a0;background:linear-gradient(180deg,#f9cd6c,#e3a23c);color:#2a1405;font-family:'EB Garamond',Georgia,serif;font-size:inherit;font-weight:600;cursor:pointer;box-shadow:inset 0 1px 0 #fff8,0 3px 8px #0007}
+.uiXPackBtn:hover:not(:disabled){filter:brightness(1.07)}
+.uiXPackBtn:disabled{background:linear-gradient(180deg,#5e4e30,#4a3d26);border-color:#8a7448;color:#d9c79e;cursor:not-allowed;box-shadow:none;font-weight:500}
+.uiXPackBtn small{font-size:.78em;color:#c9b88f;font-weight:400}
+.uiXPackNotice{z-index:3;display:none;align-items:center;justify-content:center;gap:1%;background:#0b1230;border:1px solid #c9a35a;border-radius:8px;padding:.3em}
+.uiXPackNotice.on{display:flex}.uiXPackNotice .uiXPackBtn{flex:0 1 auto;padding:0 1.2em;height:100%}
+.uiPackArt{display:block;width:120px;height:auto;margin:6px auto 10px;filter:drop-shadow(0 8px 14px #000a)}
