@@ -22,8 +22,8 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 function head() {
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
   const navView = ['index', 'decks'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult'].includes(v) ? 'map' : ['trading'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
-  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img src="/branding/emberlings-icon-192.png" alt="" width="40" height="40"><span class="uiBrandText"><span>EMBERLINGS</span><small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
-  return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img src="/branding/emberlings-icon-192.png" alt="" width="40" height="40"><span>EMBERLINGS</span></button>
+  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><span class="uiBrandText"><img class="uiWordmark" src="/branding/emberlings-wordmark.png" alt="EMBERLINGS" width="267" height="54"><small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
+  return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img class="uiWordmark" src="/branding/emberlings-wordmark.png" alt="EMBERLINGS" width="267" height="54"></button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => [g, g === 'inventory' && v === 'decks' ? 'Card Vault' : t]).map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
   ${v === 'home' ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' ? '' : '-->'}</div></header>`;
@@ -256,7 +256,7 @@ function binderLayout({ index, page }) {
   book.insertAdjacentHTML('beforeend', `<nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="--tab:${ELEMENT_COLORS[el] || '#e9b75a'}">${ic}</button>`).join('')}</nav>`);
   $$('[data-tab-el]', book).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); B.binderFilter('element', b.dataset.tabEl); }));
   const cover = $('.binderCover', book);
-  if (cover) cover.innerHTML = `<span class="uiCoverFrame"><img src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086"><small>${index ? 'Field Index' : 'Mythling Archive'}</small></span>`;
+  if (cover) cover.innerHTML = '<span class="uiCoverFrame"><img src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086"></span>';
   const pager = $('.binderPager');
   if (pager) {
     const [prev, label, next] = [$('#binderPrev'), $('span', pager), $('#binderNext')];
@@ -292,6 +292,7 @@ function deckLayout() {
      <div class="uiMerfling"><div class="uiMerHead"><h3>Merfling Zone</h3><small>Choose up to 3 types · Auto when empty</small></div><div class="uiMerGrid"></div></div>
      <div class="uiDSActions"></div><button class="uiLink uiRulesLink" data-go="rules">📖 Battle Rules</button></aside>`;
   hero.replaceWith(wrap); $('.back')?.remove();
+  $('.uiCVHead', wrap).appendChild($('.uiCVTabs', wrap));
   if (tabs) { $('.uiCVTabs', wrap).appendChild(tabs); $$('button', tabs).forEach(b => { b.className = 'uiTab' + (b.classList.contains('gold') || /gold/.test(b.className) ? ' on' : ''); }); }
   $$('[data-deck-filter]').forEach(b => { if (b.getAttribute('data-deck-filter') === (window.__fxDeckFilter || '')) b.classList.add('on'); });
   if (energy) { const g = $('.uiMerGrid', wrap); $$('label', energy).forEach(l => { const el = $('input', l)?.dataset.deckEnergy; l.classList.add('uiMer'); l.style.setProperty('--c', ELEMENT_COLORS[el] || '#aaa'); l.insertAdjacentHTML('afterbegin', `<span class="uiDot" style="--c:${ELEMENT_COLORS[el] || '#aaa'}">${ELEMENT_ICONS[el] || '✦'}</span>`); g.appendChild(l); }); energy.closest('.panel')?.remove(); }
