@@ -8,7 +8,7 @@ const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 const ELEMENT_ICONS = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
 const ELEMENT_COLORS = { Fire: '#e67e4e', Moon: '#a796dc', Nature: '#72b987', Lightning: '#e3c857', Water: '#64b5d6', Crystal: '#cba0d8', Ice: '#9bd5dd', Shadow: '#9276b5', Wind: '#86cbb6' };
 const NAV = [['home', 'Home'], ['packs', 'Packs'], ['inventory', 'My Binder'], ['map', 'Adventure HQ'], ['friends', 'Friends']];
-const SLIM_VIEWS = ['vault'];
+const SLIM_VIEWS = [];
 const FULL_VIEWS = ['home', 'map', 'inventory', 'index', 'decks'];
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
@@ -25,27 +25,35 @@ function logoHTML(cls = '') {
 }
 /* ---------------------------------------------------------------- Header */
 function head() {
+  // One header everywhere: logo, the five main destinations, coins and a menu with every other screen and setting.
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
-  const navView = ['index', 'decks'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult'].includes(v) ? 'map' : ['trading'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
-  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><span class="uiBrandText">${logoHTML()}<small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
-  return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
-  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => [g, g === 'inventory' && v === 'decks' ? 'Card Vault' : t]).map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
+  const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  return `<header class="top uiTop"><div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
+  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
-  ${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '-->'}</div></header>`;
+  <button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${esc(st.playerUsername || 'Explorer')}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
 }
+const MENU = [
+  ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
+  ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
+  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
+];
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
   const e = ext(), r = anchor.getBoundingClientRect();
   const m = document.createElement('div'); m.className = 'uiMenu'; m.setAttribute('role', 'menu');
   m.style.top = r.bottom + 8 + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
   m.innerHTML = `${e.title ? `<p class="uiMenuTitle">🏷 ${esc(e.title)}</p>` : ''}
-   <button role="menuitem" data-go="friends">👥 Friends</button><button role="menuitem" data-go="achievements">🏆 Achievements & titles</button><button role="menuitem" data-go="album">📖 Collection Album</button><button role="menuitem" data-go="decks">🎴 Battle Deck</button>
-   <hr><button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
+   <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
+   ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
+   <hr><button role="menuitem" id="uiBackupGo"><span aria-hidden="true">💾</span> Save Backup</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
+   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
     if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
+    if (b.id === 'uiBackupGo') { m.remove(); B.go('home'); setTimeout(() => $('#uiBackupBtn')?.click(), 60); return; }
     m.remove(); B.go(b.dataset.go);
   });
   setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
@@ -355,8 +363,29 @@ function deckLayout() {
   B.bind();
 }
 
+
+/* ---------------------------------------------------------------- Browser Back / Forward */
+// Each screen gets a history entry, so the browser and phone Back buttons move between screens.
+// Short-lived steps (pack opening, battles, results) collapse into one entry that returns to their parent screen.
+const NAVIGABLE = new Set(['home', 'map', 'packs', 'inventory', 'index', 'decks', 'rules', 'training', 'fusion', 'fuse', 'vault', 'mutation', 'trading', 'friends', 'album', 'achievements', 'tutorial']);
+const PARENT = { packReview: 'packs', packOpening: 'packs', reveal: 'packs', packSummary: 'packs', cardBattle: 'map', cardResult: 'map', 'fusion-result': 'fusion', username: 'home' };
+let historyView = null, fromHistory = false;
+function trackHistory(v) {
+  if (fromHistory) { fromHistory = false; historyView = v; return; }
+  if (v === historyView) return;
+  const target = NAVIGABLE.has(v) ? v : PARENT[v] || 'home', entry = { emberView: target, transient: !NAVIGABLE.has(v) };
+  if (historyView === null || history.state?.transient && entry.transient) history.replaceState(entry, '');
+  else history.pushState(entry, '');
+  historyView = v;
+}
+addEventListener('popstate', e => {
+  const v = e.state?.emberView; if (!v || v === B.view) return;
+  $('.uiMenu')?.remove(); fromHistory = true; B.go(v);
+});
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
+  trackHistory(B.view);
   document.body.classList.add('uiTheme');
   document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));
   document.body.classList.toggle('uiDark', ['home', 'map'].includes(B.view));
