@@ -1,0 +1,12 @@
+# Play Together, collection tools and save transfers
+
+Added October 31, 2026.
+
+- Home has Play with Friends and Save Backup entry points; the friends tab is labelled Play Together.
+- Host a Game selects an accepted friend. Join a Game accepts the host's copied invitation code; codes remain private to the invited pair and expire under the existing three-minute invitation rule.
+- Co-op uses the existing shared deck and alternating team turns. The battle explains who controls the team and what to do next. Both players can resume through invitations.
+- Species and availability filters join existing rarity, element and mutation filters. Strongest sorts by damage plus one-quarter HP. Locked-card details explain how to free a card.
+- Backup downloads a versioned JSON snapshot. Import validates it, previews progress and requires confirmation before replacement. The save key remains mythlings-playable-v1. Online identity/recovery secrets are excluded; destination identity is retained. Trade asset identities are preserved. Finish trades and battles on both devices before transfer. This is manual transfer, not cloud synchronization.
+- Mobile pinch zoom is enabled, with larger friend/battle touch targets and visible keyboard focus.
+
+Checks: enhancements.cjs, pocket-server.mjs (including a complete two-client co-op quest), equip-best.mjs, visual-update.cjs, production build. The older pocket-client.cjs expects the superseded fixed 20-card builder title. No full browser or physical-device gameplay verification was available in this environment.
