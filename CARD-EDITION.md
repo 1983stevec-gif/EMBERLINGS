@@ -1,3 +1,7 @@
+# Battle rules superseded
+
+The Pocket-format update replaces this document's battle/training rules. Read POCKET-RULES.md for the current format. The existing economy and save preservation sections remain applicable.
+
 # EMBERLINGS Card Edition — Batch 3
 
 Play at https://mythlings-adventure.proud-book-0456.chatgpt.site/ and refresh once.
@@ -19,3 +23,4 @@ The existing browser-local save key remains mythlings-playable-v1. No save reset
 Run npm test for the maintained card-edition suite, including real normal/boss client playthroughs, complete friend API duels and existing D1 trading concurrency tests. Historical action-combat/high-Vault-rate test fixtures describe superseded behavior. Also run TypeScript checks and the Sites production build helper.
 
 For local play after dependencies are installed: npm run build, then npm start. Open the Local URL printed by Wrangler. The public URL is the easiest way to play with friends across devices.
+
