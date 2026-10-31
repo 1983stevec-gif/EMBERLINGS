@@ -559,3 +559,10 @@ body.uiExact:has(.uiXPacks){background:#0b1230!important}
 .uiXPackNotice{z-index:3;display:none;align-items:center;justify-content:center;gap:1%;background:#0b1230;border:1px solid #c9a35a;border-radius:8px;padding:.3em}
 .uiXPackNotice.on{display:flex}.uiXPackNotice .uiXPackBtn{flex:0 1 auto;padding:0 1.2em;height:100%}
 .uiPackArt{display:block;width:120px;height:auto;margin:6px auto 10px;filter:drop-shadow(0 8px 14px #000a)}
+/* Larger logo: lettering scaled up relative to the flame */
+.uiLogo .uiWord,.uiBrand .uiLogo .uiWord{height:calc(var(--logo-h) * .6);margin-top:calc(var(--logo-h) * .2)}
+.uiBrand .uiLogo{--logo-h:60px}
+.uiTopSlim .uiBrand .uiLogo{--logo-h:54px}
+.uiTopSlim .uiBrandText small{margin-left:calc(54px * .85)}
+@media(max-width:899px){.uiBrand .uiLogo{--logo-h:40px}}
+@media(max-width:420px){.uiBrand .uiLogo{--logo-h:34px}}
