@@ -66,3 +66,33 @@ if bd is not None:
     save(bd[646:870, 1510:1586], 'binder-vine-side.webp')
     for name, (x0, y0, x1, y1) in {'search': (90, 149, 115, 174), 'funnel': (833, 150, 857, 172), 'book': (1338, 95, 1370, 121), 'chevron': (576, 152, 596, 170)}.items():
         save(bd[y0:y1, x0:x1], f'binder-icon-{name}.webp', 95)
+
+# ---------- Mutation Vault (12.webp, 1587x991): live values, the painted selection and the chooser tiles removed
+mv = cv2.imread(D + '12.webp')
+if mv is not None:
+    out = mv.copy()
+    def inp(img, rects, r=7, b=4):
+        mk = np.zeros(img.shape[:2], np.uint8)
+        for (x0, y0, x1, y1) in rects: mk[y0:y1, x0:x1] = 255
+        o = cv2.inpaint(img, mk, r, cv2.INPAINT_TELEA); bl = cv2.GaussianBlur(o, (0, 0), b)
+        return np.where(mk[..., None] > 0, bl, o)
+    # left panel: name, level, mutation pill, preview label, column head, values, price, button text, need-more line
+    out = inp(out, [(196, 166, 430, 234), (198, 238, 338, 268), (340, 503, 500, 529), (522, 559, 612, 582), (393, 592, 442, 625), (543, 592, 592, 625), (398, 638, 434, 668), (548, 638, 588, 668), (376, 682, 508, 716), (340, 768, 506, 792), (200, 870, 292, 896)])
+    out = rowfill(out, [(262, 730, 584, 758)], blur=2)
+    # mutation cards: the live "Damage · Vault/sec" line
+    cards = [(687, 214, 920, 457), (932, 214, 1165, 457), (1177, 214, 1407, 457), (687, 473, 920, 721), (933, 473, 1165, 721), (1178, 473, 1407, 721)]
+    for (x0, y0, x1, y1) in cards:
+        ly = 397 if y0 < 400 else 660
+        out = inp(out, [(x0 + 12, ly, x1 - 10, ly + 24)], b=3)
+    # Spark: remove SELECTED badge, then borrow Flame's plain frame
+    out = inp(out, [(838, 213, 922, 247)], r=9)
+    (sx0, sy0, sx1, sy1), (fx0, fy0, fx1, fy1) = cards[0], cards[1]
+    pad = 9
+    src = mv[fy0 - pad:fy1 + pad, fx0 - pad:fx1 + pad]
+    ring = np.zeros(src.shape[:2], bool); ring[:2 * pad + 3, :] = ring[-(2 * pad + 3):, :] = True; ring[:, :2 * pad + 3] = ring[:, -(2 * pad + 3):] = True
+    dst = out[sy0 - pad:sy1 + pad, sx0 - pad:sx1 + pad]
+    h = min(dst.shape[0], src.shape[0]); w = min(dst.shape[1], src.shape[1])
+    dst[:h, :w][ring[:h, :w]] = src[:h, :w][ring[:h, :w]]
+    # chooser tiles
+    out = inp(out, [(452, 832, 1428, 968)], r=12, b=10)
+    save(out, 'mutation.webp')
