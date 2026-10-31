@@ -511,3 +511,30 @@ body.uiExact:has(.uiXWelcome){background:#0a1430!important}
 .uiTheme .binderPocket{display:grid;align-content:center;justify-items:center}
 .uiTheme .binderPocket .mythCard{width:var(--card-w)!important;min-width:0}
 @media(max-height:700px){.uiTheme .magicalBinder{--card-h:250px}}
+
+/* Animated logo */
+.uiLogo{--logo-h:44px;display:inline-flex;align-items:flex-start;gap:calc(var(--logo-h) * .06);height:var(--logo-h);line-height:0}
+.uiFlameBox{position:relative;height:var(--logo-h);width:calc(var(--logo-h) * .79);flex:none}
+.uiFlame{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 92%;animation:uiBurn 1.7s ease-in-out infinite}
+.uiFlameHot{mix-blend-mode:screen;filter:brightness(1.35) saturate(1.3) hue-rotate(-8deg);opacity:0;animation:uiBurn2 1.15s ease-in-out infinite,uiFlick .9s steps(1,end) infinite}
+.uiFlameGlow{position:absolute;left:-35%;right:-35%;top:-20%;bottom:-15%;background:radial-gradient(ellipse at 50% 62%,#ff9a3a88,#ff6a1a33 45%,transparent 70%);animation:uiGlow 2.3s ease-in-out infinite;pointer-events:none}
+.uiEmber{position:absolute;left:50%;bottom:45%;width:calc(var(--logo-h) * .06);height:calc(var(--logo-h) * .06);border-radius:50%;background:#ffd27a;box-shadow:0 0 6px #ff9a3a;opacity:0;animation:uiEmber 2.4s linear infinite}
+.uiEmber:nth-of-type(2){animation-delay:.7s;margin-left:-14%}.uiEmber:nth-of-type(3){animation-delay:1.3s;margin-left:12%}.uiEmber:nth-of-type(4){animation-delay:1.9s;margin-left:-4%}
+.uiWord{height:calc(var(--logo-h) * .458);width:auto;margin-top:calc(var(--logo-h) * .29);filter:drop-shadow(0 0 calc(var(--logo-h) * .08) #ff9a3a33)}
+@keyframes uiBurn{0%,100%{transform:scale(1,1) skewX(0)}18%{transform:scale(.97,1.05) skewX(-2.5deg)}37%{transform:scale(1.02,.97) skewX(1.5deg)}55%{transform:scale(.98,1.07) skewX(2.5deg)}74%{transform:scale(1.01,.99) skewX(-1deg)}}
+@keyframes uiBurn2{0%,100%{transform:scale(.98,1.04) skewX(1.5deg)}50%{transform:scale(1.02,.98) skewX(-2deg)}}
+@keyframes uiFlick{0%{opacity:.15}20%{opacity:.4}35%{opacity:.1}55%{opacity:.5}70%{opacity:.2}85%{opacity:.35}}
+@keyframes uiGlow{0%,100%{opacity:.7;transform:scale(1)}40%{opacity:1;transform:scale(1.08)}70%{opacity:.8;transform:scale(.97)}}
+@keyframes uiEmber{0%{opacity:0;transform:translate(0,0) scale(1)}10%{opacity:1}100%{opacity:0;transform:translate(calc(var(--logo-h) * .12),calc(var(--logo-h) * -.9)) scale(.3)}}
+.reduceMotion .uiLogo *{animation:none!important}.reduceMotion .uiFlameHot,.reduceMotion .uiEmber{display:none}
+@media(prefers-reduced-motion:reduce){.uiLogo *{animation:none!important}.uiFlameHot,.uiEmber{display:none}}
+.uiBrand{align-items:center}.uiBrand .uiLogo{--logo-h:46px}
+.uiTopSlim .uiBrand .uiLogo{--logo-h:44px}
+.uiTopSlim .uiBrandText small{margin:4px 0 0 calc(44px * .85)}
+@media(max-width:899px){.uiBrand .uiLogo{--logo-h:32px}}
+.uiXLogo{position:absolute;z-index:3;display:block;text-decoration:none}
+.uiXLogo .uiLogo{display:inline-flex}
+.uiBrand .uiLogo,.uiBrand .uiLogo span{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit}
+.uiBrand .uiLogo .uiFlameGlow{background:radial-gradient(ellipse at 50% 62%,#ff9a3a88,#ff6a1a33 45%,transparent 70%)}
+.uiXLogo{background:none;border:0;padding:0;cursor:pointer}
+.uiBrand .uiLogo img{width:auto;height:auto;filter:none}.uiBrand .uiLogo .uiFlame{width:100%;height:100%}.uiBrand .uiLogo .uiWord{height:calc(var(--logo-h) * .458);width:auto;filter:drop-shadow(0 0 4px #ff9a3a33)}
