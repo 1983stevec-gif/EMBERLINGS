@@ -10,3 +10,7 @@ Added October 31, 2026.
 - Mobile pinch zoom is enabled, with larger friend/battle touch targets and visible keyboard focus.
 
 Checks: enhancements.cjs, pocket-server.mjs (including a complete two-client co-op quest), equip-best.mjs, visual-update.cjs, production build. The older pocket-client.cjs expects the superseded fixed 20-card builder title. No full browser or physical-device gameplay verification was available in this environment.
+
+## Move animations
+
+Damaging attacks now send bounded visual events with their actual move name, element and damage. Waves, bubbles, flames, lightning, ice, crystal, vines, moon, shadow and wind have distinct SVG effects travelling from attacker to target, followed by an impact and damage label. Solo, enemy, duel and co-op attacks use the same presentation; final hits also animate. Repeated renders/polls and resumed battles do not replay old attacks. Effects never block controls. Game and system Reduce Motion settings show a brief stationary cue instead. Checks: battle-effects.mjs, battle-effects-client.cjs, merfling.mjs, pocket-server.mjs and the production build.
