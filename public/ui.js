@@ -18,12 +18,17 @@ const artFound = {};
 fetch('/art/ui/manifest.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : []).then(list => { for (const k of Array.isArray(list) ? list : []) if (ART[k]) artFound[k] = ART[k]; applyArt(); }).catch(() => {});
 function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFound[el.dataset.uiArt]; if (src && !el.classList.contains('uiHasArt')) { el.style.backgroundImage = `url(${src})`; el.classList.add('uiHasArt'); } } }
 
+
+/* Animated EMBERLINGS logo: flame (flicker, glow, embers) + lettering. Height is set with --logo-h. */
+function logoHTML(cls = '') {
+  return `<span class="uiLogo ${cls}" role="img" aria-label="EMBERLINGS"><span class="uiFlameBox" aria-hidden="true"><i class="uiFlameGlow"></i><img class="uiFlame" src="/branding/logo-flame.png" alt="" width="76" height="96"><img class="uiFlame uiFlameHot" src="/branding/logo-flame.png" alt="" width="76" height="96"><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span><img class="uiWord" src="/branding/logo-word.png" alt="" width="317" height="44"></span>`;
+}
 /* ---------------------------------------------------------------- Header */
 function head() {
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
   const navView = ['index', 'decks'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult'].includes(v) ? 'map' : ['trading'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
-  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><span class="uiBrandText"><img class="uiWordmark" src="/branding/emberlings-wordmark.png" alt="EMBERLINGS" width="267" height="54"><small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
-  return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img class="uiWordmark" src="/branding/emberlings-wordmark.png" alt="EMBERLINGS" width="267" height="54"></button>
+  if (SLIM_VIEWS.includes(v)) return `<header class="top uiTop uiTopSlim"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><span class="uiBrandText">${logoHTML()}<small>Magical adventure</small></span></button><div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div></div></header>`;
+  return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => [g, g === 'inventory' && v === 'decks' ? 'Card Vault' : t]).map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
   ${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '-->'}</div></header>`;
@@ -201,12 +206,26 @@ function map() {
    <aside class="uiQuest uiFrame" id="uiQuest">${questPanel(selected)}</aside>
    <div class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${cleared} / 100 levels complete</span><span class="uiTrack"><i class="uiTrackFill" style="width:${cleared}%"></i>${[10, 25, 45, 70, 100].map(p => `<b style="left:${p}%" class="${(B.state.cleared || []).includes(p) ? 'on' : ''}"></b>`).join('')}</span><span class="uiMilestones">Boss milestones <em>10 · 25 · 45 · 70 · 100</em></span></div></section>`;
 }
+
+/* Quest picture: a Mythling native to the level's world, changing level by level, framed in that world's colours. */
+const WORLDS = [
+  { pool: [0, 8, 2, 10, 13], boss: 13, color: '#e9873a', icon: '🔥', tag: 'Meadow' },
+  { pool: [5, 2, 9, 10, 1], boss: 5, color: '#7fd0c8', icon: '💎', tag: 'Forest' },
+  { pool: [6, 14, 4, 11], boss: 6, color: '#9fd8f2', icon: '❄️', tag: 'Peaks' },
+  { pool: [3, 12, 9], boss: 3, color: '#f2d35a', icon: '⚡', tag: 'Valley' },
+  { pool: [7, 15, 1], boss: 7, color: '#b98ef0', icon: '🌑', tag: 'Realm' }
+];
+function questArt(l) {
+  const r = B.regions.findIndex(x => l >= x[1] && l <= x[2]), w = WORLDS[r] || WORLDS[0], boss = !!B.bosses[l];
+  const kind = boss ? w.boss : w.pool[(l - B.regions[r][1]) % w.pool.length];
+  return `<span class="uiWorldArt ${boss ? 'uiWorldBoss' : ''}" style="--world:${w.color}">${B.art({ kind, rarity: boss ? 'Legendary' : 'Common' })}<span class="uiWorldTint" aria-hidden="true"></span><span class="uiWorldTag">${w.icon} ${esc(B.regions[r][0])}${boss ? ' · Boss' : ''}</span></span>`;
+}
 function questPanel(l) {
   const r = regionOf(l), region = B.regions[r], boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
   let prize = null; try { prize = B.questPrize(l); } catch { }
   const deck = deckTop(3), artKind = boss ? [0, 5, 6, 3, 7][r] : REGION_ART[r];
   return `<h2>${esc(region[0])}</h2><p class="uiLevel">${boss ? 'Boss · ' : ''}Level ${l}</p>
-   <div class="uiQuestArt ${boss ? 'uiBossArt' : ''}">${B.art({ kind: artKind, rarity: boss ? 'Legendary' : 'Common' })}</div>
+   <div class="uiQuestArt ${boss ? 'uiBossArt' : ''}">${questArt(l)}</div>
    <h3>${esc(questName(l))}</h3><p class="uiStatus ${locked ? 'locked' : cleared ? 'done' : ''}">${locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play'}</p>
    <p class="uiDesc">${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>` : ''}</p>
    <div class="uiDivider" aria-hidden="true">◆</div>
@@ -397,7 +416,7 @@ function vaultLayout() {
   const rules = $('.uiVaultRules'); if (rules) { const h = $('h2', rules); if (h) h.textContent = 'Vault rules'; }
 }
 if (B) {
-  window.EmberUI = { head, home, map, afterMap, selectLevel, questName };
+  window.EmberUI = { head, home, map, afterMap, selectLevel, questName, logoHTML, questArt };
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:binderReady', e => binderLayout(e.detail));
   window.addEventListener('ember:decksReady', () => deckLayout());

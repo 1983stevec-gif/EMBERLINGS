@@ -17,6 +17,7 @@ const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;to
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
 const coinPx = (n, px, room = 4) => { const len = fmt(n).length; return len <= room ? px : px * room / len * 1.1; };
+const logoAt = (W, H, x, y, h) => `<button class="uiXLogo" type="button" data-go="home" aria-label="EMBERLINGS home" style="left:${x / W * 100}%;top:${y / H * 100}%;--logo-h:calc(${h} / ${W} * 100cqw)">${UI.logoHTML()}</button>`;
 const hot = (pos, attrs, label) => `<button class="uiHot" style="${pos}" ${attrs} aria-label="${esc(label)}"></button>`;
 const text = (pos, W, px, cls, html, extra = '') => `<div class="uiTxt ${cls}" style="${pos};${fs(W, px)};${extra}">${html}</div>`;
 // Our printed cards, scaled to fill a slot.
@@ -36,7 +37,7 @@ function home() {
   const W = 1586, H = 992, p = box(W, H), st = B.state, cleared = (st.cleared || []).length, deck = deckTop(3), active = B.active?.() || st.owned?.[0];
   const fan = [[1152, 197, 1268, 375, -8, deck[1]], [1420, 197, 1536, 375, 8, deck[2]], [1268, 166, 1420, 398, 0, deck[0]]].filter(f => f[5]);
   return `<section class="uiHome uiExactPage">${canvas(W, H, '/art/ui/home.webp', 'uiXHome', `
-   ${hot(p(55, 8, 405, 72), 'data-go="home"', 'EMBERLINGS home')}
+   ${logoAt(W, H, 62, 8, 62)}
    ${hot(p(515, 22, 610, 72), 'data-go="home" aria-current="page"', 'Home')}${hot(p(640, 22, 780, 72), 'data-go="inventory"', 'Mythlings')}${hot(p(815, 22, 920, 72), 'data-go="decks"', 'Battle')}${hot(p(955, 22, 1068, 72), 'data-go="map"', 'Explore')}
    ${text(p(1248, 25, 1306, 58), W, coinPx(st.coins, 21, 4), 'uiXCoins', fmt(st.coins))}
    <button class="uiHot uiXUser" id="uiUser" style="${p(1350, 20, 1557, 62)}" aria-haspopup="menu" aria-expanded="false" aria-label="Your profile menu"></button>
@@ -94,7 +95,7 @@ function map() {
   const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
   const far = shownRegion >= 3;
   return `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `
-   ${hot(p(40, 4, 330, 62), 'data-go="home"', 'EMBERLINGS home')}
+   ${logoAt(W, H, 40, 5, 54)}
    ${hot(p(470, 12, 560, 58), 'data-go="home"', 'Home')}${hot(p(585, 12, 670, 58), 'data-go="packs"', 'Packs')}${hot(p(690, 12, 800, 58), 'data-go="inventory"', 'Inventory')}${hot(p(825, 12, 1012, 58), 'data-go="map" aria-current="page"', 'Adventure HQ')}${hot(p(1030, 12, 1130, 58), 'data-go="friends"', 'Friends')}
    ${text(p(1484, 18, 1550, 52), W, coinPx(B.state.coins, 23, 4), 'uiXCoins', fmt(B.state.coins))}
    ${far ? `<div class="uiXSheet" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
@@ -114,7 +115,7 @@ function questPanel(l) {
   let prize = null; try { prize = B.questPrize(l); } catch { }
   return `${text(p(1203, 98, 1560, 142), W, 33, 'uiXRegion', esc(B.regions[r][0]))}
    ${text(p(1205, 140, 1500, 166), W, 19, 'uiXLevel', `${boss ? 'Boss · ' : ''}Level ${l}`)}
-   <div class="uiXArt" style="${p(1196, 179, 1561, 399)}">${B.art({ kind: boss ? [0, 5, 6, 3, 7][r] : REGION_ART[r] })}</div>
+   <div class="uiXArt" style="${p(1196, 179, 1561, 399)};${fs(W, 17)}">${UI.questArt(l)}</div>
    ${text(p(1208, 408, 1560, 458), W, 36, 'uiXQuest', esc(questName(l)))}
    ${text(p(1210, 456, 1560, 486), W, 21, 'uiXStatus ' + (locked ? 'locked' : cleared ? 'done' : ''), locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play')}
    ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}
@@ -151,7 +152,7 @@ function vaultExact() {
   const mult = ($('#app p.muted')?.textContent.match(/·\s*([\d.]+×)/) || [])[1] || '1×';
   const wrap = document.createElement('section'); wrap.className = 'uiExactPage';
   wrap.innerHTML = canvas(W, H, '/art/ui/vault.webp', 'uiXVault', `
-   ${hot(p(12, 8, 340, 72), 'data-go="home"', 'EMBERLINGS home')}${hot(p(46, 84, 130, 112), 'data-go="home"', 'Back to Home')}
+   ${logoAt(W, H, 58, 8, 44)}${hot(p(12, 8, 340, 72), 'data-go="home"', 'EMBERLINGS home')}${hot(p(46, 84, 130, 112), 'data-go="home"', 'Back to Home')}
    ${text(p(1380, 20, 1462, 60), W, coinPx(st.coins, 30, 4), 'uiXCoins', fmt(st.coins))}
    ${text(p(706, 128, 980, 162), W, 24, 'uiXStat', `${unlocked} / 5 slots unlocked`)}
    ${text(p(706, 162, 980, 190), W, 18, 'uiXStat2', `${mult} permanent earnings`)}
@@ -211,7 +212,7 @@ function welcomeExact() {
   const W = 1672, H = 941, p = box(W, H), input = $('#newUsername'), submit = $('button', form), err = $('#usernameError'), solo = $('button[data-go="tutorial"]'), details = recover.closest('details');
   const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXWelcomePage';
   wrap.innerHTML = canvas(W, H, '/art/ui/welcome.webp', 'uiXWelcome', `
-   ${hot(p(85, 12, 385, 72), 'data-go="home"', 'EMBERLINGS home')}
+   ${logoAt(W, H, 84, 10, 62)}
    ${hot(p(535, 20, 620, 66), 'data-go="home"', 'Home')}${hot(p(662, 20, 750, 66), 'data-go="packs"', 'Packs')}${hot(p(790, 20, 925, 66), 'data-go="inventory"', 'My Binder')}${hot(p(958, 20, 1128, 66), 'data-go="map"', 'Adventure HQ')}${hot(p(1172, 20, 1275, 66), 'data-go="friends"', 'Friends')}
    ${text(p(1514, 26, 1572, 60), W, coinPx(B.state.coins, 25, 4), 'uiXCoins', fmt(B.state.coins))}
    <h1 class="uiSr">Your adventure starts here.</h1><label class="uiSr" for="newUsername">Your username</label>

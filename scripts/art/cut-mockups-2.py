@@ -32,3 +32,9 @@ if w is not None:
     ww=rowfill(ww,[(1022,468,1120,508)],blur=0)   # typed name inside the input box
     save(ww,'welcome.webp')
     save(w[88:941,0:920],'welcome-art.webp')
+
+# Phone hero: remove the painted headline (the live text is drawn on top).
+hero = cv2.imread(D + '4.webp')[75:552, 0:1124].copy()
+mk = np.zeros(hero.shape[:2], np.uint8); mk[270 - 75:505 - 75, 30:620] = 255
+hero = cv2.inpaint(hero, mk, 9, cv2.INPAINT_TELEA); hb = cv2.GaussianBlur(hero, (0, 0), 8); hero = np.where(mk[..., None] > 0, hb, hero)
+save(hero, 'home-hero.webp', 88)
