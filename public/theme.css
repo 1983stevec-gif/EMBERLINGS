@@ -594,3 +594,54 @@ body .uiExactPage,body .uiExactPage.uiXWelcomePage,body .uiExactPage.uiXPacksPag
 .uiXCrop{width:min(100%,calc((100dvh - 75px) * var(--ratio)));margin:0 auto;overflow:hidden;container-type:inline-size}
 .uiXCrop>.uiX{width:100%}
 @media(max-width:1000px){.uiVaultHead{grid-template-columns:1fr!important;gap:12px}.uiVaultTitle h1{white-space:normal}.uiVaultStats{border:0;padding:0}}
+
+/* ---------- My Card Binder: exact mockup styling ---------- */
+.uiIco{display:inline-block;flex:none;vertical-align:middle}
+.uiSearch .uiIco{width:22px;height:22px;margin-right:4px}
+.uiPillBtn .uiIco{width:26px;height:21px;margin-right:10px}
+.uiMore summary{display:flex;align-items:center;gap:10px}.uiMore summary .uiIco{width:20px;height:18px}
+.uiBinderHead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(40px,3.6vw,52px);color:#f4ead6;letter-spacing:.01em}
+.uiBinderHead span{font-size:19px;color:#e2e6f4}
+.uiBinderHead .uiPillBtn{display:flex;align-items:center;padding:12px 28px;font-size:19px;color:#f3d48a;border:2px solid #d9a64a;background:transparent}
+.uiBinderBar{gap:14px}
+.uiBinderBar .uiSearch{max-width:330px;background:#0e1838;border:1px solid #3a4a84;border-radius:6px}
+.uiBinderBar .uiSelect,.uiMore summary{background-color:#0e1838!important;border:1px solid #3a4a84!important;color:#f2ecdc!important;font-family:'EB Garamond',Georgia,serif;font-size:17px;min-height:42px;border-radius:4px!important}
+.uiBinderBar .uiSelect{-webkit-appearance:none;appearance:none;background-image:url(/art/ui/binder-icon-chevron.webp)!important;background-repeat:no-repeat!important;background-position:right 10px center!important;background-size:18px 16px!important;padding-right:42px!important;min-width:186px}
+.uiBinderBar #binderSort{min-width:204px}
+.uiMore summary{padding:10px 40px 10px 18px;min-width:196px}
+/* book */
+.uiTheme .magicalBinder{position:relative;padding:14px 18px 14px 92px!important;background:#0f1a3e!important;border:2px solid #3a4a84!important;border-radius:16px!important;box-shadow:inset 0 0 0 1px #0a1230,0 18px 40px #000a!important}
+.uiSpine{position:absolute;left:0;top:0;bottom:0;width:80px;background:url(/art/ui/binder-spine.webp) center/100% 100% no-repeat;border-radius:14px 0 0 14px;z-index:4;pointer-events:none}
+.uiTheme .binderRings{display:none!important}
+.uiTheme .binderPages{border:1px solid #2f3f7c!important;border-radius:10px;padding:6px!important;background:#101b42!important;box-shadow:inset 0 0 0 4px #0d1634,inset 0 0 0 5px #2a3a74!important}
+.uiTheme .binderPocket{border:1px solid #2a3870!important;border-radius:6px!important;margin:3px;background:#122050!important}
+.uiTheme .binderPocket::after{border:1px dashed #3a4a8899}
+.uiPocketNo{background:#0d1534;border:1px solid #4a5a9a;border-radius:10px;padding:2px 10px;font-family:'EB Garamond',Georgia,serif;font-size:15px}
+.uiSleeve{background:url(/art/ui/binder-sleeve.webp) center/100% 100% no-repeat;border:0}
+/* element tabs, painted */
+.uiBinderTabs{right:-62px;top:12%;gap:4px}
+.uiBinderTabs button{width:58px;height:70px;border:0;border-radius:0;background:center/100% 100% no-repeat;box-shadow:none;font-size:0}
+.uiBinderTabs button.on{transform:none;filter:drop-shadow(0 0 8px #ffcf6a)}
+.uiBinderTabs button:not(.on):hover{filter:brightness(1.15)}
+.uiBinderTabs button:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiVineTop{position:absolute;right:-66px;top:-14px;width:74px;height:auto;pointer-events:none;z-index:1}
+.uiVineSide{position:absolute;right:-70px;bottom:4px;width:72px;height:auto;pointer-events:none;z-index:1}
+.uiTheme .magicalBinder{margin-right:70px!important}
+/* footer bar */
+.uiBinderFoot{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:16px;margin:0 -28px;padding:14px 120px 34px;background:url(/art/ui/binder-footer.webp) center bottom/100% 100% no-repeat;min-height:118px}
+.uiFilled{font-family:'EB Garamond',Georgia,serif;font-size:18px;color:#dfe4f4;padding-top:10px}
+.uiFootMid{display:flex;flex-direction:column;align-items:center}
+.uiFootMid .binderPager{margin:0;gap:30px}
+.uiFootMid .uiPagerHint{margin:8px 0 0;font-size:17px;color:#c8d1ec}
+.uiTheme .binderPager .button{background:#16234f;border:1px solid #4a5a9a;color:#e4e9f8;font-size:18px;padding:9px 26px;border-radius:4px}
+.uiTheme .binderPager .button:disabled{opacity:.55;filter:none}
+.uiTheme .binderPager span{font-size:19px;color:#fff}
+.uiBrowse{justify-self:end;background:none;border:0;color:#f1c46a;font-family:'EB Garamond',Georgia,serif;font-size:19px;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding-top:10px}
+.uiBrowse span{text-decoration:none;display:inline-block;margin-left:6px}
+@media(max-width:1100px){.uiBinderFoot{grid-template-columns:1fr;justify-items:center;padding:10px 20px 40px}.uiBrowse{justify-self:center}.uiTheme .magicalBinder{padding-left:62px!important;margin-right:40px!important}.uiSpine{width:52px}.uiBinderTabs{right:-44px}.uiBinderTabs button{width:40px;height:48px}.uiVineTop,.uiVineSide{display:none}}
+.uiTheme .magicalBinder{--card-h:clamp(230px,calc((100dvh - 470px) / 2),340px);--card-w:calc(var(--card-h) * .66);width:auto!important;max-width:none!important;margin-left:0!important}
+.uiTheme .binderPocket{min-height:calc(var(--card-h) + 38px);padding:30px 8px 8px!important}
+.uiBinderHead{margin:4px 0 10px}.uiBinderBar{margin-bottom:14px}
+.uiBinderFoot{min-height:100px;padding-top:10px;padding-bottom:26px}
+.uiTheme .magicalBinder{--card-h:clamp(230px,calc((100dvh - 405px) / 2),340px)}.uiTheme .binderPocket{min-height:calc(var(--card-h) + 34px);padding:28px 8px 6px!important}.uiBinderFoot{min-height:92px;padding-bottom:20px}
+.uiTheme .magicalBinder{--card-h:clamp(230px,calc((100dvh - 445px) / 2),340px)}.uiBinderHead{margin:0 0 6px}.uiBinderBar{margin-bottom:12px}.uiBinderFoot{min-height:84px;padding-top:8px;padding-bottom:16px}.uiFootMid .uiPagerHint{margin-top:4px}

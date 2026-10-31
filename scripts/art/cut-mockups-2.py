@@ -49,3 +49,20 @@ if pk is not None:
     save(pp, 'packs.webp')
     for name, (x0, y0, x1, y1) in {'pack': (137, 172, 297, 457), 'star': (572, 172, 733, 457), 'crystal': (1018, 172, 1182, 457), 'mythic': (137, 512, 298, 778), 'legend': (572, 492, 735, 780), 'celestial': (1018, 492, 1183, 780), 'hacker': (158, 812, 310, 935)}.items():
         save(pk[y0:y1, x0:x1], f'pack-{name}.webp')
+
+# ---------- My Card Binder (11.webp, 1586x992): spine, sleeve, tabs, vines and footer ornament
+bd = cv2.imread(D + '11.webp')
+if bd is not None:
+    save(bd[195:876, 26:106], 'binder-spine.webp')
+    save(bd[648:848, 142:350], 'binder-sleeve.webp')
+    for name, (y0, y1) in {'fire': (276, 346), 'water': (350, 420), 'nature': (424, 494), 'moon': (498, 568), 'all': (571, 642)}.items():
+        save(bd[y0:y1, 1503:1562], f'binder-tab-{name}.webp')
+    save(bd[182:272, 1508:1586], 'binder-vine-top.webp')
+    foot = bd[870:992, 0:1586].copy()
+    mk = np.zeros(foot.shape[:2], np.uint8)
+    for (x0, y0, x1, y1) in [(122, 20, 280, 50), (586, 14, 1000, 66), (606, 64, 980, 92), (1336, 22, 1470, 50)]: mk[y0:y1, x0:x1] = 255
+    foot = cv2.inpaint(foot, mk, 7, cv2.INPAINT_TELEA); fb = cv2.GaussianBlur(foot, (0, 0), 4); foot = np.where(mk[..., None] > 0, fb, foot)
+    save(foot, 'binder-footer.webp')
+    save(bd[646:870, 1510:1586], 'binder-vine-side.webp')
+    for name, (x0, y0, x1, y1) in {'search': (90, 149, 115, 174), 'funnel': (833, 150, 857, 172), 'book': (1338, 95, 1370, 121), 'chevron': (576, 152, 596, 170)}.items():
+        save(bd[y0:y1, x0:x1], f'binder-icon-{name}.webp', 95)

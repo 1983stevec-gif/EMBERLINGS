@@ -263,19 +263,19 @@ function binderLayout({ index, page }) {
   const swap = $('button[data-go]', heading);
   const head = document.createElement('div'); head.className = 'uiBinderHead';
   head.innerHTML = `<div><h1>${index ? 'Mythling Index' : 'My Card Binder'}</h1><span>${count} · ${index ? 'Discover every species' : 'Every copy has its own place'}</span></div>`;
-  if (swap) { swap.className = 'uiPillBtn'; swap.innerHTML = index ? '📚 My Binder' : '📖 Species Index'; head.appendChild(swap); }
+  if (swap) { swap.className = 'uiPillBtn'; swap.innerHTML = `<img class="uiIco" src="/art/ui/binder-icon-book.webp" alt="" width="32" height="26">${index ? 'My Binder' : 'Species Index'}`; head.appendChild(swap); }
   heading.replaceWith(head); $('.back')?.remove();
   // Toolbar: search, element, rarity, more filters (mutation, level), sort.
   const bar = document.createElement('div'); bar.className = 'uiBinderBar';
-  bar.innerHTML = `<label class="uiSearch"><span aria-hidden="true">🔍</span><input id="uiBinderSearch" type="search" placeholder="Search cards…" value="${esc(f.q || '')}" aria-label="Search cards"></label>`;
+  bar.innerHTML = `<label class="uiSearch"><img class="uiIco" src="/art/ui/binder-icon-search.webp" alt="" width="25" height="25"><input id="uiBinderSearch" type="search" placeholder="Search cards…" value="${esc(f.q || '')}" aria-label="Search cards"></label>`;
   const labels = $$('label', filters), sel = id => $('#' + id);
   const add = (id, cls) => { const s = sel(id); if (s) { s.classList.add('uiSelect'); if (cls) s.classList.add(cls); bar.appendChild(s); } };
   add('filterElement'); add('filterRarity');
-  const more = document.createElement('details'); more.className = 'uiMore'; more.innerHTML = '<summary>⚲ More filters</summary><div></div>';
+  const more = document.createElement('details'); more.className = 'uiMore'; more.innerHTML = '<summary><img class="uiIco" src="/art/ui/binder-icon-funnel.webp" alt="" width="24" height="22">More filters</summary><div></div>';
   for (const id of ['filterMutation', 'filterLevel']) { const lab = sel(id)?.closest('label'); if (lab) $('div', more).appendChild(lab); }
   if (f.mutation || f.level || f.island) more.open = true;
   bar.appendChild(more); add('binderSort');
-  const sortSel = sel('binderSort'); if (sortSel) for (const o of sortSel.options) if (/newest/i.test(o.text)) o.text = 'Newest first';
+  const sortSel = sel('binderSort'); if (sortSel) for (const o of sortSel.options) if (/newest/i.test(o.text)) o.text = 'Newest';
   filters.replaceWith(bar);
   let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
   // Book: numbered pockets, side tabs and the logo cover.
@@ -284,7 +284,8 @@ function binderLayout({ index, page }) {
   const pagesEl = $('.binderPages', book), filled = $$('.binderPocket', book).length;
   if (pagesEl && filled < 12) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: 12 - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * 12 + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
   if (pagesEl && !filled) $('p.panel', pagesEl)?.classList.add('uiNoMatch');
-  book.insertAdjacentHTML('beforeend', `<nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="--tab:${ELEMENT_COLORS[el] || '#e9b75a'}">${ic}</button>`).join('')}</nav>`);
+  book.insertAdjacentHTML('afterbegin', '<span class="uiSpine" aria-hidden="true"></span>');
+  book.insertAdjacentHTML('beforeend', `<img class="uiVineTop" src="/art/ui/binder-vine-top.webp" alt="" aria-hidden="true"><img class="uiVineSide" src="/art/ui/binder-vine-side.webp" alt="" aria-hidden="true"><nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="background-image:url(/art/ui/binder-tab-${(el || 'all').toLowerCase()}.webp)"></button>`).join('')}</nav>`);
   $$('[data-tab-el]', book).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); B.binderFilter('element', b.dataset.tabEl); }));
   const cover = $('.binderCover', book);
   if (cover) cover.innerHTML = '<span class="uiCoverFrame"><img src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086"></span>';
@@ -293,7 +294,11 @@ function binderLayout({ index, page }) {
     const [prev, label, next] = [$('#binderPrev'), $('span', pager), $('#binderNext')];
     if (prev) prev.innerHTML = '‹ Previous'; if (next) next.innerHTML = 'Next ›';
     if (label) label.textContent = label.textContent.replace(/Page (\d+) \/ (\d+)/, 'Page $1 of $2');
-    pager.insertAdjacentHTML('afterend', '<p class="uiPagerHint">Select a card to inspect · Use arrow keys to turn pages</p>');
+    const foot = document.createElement('div'); foot.className = 'uiBinderFoot';
+    foot.innerHTML = `<span class="uiFilled">${filled} of 12 pockets filled</span><div class="uiFootMid"></div><button class="uiBrowse" data-go="packs">Browse packs <span aria-hidden="true">→</span></button>`;
+    pager.replaceWith(foot); $('.uiFootMid', foot).append(pager);
+    $('.uiFootMid', foot).insertAdjacentHTML('beforeend', '<p class="uiPagerHint">Select a card to inspect · Use arrow keys to turn pages ›</p>');
+    B.bind();
   }
 }
 addEventListener('keydown', e => {
@@ -311,7 +316,7 @@ function deckLayout() {
   const tabs = $('.shopCategories'), energy = $('.energyChoices'), saves = $('.deckSaves'), err = $('#deckError'), nameInput = $('#deckPresetName');
   const wrap = document.createElement('section'); wrap.className = 'uiDeckBuilder';
   wrap.innerHTML = `<div class="uiVaultCol"><div class="uiCVHead"><div><h1>Card Vault</h1><p>Your collection. Your next winning deck.</p></div>
-     <div class="uiCVTools"><label class="uiSearch"><span aria-hidden="true">🔍</span><input id="uiDeckSearch" type="search" placeholder="Search your cards…" value="${esc(deckView.q)}" aria-label="Search your cards"></label>
+     <div class="uiCVTools"><label class="uiSearch"><img class="uiIco" src="/art/ui/binder-icon-search.webp" alt="" width="25" height="25"><input id="uiDeckSearch" type="search" placeholder="Search your cards…" value="${esc(deckView.q)}" aria-label="Search your cards"></label>
      <select id="uiDeckEl" class="uiSelect" aria-label="Element"><option value="">All elements</option>${Object.keys(ELEMENT_COLORS).map(e => `<option ${deckView.el === e ? 'selected' : ''}>${e}</option>`).join('')}</select>
      <select id="uiDeckSort" class="uiSelect" aria-label="Sort"><option value="name">Sort: Name</option><option value="deck" ${deckView.sort === 'deck' ? 'selected' : ''}>Sort: In deck</option><option value="owned" ${deckView.sort === 'owned' ? 'selected' : ''}>Sort: Owned</option></select></div></div>
      <div class="uiCVTabs"></div><div class="uiCVGrid uiFrame"></div><div class="uiCVPager"><button id="uiCVPrev" aria-label="Previous page">‹</button><span id="uiCVPage"></span><button id="uiCVNext" aria-label="Next page">›</button></div></div>
