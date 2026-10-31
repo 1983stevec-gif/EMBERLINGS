@@ -253,6 +253,10 @@ function binderLayout({ index, page }) {
   let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
   // Book: numbered pockets, side tabs and the logo cover.
   $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * 12 + i + 1).padStart(2, '0')}</span>`));
+  // Standard binder: always a full 12-pocket page; empty sleeves fill the rest.
+  const pagesEl = $('.binderPages', book), filled = $$('.binderPocket', book).length;
+  if (pagesEl && filled < 12) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: 12 - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * 12 + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
+  if (pagesEl && !filled) $('p.panel', pagesEl)?.classList.add('uiNoMatch');
   book.insertAdjacentHTML('beforeend', `<nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="--tab:${ELEMENT_COLORS[el] || '#e9b75a'}">${ic}</button>`).join('')}</nav>`);
   $$('[data-tab-el]', book).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); B.binderFilter('element', b.dataset.tabEl); }));
   const cover = $('.binderCover', book);

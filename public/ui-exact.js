@@ -203,11 +203,49 @@ function vaultExact() {
   for (const panel of $$('#app > .panel, #app > details, #app > p')) panel.classList.add('uiXBelow');
 }
 
+
+/* ---------------------------------------------------------------- Welcome / username (mockup 1672 × 941) */
+// Re-uses the game's own form elements (same ids and handlers) and places them on the mockup.
+function welcomeExact() {
+  const form = $('#usernameForm'), recover = $('#recoverForm'); if (!form || $('.uiXWelcome')) return;
+  const W = 1672, H = 941, p = box(W, H), input = $('#newUsername'), submit = $('button', form), err = $('#usernameError'), solo = $('button[data-go="tutorial"]'), details = recover.closest('details');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXWelcomePage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/welcome.webp', 'uiXWelcome', `
+   ${hot(p(85, 12, 385, 72), 'data-go="home"', 'EMBERLINGS home')}
+   ${hot(p(535, 20, 620, 66), 'data-go="home"', 'Home')}${hot(p(662, 20, 750, 66), 'data-go="packs"', 'Packs')}${hot(p(790, 20, 925, 66), 'data-go="inventory"', 'My Binder')}${hot(p(958, 20, 1128, 66), 'data-go="map"', 'Adventure HQ')}${hot(p(1172, 20, 1275, 66), 'data-go="friends"', 'Friends')}
+   ${text(p(1514, 26, 1572, 60), W, coinPx(B.state.coins, 25, 4), 'uiXCoins', fmt(B.state.coins))}
+   <h1 class="uiSr">Your adventure starts here.</h1><label class="uiSr" for="newUsername">Your username</label>
+   <form class="uiXForm" style="${p(1009, 457, 1548, 634)}"></form>
+   <div class="uiTxt uiXErr" role="status" style="${p(1009, 636, 1548, 660)};${fs(W, 16)}"></div>
+   <div class="uiXSolo" style="${p(1150, 656, 1405, 694)}"></div>
+   <button class="uiHot" id="uiXRecoverOpen" style="${p(1009, 744, 1548, 806)}" aria-expanded="false" aria-controls="uiXRecover" aria-label="Already have a username?"></button>
+   <div class="uiXRecover" id="uiXRecover" hidden style="${p(1000, 548, 1556, 862)};${fs(W, 18)}"><div class="uiXRecHead"><strong>Restore your username</strong><button type="button" class="uiXClose" aria-label="Close">✕</button></div></div>`);
+  $('#app').insertBefore(wrap, $('#app section.hero'));
+  // Username form: transparent input over the painted box; the painted button is the visual for submit.
+  const f = $('.uiXForm', wrap);
+  input.classList.add('uiXInput'); input.placeholder = ''; f.append(input);
+  submit.className = 'uiXSubmit'; submit.setAttribute('aria-label', 'Start Adventure'); submit.textContent = ''; f.append(submit);
+  form.removeAttribute('id'); f.id = 'usernameForm'; f.onsubmit = form.onsubmit;
+  $('.uiXErr', wrap).append(err);
+  if (solo) { solo.className = 'uiHot'; solo.setAttribute('aria-label', 'Play solo for now'); solo.textContent = ''; $('.uiXSolo', wrap).append(solo); }
+  const rec = $('#uiXRecover', wrap), open = $('#uiXRecoverOpen', wrap);
+  for (const i of $$('input', recover)) i.className = 'uiXRecInput';
+  $('button', recover).className = 'uiXBtn';
+  rec.append(recover, Object.assign(document.createElement('p'), { className: 'uiXRecNote', textContent: 'Restores your online username and friends. Creature collections stay on their original device.' }));
+  const toggle = show => { rec.hidden = !show; open.setAttribute('aria-expanded', String(show)); if (show) $('#recoverName')?.focus(); else input.focus(); };
+  open.onclick = () => toggle(true); $('.uiXClose', rec).onclick = () => toggle(false);
+  rec.addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false); });
+  $('#app section.hero')?.remove(); details?.remove();
+  setTimeout(() => input.focus(), 50);
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault'].includes(B.view);
+  const exact = wide() && ['home', 'map', 'vault', 'username'].includes(B.view);
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
+  if (exact && B.view === 'username') welcomeExact();
+  if (!exact && B.view === 'username') welcomeNarrow();
   if (exact) { const c = $('.uiX'); if (c) ro.observe(c); fitCards(); const u = $('#uiUser'); if (u && !u.dataset.bound) { u.dataset.bound = '1'; } }
 }
 if (B && UI) {
@@ -216,5 +254,16 @@ if (B && UI) {
   window.addEventListener('ember:frame', onFrame);
   let wasWide = wide();
   addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view); } });
+  if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
+}
+
+// Phones: the painted scene sits above the game's form, styled like the mockup panel.
+function welcomeNarrow() {
+  const hero = $('#app section.hero'); if (!hero || $('.uiXWelcomeArt')) return;
+  hero.classList.add('uiXWelcomeCard');
+  hero.insertAdjacentHTML('beforebegin', '<div class="uiXWelcomeArt" role="img" aria-label="Mythlings in a forest by a waterfall"></div>');
+  const h1 = $('h1', hero); if (h1) h1.textContent = 'Your adventure starts here.';
+  const pill = $('.pill', hero); if (pill) pill.className = 'uiXKicker';
+  const btn = $('#usernameForm button', hero); if (btn) btn.innerHTML = 'Start Adventure <span aria-hidden="true">→</span>';
 }

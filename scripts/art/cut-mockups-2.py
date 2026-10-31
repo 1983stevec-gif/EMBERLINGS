@@ -22,3 +22,13 @@ save(s1,'slot-gold.webp')
 s4=v[603:957,47:522].copy()   # navy
 s4=rowfill(s4,[(18,14,152,58),(138,10,338,184),(140,180,340,252),(66,250,409,306),(140,302,340,342)])
 save(s4,'slot-navy.webp')
+
+# ---------- Welcome / username (8.webp, 1672x941)
+w=cv2.imread(D+'8.webp')
+if w is not None:
+    mask=np.zeros(w.shape[:2],np.uint8)
+    for (x0,y0,x1,y1) in [(1508,24,1572,62)]: mask[y0:y1,x0:x1]=255
+    ww=cv2.inpaint(w,mask,7,cv2.INPAINT_TELEA)
+    ww=rowfill(ww,[(1022,468,1120,508)],blur=0)   # typed name inside the input box
+    save(ww,'welcome.webp')
+    save(w[88:941,0:920],'welcome-art.webp')
