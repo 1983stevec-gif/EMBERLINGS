@@ -17,7 +17,6 @@ const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 function start() {
   injectStyles();
-  window.EmberFX = { decorateModel };
   window.addEventListener('ember:frame', e => onFrame(e.detail.view));
   window.addEventListener('ember:packRoll', () => sfx.roll());
   window.addEventListener('ember:packReveal', e => packReveal3D(e.detail));
@@ -84,7 +83,7 @@ const sfx = (() => {
 })();
 
 function muteButton() {
-  const top = $('.top'); if (!top || $('.fxMute', top)) return;
+  const top = $('.top'); if (!top || $('.fxMute', top) || top.classList.contains('uiTop')) return;
   const b = document.createElement('button');
   b.className = 'fxMute'; b.type = 'button';
   const paint = () => { const m = !!ext().muted; b.textContent = m ? '🔇' : '🔊'; b.setAttribute('aria-label', m ? 'Sound off. Turn sound on' : 'Sound on. Turn sound off'); b.setAttribute('aria-pressed', String(!m)); b.title = m ? 'Sound off' : 'Sound on'; };
@@ -101,7 +100,7 @@ function onFrame(view) {
   if (view === 'home') decorateHome();
   if (view === 'friends') decorateFriendsHeader();
   if (view === 'map') decorateMap();
-  if (view === 'vault') vaultScene();
+  if (view === 'packs') setTimeout(() => { if (!calm() && hasWebGL()) three(); }, 400);
   if (view === 'packSummary') burstConfetti(30);
   scheduleDecorate();
   setTimeout(checkAchievements, 0);
@@ -109,6 +108,8 @@ function onFrame(view) {
 
 function homeTile(go, icon, title, sub) { return `<button class="tile fxTile" data-go="${go}"><span class="emoji">${icon}</span><strong>${title}</strong><span>${sub}</span></button>`; }
 function decorateHome() {
+  const uiHome = $('.uiHome');
+  if (uiHome) { if (!$('.fxBackup')) { uiHome.insertAdjacentHTML('beforeend', backupHTML()); const b = $('.fxBackup'); b.hidden = true; bindBackup(); } return; }
   const features = $('.features');
   if (features && !$('[data-go="album"]', features)) {
     const pages = albumPagesComplete(B.state), unlocked = Object.keys(ext().achievements || {}).length;
@@ -503,59 +504,6 @@ function onFusion(c) {
   }, 3.3, 'Fusion animation');
 }
 
-/* 4. Living Vault */
-async function vaultScene() {
-  if (calm() || !hasWebGL()) return;
-  const title = $('#app h1'); if (!title || $('.fxVault')) return;
-  const T = await three(); if (!T || B.view !== 'vault' || $('.fxVault')) return;
-  const host = document.createElement('div'); host.className = 'fxVault'; host.setAttribute('aria-hidden', 'true');
-  host.innerHTML = '<canvas></canvas>'; title.insertAdjacentElement('afterend', host);
-  const canvas = $('canvas', host);
-  let renderer; try { renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch { host.remove(); return; }
-  renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1)); renderer.outputColorSpace = T.SRGBColorSpace;
-  const scene = new T.Scene(), camera = new T.PerspectiveCamera(40, 3, .1, 50); camera.position.set(0, .4, 7);
-  scene.add(new T.AmbientLight(0xffffff, 1.4), new T.HemisphereLight(0xfff1c8, 0x3a2c6e, 2));
-  const v = B.state.vault || {}, occupied = (v.slots || []).filter(s => s?.creatureId).length, glow = .4 + occupied * .35;
-  const key = new T.PointLight(0xffd36c, 20 + occupied * 10, 20); key.position.set(2, 2, 4); scene.add(key);
-  const crystal = new T.Mesh(new T.OctahedronGeometry(1.05, 0), new T.MeshStandardMaterial({ color: 0x9be7ff, emissive: 0x7a4cff, emissiveIntensity: glow, metalness: .1, roughness: .2, flatShading: true }));
-  crystal.scale.y = 1.4; scene.add(crystal);
-  const halo = new T.Mesh(new T.RingGeometry(1.5, 1.6, 64), new T.MeshBasicMaterial({ color: 0xffd36c, transparent: true, opacity: .25 + occupied * .1, side: T.DoubleSide, blending: T.AdditiveBlending, depthWrite: false }));
-  halo.rotation.x = Math.PI / 2.3; scene.add(halo);
-  const coinGeo = new T.CylinderGeometry(.16, .16, .04, 20), coinMat = new T.MeshStandardMaterial({ color: 0xffd75e, metalness: .35, roughness: .3, emissive: 0xc88a10, emissiveIntensity: .75 });
-  const coins = Array.from({ length: 6 + occupied * 5 }, (_, i) => { const m = new T.Mesh(coinGeo, coinMat); m.userData = { a: Math.random() * 6.28, r: 1.5 + Math.random() * 1.8, y: Math.random() * 4 - 2, s: .4 + Math.random() * .6 + occupied * .08 }; m.rotation.x = Math.PI / 2; scene.add(m); return m; });
-  const resize = () => { const w = host.clientWidth || 300, h = host.clientHeight || 150; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
-  const ro = new ResizeObserver(resize); ro.observe(host); resize();
-  let last = performance.now();
-  const loop = now => {
-    if (!host.isConnected || B.view !== 'vault') { ro.disconnect(); scene.traverse(o => { o.geometry?.dispose(); for (const m of [].concat(o.material || [])) m.dispose(); }); renderer.dispose(); renderer.forceContextLoss?.(); return; }
-    const dt = Math.min(.05, (now - last) / 1000), t = now / 1000; last = now;
-    if (!document.hidden) {
-      crystal.rotation.y += dt * .6; crystal.position.y = Math.sin(t * 1.3) * .12; crystal.material.emissiveIntensity = glow + Math.sin(t * 2.2) * .15;
-      halo.rotation.z += dt * .3;
-      for (const m of coins) { const u = m.userData; u.y += dt * u.s; u.a += dt * .5; if (u.y > 2.2) u.y = -2.2; m.position.set(Math.cos(u.a) * u.r, u.y, Math.sin(u.a) * u.r * .5); m.rotation.z += dt * 3; }
-      renderer.render(scene, camera);
-    }
-    requestAnimationFrame(loop);
-  };
-  requestAnimationFrame(loop);
-}
-
-/* 5. Card-art creatures in the 3D Hidden Hollow / arena: a bobbing, squashing cut-out replaces the block model. */
-function decorateModel(T, group, { kind, shiny }) {
-  const cv = cardCanvas({ kind, shiny, rarity: 'Common' }, { w: 256, small: true }, () => { tex.needsUpdate = true; });
-  const tex = new T.CanvasTexture(cv); tex.colorSpace = T.SRGBColorSpace;
-  const sprite = new T.Sprite(new T.SpriteMaterial({ map: tex, transparent: true }));
-  for (const child of group.children) if (child.isMesh) child.visible = false;
-  const w = 40, h = w * 1.42, phase = Math.random() * 6.28;
-  sprite.scale.set(w, h, 1); sprite.position.y = h / 2 + 2;
-  sprite.onBeforeRender = () => {
-    if (calm()) return;
-    const t = performance.now() / 1000 + phase, s = Math.sin(t * 3.2);
-    sprite.scale.set(w * (1 + .05 * s), h * (1 - .045 * s), 1); sprite.position.y = h / 2 + 2 + Math.abs(Math.sin(t * 1.6)) * 4;
-  };
-  group.add(sprite);
-}
-
 /* 6. Card battle feedback */
 let battlePrev = null;
 function battleFx({ match, side }) {
@@ -601,7 +549,7 @@ function knockout(rect) {
   const el = document.createElement('div'); el.className = 'fxKO'; el.textContent = 'KNOCKOUT!';
   el.style.left = rect.left + rect.width / 2 + 'px'; el.style.top = rect.top + rect.height / 2 + 'px';
   fxLayer().appendChild(el); setTimeout(() => el.remove(), 1600);
-  if (!calm()) { document.body.classList.add('fxSlowmo'); setTimeout(() => document.body.classList.remove('fxSlowmo'), 700); }
+  if (!calm()) { const v = document.createElement('div'); v.className = 'fxVignette'; fxLayer().appendChild(v); setTimeout(() => v.remove(), 750); }
 }
 function onCardResult(r) {
   battlePrev = null;
@@ -631,10 +579,11 @@ function tickCounter(from, to) {
   if (!Number.isFinite(from) || !Number.isFinite(to) || calm()) return;
   const t0 = performance.now(), dur = 1100;
   const step = now => {
-    const el = $('.top .coins'); if (!el) return;
-    const k = ease((now - t0) / dur); el.textContent = '🪙 ' + Math.round(from + (to - from) * k);
-    el.classList.add('fxCoinPulse');
-    if (k < 1) requestAnimationFrame(step); else { el.textContent = '🪙 ' + Math.floor(B.state.coins); el.classList.remove('fxCoinPulse'); }
+    const box = $('.top .coins'); if (!box) return;
+    const el = $('b', box) || box, pre = el === box ? '🪙 ' : '';
+    const k = ease((now - t0) / dur); el.textContent = pre + Math.round(from + (to - from) * k).toLocaleString();
+    box.classList.add('fxCoinPulse');
+    if (k < 1) requestAnimationFrame(step); else { el.textContent = pre + Math.floor(B.state.coins).toLocaleString(); el.classList.remove('fxCoinPulse'); box.classList.remove('fxCoinPulse'); }
   };
   requestAnimationFrame(step);
 }
@@ -693,7 +642,7 @@ function setupTilt() {
 
 /* 10. Living world map */
 function decorateMap() {
-  const wrap = $('#mapWrap'), world = $('#world'); if (!wrap || !world || $('.fxSky', wrap)) return;
+  const wrap = $('#mapWrap'), world = $('#world'); if (!wrap || !world || $('.fxSky', wrap) || wrap.classList.contains('uiMap')) return;
   const hour = new Date().getHours(), phase = hour >= 5 && hour < 8 ? 'dawn' : hour >= 8 && hour < 17 ? 'day' : hour >= 17 && hour < 20 ? 'dusk' : 'night';
   wrap.insertAdjacentHTML('beforeend', `<div class="fxSky fxSky-${phase}" aria-hidden="true">${phase === 'night' ? Array.from({ length: 24 }, () => `<i style="left:${Math.random() * 100}%;top:${Math.random() * 60}%;animation-delay:${(Math.random() * 3).toFixed(2)}s"></i>`).join('') : ''}</div><div class="fxClouds" aria-hidden="true">${Array.from({ length: 5 }, (_, i) => `<span style="top:${8 + i * 17}%;animation-duration:${55 + i * 17}s;animation-delay:${-i * 13}s;transform:scale(${.7 + (i % 3) * .3})"></span>`).join('')}</div>`);
   const nodes = $$('[data-level]', world).sort((a, b) => a.dataset.level - b.dataset.level);
@@ -735,12 +684,11 @@ function injectStyles() {
 .fxStage canvas{width:100%;height:100%;display:block}.fxStage.fxOut{opacity:0;transition:opacity .35s}
 .fxSkip{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:#0009;color:#dfe9ff;border:1px solid #fff4;border-radius:99px;padding:8px 16px;font-size:12px}
 .fxFlash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.fxFlashOn{animation:fxFlash .55s ease-out}
-.fxVault{height:170px;margin:-4px 0 6px;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 60%,#3a2c6e88,transparent 70%)}.fxVault canvas{width:100%;height:100%;display:block}
 #fxLayer{position:fixed;inset:0;pointer-events:none;z-index:9400;overflow:hidden}
 .fxFloat{position:fixed;transform:translate(-50%,-50%);font:900 30px system-ui,sans-serif;text-shadow:0 2px 0 #000,0 0 14px currentColor;animation:fxRise 1.2s ease-out forwards}.fxBig{font-size:46px}
 .fxStreak{position:fixed;height:8px;margin-top:-4px;transform-origin:0 50%;border-radius:8px;background:linear-gradient(90deg,transparent,var(--fx-color),#fff);box-shadow:0 0 18px var(--fx-color);animation:fxStreak .5s ease-out forwards}
 .fxKO{position:fixed;transform:translate(-50%,-50%);font:900 44px system-ui,sans-serif;color:#ffd568;letter-spacing:.08em;text-shadow:0 3px 0 #6b2a00,0 0 30px #ff7a3c;animation:fxKO 1.5s ease-out forwards;white-space:nowrap}
-.fxSlowmo #app{animation:fxSlow .7s ease-out}
+.fxVignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 35%,#ffb24a66 100%);animation:fxFade .7s ease-out reverse forwards}
 .fxShake{animation:fxShake .45s cubic-bezier(.36,.07,.19,.97)}
 .fxHitFlash .mythCard{animation:fxHit .4s ease-out}
 .fxCoin{position:fixed;left:0;top:0;font-size:22px;will-change:transform}
@@ -751,27 +699,23 @@ function injectStyles() {
 .fxGlare,.fxHolo{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4}
 .fxGlare{opacity:0;background:radial-gradient(circle at var(--fx-gx,50%) var(--fx-gy,50%),#ffffff66,transparent 55%);transition:opacity .2s}
 .fxTilting .fxGlare{opacity:1}
-.fxHolo{mix-blend-mode:color-dodge;opacity:.22;background:linear-gradient(115deg,transparent 20%,#ff88d4 32%,#ffd568 40%,#7be7b3 48%,#76e8ff 56%,#bd87ff 64%,transparent 76%);background-size:250% 250%;background-position:var(--fx-gx,var(--fx-tilt-x,50%)) var(--fx-gy,var(--fx-tilt-y,50%));animation:fxHolo 6s ease-in-out infinite}
-.fxTilting .fxHolo{animation:none;opacity:.42}
+.fxHolo{mix-blend-mode:color-dodge;opacity:.22;background:linear-gradient(115deg,transparent 20%,#ff88d4 32%,#ffd568 40%,#7be7b3 48%,#76e8ff 56%,#bd87ff 64%,transparent 76%);background-size:250% 250%;background-position:var(--fx-gx,var(--fx-tilt-x,50%)) var(--fx-gy,var(--fx-tilt-y,50%))}
+.fxTilting .fxHolo{opacity:.42}
 .fxHolo4,.fxHolo5{opacity:.3}.fxHolo6{opacity:.38;background-image:conic-gradient(from 0deg,#ff88d4,#ffd568,#7be7b3,#76e8ff,#bd87ff,#ff88d4)}
-.mythlingArt[data-fx-idle]{animation:fxBreathe 5s ease-in-out infinite;animation-delay:var(--fx-delay,0s);transform-origin:50% 80%}
-.mythlingArt[data-fx-idle=fire]{animation-name:fxBreathe,fxFlicker;animation-duration:5s,2.3s}
+.mythlingArt[data-fx-idle]{will-change:transform;animation:fxBreathe 5s ease-in-out infinite;animation-delay:var(--fx-delay,0s);transform-origin:50% 80%}
 .mythlingArt[data-fx-idle=water]{animation-name:fxBob}
 .mythlingArt[data-fx-idle=wind],.mythlingArt[data-fx-idle=nature]{animation-name:fxSway}
 .mythlingArt[data-fx-idle=ice]{animation-name:fxBreathe,fxShiver;animation-duration:5s,7s}
-.mythlingArt[data-fx-idle=lightning]{animation-name:fxBreathe,fxSpark;animation-duration:5s,3.7s}
-.mythlingArt[data-fx-idle=shadow]{animation-name:fxBreathe,fxShade;animation-duration:5s,6s}
-.mythlingArt[data-fx-idle=moon],.mythlingArt[data-fx-idle=crystal]{animation-name:fxBreathe,fxTwinkle;animation-duration:5s,4.4s}
 .mapWrap{position:relative}
 .fxSky,.fxClouds{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
 .fxSky-dawn{background:linear-gradient(180deg,#ff9fb455,transparent 60%)}.fxSky-dusk{background:linear-gradient(180deg,#ff8a4a55,#6a2f6a33)}.fxSky-night{background:linear-gradient(180deg,#0a0f3a99,#0a0f3a55);mix-blend-mode:multiply}
 .fxSky i{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;animation:fxStar 3s ease-in-out infinite;mix-blend-mode:normal}
-.fxClouds span{position:absolute;left:-30%;width:260px;height:70px;background:radial-gradient(ellipse at 30% 60%,#ffffff40,transparent 60%),radial-gradient(ellipse at 65% 45%,#ffffff38,transparent 62%);filter:blur(4px);animation:fxCloud linear infinite}
+.fxClouds span{position:absolute;left:-30%;width:260px;height:70px;background:radial-gradient(ellipse at 30% 60%,#ffffff40,transparent 60%),radial-gradient(ellipse at 65% 45%,#ffffff38,transparent 62%);animation:fxCloud linear infinite}
 .fxTrail{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .fxTrail path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .fxTrailAll{stroke:#ffffff22;stroke-width:5;stroke-dasharray:2 12}
-.fxTrailDone{stroke:#ffd568;stroke-width:6;filter:drop-shadow(0 0 6px #ffd568);stroke-dasharray:1;stroke-dashoffset:1;animation:fxDraw 2.4s ease-out .2s forwards}
-.fxTrailNext{stroke:#76e8ff;stroke-width:5;stroke-dasharray:10 10;animation:fxMarch 1s linear infinite;filter:drop-shadow(0 0 6px #76e8ff)}
+.fxTrailDone{stroke:#ffd568;stroke-width:6;stroke-dasharray:1;stroke-dashoffset:1;animation:fxDraw 2.4s ease-out .2s forwards}
+.fxTrailNext{stroke:#76e8ff;stroke-width:5;stroke-dasharray:10 10;animation:fxMarch 1s linear infinite}
 .node.fxNext{animation:fxNode 1.6s ease-in-out infinite;z-index:3}
 @keyframes fxPulse{50%{box-shadow:0 0 0 6px #7be7b333}}
 @keyframes fxDrop{from{transform:translate(-50%,-80px);opacity:0}}
@@ -780,25 +724,19 @@ function injectStyles() {
 @keyframes fxRise{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}15%{transform:translate(-50%,-60%) scale(1.25);opacity:1}100%{transform:translate(-50%,-160%) scale(1);opacity:0}}
 @keyframes fxStreak{0%{clip-path:inset(0 100% 0 0);opacity:1}50%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}
 @keyframes fxKO{0%{transform:translate(-50%,-50%) scale(2.6);opacity:0}18%{transform:translate(-50%,-50%) scale(1);opacity:1}80%{opacity:1}100%{transform:translate(-50%,-70%) scale(1.05);opacity:0}}
-@keyframes fxSlow{0%{filter:saturate(.3) brightness(1.5)}100%{filter:none}}
 @keyframes fxShake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
 @keyframes fxHit{0%{filter:brightness(3) saturate(0)}100%{filter:none}}
-@keyframes fxHolo{0%,100%{background-position:0% 30%}50%{background-position:100% 70%}}
-@keyframes fxBreathe{0%,100%{transform:scale(1.02)}45%{transform:scale(1.055) translateY(-1%)}92%{transform:scale(1.02)}95%{transform:scale(1.035,1.0)}}
+@keyframes fxBreathe{0%,100%{transform:scale(1.02)}45%{transform:scale(1.05) translateY(-1%)}}
 @keyframes fxBob{0%,100%{transform:scale(1.05) translateY(1%)}50%{transform:scale(1.05) translateY(-2%)}}
 @keyframes fxSway{0%,100%{transform:scale(1.06) rotate(-1.2deg)}50%{transform:scale(1.06) rotate(1.2deg)}}
-@keyframes fxFlicker{0%,100%{filter:brightness(1)}30%{filter:brightness(1.12) saturate(1.15)}55%{filter:brightness(.97)}75%{filter:brightness(1.1)}}
 @keyframes fxShiver{0%,90%,100%{translate:0}92%{translate:-1px 0}94%{translate:1px 0}96%{translate:-1px 0}98%{translate:1px 0}}
-@keyframes fxSpark{0%,88%,100%{filter:none}90%{filter:brightness(1.6) contrast(1.1)}93%{filter:none}95%{filter:brightness(1.4)}}
-@keyframes fxShade{0%,100%{filter:brightness(1)}50%{filter:brightness(.82) saturate(1.2)}}
-@keyframes fxTwinkle{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12) hue-rotate(12deg)}}
 @keyframes fxStar{50%{opacity:.2}}
 @keyframes fxCloud{from{transform:translateX(0)}to{transform:translateX(160vw)}}
 @keyframes fxDraw{to{stroke-dashoffset:0}}
 @keyframes fxMarch{to{stroke-dashoffset:-20}}
 @keyframes fxNode{0%,100%{box-shadow:0 0 18px #83d4ff}50%{box-shadow:0 0 0 10px #76e8ff33,0 0 34px #76e8ff;transform:scale(1.12)}}
-.reduceMotion .fxStage,.reduceMotion .fxVault,.reduceMotion .fxClouds,.reduceMotion #fxLayer{display:none}
-@media(prefers-reduced-motion:reduce){.fxStage,.fxVault,.fxClouds,#fxLayer{display:none}}`;
+.reduceMotion .fxStage,.reduceMotion .fxClouds,.reduceMotion #fxLayer{display:none}
+@media(prefers-reduced-motion:reduce){.fxStage,.fxClouds,#fxLayer{display:none}}`;
   const style = document.createElement('style'); style.id = 'emberEnhancements'; style.textContent = css; document.head.appendChild(style);
 }
 
