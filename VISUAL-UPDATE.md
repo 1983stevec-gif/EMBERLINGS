@@ -12,3 +12,5 @@ This update preserves the existing save key and all owned copy IDs, inventory, b
 Validation requested by the player was intentionally focused: three new grouped checks in tests/visual-update.cjs; existing client/preservation checks; build and TypeScript. Browser smoke check covered binder, tutorial navigation, Equip Best + named save and entering a normal quest. A full multiplayer/end-to-end rerun was not performed for this visual update.
 
 Artwork refinement: atlas v2 uses ink contours, flatter painted color, reduced glow and simplified animal forms. Card layout, stats, economy, saved deck presets and progress are unchanged by this artwork-only refinement.
+
+Mobile artwork fix: uses actual lazy-loaded image elements in clipped tiles, with reserved square dimensions and a CSS height fallback, rather than relying only on CSS background painting. Card image minimums are set for small screens.
