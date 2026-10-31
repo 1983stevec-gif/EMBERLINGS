@@ -405,7 +405,7 @@ function onFrame() {
   const bottomNav = $('#app > .nav');
   if (bottomNav) {
     bottomNav.setAttribute('aria-label', 'Main');
-    for (const button of $('button[data-go]', bottomNav)) {
+    for (const button of $$('button[data-go]', bottomNav)) {
       const destination = button.dataset.go;
       const icon = $('.ico', button);
       if (icon && NAV_ART[destination]) icon.outerHTML = navIcon(destination);
