@@ -15,7 +15,7 @@ function canvas(W, H, bg, cls, inner) {
   const [top, bottom] = CROP[cls] || [0, H];
   return `<div class="uiXCrop" style="--ratio:${W / (bottom - top)};aspect-ratio:${W}/${bottom - top}"><div class="uiX ${cls}" style="--W:${W};aspect-ratio:${W}/${H};margin-top:${(-top / W * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
-const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992] };
+const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -435,13 +435,33 @@ function friendsExact(data) {
   }
 }
 
+
+/* ---------------------------------------------------------------- Card battle (mockup 1672 × 941) */
+// The painted arena and frames are the background; the game's own battle elements (fields, centre panel,
+// hand, piles, log, buttons) are moved into the painted spots. Runs on every battle render.
+function battleExact() {
+  const arena = $('.cardArena'); if (!arena || $('.uiXBattle', arena)) return;
+  const W = 1672, H = 941;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/battle.webp', 'uiXBattle', '');
+  const stage = document.createElement('div'); stage.className = 'uiXBLayer'; $('.uiXBattle', wrap).append(stage);
+  for (const el of [...arena.children]) stage.append(el);
+  const bar = $('.battleBar', stage); if (bar) bar.classList.add('uiXBBar');
+  const details = $$(':scope > details', stage); details.forEach((d, i) => d.classList.add(i ? 'uiXBLog' : 'uiXBDiscard'));
+  arena.append(wrap);
+  const host = $('.uiXBattle', wrap), z = () => host.style.setProperty('--z', (host.clientWidth / W).toFixed(4));
+  z(); battleRO.observe(host);
+}
+const battleRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1672).toFixed(4)); });
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
+  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
+  if (B.view === 'cardBattle' && exact) battleExact();
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
   if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });

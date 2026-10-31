@@ -48,7 +48,7 @@ function head() {
    <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
    <nav class="uiPNav" aria-label="Main">${NAV.map(([g, t]) => `<button class="uiPHot uiPTab ${g === 'map' ? 'uiPHQ' : ''} ${navView === g ? 'active' : ''}" data-go="${g}" style="${P(...V.tabs[g])}" ${navView === g ? 'aria-current="page"' : ''} aria-label="${t}"></button>`).join('')}</nav>
    <button class="uiPHot uiPSound" id="uiPSound" style="${P(...V.sound)}" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
-   <div class="uiPCoins coins" style="${P(...V.coins)}" aria-label="Coins"><b>${fmt(st.coins)}</b></div>
+   <div class="uiPCoins coins" style="${P(...V.coins)}" aria-label="Coins"><b style="font-size:calc(${(fmt(st.coins).length > 5 ? 29 * 5.2 / fmt(st.coins).length : 29).toFixed(1)} / 2000 * 100cqw)">${fmt(st.coins)}</b></div>
    <button class="uiPHot uiPUser uiUserBtn" style="${P(...V.user)}" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiPAva">${active ? B.art(active) : ''}</span><span class="uiPName">${name}</span></button>
   </div></div>`;
   return `<header class="top uiTop">${painted}<div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>

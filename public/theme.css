@@ -828,3 +828,106 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiPAva{left:4.4%;top:13%;width:23%;height:74%}
 .uiPName{left:31%;right:16%}
 @media(min-width:900px){.uiXCrop{width:min(100%,calc((100dvh - min(8.8vw,176px)) * var(--ratio)))!important}}
+
+/* ---------- Card battle (exact) ---------- */
+body.uiExact:has(.uiXBattle){background:#080d1c!important}
+body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!important;border:0!important;max-width:none!important;box-shadow:none!important}
+.uiXBattle{--u:calc(100cqw / 1672);font-family:'EB Garamond',Georgia,serif;color:#f2e9d6}
+.uiXBattle>*{position:absolute}
+.uiXBattle .mythCard{margin:0!important}
+/* top bar: concede · score · timer  (y values are mockup y − 62) */
+.uiXBattle .battleBar{position:absolute!important;left:calc(168*var(--u));top:calc(8*var(--u));width:calc(1334*var(--u));height:calc(42*var(--u));display:flex;align-items:center;justify-content:space-between;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+.uiXBattle #leaveCards{height:calc(36*var(--u));padding:0 calc(18*var(--u));font-size:calc(16*var(--u));background:#0b1022d9!important;border:1px solid #c9a35a!important;color:#f3dcae!important;border-radius:calc(7*var(--u));text-transform:none;letter-spacing:0;box-shadow:none}
+.uiXBattle .battleBar>strong{position:absolute;left:calc(520*var(--u));width:calc(302*var(--u));top:0;display:flex;flex-direction:column;align-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(17*var(--u));color:#f6efdc;line-height:1.15;white-space:nowrap}
+.uiXBattle .battleBar>strong b{font-size:1.45em;color:#fff;margin:0 .15em}
+.uiXBattle .battleBar>strong small{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:.62em;letter-spacing:.22em;color:#cfd6ea}
+.uiXBattle .battleBar>div{position:absolute;right:calc(2*var(--u));width:calc(76*var(--u));height:calc(42*var(--u));display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.uiXBattle #cardCountdown{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(20*var(--u));color:#fff}
+.uiXBattle .battleBar>div small{font-size:calc(10*var(--u));color:#cfd6ea}
+/* caption */
+.uiXBattle .battleCaption{left:calc(560*var(--u));top:calc(67*var(--u));width:calc(552*var(--u));text-align:center;background:none!important;margin:0!important;padding:0!important}
+.uiXBattle .battleCaption .pill{display:inline-block;background:none!important;border:0!important;padding:0;font-family:'EB Garamond',Georgia,serif;font-size:calc(13*var(--u));letter-spacing:.06em;color:#f3d48a;height:calc(22*var(--u));line-height:calc(22*var(--u));max-width:calc(220*var(--u));overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.uiXBattle .battleCaption h1{margin:calc(2*var(--u)) 0 0;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;font-size:calc(28*var(--u))!important;color:#f8e7bd!important;line-height:1.15;text-shadow:0 2px 4px #000}
+.uiXBattle .battleCaption p{margin:calc(2*var(--u)) 0 0;font-size:calc(13*var(--u));color:#e6e9f4}
+/* board: fields and centre panel */
+.uiXBattle .pocketBoard{position:absolute;inset:0;display:block!important;margin:0!important;pointer-events:none}
+.uiXBattle .pocketBoard>*{pointer-events:auto}
+.uiXBattle .pocketField{position:absolute!important;top:calc(93*var(--u));height:calc(440*var(--u));text-align:center;margin:0!important;padding:0!important;background:none!important;border:0!important}
+.uiXBattle .pocketField>*{position:absolute;margin:0!important}
+.uiXBattle .pocketField:nth-child(1){left:calc(250*var(--u));width:calc(370*var(--u))}
+.uiXBattle .pocketField:nth-child(3){left:calc(1088*var(--u));width:calc(326*var(--u))}
+.uiXBattle .pocketField>h2{top:0;display:flex;align-items:center;justify-content:center;gap:.35em;font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:calc(15*var(--u));color:#f6efdc;letter-spacing:0;white-space:nowrap;overflow:hidden}
+.uiXBattle .pocketField>h2 svg{width:1.1em;height:1.1em;color:#e9c27a}
+.uiXBattle .pocketField:nth-child(1)>h2{left:calc(115*var(--u));width:calc(140*var(--u));height:calc(30*var(--u))}
+.uiXBattle .pocketField:nth-child(3)>h2{left:calc(40*var(--u));width:calc(250*var(--u));height:calc(27*var(--u));font-size:calc(16*var(--u))}
+.uiXBattle .pocketActive{display:flex;align-items:center;justify-content:center}
+.uiXBattle .pocketField:nth-child(1) .pocketActive{left:calc(45*var(--u));top:calc(50*var(--u));width:calc(280*var(--u));height:calc(220*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .pocketActive{left:calc(60*var(--u));top:calc(40*var(--u));width:calc(204*var(--u));height:calc(257*var(--u))}
+.uiXBattle .pocketActive .pocketCreature{position:relative}
+.uiXBattle .pocketActive .mythCard,.uiXBattle .handCard .mythCard,.uiXBattle .benchCard .mythCard{width:230px!important;max-width:none!important;min-width:0!important}
+.uiXBattle .pocketField:nth-child(1) .pocketActive>*{zoom:calc(var(--z) * .62)}
+.uiXBattle .pocketField:nth-child(3) .pocketActive>*{zoom:calc(var(--z) * .73)}
+.uiXBattle .emptyCard{zoom:1!important;height:100%!important;width:100%;background:none!important;border:0!important;display:flex;align-items:center;justify-content:center;gap:.6em;font-size:calc(19*var(--u));color:#f2ead8}
+.uiXBattle .emptyCard svg{width:1em;height:1em}
+.uiXBattle .pocketField:nth-child(1) .cardHP{left:calc(60*var(--u));top:calc(274*var(--u));width:calc(250*var(--u));height:calc(5*var(--u))}
+.uiXBattle .pocketField:nth-child(1) .cardHP+.battleIconStats{left:calc(45*var(--u));top:calc(279*var(--u));width:calc(280*var(--u));height:calc(12*var(--u));font-size:calc(10*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .cardHP{left:calc(70*var(--u));top:calc(299*var(--u));width:calc(185*var(--u));height:calc(6*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .cardHP+.battleIconStats{left:calc(60*var(--u));top:calc(306*var(--u));width:calc(204*var(--u));height:calc(22*var(--u));font-size:calc(14*var(--u))}
+.uiXBattle .cardHP{background:#0b1022;border-radius:99px;overflow:hidden}.uiXBattle .cardHP i{display:block;height:100%;background:linear-gradient(90deg,#3fae72,#7fe0a8)}
+.uiXBattle .battleIconStats{display:flex!important;align-items:center;justify-content:center;gap:1.2em;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif}
+.uiXBattle .battleIconStats span{display:inline-flex;align-items:center;gap:.3em}.uiXBattle .battleIconStats .uiGlyph{width:1.15em;height:1.15em}
+.uiXBattle .battleIconStats b{color:#f6efdc;font-size:1.05em}
+.uiXBattle .pocketBench{display:grid!important;grid-template-columns:repeat(3,1fr);margin:0!important}
+.uiXBattle .pocketField:nth-child(1) .pocketBench{left:calc(3*var(--u));top:calc(290*var(--u));width:calc(363*var(--u));height:calc(73*var(--u));column-gap:calc(14*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .pocketBench{left:calc(4*var(--u));top:calc(332*var(--u));width:calc(319*var(--u));height:calc(56*var(--u));column-gap:calc(13*var(--u))}
+.uiXBattle .benchEmpty{visibility:hidden}
+.uiXBattle .benchCard{display:flex;justify-content:center;align-items:flex-start;min-width:0;background:none!important;border:0!important;padding:0!important}
+.uiXBattle .benchCard>*{zoom:calc(var(--z) * .33)}
+.uiXBattle .pocketField:nth-child(1) .pocketBench+.battleIconStats{left:calc(110*var(--u));top:calc(370*var(--u));width:calc(150*var(--u));height:calc(25*var(--u));font-size:calc(15*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .pocketBench+.battleIconStats{left:calc(95*var(--u));top:calc(395*var(--u));width:calc(150*var(--u));height:calc(23*var(--u));font-size:calc(15*var(--u))}
+.uiXBattle .pocketField:nth-child(1) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(408*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(425*var(--u))}
+.uiXBattle .attackPanel{position:absolute!important;left:calc(734*var(--u));top:calc(176*var(--u));width:calc(208*var(--u));height:calc(294*var(--u));overflow:auto;padding:calc(6*var(--u)) calc(10*var(--u))!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important;display:block!important;font-size:calc(11.5*var(--u));scrollbar-width:thin}
+.uiXBattle .attackPanel h2{display:flex;align-items:center;gap:.5em;margin:calc(8*var(--u)) 0 calc(2*var(--u));font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(15*var(--u));letter-spacing:.04em;text-transform:uppercase;color:#f3dcae}
+.uiXBattle .attackPanel h2 svg{width:1.2em;height:1.2em;color:#e9c27a}
+.uiXBattle .attackPanel p{margin:0 0 calc(4*var(--u)) calc(26*var(--u));color:#dfe4f4;line-height:1.3}
+.uiXBattle .attackPanel .button{display:block;width:100%;margin:calc(8*var(--u)) 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;text-transform:none;letter-spacing:0;font-size:calc(17*var(--u));padding:calc(7*var(--u)) 0;border-radius:calc(10*var(--u))}
+.uiXBattle #readyPocket,.uiXBattle #endPocketTurn{font-size:calc(21*var(--u));padding:calc(9*var(--u)) 0;background:linear-gradient(180deg,#ffd982,#e5a13a 55%,#c8741a)!important;border:2px solid #ffe7b0!important;color:#2a1405!important;box-shadow:inset 0 2px 0 #fff9,0 0 0 2px #6a3c10,0 6px 14px #0009!important}
+.uiXBattle #showPocketRules{width:62%;margin:calc(8*var(--u)) auto 0;background:#0b1022!important;border:1px solid #c9a35a!important;color:#f3dcae!important;box-shadow:none!important}
+.uiXBattle .battleTips{margin:calc(8*var(--u)) 0 0;text-align:center;font-size:calc(11*var(--u))}
+.uiXBattle .attackRune{font-size:calc(12*var(--u))!important}
+/* hand tray */
+.uiXBattle .pocketHand{position:absolute!important;left:calc(150*var(--u));top:calc(544*var(--u));width:calc(1372*var(--u));height:calc(278*var(--u));display:grid!important;grid-template-columns:calc(220*var(--u)) 1fr;grid-template-rows:auto 1fr;column-gap:calc(16*var(--u));padding:calc(10*var(--u)) calc(16*var(--u))!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important}
+.uiXBattle .pocketHand>h2{grid-column:1;margin:calc(4*var(--u)) 0 0;display:flex;align-items:center;gap:.4em;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(21*var(--u));color:#f6efdc}
+.uiXBattle .pocketHand>h2 svg{width:1.1em;height:1.1em;color:#e9c27a}
+.uiXBattle .pocketHand>p{grid-column:1;margin:calc(10*var(--u)) 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:calc(19*var(--u));line-height:1.2;color:#f2ead8}
+.uiXBattle .handRow{grid-column:2;grid-row:1/3;display:flex!important;gap:calc(30*var(--u));overflow-x:auto;overflow-y:hidden;align-items:flex-start;padding:calc(2*var(--u)) calc(6*var(--u)) calc(4*var(--u));scrollbar-width:thin;margin:0!important;flex-wrap:nowrap!important}
+.uiXBattle .handCard{flex:0 0 calc(182*var(--u));width:calc(182*var(--u));display:flex;flex-direction:column;align-items:center;gap:calc(6*var(--u));padding:0!important;background:none!important;border:0!important}
+.uiXBattle .handCard>.pocketCreature,.uiXBattle .handCard>.mythCard{zoom:calc(var(--z) * .56)}
+.uiXBattle .handCard>.button{width:100%;margin:0!important;padding:calc(5*var(--u)) 0!important;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(16*var(--u));text-transform:none;letter-spacing:0;border-radius:calc(6*var(--u));background:linear-gradient(180deg,#f9cd6c,#e3a23c)!important;border:1px solid #ffe2a0!important;color:#2a1405!important;box-shadow:inset 0 1px 0 #fff8,0 2px 6px #0007!important}
+.uiXBattle .handCard>.button:disabled{background:linear-gradient(180deg,#6a5530,#54432a)!important;color:#c9b88f!important}
+.uiXBattle .handCard>.button svg{width:1em;height:1em}
+.uiXBattle #pocketHandTarget{grid-column:1;align-self:end;font-size:calc(13*var(--u))}
+.uiXBattle #pocketHandTarget .button{font-size:calc(13*var(--u));padding:calc(4*var(--u)) calc(8*var(--u));margin:calc(3*var(--u)) calc(3*var(--u)) 0 0}
+/* discard + log bar */
+.uiXBattle details.uiXBDiscard,.uiXBattle details.uiXBLog{position:absolute!important;top:calc(836*var(--u));height:calc(28*var(--u));margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;font-size:calc(15*var(--u));color:#e6e9f4}
+.uiXBattle details.uiXBDiscard{left:calc(200*var(--u));width:calc(620*var(--u))}
+.uiXBattle details.uiXBLog{left:calc(860*var(--u));width:calc(620*var(--u));text-align:right}
+.uiXBattle details>summary{cursor:pointer;line-height:calc(28*var(--u))}
+.uiXBattle details[open]>:not(summary){position:absolute;bottom:calc(30*var(--u));left:0;right:0;max-height:calc(300*var(--u));overflow:auto;background:#0d1534f2;border:1px solid #c9a35a;border-radius:calc(8*var(--u));padding:calc(10*var(--u));text-align:left;z-index:20;font-size:calc(13*var(--u))}
+.uiXBattle #cardError{position:absolute!important;left:calc(500*var(--u));width:calc(672*var(--u));top:calc(512*var(--u));text-align:center;margin:0;color:#ffb0a0;font-size:calc(14*var(--u));pointer-events:none}
+.uiXBattle .pocketInspect,.uiXBattle #pocketInspect{z-index:30}
+.uiXBLayer{position:absolute;left:0;right:0;top:calc(62*var(--u));bottom:0}
+.uiXBLayer>*{position:absolute}
+.uiXBattle>.uiXBLayer{position:absolute}
+.uiPCoins b{font-size:calc(min(29, 29 * 5 / var(--cl)) / 2000 * 100cqw)}
+.uiXBattle .battleBar>strong{display:block;text-align:center;top:calc(2*var(--u))}
+.uiXBattle .battleBar>strong small{display:block;margin-top:calc(3*var(--u))}
+.uiXBattle .handCard>.pocketCreature,.uiXBattle .handCard>.mythCard{zoom:calc(var(--z) * .5)}
+.uiXBattle .handCard{gap:calc(5*var(--u))}
+.uiXBattle .handCard>.button{padding:calc(4*var(--u)) 0!important;font-size:calc(15*var(--u))}
+.uiPCoins b{left:39%}
+.uiXBattle .battleCaption{top:calc(64*var(--u))}
+.uiXBattle .pocketField:nth-child(3) .benchCard>*{zoom:calc(var(--z) * .27)}
+.uiXBattle .pocketField:nth-child(3) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(430*var(--u));font-size:calc(13*var(--u))}
+.uiXBattle .pocketField:nth-child(1) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(412*var(--u))}
