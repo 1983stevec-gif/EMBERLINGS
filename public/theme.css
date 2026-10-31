@@ -386,3 +386,91 @@ body.uiTheme.uiFull #app{padding-left:28px;padding-right:28px}
 .uiDeckLine{grid-template-columns:64px 24px 1fr auto auto;padding:1px 14px 1px 2px}.uiThumb{height:30px}
 .uiDeckList{gap:5px;max-height:none}
 .uiDSActions .uiBtnLine:nth-child(2){border-color:#6a7ac0}
+
+/* Exact mockup pages (Home, Adventure HQ, Vault) on wide screens */
+body.uiExact .uiTop,body.uiExact .nav{display:none!important}
+body.uiExact #app{max-width:none!important;padding:0!important;background:#07090e}
+body.uiExact{background:#07090e!important}
+body.uiExact:has(.uiXVault){background:#0e1636!important}
+body.uiExact:has(.uiXVault) #app{background:#0e1636}
+.uiExactPage{width:min(100vw,calc(100dvh * 1586 / 992));margin:0 auto}
+.uiExactPage:has(.uiXVault){width:min(100vw,calc(100dvh * 1536 / 1024))}
+.uiX{position:relative;width:100%;background-size:100% 100%;background-repeat:no-repeat;container-type:inline-size;overflow:hidden}
+.uiX>*{position:absolute}
+.uiHot{position:absolute;background:transparent;border:0;padding:0;margin:0;cursor:pointer;border-radius:6px;z-index:3}
+.uiHot:hover{background:#ffffff0d;box-shadow:0 0 0 1px #e9b75a55}
+.uiHot:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiTxt{display:flex;align-items:center;white-space:nowrap;color:#f2e9d6;font-family:'EB Garamond',Georgia,serif;line-height:1;pointer-events:none;z-index:2}
+.uiXCoins{color:#f6eedb;font-weight:500}
+.uiXName{color:#f2ead8}
+.uiXAvatar{border-radius:50%;overflow:hidden;z-index:2;pointer-events:none}
+.uiXAvatar .mythlingArt{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+.uiXSub{color:#e6dcc6}
+.uiXQuests{color:#f3ead8}
+.uiXFill{background:linear-gradient(90deg,#c98a2c,#ffd27a);box-shadow:0 0 8px #ffb04a;border-radius:3px;z-index:2;pointer-events:none}
+.uiXResume{z-index:3;background:#0b0e14cc;color:#ffd27a;border:1px solid #e9b75a;border-radius:6px;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
+.uiXFan{position:absolute;inset:0;pointer-events:none;z-index:2}
+.uiFit{position:absolute;overflow:visible;transform-origin:50% 50%;z-index:2;pointer-events:none}
+.uiFitInner{width:230px;transform-origin:0 0}
+.uiFitInner .mythCard{width:230px!important;max-width:none!important;margin:0!important}
+.uiXDrawer{max-width:1100px;margin:16px auto;padding:0 16px}
+/* Adventure HQ */
+.uiXRoute{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.uiXRoute polyline{fill:none;stroke:#f3d58a;stroke-width:2.5;stroke-dasharray:4 7;opacity:.85}
+.uiXNode.node{position:absolute;min-width:0;padding:0;margin:0;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a404c,#15181f);border:2px solid #cdbf98;color:#fff;font-family:'EB Garamond',Georgia,serif;font-weight:600;box-shadow:0 3px 6px #000c;cursor:pointer;z-index:4}
+.uiXNode.done{border-color:#7cc25e;box-shadow:0 0 0 2px #10180c,0 0 10px #7cc25e88}
+.uiXNode:not(.done):not(.locked){border-color:#5aa8ff;box-shadow:0 0 0 2px #0a1830,0 0 12px #4aa3ffaa}
+.uiXNode.locked{filter:grayscale(.6) brightness(.85)}
+.uiXNode.boss{border-radius:6px 6px 50% 50%/6px 6px 62% 62%;background:linear-gradient(180deg,#b5352a,#6c1612);border:2px solid #e9c27a}
+.uiXNode.uiSel{border-color:#ffa53a!important;box-shadow:0 0 0 2px #1a0e04,0 0 16px 4px #ff9a2acc!important}
+.uiXNode:hover{transform:scale(1.08)}
+.uiXSheet{background:#0b1626d9;border:1px solid #c9a35a88;border-radius:12px;z-index:1;display:flex;justify-content:center;padding-top:1%}
+.uiXSheet h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-variant:small-caps;color:#fbecc8;letter-spacing:.06em}
+.uiXSheet small{font-family:'EB Garamond',Georgia,serif;font-size:.6em;color:#e9c27a;margin-left:.6em}
+.uiXChip{z-index:3;display:flex;align-items:center;justify-content:center;gap:.5em;background:#0b0f15e6;border:1px solid #9a7a42;border-radius:8px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
+.uiXChip b{color:#ffd27a;font-weight:500}.uiXChip.on{border-color:#ffd27a;box-shadow:0 0 10px #ffb04a88}
+.uiXCurrent{z-index:3;background:linear-gradient(180deg,#16233a,#0f1828);border:1px solid #5a6a8a;border-radius:6px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
+#uiQuest{position:absolute;inset:0;pointer-events:none}#uiQuest>*{pointer-events:auto}#uiQuest .uiTxt{pointer-events:none}
+.uiXRegion{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.04em;color:#f3e3c2}
+.uiXLevel{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.08em;color:#ddd2bb}
+.uiXArt{position:absolute;overflow:hidden;border-radius:4px;border:2px solid #d9b77a;z-index:2}
+.uiXArt .mythlingArt{position:absolute!important;left:0!important;right:0!important;top:50%!important;width:100%!important;height:auto!important;aspect-ratio:1;transform:translateY(-50%)}
+.uiXQuest{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#fff4e0}
+.uiXStatus{color:#eba64a;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700}.uiXStatus.done{color:#8fd27a}.uiXStatus.locked{color:#9aa0aa}
+.uiXDesc{color:#ddd3be;white-space:normal}.uiXDesc span{color:#ffd27a;margin-left:.4em}
+.uiXBegin.locked{background:#0b0e14cc;color:#c9c0ae;display:grid;place-items:center;font-family:'EB Garamond',Georgia,serif;cursor:not-allowed}
+.uiXJourney{color:#ddd2bb}
+/* Vault */
+.uiXSlot{background-size:100% 100%;z-index:1}
+.uiXSlot.gold{background-image:url(/art/ui/slot-gold.webp)}.uiXSlot.navy{background-image:url(/art/ui/slot-navy.webp)}
+.uiXSlot>*{position:absolute}
+.uiXSlot .uiTxt{justify-content:center;font-family:'EB Garamond',Georgia,serif}
+.uiXLabel{justify-content:flex-start!important;font-weight:700;letter-spacing:.12em;color:#f2c46d}
+.uiXTitle{font-family:'EB Garamond',Georgia,serif;font-weight:600;color:#fff}
+.uiXCost{color:#f1c46a;font-weight:600;gap:.45em}
+.uiXCoin{display:inline-block;width:1.15em;height:1.15em;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe7a0,#f0a83a 55%,#b8661a);box-shadow:inset 0 0 0 2px #ffd27a88}
+.uiXText{color:#e2e6f4}.uiXGold{color:#f1c46a;font-weight:600}
+.uiXRarity{color:#c8d1ec;justify-content:flex-end!important}
+.uiXIcon{pointer-events:none}.uiXBadge{pointer-events:none}
+.uiXPortrait{border-radius:50%;overflow:hidden;border:2px solid #d9b77a}.uiXPortrait>*{width:100%;height:100%}
+.uiXPortrait .mythlingPortrait{width:100%!important;height:100%!important}
+.uiXSelHost select,.uiXSelect{width:100%;height:100%;background:#16205a!important;border:1px solid #5a68b0!important;border-radius:10px!important;color:#fff!important;font-family:'EB Garamond',Georgia,serif;font-size:inherit;padding:0 3%!important}
+.uiXBtnHost,.uiXCollect{display:flex}.uiXBtnRow{display:flex;gap:4%}
+.uiXBtn{flex:1;width:100%;height:100%;border-radius:10px;border:1px solid #ffe2a0;background:linear-gradient(180deg,#f7c96a,#e09a35);color:#2a1405;font-family:'EB Garamond',Georgia,serif;font-size:inherit;font-weight:600;cursor:pointer;margin:0;padding:0;box-shadow:0 3px 8px #0006}
+.uiXBtn:disabled{background:linear-gradient(180deg,#8a6a3e,#73582f);border-color:#8a6a3e;color:#c3a271;cursor:not-allowed;box-shadow:none}
+.uiXHint{justify-content:center;color:#d6dcef}
+.uiXStat{color:#fff;font-weight:600}.uiXStat2{color:#d6dcef}
+.uiXSaved{color:#fff;font-weight:600;gap:.3em}
+.uiXBelow{max-width:1100px;margin:14px auto!important}
+.uiSr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.uiExactPage.uiHome{display:block}
+.uiX .uiTxt{position:absolute;gap:.28em}
+.uiXQuests small{font-size:.78em}
+.uiXSelHost select,.uiXSelect{background:#18225a!important;border-color:#5d6bb0!important;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,#e8ecff 50%),linear-gradient(135deg,#e8ecff 50%,transparent 50%)!important;background-position:calc(100% - 22px) 52%,calc(100% - 16px) 52%!important;background-size:6px 6px!important;background-repeat:no-repeat!important}
+.uiXBtn:disabled{background:linear-gradient(180deg,#9c7743,#836236);border-color:#a8854f;color:#d6b27c;opacity:.92}
+.uiXLayer{position:absolute;inset:0;pointer-events:none;z-index:3}.uiXLayer>.uiHot{pointer-events:auto}
+@media(max-width:899px){.uiBrand .uiWordmark{height:30px}.uiTop .coins{font-size:14px!important;padding:3px 10px 3px 4px}.uiTop .coins b{font-size:14px}.uiCoin{width:20px;height:20px}.uiTop{gap:6px;padding:8px 10px;margin:0 -14px 12px}.uiAvatar{width:28px;height:28px}.uiUser{padding:2px 8px 2px 2px}}
+body.uiTheme{overflow-x:hidden}
+.uiHero.uiHasArt{background-position:62% center}
+@media(max-width:640px){.uiHero.uiHasArt{background-position:70% center}}

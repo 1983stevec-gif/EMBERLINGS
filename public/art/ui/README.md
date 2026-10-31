@@ -1,13 +1,8 @@
-# Optional painted interface art
+# Interface art
 
-The interface draws its own scenes from the Mythling card art. To use painted artwork instead,
-add any of these files and list their keys in `manifest.json`, e.g. `["hero","map"]`.
+Cut from the supplied Home, Adventure HQ and Mythling Vault mockups with `scripts/art/cut-mockups.py`
+and `scripts/art/cut-mockups-2.py` (OpenCV). Live values are removed from the art and drawn by `public/ui-exact.js`.
 
-| key | file | where |
-|---|---|---|
-| hero | home-hero.webp | Home hero (wide landscape, ~1100×470) |
-| collection | tile-collection.webp | Home tile: Mythling Collection |
-| packs | tile-packs.webp | Home tile: Open Packs |
-| fusion | tile-fusion.webp | Home tile: Fusion Lab |
-| trading | tile-trading.webp | Home tile: Friend Trading |
-| journey | journey-strip.webp | Home "Your adventure" strip |
+- `home.webp`, `map.webp`, `vault.webp`: full screens used on wide displays (1000 px and up).
+- `home-hero.webp`, `home-tile0-3.webp`, `home-journey.webp`: pieces used by the stacked phone layout.
+- `slot-gold.webp`, `slot-navy.webp`, `slot-icon-*.webp`, `badge-available.png`: Vault slot frames and icons.

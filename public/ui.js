@@ -13,7 +13,7 @@ const FULL_VIEWS = ['home', 'map', 'inventory', 'index', 'decks'];
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 /* Optional painted artwork: put files in public/art/ui/ and list their keys in public/art/ui/manifest.json (for example ["hero","map"]). */
-const ART = { hero: '/art/ui/home-hero.webp', collection: '/art/ui/tile-collection.webp', packs: '/art/ui/tile-packs.webp', fusion: '/art/ui/tile-fusion.webp', trading: '/art/ui/tile-trading.webp', journey: '/art/ui/journey-strip.webp' };
+const ART = { hero: '/art/ui/home-hero.webp', collection: '/art/ui/home-tile0.webp', packs: '/art/ui/home-tile1.webp', fusion: '/art/ui/home-tile2.webp', trading: '/art/ui/home-tile3.webp', journey: '/art/ui/home-journey.webp' };
 const artFound = {};
 fetch('/art/ui/manifest.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : []).then(list => { for (const k of Array.isArray(list) ? list : []) if (ART[k]) artFound[k] = ART[k]; applyArt(); }).catch(() => {});
 function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFound[el.dataset.uiArt]; if (src && !el.classList.contains('uiHasArt')) { el.style.backgroundImage = `url(${src})`; el.classList.add('uiHasArt'); } } }
@@ -26,7 +26,7 @@ function head() {
   return `<header class="top uiTop"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home"><img class="uiWordmark" src="/branding/emberlings-wordmark.png" alt="EMBERLINGS" width="267" height="54"></button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => [g, g === 'inventory' && v === 'decks' ? 'Card Vault' : t]).map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
-  ${v === 'home' ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' ? '' : '-->'}</div></header>`;
+  ${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '<!--'}<button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button>${v === 'home' && !window.EmberUI?.exactWide?.() ? '' : '-->'}</div></header>`;
 }
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
@@ -346,6 +346,7 @@ function onFrame() {
 /* ---------------------------------------------------------------- Vault: rearranges the game's own Vault markup (same buttons and ids) */
 const VAULT_COSTS = [0, 2500, 10000, 35000, 100000];
 function vaultLayout() {
+  if (window.EmberUI?.exactWide?.()) return;
   const app = $('#app'), h1 = $('h1', app), intro = h1?.nextElementSibling, toolbar = $('.vaultToolbar'), slots = $('.vaultSlots');
   if (!h1 || !toolbar || !slots || $('.uiVaultHead')) return;
   const v = B.state.vault || {}, unlocked = v.unlocked || 1, mult = (intro?.textContent.match(/·\s*([\d.]+×)/) || [])[1] || '1×';
@@ -392,7 +393,7 @@ function vaultLayout() {
   const rules = $('.uiVaultRules'); if (rules) { const h = $('h2', rules); if (h) h.textContent = 'Vault rules'; }
 }
 if (B) {
-  window.EmberUI = { head, home, map, afterMap, selectLevel };
+  window.EmberUI = { head, home, map, afterMap, selectLevel, questName };
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:binderReady', e => binderLayout(e.detail));
   window.addEventListener('ember:decksReady', () => deckLayout());

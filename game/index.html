@@ -925,11 +925,11 @@ window.EmberBridge=Object.freeze({get state(){return state},get view(){return vi
  meta:c=>meta(c),rarityRank:c=>rarityRank(c),rarityLabel:c=>rarityLabel(c),revealColor:c=>revealColor(c),mutationTrait:c=>mutationTrait(c),
  save:()=>save(),transact:fn=>economyTransaction(fn),toast:m=>toast(m),go:v=>go(v),bind:()=>bind(),portrait:c=>mythlingPortrait(c),
  online:(path,body)=>onlineApi(path,body),vaulted:c=>vaulted(c),busy:()=>!!(state.pendingTradeId||Object.keys(state.tradeLocks||{}).length||state.cardBattle||state.cardOnlineId||pendingPackData()),
- adopt:next=>{state=next;save()},binderFilter:(k,v)=>{binderFilter[k]=v||undefined;if(!v)delete binderFilter[k];binderPage=0;showBinder(binderIndex)},binderState:()=>({...binderFilter,sort:binderSort}),
+ adopt:next=>{state=next;save()},cardHTML:(c,o)=>collectibleCard(c,o||{}),binderFilter:(k,v)=>{binderFilter[k]=v||undefined;if(!v)delete binderFilter[k];binderPage=0;showBinder(binderIndex)},binderState:()=>({...binderFilter,sort:binderSort}),
  deckSummary:()=>{try{const pool=ownedBattlePool(),templates=deckTemplates(pool),keys=pocketDeckKeys||state.pocketDeck?.keys||[];return templates.map(t=>{const c=t.cardType==='trainer'?t:{...t.sources[0],stage:t.stage,elite:t.elite};return {key:t.key,trainer:t.cardType==='trainer',stage:t.stage||0,kind:c.kind,name:pocketName(c),element:t.cardType==='trainer'?null:meta(c).element,owned:t.cardType==='trainer'?null:t.sources.length,count:keys.filter(k=>k===t.key).length}})}catch(e){return []}},regions,bosses,limit:()=>limit(),encounter:l=>encounter(l),questPrize:l=>questPrize(l),deck:()=>{try{return currentDeck()}catch(e){return []}},art:c=>cardArtwork(c),active:()=>getCreature(),positionLevel:i=>positionLevel(i),resetTest:()=>resetTestProgress(),beginBattle:l=>{fxStartNow=true;try{return startBattle(l)}finally{fxStartNow=false}},resumeBattle:()=>resumeCardBattle(),registerView:(name,render)=>{views[name]=render},render:html=>frame(html)});
 }
 
 vaultData();migrateWholeVaultRates(state,Date.now(),coinMultiplier());
 launchEmberlings();})();
-</script><script type="module" src="/enhancements.js"></script><script type="module" src="/ui.js"></script></body></html>
+</script><script type="module" src="/enhancements.js"></script><script type="module" src="/ui.js"></script><script type="module" src="/ui-exact.js"></script></body></html>
 
