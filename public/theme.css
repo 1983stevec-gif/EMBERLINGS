@@ -848,7 +848,7 @@ body.uiTablet .uiXCrop{width:100%}
 .uiTabletQuest .uiBegin{width:100%;min-height:52px;font-size:22px;padding:14px 8px;scroll-margin-block:100px 125px}
 .uiTabletMapPage>.uiJourneyBar{grid-area:journey;flex-wrap:wrap;gap:14px;padding:16px 20px}
 .uiTabletMapPage .uiJourneyBar .uiTrack{min-width:200px;height:26px}
-@media(min-width:768px) and (max-width:999px){
+@media(min-width:600px) and (max-width:999px){
  .uiTabletHome{grid-template-columns:1fr;grid-template-areas:"hero" "deck" "tiles" "journey" "util" "drawer"}
  .uiTabletHome .uiHero{min-height:clamp(350px,40dvh,480px);background-position:center}
  .uiTabletHome .uiDeckPanel{display:grid;grid-template-columns:minmax(0,1fr) 190px;grid-template-areas:"title title" "fan edit" "fan train";gap:10px 20px;align-items:center}
@@ -868,3 +868,115 @@ body.uiTablet .uiXCrop{width:100%}
  .uiTabletMapPage .uiJourneyBar .uiTrack{flex-basis:100%;order:3}
 }
 .uiTabletHome .uiHero::after{background:linear-gradient(90deg,#0b111bf5 0,#0b111be8 43%,#0b111b30 67%,transparent 82%)}
+
+/* Tablet audit: readable controls, bounded grids and normal page scrolling on every screen. */
+:root{--ui-header-height:65px;--ui-nav-height:96px;--ui-usable-height:calc(100dvh - 161px)}
+html:has(body.uiTablet){scroll-padding-top:calc(var(--ui-header-height) + 14px);scroll-padding-bottom:calc(var(--ui-nav-height) + 18px)}
+body.uiTablet:not(.arenaActive) #app{padding-bottom:calc(var(--ui-nav-height) + 28px + env(safe-area-inset-bottom))!important}
+body.uiTablet #app>section,body.uiTablet #app>div,body.uiTablet .panel,body.uiTablet .hero,body.uiTablet .grid>*{min-width:0;max-width:100%}
+body.uiTablet :is(button,input,select,textarea,summary){max-width:100%;scroll-margin-block:calc(var(--ui-header-height) + 14px) calc(var(--ui-nav-height) + 18px)}
+body.uiTablet :is(button,input,select,summary){min-height:44px}
+body.uiTablet :is(button,summary){overflow-wrap:anywhere}
+body.uiTablet :is(select,textarea,input:not([type="checkbox"]):not([type="radio"])){min-width:0;font-size:16px;box-sizing:border-box}
+body.uiTablet :is(input[type="checkbox"],input[type="radio"]){width:20px;height:20px;min-height:20px;padding:0;flex:none;accent-color:#e9b75a}
+body.uiTablet .uiMenu{max-width:calc(100vw - 24px);max-height:calc(var(--ui-usable-height) - 16px);overflow:auto;overscroll-behavior:contain}
+body.uiTablet .uiMenu button{min-height:44px;white-space:normal}
+body.uiTablet .tourBubble{bottom:calc(var(--ui-nav-height) + 12px);max-height:calc(var(--ui-usable-height) - 24px);overflow:auto}
+body.uiTablet .fxBanner{top:calc(var(--ui-header-height) + 8px);width:max-content;max-width:calc(100vw - 32px);pointer-events:none;font-size:16px}
+body.uiTablet.uiKeyboard .nav{display:none!important}
+body.uiTablet .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+body.uiTablet .grid>button{padding:12px;min-width:0}
+body.uiTablet .panel p,body.uiTablet .hero p{overflow-wrap:break-word;line-height:1.5}
+body.uiTablet .back{min-height:44px;padding:10px 0}
+body.uiTablet .uiTabletMapScene .uiXNode{min-height:0;overflow-wrap:normal}
+body.uiTablet .uiTabletMapScene .uiXNode::before{inset:50% auto auto 50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+body.uiTablet .uiTabletMapScene .uiHot{min-height:32px}
+/* Packs keep the desktop illustrations, with full-size purchase controls. */
+body.uiTablet .packTier{display:flex;flex-direction:column;align-items:center;padding:18px 14px}
+body.uiTablet .packTier .uiPackArt{height:215px;width:auto;max-width:100%;object-fit:contain}
+body.uiTablet .packTier h2{font-size:24px;margin-top:12px}
+body.uiTablet .packTier>p:last-child{margin-top:auto;width:100%;padding-top:12px}
+body.uiTablet .packTier [data-buy]{width:100%;min-height:52px;padding:12px 8px;font-size:14px}
+/* Binder reserves space for its desktop spine and element tabs inside the viewport. */
+body.uiTablet .uiBinderHead{flex-wrap:wrap;gap:12px}
+body.uiTablet .uiBinderBar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%}
+body.uiTablet .uiBinderBar .uiSearch{grid-column:1/-1;width:100%;max-width:none}
+body.uiTablet .uiBinderBar .uiSelect,body.uiTablet .uiBinderBar #binderSort,body.uiTablet .uiMore summary{width:100%;min-width:0!important;min-height:44px;font-size:16px}
+body.uiTablet .uiMore>div{min-width:220px;max-width:calc(100vw - 48px)}
+body.uiTablet .uiMore select{width:100%;min-height:44px}
+body.uiTablet .magicalBinder{width:calc(100% - 54px)!important;max-width:calc(100% - 54px)!important;margin:18px 54px 18px 0!important;padding:14px 12px 14px 62px!important}
+body.uiTablet .uiSpine{width:52px}
+body.uiTablet .uiBinderTabs{right:-44px}
+body.uiTablet .uiBinderTabs button{width:40px;height:48px}
+body.uiTablet .uiVineTop,body.uiTablet .uiVineSide{display:none}
+body.uiTablet .binderPages{grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:start;gap:6px!important}
+body.uiTablet .binderPocket{min-width:0;min-height:0;padding:28px 6px 8px!important}
+body.uiTablet .binderPocket .mythCard{width:100%!important;max-width:230px!important;height:auto;aspect-ratio:63/88}
+body.uiTablet .uiBinderFoot{grid-template-columns:1fr;margin:0;padding:14px 8px 18px;min-height:0;gap:12px;justify-items:center}
+body.uiTablet .uiBinderFoot>*{max-width:100%;min-width:0}
+body.uiTablet .uiBrowse{justify-self:center}
+/* Deck Builder hidden Merfling inputs previously extended far outside the page. */
+body.uiTablet .uiDeckBuilder{grid-template-columns:minmax(0,1fr);gap:16px}
+body.uiTablet .uiDeckBuilder>*,body.uiTablet .uiDeckSide>*{min-width:0;max-width:100%}
+body.uiTablet .uiCVHead,body.uiTablet .uiCVTools,body.uiTablet .uiDSHead{flex-wrap:wrap;gap:12px}
+body.uiTablet .uiCVTools{justify-content:flex-start}
+body.uiTablet .uiCVTabs .shopCategories{flex-wrap:wrap;overflow:visible;max-width:100%}
+body.uiTablet .uiCVGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px;padding:16px!important}
+body.uiTablet .uiDeckSide{position:static;top:auto;padding:18px!important}
+body.uiTablet .uiDeckName{min-width:0;max-width:100%}
+body.uiTablet .uiDeckName input{width:100%;min-width:0}
+body.uiTablet .uiDeckLine{grid-template-columns:44px 22px minmax(0,1fr) auto auto;gap:8px;padding:6px}
+body.uiTablet .uiDeckLine strong{min-width:0;overflow-wrap:anywhere}
+body.uiTablet .uiDeckList{max-height:min(430px,var(--ui-usable-height));overscroll-behavior:contain}
+body.uiTablet .uiMer{position:relative;min-width:0;gap:8px;min-height:48px}
+body.uiTablet .uiMer input{position:static;opacity:1;pointer-events:auto;width:20px;height:20px;min-height:20px;flex:none}
+body.uiTablet .uiMerGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+body.uiTablet .uiDSActions{grid-template-columns:repeat(3,minmax(0,1fr))}
+body.uiTablet .uiCVPager button{min-width:44px}
+/* Vault, Mutation and Fusion use their live desktop-themed panels at touch sizes. */
+body.uiTablet .uiVaultHead{grid-template-columns:minmax(0,1fr);gap:14px}
+body.uiTablet .uiVaultTitle h1::after{display:none}
+body.uiTablet .uiVaultStats{border:0;padding:0}
+body.uiTablet .uiVaultSaved{max-width:none;gap:12px;flex-wrap:wrap}
+body.uiTablet .vaultSlots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body.uiTablet .vaultSlot.panel{min-width:0;padding:44px 20px 20px}
+body.uiTablet .vaultSlot select,body.uiTablet .vaultSlot button{width:100%;min-height:48px}
+body.uiTablet .mutationLayout{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px}
+body.uiTablet .mutationOptions{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+body.uiTablet .mutationOption{padding:14px;min-width:0;text-align:left}
+body.uiTablet .mutationOption span{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+body.uiTablet .mutationOptionPortrait{width:64px;height:64px;float:none;margin:0 0 10px}
+body.uiTablet .mutationChamber{padding:20px 14px;min-width:0}
+body.uiTablet .mutationComparison{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);gap:8px}
+body.uiTablet .mutationComparison strong{font-size:22px;overflow-wrap:anywhere}
+body.uiTablet .mutationBuy{min-height:52px;width:100%}
+body.uiTablet .fusionPair{gap:12px;flex-wrap:wrap}
+body.uiTablet .fusionPair>div{min-width:0}
+body.uiTablet .fusionPreview #fuse{min-height:52px;max-width:100%;white-space:normal}
+/* Friends, trades, practice, dialogs and battle controls share the same tablet bounds. */
+body.uiTablet .friendRow{flex-wrap:wrap;gap:12px;min-width:0}
+body.uiTablet .friendActions{display:flex;flex-wrap:wrap;gap:8px;max-width:100%}
+body.uiTablet .friendActions button{flex:1 1 120px;min-height:48px;white-space:normal}
+body.uiTablet .friendRow strong{overflow-wrap:anywhere}
+body.uiTablet .tradeOffers{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body.uiTablet .tradeOffer{min-width:0;padding:14px}
+body.uiTablet .tradeActions,body.uiTablet .battleActions,body.uiTablet .legacyChoices{flex-wrap:wrap;gap:10px}
+body.uiTablet .practiceOptions{max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body.uiTablet .practiceOptions button{min-height:64px}
+body.uiTablet .pocketArena{max-width:100%;padding:12px}
+body.uiTablet .pocketBoard{grid-template-columns:minmax(0,1fr) minmax(180px,.8fr) minmax(0,1fr);gap:12px}
+body.uiTablet .pocketField,body.uiTablet .attackPanel,body.uiTablet .pocketHand{min-width:0}
+body.uiTablet .handRow{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+body.uiTablet .attackRune{min-height:56px}
+body.uiTablet .battleBar{top:0;flex-wrap:wrap;gap:10px}
+@media(min-width:1000px) and (max-width:1366px){body.uiTablet .grid,body.uiTablet .uiCVGrid{grid-template-columns:repeat(4,minmax(0,1fr))}body.uiTablet .vaultSlots{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:600px) and (max-width:999px){body.uiTablet .uiBinderBar{grid-template-columns:repeat(2,minmax(0,1fr))}body.uiTablet .mutationLayout{grid-template-columns:minmax(270px,.85fr) minmax(0,1.15fr)}body.uiTablet .mutationOptions{grid-template-columns:repeat(2,minmax(0,1fr))}body.uiTablet .pocketBoard{grid-template-columns:repeat(2,minmax(0,1fr))}body.uiTablet .attackPanel{grid-column:1/-1;grid-row:2}body.uiTablet .uiDSActions{grid-template-columns:repeat(2,minmax(0,1fr))}body.uiTablet .uiDSActions .uiSave{grid-column:1/-1}}
+.uiTabletHome,.uiTabletMapPage{min-height:var(--ui-usable-height)}
+.uiTabletMapArea{grid-area:map;overflow:hidden;min-width:0}
+.uiTabletMapArea .uiTabletMapWindow{aspect-ratio:1177/760;border:0}
+.uiTabletMapToolbar{padding:12px;background:#101a2b;border-top:1px solid var(--ui-goldline)}
+.uiTabletLegend{display:flex;flex-wrap:wrap;gap:12px 18px;margin-bottom:12px;font-family:var(--ui-serif);font-size:15px;color:#f2e5cb}
+.uiTabletLegend span{display:inline-flex;align-items:center;gap:7px}.uiTabletLegend i{width:17px;height:17px;border-radius:50%;border:3px solid;display:inline-block}
+.uiTabletMapButtons{display:flex;flex-wrap:wrap;gap:8px}
+.uiTabletMapButtons button{min-height:44px;padding:8px 12px;border:1px solid #ad8d51;border-radius:6px;background:#142035;color:#f4e6c9;font-family:var(--ui-serif);font-size:16px;flex:1 1 auto}
+.uiTabletMapButtons .on{background:linear-gradient(180deg,#ffd27a,#d59332);color:#281b0c}

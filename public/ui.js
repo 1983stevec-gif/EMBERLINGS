@@ -57,8 +57,10 @@ const MENU = [
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
   ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
 ];
+let disposeUserMenu = () => {};
 function userMenu(anchor) {
-  const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
+  const old = $('.uiMenu'); if (old) { disposeUserMenu(); return; }
+  disposeUserMenu();
   const e = ext(), r = anchor.getBoundingClientRect();
   const m = document.createElement('div'); m.className = 'uiMenu'; m.setAttribute('role', 'menu');
   m.style.top = r.bottom + 8 + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
@@ -76,7 +78,10 @@ function userMenu(anchor) {
     if (b.id === 'uiBackupGo') { m.remove(); B.go('home'); setTimeout(() => $('#uiBackupBtn')?.click(), 60); return; }
     m.remove(); B.go(b.dataset.go);
   });
-  setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
+  const close = ev => { if (!m.contains(ev.target) && !anchor.contains(ev.target)) disposeUserMenu(); };
+  const escape = ev => { if (ev.key === 'Escape') { disposeUserMenu(); anchor.focus(); } };
+  disposeUserMenu = () => { m.remove(); anchor.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', escape); };
+  setTimeout(() => { if (m.isConnected) { document.addEventListener('pointerdown', close); document.addEventListener('keydown', escape); } }, 0);
 }
 
 /* ---------------------------------------------------------------- Home */
@@ -280,6 +285,7 @@ function afterMap() {
 const TAB_ELEMENTS = [['Fire', '🔥'], ['Water', '💧'], ['Nature', '🍃'], ['Moon', '🌙'], ['', '✦']];
 function binderLayout({ index, page }) {
   const heading = $('.binderHeading'), filters = $('.binderFilters'), book = $('.magicalBinder'); if (!heading || !filters || !book || $('.uiBinderHead')) return;
+  const pageSize = innerWidth >= 600 && innerWidth <= 1366 ? 6 : 12;
   const st = B.state, f = B.binderState(), count = index ? `${(st.discovered || []).length} / ${B.species.length} species` : `${st.owned.length} cards`;
   const swap = $('button[data-go]', heading);
   const head = document.createElement('div'); head.className = 'uiBinderHead';
@@ -300,10 +306,10 @@ function binderLayout({ index, page }) {
   filters.replaceWith(bar);
   let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
   // Book: numbered pockets, side tabs and the logo cover.
-  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * 12 + i + 1).padStart(2, '0')}</span>`));
-  // Standard binder: always a full 12-pocket page; empty sleeves fill the rest.
+  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * pageSize + i + 1).padStart(2, '0')}</span>`));
+  // Six tablet pockets or twelve desktop pockets; empty sleeves fill the current page.
   const pagesEl = $('.binderPages', book), filled = $$('.binderPocket', book).length;
-  if (pagesEl && filled < 12) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: 12 - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * 12 + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
+  if (pagesEl && filled < pageSize) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: pageSize - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * pageSize + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
   if (pagesEl && !filled) $('p.panel', pagesEl)?.classList.add('uiNoMatch');
   book.insertAdjacentHTML('afterbegin', '<span class="uiSpine" aria-hidden="true"></span>');
   book.insertAdjacentHTML('beforeend', `<img class="uiVineTop" src="/art/ui/binder-vine-top.webp" alt="" aria-hidden="true"><img class="uiVineSide" src="/art/ui/binder-vine-side.webp" alt="" aria-hidden="true"><nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="background-image:url(/art/ui/binder-tab-${(el || 'all').toLowerCase()}.webp)"></button>`).join('')}</nav>`);
@@ -410,7 +416,29 @@ addEventListener('popstate', e => {
 });
 
 /* ---------------------------------------------------------------- Wiring */
+// Measure live browser chrome instead of assuming a fixed iPad header or navigation height.
+let chromeFrame = 0, chromeHeader = null, chromeNav = null;
+const chromeObserver = new ResizeObserver(() => scheduleTabletChrome());
+function scheduleTabletChrome() { cancelAnimationFrame(chromeFrame); chromeFrame = requestAnimationFrame(syncTabletChrome); }
+function syncTabletChrome() {
+  const header = $('.uiTop'), nav = $('#app > .nav'), viewport = window.visualViewport;
+  const editing = document.activeElement?.matches('textarea,input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="button"]):not([type="submit"])');
+  const keyboard = !!editing && !!viewport && viewport.height < innerHeight * .78;
+  document.body.classList.toggle('uiKeyboard', keyboard);
+  const top = header && getComputedStyle(header).display !== 'none' ? header.getBoundingClientRect().height : 0;
+  const bottom = !keyboard && nav && getComputedStyle(nav).display !== 'none' ? nav.getBoundingClientRect().height : 0;
+  const height = viewport?.height || innerHeight;
+  for (const [name, value] of [['header', top], ['nav', bottom], ['usable', Math.max(180,height-top-bottom)]]) document.documentElement.style.setProperty('--ui-'+name+'-height', value+'px');
+  if (header !== chromeHeader || nav !== chromeNav) { chromeObserver.disconnect(); chromeHeader = header; chromeNav = nav; if (header) chromeObserver.observe(header); if (nav) chromeObserver.observe(nav); }
+}
+window.visualViewport?.addEventListener('resize', scheduleTabletChrome);
+window.addEventListener('resize', scheduleTabletChrome);
+document.addEventListener('focusin', scheduleTabletChrome);
+document.addEventListener('focusout', scheduleTabletChrome);
+
 function onFrame() {
+  disposeUserMenu();
+  scheduleTabletChrome();
   trackHistory(B.view);
   document.body.classList.add('uiTheme');
   document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));

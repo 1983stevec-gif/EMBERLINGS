@@ -11,7 +11,7 @@ for (const view of ['home','inventory','friends']) {
   const nav = {setAttribute(){}};
   let opened = 0, decorated = 0;
   const context = {
-    B:{view}, trackHistory(){}, document:{body:{classList:{add(){},toggle(){}}}},
+    B:{view}, scheduleTabletChrome(){}, disposeUserMenu(){}, trackHistory(){}, document:{body:{classList:{add(){},toggle(){}}}},
     SLIM_VIEWS:[], FULL_VIEWS:[], NAV_ART:Object.fromEntries(buttons.map(b=>[b.dataset.go,true])),
     navIcon(g){decorated++;return g}, afterHome(){}, vaultLayout(){},
     toggleSound(){},paintSoundControls(){},userMenu(button){assert.equal(button,anchor);opened++},

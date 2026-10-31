@@ -2,7 +2,7 @@
 // The cleaned mockup is the background; live values, our cards and our art are placed at the mockup's pixel positions.
 // Tablets share the desktop artwork and panels; only phone-width screens use the stacked layouts.
 const B = window.EmberBridge, UI = window.EmberUI;
-const EXACT_MIN_WIDTH = 768;
+const EXACT_MIN_WIDTH = 600;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
@@ -137,9 +137,9 @@ function tabletMapMarkup(markup) {
   const template = document.createElement('template'); template.innerHTML = markup;
   const scene = $('.uiXMap', template.content), quest = $('#uiQuest', template.content);
   const details = quest.innerHTML; quest.remove();
-  $$('.uiXJourney,.uiXFill', scene).forEach(el => el.remove());
+  $$('.uiXJourney,.uiXFill,.uiXChip,#uiXPrev,#uiXNext,#uiXCurrent', scene).forEach(el => el.remove());
   const count = (B.state.cleared || []).length;
-  return `<section class="uiTabletMapPage"><div class="uiTabletMapWindow uiFrame"><div class="uiTabletMapScene uiXMap uiX" style="background-image:url(/art/ui/map.webp)">${scene.innerHTML}</div></div>
+  return `<section class="uiTabletMapPage"><div class="uiTabletMapArea uiFrame"><div class="uiTabletMapWindow"><div class="uiTabletMapScene uiXMap uiX" style="background-image:url(/art/ui/map.webp)">${scene.innerHTML}</div></div><div class="uiTabletMapToolbar"><div class="uiTabletLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div><div class="uiTabletMapButtons"><button data-region="3" class="uiTab ${shownRegion===3?'on':''}">Thunder Valley</button><button data-region="4" class="uiTab ${shownRegion===4?'on':''}">Shadow Realm</button><button id="uiXPrev" aria-label="Previous quest">‹ Previous</button><button id="uiXNext" aria-label="Next quest">Next ›</button><button id="uiXCurrent">Current level (${B.limit()})</button></div></div></div>
    <aside class="uiTabletQuest uiFrame" id="uiQuest">${details}</aside>
    <section class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${count} / 100 levels complete</span><span class="uiTrack" aria-label="${count} of 100 levels complete"><i class="uiTrackFill" style="width:${count}%"></i>${[10,25,45,70,100].map(n=>`<b style="left:${n}%" class="${(B.state.cleared||[]).includes(n)?'on':''}"></b>`).join('')}</span><span class="uiMilestones">Boss milestones <em>10 · 25 · 45 · 70 · 100</em></span></section></section>`;
 }
@@ -163,9 +163,9 @@ function afterMap() {
   B.bind();
   $('#uiBegin')?.addEventListener('click', () => { if (!$('#uiBegin').classList.contains('locked')) B.beginBattle(selected); });
   $$('.uiXNode').forEach(n => n.onclick = () => selectLevel(+n.dataset.level));
-  $('#uiXPrev')?.addEventListener('click', () => selectLevel(Math.max(1, selected - 1)));
-  $('#uiXNext')?.addEventListener('click', () => selectLevel(Math.min(100, selected + 1)));
-  $('#uiXCurrent')?.addEventListener('click', () => selectLevel(B.limit()));
+  if ($('#uiXPrev')) $('#uiXPrev').onclick = () => selectLevel(Math.max(1, selected - 1));
+  if ($('#uiXNext')) $('#uiXNext').onclick = () => selectLevel(Math.min(100, selected + 1));
+  if ($('#uiXCurrent')) $('#uiXCurrent').onclick = () => selectLevel(B.limit());
   $$('[data-region]').forEach(b => b.onclick = () => { const r = +b.dataset.region, reg = B.regions[r], cl = B.state.cleared || []; let l = reg[1]; while (l < reg[2] && cl.includes(l)) l++; selected = Math.min(l, Math.max(reg[1], B.limit())); shownRegion = r; B.go('map'); });
   fitCards();
 }
@@ -300,7 +300,7 @@ function packsExact() {
   }
   for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
 }
-// Phones: the painted pack wrapper replaces the emoji on each pack card.
+// Responsive screens use the desktop pack artwork with the original live purchase buttons.
 const PACK_IDS = ['pack', 'star', 'crystal', 'mythic', 'legend', 'celestial', 'hacker'];
 function packsNarrow() {
   $$('.packTier').forEach((t, i) => { const icon = t.firstElementChild; if (icon && !t.querySelector('.uiPackArt') && PACK_IDS[i]) icon.outerHTML = `<img class="uiPackArt" src="/art/ui/pack-${PACK_IDS[i]}.webp" alt="" width="160" height="285">`; });
@@ -462,7 +462,7 @@ function friendsExact(data) {
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   document.body.classList.toggle('uiTablet', tabletLayout());
-  const exact = !(tabletLayout() && ['home','map'].includes(B.view)) && wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
+  const exact = !tabletLayout() && wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
@@ -474,13 +474,13 @@ function onFrame() {
   if (exact) { const c = $('.uiX'); if (c) ro.observe(c); fitCards(); const u = $('#uiUser'); if (u && !u.dataset.bound) { u.dataset.bound = '1'; } }
 }
 if (B && UI) {
-  Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: wide });
+  Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: () => wide() && !tabletLayout() });
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
-  window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
+  window.addEventListener('ember:friends', e => { if (wide() && !tabletLayout() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
   const layoutMode = () => !wide() ? 'phone' : tabletLayout() ? 'tablet' : 'desktop';
   let wasWide = layoutMode();
-  addEventListener('resize', () => { const now = layoutMode(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = layoutMode(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion', 'friends', 'inventory', 'index', 'decks'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
