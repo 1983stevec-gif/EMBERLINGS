@@ -59,6 +59,13 @@ function userMenu(anchor) {
   setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
 }
 
+
+/* Home feature cards: cut from the supplied artwork; each card is a button to its screen. */
+const HOME_CARDS = [['decks', 'Battle Deck'], ['rules', 'Battle Rules'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['index', 'Index'], ['training', 'Training Field'], ['fusion', 'Fusion Lab'], ['vault', 'Vault'], ['mutation', 'Mutation Vault'], ['trading', 'Friend Trading'], ['backup', 'Save Backup']];
+function homeCards() {
+  return `<section class="uiHomeCards" aria-labelledby="uiHomeCardsTitle"><h2 id="uiHomeCardsTitle"><img src="/art/ui/home-cards-title.webp" alt="Your adventure starts here." width="1130" height="76"></h2>
+   <div class="uiHomeCardGrid">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" ${go === 'backup' ? 'id="uiCardBackup"' : `data-go="${go}"`} aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
+}
 /* ---------------------------------------------------------------- Home */
 const card = (c, cls = '') => `<div class="uiMiniCard ${cls}" style="--el:${ELEMENT_COLORS[B.species[c.kind]?.element] || '#c9a35a'}">${B.art(c)}<span class="uiEl">${ELEMENT_ICONS[B.species[c.kind]?.element] || '✦'}</span></div>`;
 function deckTop(n = 3) {
@@ -87,7 +94,7 @@ function home() {
     <span class="uiTrack" data-ui-art="journey" aria-hidden="true">${islandsStrip()}<i class="uiTrackFill" style="width:${cleared}%"></i>${[0, 20, 40, 60, 80, 100].map(p => `<b style="left:${p}%" class="${cleared >= p ? 'on' : ''}"></b>`).join('')}</span>
     <span class="uiJourneyEnd"><span aria-hidden="true">⛰</span> All islands available <span class="uiChevron">›</span></span></button>
   <nav class="uiUtility" aria-label="More"><button data-go="index">📖 Index</button><button data-go="rules">⚔ Battle Rules</button><button data-go="vault">🏛 Vault</button><button data-go="mutation">✧ Mutation Vault</button><span class="uiSpacer"></span><button id="uiBackupBtn">💾 Save Backup</button><button id="uiGear" aria-label="Settings">⚙</button></nav>
-  <div id="uiDrawer"></div></section>`;
+  ${homeCards()}<div id="uiDrawer"></div></section>`;
 }
 function heroScene() {
   return `<svg viewBox="0 0 1100 470" preserveAspectRatio="xMidYMid slice"><defs>
@@ -112,6 +119,7 @@ function islandsStrip() {
 function afterHome() {
   $('#uiResume')?.addEventListener('click', () => B.resumeBattle());
   $('#uiBackupBtn')?.addEventListener('click', () => drawer('backup'));
+  $('#uiCardBackup')?.addEventListener('click', () => drawer('backup'));
   $('#uiGear')?.addEventListener('click', () => drawer('settings'));
   applyArt();
 }
@@ -450,7 +458,7 @@ function vaultLayout() {
   const rules = $('.uiVaultRules'); if (rules) { const h = $('h2', rules); if (h) h.textContent = 'Vault rules'; }
 }
 if (B) {
-  window.EmberUI = { head, home, map, afterMap, selectLevel, questName, logoHTML, questArt };
+  window.EmberUI = { head, home, map, afterMap, selectLevel, questName, logoHTML, questArt, homeCards };
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:binderReady', e => binderLayout(e.detail));
   window.addEventListener('ember:decksReady', () => deckLayout());

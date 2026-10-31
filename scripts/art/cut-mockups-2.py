@@ -121,3 +121,13 @@ if fr is not None:
     g = inp3(fr, [(238, 230, 445, 276), (132, 454, 320, 494), (1036, 347, 1054, 369)], b=3)
     g = rowfill(g, [(116, 582, 716, 682)], blur=2)
     save(g, 'friends.webp')
+
+# ---------- Home cards (15.webp, 1536x1024): eleven feature cards and the heading, cut as drawn
+hc = cv2.imread(D + '15.webp')
+if hc is not None:
+    XS = [(21, 389), (397, 765), (773, 1141), (1148, 1516)]; YS = [(138, 410), (417, 695), (702, 980)]
+    names = ['decks', 'rules', 'packs', 'inventory', 'index', 'training', 'fusion', 'vault', 'mutation', 'trading', 'backup']
+    for i, n in enumerate(names):
+        (x0, x1), (y0, y1) = XS[i % 4], YS[i // 4]
+        save(hc[y0:y1, x0:x1], f'home-card-{n}.webp', 90)
+    save(hc[52:128, 205:1335], 'home-cards-title.webp', 90)
