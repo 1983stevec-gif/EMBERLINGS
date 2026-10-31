@@ -8,6 +8,10 @@ const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 const ELEMENT_ICONS = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
 const ELEMENT_COLORS = { Fire: '#e67e4e', Moon: '#a796dc', Nature: '#72b987', Lightning: '#e3c857', Water: '#64b5d6', Crystal: '#cba0d8', Ice: '#9bd5dd', Shadow: '#9276b5', Wind: '#86cbb6' };
 const NAV = [['home', 'Home'], ['packs', 'Packs'], ['inventory', 'My Binder'], ['map', 'Adventure HQ'], ['friends', 'Friends']];
+
+// Original vector emblems for the shared navigation.
+const NAV_ART = {"home":"<path fill=\"#bd7544\" d=\"M7 29 32 8l25 21-6 5-19-16-19 16Z\"/><path fill=\"#eed59a\" d=\"M16 30 32 17l16 13v24H16Z\"/><path fill=\"#70442c\" d=\"M27 37h10v17H27Z\"/><path fill=\"#ffb84e\" d=\"M32 21c6 7 8 11 0 14-8-3-5-8 0-14Z\"/>","packs":"<path fill=\"#755591\" d=\"m16 10 32 4-4 43-32-4Z\"/><path fill=\"#bd914c\" d=\"m22 8 29 7-9 41-29-7Z\"/><path fill=\"#393566\" d=\"m25 14 20 5-6 30-20-5Z\"/><path fill=\"#ffe09a\" d=\"m33 23 2 7 6 4-7 2-4 6-2-7-6-4 7-2Z\"/>","inventory":"<path fill=\"#b58343\" d=\"M11 12h37a5 5 0 0 1 5 5v37H16a5 5 0 0 1-5-5Z\"/><path fill=\"#495e8e\" d=\"M17 13h31v35H17Z\"/><path stroke=\"#edcf8a\" stroke-width=\"2\" d=\"M20 13v35M10 22h8M10 34h8M10 45h8\"/><path fill=\"#ecd399\" d=\"m33 22 9 9-9 9-9-9Z\"/><path fill=\"#6286ab\" d=\"m33 26 5 5-5 5-5-5Z\"/>","map":"<path fill=\"#c9b27c\" d=\"m7 16 16-5 18 6 16-5v36l-16 5-18-6-16 5Z\"/><path fill=\"#81966a\" d=\"m23 11 18 6v36l-18-6Z\"/><path fill=\"none\" stroke=\"#fff0c1\" stroke-width=\"2\" stroke-dasharray=\"3 3\" d=\"m14 39 14-12 12 10 11-13\"/><path fill=\"#c65f48\" d=\"m47 18 7 7-7 7-7-7Z\"/>","friends":"<circle fill=\"#a7bdce\" cx=\"17\" cy=\"26\" r=\"7\"/><circle fill=\"#a7bdce\" cx=\"47\" cy=\"26\" r=\"7\"/><path fill=\"#597393\" d=\"M6 48v-6a11 11 0 0 1 22 0v6ZM36 48v-6a11 11 0 0 1 22 0v6Z\"/><circle fill=\"#ffe0a0\" cx=\"32\" cy=\"22\" r=\"9\"/><path fill=\"#c39450\" d=\"M18 53V42a14 14 0 0 1 28 0v11Z\"/><path fill=\"#ffe0a0\" d=\"m32 35 4 6-4 6-4-6Z\"/>"};
+const navIcon = g => '<span class="uiNavEmblem" aria-hidden="true"><svg viewBox="0 0 64 64" focusable="false">' + NAV_ART[g] + '</svg></span>';
 const SLIM_VIEWS = [];
 const FULL_VIEWS = ['home', 'map', 'inventory', 'index', 'decks'];
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
@@ -29,7 +33,7 @@ function head() {
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
   const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
   return `<header class="top uiTop"><div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
-  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
+  <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${navIcon(g)}<span class="uiNavLabel">${t}</span></button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
   <button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${esc(st.playerUsername || 'Explorer')}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
 }
