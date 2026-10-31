@@ -1023,3 +1023,30 @@ body.uiTheme.uiSanctum:not(.uiExact) .practiceOptions button{background:linear-g
 body.uiTheme.uiSanctum:not(.uiExact) .mutationPortrait{display:block;box-sizing:border-box}
 body.uiTheme.uiSanctum:not(.uiExact) .mutationPortrait>.mythlingPortrait{width:100%;height:100%;border-radius:inherit}
 body.uiTheme.uiSanctum:not(.uiExact) .uiSanctumBanner{background-size:auto,auto 100%;background-repeat:no-repeat;background-color:#0b1426}
+
+/* Illustrated adventure dock: scenic portals with forged brass insignia. */
+@media(max-width:1366px){
+ body.uiTheme .nav,body.uiTheme.uiExact .nav{gap:10px;padding:12px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#30271c,#101723 16%,#080e18);border-top:2px solid #bd9555;box-shadow:0 -1px 0 #f5d69444,0 -10px 28px #0009}
+ body.uiTheme .nav button,body.uiTheme:not(.uiWide) .nav button{isolation:isolate;overflow:hidden;min-height:94px;gap:3px;padding:7px 4px 9px;border:1px solid #a5844c;border-radius:14px 4px 14px 4px;background:linear-gradient(180deg,#09111c22,#08101bea 82%),var(--dock-scene) center 40%/cover;color:#f5e7cb;box-shadow:inset 0 0 0 3px #0a101b,inset 0 0 0 4px #c8a46866,0 4px 0 #03070c;font-weight:600;text-shadow:0 2px 3px #000;transition:filter .18s,transform .18s,border-color .18s}
+ body.uiTheme .nav button:has([data-nav-art="home"]){--dock-scene:url('/art/ui/home-hero.webp')}
+ body.uiTheme .nav button:has([data-nav-art="packs"]){--dock-scene:url('/art/ui/home-tile1.webp')}
+ body.uiTheme .nav button:has([data-nav-art="inventory"]){--dock-scene:url('/art/ui/vault.webp')}
+ body.uiTheme .nav button:has([data-nav-art="map"]){--dock-scene:url('/art/ui/map.webp')}
+ body.uiTheme .nav button:has([data-nav-art="friends"]){--dock-scene:url('/art/ui/friends.webp')}
+ body.uiTheme .nav button::before{content:"";position:absolute;inset:6px;border-top:1px solid #f6d78d77;border-bottom:1px solid #f6d78d44;border-radius:9px 0;pointer-events:none;z-index:-1}
+ body.uiTheme .nav button::after{content:"◆";position:absolute;top:3px;right:7px;font-size:9px;line-height:1;color:#d7b56f;text-shadow:0 1px 3px #000}
+ body.uiTheme .nav .uiNavEmblem{width:47px;height:47px;border-radius:50%;border:1px solid #d5b16e;background:radial-gradient(circle at 40% 25%,#4b5361,#101b2ce8 65%);box-shadow:0 0 0 2px #101722,0 0 0 3px #b28c4e66,0 4px 9px #0009,inset 0 1px 4px #ffe8ab44}
+ body.uiTheme .nav .uiNavEmblem svg{width:38px;height:38px;filter:drop-shadow(0 2px 2px #000)}
+ body.uiTheme .nav button.active{border-color:#ffda88;color:#fff0bf;background:linear-gradient(180deg,#ffbc471c,#101521c9 78%),var(--dock-scene) center 40%/cover;box-shadow:inset 0 0 0 2px #eac16f77,inset 0 -3px 0 #ffcf73,0 0 19px #e6aa3938,0 4px 0 #03070c}
+ body.uiTheme .nav button.active .uiNavEmblem{border-color:#ffe5a2;background:radial-gradient(circle at 40% 25%,#8c6731,#2d291f 70%);box-shadow:0 0 0 2px #292216,0 0 0 3px #dcb365,0 0 18px #ffc35e66}
+ body.uiTheme .nav button:hover{filter:brightness(1.18);border-color:#ffe1a0}
+ body.uiTheme .nav button:active{transform:translateY(2px)}
+ body.uiTheme #app,body.uiTheme.uiExact #app{padding-bottom:calc(140px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:480px){
+ body.uiTheme .nav,body.uiTheme.uiExact .nav{gap:5px;padding:9px 6px calc(8px + env(safe-area-inset-bottom))}
+ body.uiTheme .nav button,body.uiTheme:not(.uiWide) .nav button{min-height:87px;font-size:11px;padding:6px 2px 9px;line-height:1.2}
+ body.uiTheme .nav .uiNavEmblem{width:40px;height:40px}
+ body.uiTheme .nav .uiNavEmblem svg{width:33px;height:33px}
+}
+@media(prefers-reduced-motion:reduce){body.uiTheme .nav button{transition:none}}
