@@ -819,3 +819,12 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiPFlame .uiPFlameHot{mix-blend-mode:screen;filter:brightness(1.35) saturate(1.3) hue-rotate(-8deg);opacity:0;animation:uiBurn2 1.15s ease-in-out infinite,uiFlick .9s steps(1,end) infinite}
 .reduceMotion .uiPFlame *{animation:none!important}.reduceMotion .uiPFlameHot,.reduceMotion .uiPFlame .uiEmber{display:none}
 .uiPTab.uiPHQ.active{background:radial-gradient(ellipse at 50% 55%,#ffb04a88,#ff9a2a33 45%,transparent 70%);filter:none;box-shadow:0 0 0 2px #ffb04a99,0 0 22px 6px #ff9a2a88}
+/* Selected-tab bars: the art already shows the selected tab, so no drawn glow there */
+.uiPBar:not(.uiPLive) .uiPTab.active{box-shadow:none;background:none;filter:none}
+.uiPBarIn{background-image:none}
+.uiPBarIn{background-position:center;background-size:100% 100%;background-repeat:no-repeat}
+.uiPSound span{left:34.5%;right:3%}
+.uiPCoins b{left:40%}
+.uiPAva{left:4.4%;top:13%;width:23%;height:74%}
+.uiPName{left:31%;right:16%}
+@media(min-width:900px){.uiXCrop{width:min(100%,calc((100dvh - min(8.8vw,176px)) * var(--ratio)))!important}}
