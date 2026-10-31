@@ -751,3 +751,20 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiXRecovery{max-width:1407px;margin:-10px auto 20px!important;border:1px solid #c9a35a!important;background:#0f1a3e!important;border-radius:0 0 10px 10px!important;padding:14px 22px!important}
 .uiXRecovery:not([open]){display:none}
 .uiXFStatus.ok .uiXFIco{border-color:#e9b75a;color:#e9b75a}.uiXFStatus.ok .uiXFMsg b{color:#f3d48a}
+
+/* ---------- Home feature cards ---------- */
+.uiHomeCards{grid-column:1/-1;grid-area:auto;margin:22px auto 10px;max-width:1500px;padding:0 20px;background:radial-gradient(ellipse at 50% 0,#16224a,transparent 70%)}
+.uiHome .uiHomeCards{grid-area:cards}
+.uiHome{grid-template-areas:"hero deck" "tiles tiles" "journey journey" "util util" "cards cards" "drawer drawer"}
+@media(max-width:1100px){.uiHome{grid-template-areas:"hero" "deck" "tiles" "journey" "util" "cards" "drawer"}}
+.uiHomeCards h2{margin:0 auto 14px;max-width:1130px;line-height:0}.uiHomeCards h2 img{width:100%;height:auto}
+.uiHomeCardGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.uiHomeCard{padding:0;margin:0;border:0;background:none;cursor:pointer;border-radius:16px;line-height:0;transition:transform .15s,filter .15s}
+.uiHomeCard img{width:100%;height:auto;border-radius:16px}
+.uiHomeCard:hover{transform:translateY(-3px);filter:brightness(1.08) drop-shadow(0 0 12px #e9b75a66)}
+.uiHomeCard:focus-visible{outline:3px solid #ffd27a;outline-offset:3px}
+@media(max-width:900px){.uiHomeCardGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.uiHomeCards{padding:0 4px}}
+.uiExactPage.uiHome .uiHomeCards{padding:0 2.5%}
+.uiHomeCards{background:#0a162f!important;border-radius:14px;padding:18px 20px 22px!important;box-shadow:0 0 0 1px #1c2a55}
+.uiHomeCards h2 img{-webkit-mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+@media(max-width:900px){.uiHomeCards{padding:10px 8px 12px!important}}

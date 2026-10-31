@@ -58,7 +58,7 @@ function home() {
    <i class="uiXFill" style="${p(425, 885.5, 425 + 813 * cleared / 100, 888.5)}"></i>
    ${hot(p(60, 925, 185, 970), 'data-go="index"', 'Index')}${hot(p(215, 925, 380, 970), 'data-go="rules"', 'Battle Rules')}${hot(p(415, 925, 530, 970), 'data-go="vault"', 'Vault')}${hot(p(560, 925, 745, 970), 'data-go="mutation"', 'Mutation Vault')}
    <button class="uiHot" id="uiBackupBtn" style="${p(1290, 925, 1450, 970)}" aria-label="Save Backup"></button><button class="uiHot" id="uiGear" style="${p(1480, 925, 1545, 970)}" aria-label="Settings"></button>`)}
-   <div id="uiDrawer" class="uiXDrawer"></div></section>`;
+   ${UI.homeCards()}<div id="uiDrawer" class="uiXDrawer"></div></section>`;
 }
 
 /* ---------------------------------------------------------------- Adventure HQ (mockup 1586 × 992) */
