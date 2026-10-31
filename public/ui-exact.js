@@ -15,7 +15,7 @@ function canvas(W, H, bg, cls, inner) {
   const [top, bottom] = CROP[cls] || [0, H];
   return `<div class="uiXCrop" style="--ratio:${W / (bottom - top)};aspect-ratio:${W}/${bottom - top}"><div class="uiX ${cls}" style="--W:${W};aspect-ratio:${W}/${H};margin-top:${(-top / W * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
-const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992] };
+const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -388,9 +388,56 @@ function fusionExact() {
   for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
 }
 
+
+/* ---------------------------------------------------------------- Friends (mockup 1586 × 992) */
+// Rearranges the game's own Friends screen (same form, requests, invites and lists, refreshed every few seconds).
+function friendsExact(data) {
+  const app = $('#app'), form = $('#addFriendForm'), lists = $('#friendLists'); if (!lists || !data?.me || (!form && !$('.uiXFriendsPage'))) return;
+  const W = 1586, H = 992, p = box(W, H);
+  let wrap = $('.uiXFriendsPage');
+  if (!wrap) {
+    wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXFriendsPage';
+    wrap.innerHTML = canvas(W, H, '/art/ui/friends.webp', 'uiXFriends', `
+     <h1 class="uiSr">Friends</h1>
+     ${text(p(243, 232, 445, 274), W, 34, 'uiXFName', esc(data.me.username))}
+     <button class="uiHot" data-copy-name style="${p(453, 222, 659, 268)}" aria-label="Copy username"></button>
+     <form class="uiXFForm" style="${p(124, 448, 708, 570)}"></form>
+     <div class="uiXFStatus" style="${p(124, 589, 708, 676)};${fs(W, 17)}"></div>
+     <div class="uiTxt uiXFCountN" style="${p(1031, 344, 1058, 372)};${fs(W, 18)}"></div>
+     <div class="uiXFList" style="${p(772, 383, 1486, 836)};${fs(W, 16)}"></div>
+     <button class="uiHot uiXFEmptyBtn" data-copy-name style="${p(993, 776, 1235, 822)}" aria-label="Copy my username"></button>
+     <button class="uiHot" id="uiXRecToggle" style="${p(90, 862, 1497, 913)}" aria-expanded="false" aria-controls="uiXRecovery" aria-label="Your player recovery code"></button>
+     ${hot(p(1218, 940, 1318, 966), 'data-go="rules"', 'Battle Rules')}`);
+    app.insertBefore(wrap, app.firstChild.nextSibling);
+    // Find Player form: transparent input over the painted box; the painted button submits.
+    const input = $('#friendName'), send = $('#sendFriend'), f = $('.uiXFForm', wrap);
+    input.className = 'uiXFInput'; input.placeholder = ''; input.setAttribute('aria-label', "Player's username");
+    send.className = 'uiXFFind'; send.textContent = ''; send.setAttribute('aria-label', 'Find Player');
+    f.append(input, send); f.onsubmit = form.onsubmit; form.remove();
+    const err = $('#friendsError'), status = $('.uiXFStatus', wrap); status.append(err);
+    const style = () => { const t = err.textContent.trim(), found = !!err.querySelector('#yesFriend'); status.classList.toggle('on', !!t); status.classList.toggle('ok', found || /sent|already sent/i.test(t)); status.classList.toggle('bad', !!t && !found && !/sent/i.test(t)); if (t && !found && !err.querySelector('.uiXFMsg')) { const [head, ...rest] = t.split(/(?<=\.)\s+/); err.innerHTML = `<span class="uiXFIco">i</span><span class="uiXFMsg"><b>${esc(head.replace(/\.$/, ''))}</b>${rest.length ? `<span>${esc(rest.join(' '))}</span>` : ''}</span>`; } };
+    new MutationObserver(style).observe(err, { childList: true, characterData: true, subtree: true }); style();
+    $$('[data-copy-name]', wrap).forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(data.me.username); B.toast('Username copied: ' + data.me.username); } catch { B.toast('Your username is ' + data.me.username); } });
+    // Recovery code drops down below the page.
+    const rec = $$('#app > details.panel').find(d => /recovery code/i.test(d.textContent));
+    if (rec) { rec.id = 'uiXRecovery'; rec.classList.add('uiXRecovery'); $('summary', rec)?.remove(); wrap.after(rec); const t = $('#uiXRecToggle', wrap); t.onclick = () => { rec.open = !rec.open; t.setAttribute('aria-expanded', String(rec.open)); if (rec.open) rec.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }; }
+    $('.uiXFList', wrap).append(lists);
+    for (const el of [...app.children]) if (el !== wrap && el !== rec && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  }
+  // Every refresh: friend count, and the list replaces the empty-state picture when there is anything to show.
+  const busy = data.friends.length || data.incoming.length || data.outgoing.length || data.invites.length || (data.trades || []).length;
+  $('.uiXFCountN', wrap).textContent = data.friends.length;
+  wrap.classList.toggle('uiXFHasList', !!busy);
+  for (const h of $$('h2', lists)) if (/^Your Friends/.test(h.textContent)) h.classList.add('uiSr');
+  for (const row of $$('.friendRow', lists)) {
+    const name = $('strong', row)?.textContent || '', f = data.friends.find(x => x.username === name);
+    if (f && !row.querySelector('.uiXFAva')) row.insertAdjacentHTML('afterbegin', `<span class="uiXFAva">${B.art(f.pet)}</span>`);
+  }
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse'].includes(B.view) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
+  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
@@ -405,6 +452,7 @@ if (B && UI) {
   Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: wide });
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
+  window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
   let wasWide = wide();
   addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
