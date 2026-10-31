@@ -31,7 +31,7 @@ export const MUTATIONS=[
  {id:'frost',name:'Frost',damage:.25,coins:9,cost:25000,color:'#9cecff',icon:'❄'},
  {id:'storm',name:'Storm',damage:.35,coins:24,cost:75000,color:'#b3a2ff',icon:'ϟ'},
  {id:'shadow',name:'Shadow',damage:.50,coins:99,cost:200000,color:'#e3a1fb',icon:'☾'},
- {id:'cosmic',name:'Cosmic',damage:.75,coins:999,cost:500000,color:'#ffadd8',icon:'✦'}
+ {id:'cosmic',name:'Cosmic',damage:.75,coins:99,cost:500000,color:'#ffadd8',icon:'✦'}
 ];
 export function mutationTrait(c){return MUTATIONS.find(m=>m.id===c?.mutation)||null}
 export function mutationDamage(c,base){return Math.round(base*(1+(mutationTrait(c)?.damage||0)))}
