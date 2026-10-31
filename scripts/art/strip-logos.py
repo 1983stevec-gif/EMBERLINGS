@@ -2,7 +2,7 @@
 # Run after cut-mockups*.py. Boxes are in mockup pixels; the Vault keeps its "MAGICAL ADVENTURE" line.
 import cv2, numpy as np, sys, os
 OUT = sys.argv[1]
-JOBS = {'home.webp': [(58, 6, 404, 74)], 'vault.webp': [(54, 8, 364, 50), (54, 48, 112, 72)], 'welcome.webp': [(80, 8, 392, 76)]}
+JOBS = {'home.webp': [(58, 6, 404, 74)], 'vault.webp': [(54, 8, 364, 50), (54, 48, 112, 72)], 'welcome.webp': [(80, 8, 392, 76)], 'packs.webp': [(212, 14, 446, 58)]}
 for name, boxes in JOBS.items():
     path = os.path.join(OUT, name); img = cv2.imread(path)
     if img is None: continue

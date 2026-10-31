@@ -38,3 +38,14 @@ hero = cv2.imread(D + '4.webp')[75:552, 0:1124].copy()
 mk = np.zeros(hero.shape[:2], np.uint8); mk[270 - 75:505 - 75, 30:620] = 255
 hero = cv2.inpaint(hero, mk, 9, cv2.INPAINT_TELEA); hb = cv2.GaussianBlur(hero, (0, 0), 8); hero = np.where(mk[..., None] > 0, hb, hero)
 save(hero, 'home-hero.webp', 88)
+
+# ---------- Packs (10.webp, 1536x1024): coin value removed; pack wrappers cut for the phone layout.
+pk = cv2.imread(D + '10.webp')
+if pk is not None:
+    mk = np.zeros(pk.shape[:2], np.uint8); mk[22:54, 1228:1292] = 255
+    pp = cv2.inpaint(pk, mk, 7, cv2.INPAINT_TELEA)
+    # painted Open buttons removed; the live buttons are drawn in the same places
+    pp = rowfill(pp, [(318, 386, 526, 441), (752, 386, 972, 441), (1199, 386, 1410, 446), (316, 707, 528, 770), (752, 707, 972, 771), (1199, 707, 1410, 771), (1189, 839, 1394, 903)], blur=2)
+    save(pp, 'packs.webp')
+    for name, (x0, y0, x1, y1) in {'pack': (137, 172, 297, 457), 'star': (572, 172, 733, 457), 'crystal': (1018, 172, 1182, 457), 'mythic': (137, 512, 298, 778), 'legend': (572, 492, 735, 780), 'celestial': (1018, 492, 1183, 780), 'hacker': (158, 812, 310, 935)}.items():
+        save(pk[y0:y1, x0:x1], f'pack-{name}.webp')
