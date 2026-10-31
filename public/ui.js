@@ -36,7 +36,7 @@ function head() {
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
-  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
+  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles'], ['account', '☁', 'Account & cloud save']]]
 ];
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }

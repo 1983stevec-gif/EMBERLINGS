@@ -768,3 +768,24 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiHomeCards{background:#0a162f!important;border-radius:14px;padding:18px 20px 22px!important;box-shadow:0 0 0 1px #1c2a55}
 .uiHomeCards h2 img{-webkit-mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
 @media(max-width:900px){.uiHomeCards{padding:10px 8px 12px!important}}
+
+/* ---------- Account & cloud save ---------- */
+.uiAccount{max-width:760px;margin:10px auto 40px}
+.uiAccount h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:44px;color:#f4ead6;margin:8px 0 4px}
+.uiAccSub{color:#d6dcef;font-size:18px;margin:0 0 16px}
+.uiAccBody h2{font-family:'Cormorant Garamond',Georgia,serif;color:#f3dcae;font-size:26px;margin:22px 0 8px}
+.uiAccForm{display:grid;gap:12px;max-width:420px}
+.uiAccForm label{display:grid;gap:5px;color:#dbe2f6;font-size:15px}
+.uiAccForm input{background:#0b1230;border:1px solid #c9a35a;border-radius:8px;color:#fff;padding:11px 12px;font-size:17px}
+.uiAccRow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.uiAccLabel{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#c9a35a}
+.uiAccRow strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;color:#fbf2df}
+.uiLinkBtn{background:none;border:0;padding:0;color:#f1c46a;text-decoration:underline;cursor:pointer;font:inherit}
+.uiPassLogin{margin:8px 0 0}
+.uiCloudDlg{position:fixed;inset:0;z-index:9700;display:grid;place-items:center;background:#05081acc;padding:16px}
+.uiCloudBox{max-width:520px;width:100%;background:#0f1a3e;border:2px solid #c9a35a;border-radius:14px;padding:22px 24px;color:#f2e9d6;box-shadow:0 20px 60px #000c}
+.uiCloudBox h2{margin:0 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;color:#fbf2df}
+.uiCloudPick{display:grid;gap:3px;width:100%;text-align:left;margin:10px 0;padding:12px 14px;border-radius:10px;border:1px solid #4a5a9a;background:#121d48;color:#f2e9d6;cursor:pointer;font:inherit}
+.uiCloudPick:hover,.uiCloudPick:focus-visible{border-color:#f2c45f;outline:none;box-shadow:0 0 0 2px #f2c45f55}
+.uiCloudPick b{font-size:18px}.uiCloudPick span{font-size:14px;color:#c8d1ec}
+.uiCloudNote{font-size:13px;color:#a9b4d8;margin:8px 0 0}

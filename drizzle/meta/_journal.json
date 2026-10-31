@@ -50,6 +50,13 @@
       "when": 1793461149088,
       "tag": "0006_zippy_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1793473108921,
+      "tag": "0007_easy_molecule_man",
+      "breakpoints": true
     }
   ]
 }
