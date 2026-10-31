@@ -15,6 +15,21 @@ const navIcon = g => '<span class="uiNavEmblem" aria-hidden="true"><svg viewBox=
 const SLIM_VIEWS = [];
 const FULL_VIEWS = ['home', 'map', 'inventory', 'index', 'decks'];
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
+const audioState = () => ext().muted ? 'off' : window.EmberAudio?.status() || 'locked';
+const soundText = () => audioState() === 'off' ? 'Sound: Off' : audioState() === 'on' ? 'Sound: On' : 'Enable Sound';
+function soundButtonHTML() { return `<button type="button" class="uiSoundToggle" id="uiSoundToggle" data-sound-control="true" aria-pressed="${audioState() === 'on'}" aria-label="${soundText()}"><span aria-hidden="true">${audioState() === 'off' ? '🔇' : '🔊'}</span><span class="uiSoundText">${soundText()}</span></button>`; }
+function paintSoundControls() {
+  const state = audioState(), text = soundText();
+  const top = $('#uiSoundToggle'); if (top) { top.dataset.audioState = state; top.setAttribute('aria-pressed', String(state === 'on')); top.setAttribute('aria-label', state === 'on' ? 'Sound on. Turn sound off' : state === 'off' ? 'Sound off. Turn sound on' : 'Enable sound on this device'); $('.uiSoundText', top).textContent = text; $('span', top).textContent = state === 'off' ? '🔇' : '🔊'; }
+  const menu = $('#uiSound'); if (menu) { menu.textContent = state === 'on' ? '🔊 Sound effects: On · turn off' : state === 'off' ? '🔇 Sound effects: Off · turn on' : '🔊 Enable sound on this device'; menu.setAttribute('aria-checked', String(state === 'on')); }
+  const checkbox = $('#uiMute'); if (checkbox) checkbox.checked = !ext().muted;
+  const hint = $('#uiAudioHint'); if (hint) hint.textContent = state === 'on' ? 'Sound is on. Use Test Sound to hear three notes.' : state === 'off' ? 'Sound is off. Turn it on to hear battle and pack effects.' : 'Tap Enable Sound to allow audio on this device.';
+}
+function changeSound(enabled) { const audio = window.EmberAudio; if (!audio) return; const result = audio.setMuted(!enabled); paintSoundControls(); result.then(ok => { paintSoundControls(); if (enabled && ok) audio.preview(); else if (enabled) B.toast('Tap Enable Sound again to allow audio on your tablet.'); }); }
+function toggleSound() { changeSound(audioState() !== 'on'); }
+function testSound() { window.EmberAudio?.preview().then(ok => { paintSoundControls(); if (!ok) B.toast('Audio has not started. Tap Enable Sound, then try again.'); }); }
+window.addEventListener('ember:audio', paintSoundControls);
+
 
 /* Optional painted artwork: put files in public/art/ui/ and list their keys in public/art/ui/manifest.json (for example ["hero","map"]). */
 const ART = { hero: '/art/ui/home-hero.webp', collection: '/art/ui/home-tile0.webp', packs: '/art/ui/home-tile1.webp', fusion: '/art/ui/home-tile2.webp', trading: '/art/ui/home-tile3.webp', journey: '/art/ui/home-journey.webp' };
@@ -34,7 +49,7 @@ function head() {
   const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
   return `<header class="top uiTop"><div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${navIcon(g)}<span class="uiNavLabel">${t}</span></button>`).join('')}</nav>
-  <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
+  <div class="uiRight">${soundButtonHTML()}<div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
   <button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${esc(st.playerUsername || 'Explorer')}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
 }
 const MENU = [
@@ -51,11 +66,12 @@ function userMenu(anchor) {
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
    <hr><button role="menuitem" id="uiBackupGo"><span aria-hidden="true">💾</span> Save Backup</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
-   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
-  document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
+   <button role="menuitemcheckbox" aria-checked="${audioState() === 'on'}" data-sound-control="true" id="uiSound">${soundText()}</button><button role="menuitem" id="uiTestSound" data-sound-control="true">▶ Test Sound</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
+  document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true'); paintSoundControls();
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
-    if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
+    if (b.id === 'uiSound') { toggleSound(); return; }
+    if (b.id === 'uiTestSound') { testSound(); return; }
     if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
     if (b.id === 'uiBackupGo') { m.remove(); B.go('home'); setTimeout(() => $('#uiBackupBtn')?.click(), 60); return; }
     m.remove(); B.go(b.dataset.go);
@@ -131,13 +147,14 @@ function drawer(kind) {
   const st = B.state, reset = localStorage.getItem(B.key + '-batch3-reset-done') || st.testResetVersion === 3;
   d.innerHTML = `<section class="panel uiSettings"><h2>Settings</h2>
    <p><label><input type="checkbox" id="reducedMotion" ${st.reducedMotion ? 'checked' : ''}> Reduce motion (turns off 3D reveals and effects)</label></p>
-   <p><label><input type="checkbox" id="uiMute" ${ext().muted ? 'checked' : ''}> Mute sound</label></p>
+   <p><label data-sound-control="true"><input type="checkbox" id="uiMute" data-sound-control="true" ${!ext().muted ? 'checked' : ''}> Allow sound effects</label></p><p id="uiAudioHint" role="status"></p><button type="button" class="button alt" id="uiTestSoundSettings" data-sound-control="true">▶ Test Sound</button><p class="small muted">If you hear nothing, check your tablet’s media volume and Silent Mode.</p>
    ${(st.cosmetics?.owned || []).includes('collectible-founder') ? '<p class="collectibleEmblem">☀ First Light · Collection Emblem</p>' : ''}
    <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button></p>
    <details><summary>Test save tools</summary><p class="small">One-time reset for this browser only. Your current save is backed up first.</p><button class="button alt" id="resetTest" ${reset ? 'disabled' : ''}>Reset My Test Progress Once</button></details></section>`;
   B.bind();
   $('#reducedMotion').onchange = e => { st.reducedMotion = e.target.checked; B.save(); B.go('home'); };
-  $('#uiMute').onchange = e => { ext().muted = e.target.checked; B.save(); };
+  $('#uiMute').onchange = e => changeSound(e.target.checked);
+  $('#uiTestSoundSettings').onclick = testSound; paintSoundControls();
   $('#resetTest').onclick = () => B.resetTest();
 }
 
@@ -418,6 +435,7 @@ function onFrame() {
     }
   }
   const u = $('#uiUser'); if (u) u.onclick = () => userMenu(u);
+  const sound = $('#uiSoundToggle'); if (sound) sound.onclick = toggleSound; paintSoundControls();
   if (B.view === 'home') afterHome();
   if (B.view === 'vault') vaultLayout();
 }

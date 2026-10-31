@@ -795,3 +795,10 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 
 /* Vertical gestures scroll the page; horizontal drags still explore the map. */
 .uiHQ .uiMap.mapWrap{touch-action:pan-y pinch-zoom}
+
+/* Persistent audio state and a large, labelled touch control. */
+.uiSoundToggle{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:7px 11px;border:1px solid #998259;border-radius:9px;background:#111a31;color:#f4e5c5;font-family:var(--ui-serif);font-size:15px;white-space:nowrap;cursor:pointer}
+.uiSoundToggle[data-audio-state="on"]{border-color:#94c783;background:#172b27;color:#dbffd0}.uiSoundToggle[data-audio-state="off"]{background:#272134;color:#e8d7da}.uiSoundToggle[data-audio-state="locked"]{border-color:#f0c672;color:#ffe2a0}
+.uiSoundToggle:focus-visible{outline:3px solid #fff0bb;outline-offset:3px}
+@media(max-width:600px){.uiTopIn{height:auto;flex-wrap:wrap!important;gap:5px;padding-block:7px}.uiTop .uiRight{margin-left:auto;gap:6px;flex-wrap:wrap;justify-content:flex-end}.uiSoundToggle{min-height:44px;padding:6px 8px;font-size:13px}.uiTop .coins{font-size:15px!important;padding-right:8px!important}}
+.uiSettings label{display:flex;align-items:center;gap:10px;min-height:44px}.uiSettings input[type="checkbox"]{width:20px;height:20px;margin:0;flex:none;accent-color:#e9b75a}

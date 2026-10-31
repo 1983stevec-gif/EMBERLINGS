@@ -26,7 +26,12 @@ function start() {
   window.addEventListener('ember:cardBattle', e => battleFx(e.detail));
   window.addEventListener('ember:cardResult', e => onCardResult(e.detail));
   window.addEventListener('ember:friends', e => onFriends(e.detail));
-  document.addEventListener('pointerdown', e => { sfx.unlock(); if (e.target.closest?.('button,.tile,[data-go]')) sfx.click(); }, { capture: true, passive: true });
+  const soundControl = e => e.target.closest?.('[data-sound-control],#uiSound,#uiSoundToggle,#uiMute,#uiTestSound,#uiTestSoundSettings');
+  document.addEventListener('pointerdown', e => { if (e.pointerType !== 'touch' && !soundControl(e)) sfx.unlock(); }, { capture: true, passive: true });
+  document.addEventListener('touchend', e => { if (!soundControl(e)) sfx.unlock(); }, { capture: true, passive: true });
+  document.addEventListener('click', e => { if (soundControl(e)) return; sfx.unlock(); if (e.target.closest?.('button,.tile,[data-go]')) sfx.click(); }, { capture: true, passive: true });
+  document.addEventListener('visibilitychange', () => sfx.refresh());
+  window.addEventListener('pageshow', () => sfx.refresh());
   B.registerView('album', renderAlbum);
   B.registerView('achievements', renderAchievements);
   setupTilt();
@@ -37,35 +42,56 @@ function start() {
 
 /* ---------------------------------------------------------------- Sound */
 const sfx = (() => {
-  let ctx = null, master = null;
+  let ctx = null, master = null, resuming = null, suspending = false, epoch = 0, lastStatus = '';
+  const sources = new Set();
   const muted = () => !!ext().muted;
-  function ac() {
+  const status = () => muted() ? 'off' : ctx?.state === 'running' ? 'on' : 'locked';
+  function refresh() { const next = status(); if (next !== lastStatus) { lastStatus = next; window.dispatchEvent(new CustomEvent('ember:audio', { detail: { status: next } })); } }
+  function ac(create = false) {
     if (muted()) return null;
     try {
-      if (!ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ctx = new C(); master = ctx.createGain(); master.gain.value = .35; master.connect(ctx.destination); }
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx?.state === 'closed') { ctx = null; master = null; resuming = null; }
+      if (!ctx && create) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ctx = new C(); master = ctx.createGain(); master.gain.value = .35; master.connect(ctx.destination); ctx.addEventListener('statechange', refresh); }
       return ctx;
     } catch { return null; }
   }
+  function unlock() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { }
+    const c = ac(true); if (!c) { refresh(); return Promise.resolve(false); }
+    if (c.state === 'running' && !suspending) { refresh(); return Promise.resolve(true); }
+    if (resuming) return resuming;
+    // iPad Safari needs creation, a silent buffer and resume in the trusted tap/click itself.
+    try { const prime = c.createBufferSource(); prime.buffer = c.createBuffer(1, 1, c.sampleRate); prime.connect(c.destination); prime.onended = () => prime.disconnect(); prime.start(0); } catch { }
+    try { resuming = Promise.resolve(c.resume()).then(() => { refresh(); return !muted() && c === ctx && c.state === 'running'; }, () => { refresh(); return false; }).finally(() => { resuming = null; }); }
+    catch { refresh(); return Promise.resolve(false); }
+    return resuming;
+  }
+  function ready(play) { const c = ac(), token = epoch; if (!c) return; const run = () => { if (!muted() && token === epoch && c === ctx && c.state === 'running') play(c); }; if (c.state === 'running') run(); else if (resuming) resuming.then(run); }
+  function track(source, ...nodes) { sources.add(source); source.onended = () => { sources.delete(source); source.disconnect(); for (const node of nodes) node.disconnect(); }; }
+  function setMuted(value) {
+    ext().muted = !!value; B.save();
+    if (value) { epoch++; if (master) master.gain.value = 0; for (const source of sources) { try { source.stop(); } catch { } } sources.clear(); if (ctx && ctx.state !== 'closed') { suspending = true; Promise.resolve(ctx.suspend()).catch(() => {}).finally(() => { suspending = false; }); } refresh(); return Promise.resolve(false); }
+    if (master) master.gain.value = .35;
+    const resumed = unlock(); resumed.then(ok => { if (ok && master) master.gain.value = .35; }); return resumed;
+  }
   function tone({ f = 440, to = null, type = 'sine', at = 0, d = .15, v = .2, a = .005 }) {
-    const c = ac(); if (!c) return;
-    const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
-    o.type = type; o.frequency.setValueAtTime(f, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + d);
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t + d + .05);
+    ready(c => { const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + d);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(master); track(o, g); o.start(t); o.stop(t + d + .05); });
   }
   function noise({ at = 0, d = .2, v = .2, f = 1200, q = .8, type = 'lowpass' }) {
-    const c = ac(); if (!c) return;
-    const t = c.currentTime + at, len = Math.ceil(c.sampleRate * d), buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
-    const src = c.createBufferSource(), filter = c.createBiquadFilter(), g = c.createGain();
-    src.buffer = buf; filter.type = type; filter.frequency.value = f; filter.Q.value = q; g.gain.value = v;
-    src.connect(filter); filter.connect(g); g.connect(master); src.start(t);
+    ready(c => { const t = c.currentTime + at, len = Math.ceil(c.sampleRate * d), buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const src = c.createBufferSource(), filter = c.createBiquadFilter(), g = c.createGain();
+      src.buffer = buf; filter.type = type; filter.frequency.value = f; filter.Q.value = q; g.gain.value = v;
+      src.connect(filter); filter.connect(g); g.connect(master); track(src, filter, g); src.start(t); src.stop(t + d + .05); });
   }
   const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1568, 2093];
   let lastClick = 0;
   return {
-    unlock: () => { if (!muted()) ac(); },
+    unlock, status, refresh, setMuted,
+    preview: () => { const resumed = setMuted(false); resumed.then(ok => { if (ok) [523.25, 659.25, 783.99].forEach((f, i) => tone({ f, at: i * .12, d: .2, v: .14 })); }); return resumed; },
     click: () => { const now = performance.now(); if (now - lastClick < 60) return; lastClick = now; tone({ f: 900, to: 700, type: 'triangle', d: .05, v: .05 }); },
     roll: () => { let at = 0, gap = .045; while (at < 2.5) { tone({ f: 1200, type: 'square', at, d: .03, v: .035 }); at += gap; gap *= 1.09; } },
     burst: rank => { noise({ d: .5 + rank * .08, v: .3, f: 900 + rank * 300 }); tone({ f: 90, to: 40, type: 'sine', d: .45, v: .35 }); },
@@ -78,16 +104,17 @@ const sfx = (() => {
     lose: () => { [392, 349.2, 311.1].forEach((f, i) => tone({ f, type: 'sine', at: i * .2, d: .4, v: .1 })); },
     achievement: () => { [784, 988, 1175, 1568].forEach((f, i) => tone({ f, type: 'square', at: i * .07, d: .18, v: .06 })); tone({ f: 1568, type: 'triangle', at: .3, d: .7, v: .1 }); },
     fusion: () => { tone({ f: 150, to: 900, type: 'sawtooth', d: 1.4, v: .08 }); noise({ at: 1.4, d: .6, v: .35, f: 1500 }); tone({ f: 1046.5, type: 'triangle', at: 1.45, d: .8, v: .12 }); },
-    toggle: () => { ctx?.suspend?.(); }
+    toggle: () => setMuted(true)
   };
 })();
+window.EmberAudio = Object.freeze({ unlock: sfx.unlock, setMuted: sfx.setMuted, status: sfx.status, preview: sfx.preview });
 
 function muteButton() {
   const top = $('.top'); if (!top || $('.fxMute', top) || top.classList.contains('uiTop')) return;
   const b = document.createElement('button');
   b.className = 'fxMute'; b.type = 'button';
   const paint = () => { const m = !!ext().muted; b.textContent = m ? '🔇' : '🔊'; b.setAttribute('aria-label', m ? 'Sound off. Turn sound on' : 'Sound on. Turn sound off'); b.setAttribute('aria-pressed', String(!m)); b.title = m ? 'Sound off' : 'Sound on'; };
-  b.onclick = () => { const e = ext(); e.muted = !e.muted; if (e.muted) sfx.toggle(); B.save(); paint(); if (!e.muted) sfx.click(); };
+  b.dataset.soundControl = 'true'; b.onclick = () => { const next = !ext().muted && sfx.status() === 'on'; sfx.setMuted(next).then(() => { paint(); if (!next) sfx.click(); }); paint(); };
   paint();
   const coins = $('.coins', top); coins ? top.insertBefore(b, coins) : top.appendChild(b);
 }

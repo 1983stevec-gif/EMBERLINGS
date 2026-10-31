@@ -14,7 +14,7 @@ for (const view of ['home','inventory','friends']) {
     B:{view}, trackHistory(){}, document:{body:{classList:{add(){},toggle(){}}}},
     SLIM_VIEWS:[], FULL_VIEWS:[], NAV_ART:Object.fromEntries(buttons.map(b=>[b.dataset.go,true])),
     navIcon(g){decorated++;return g}, afterHome(){}, vaultLayout(){},
-    userMenu(button){assert.equal(button,anchor);opened++},
+    toggleSound(){},paintSoundControls(){},userMenu(button){assert.equal(button,anchor);opened++},
     $(selector, parent){
       if(selector.includes('aria-current')) return {dataset:{go:view}};
       if(selector==='#app > .nav') return nav;
