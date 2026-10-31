@@ -789,3 +789,33 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiCloudPick:hover,.uiCloudPick:focus-visible{border-color:#f2c45f;outline:none;box-shadow:0 0 0 2px #f2c45f55}
 .uiCloudPick b{font-size:18px}.uiCloudPick span{font-size:14px;color:#c8d1ec}
 .uiCloudNote{font-size:13px;color:#a9b4d8;margin:8px 0 0}
+
+/* ---------- Painted header bar (computers) ---------- */
+.uiPBar{display:none}
+@media(min-width:900px){
+ body.uiTheme .uiTop{background:#070b1a!important;border-bottom:0!important;box-shadow:0 8px 22px #000a!important}
+ body.uiTheme .uiTop .uiTopIn{display:none!important}
+ .uiPBar{display:block}
+ .uiXCrop{width:min(100%,calc((100dvh - min(7.05vw,141px)) * var(--ratio)))!important}
+}
+.uiPBarIn{position:relative;max-width:2000px;margin:0 auto;aspect-ratio:2000/141;background:url(/art/ui/header-bar.webp) center/100% 100% no-repeat;container-type:inline-size}
+.uiPBarIn>*{position:absolute}
+.uiPHot{background:transparent;border:0;padding:0;margin:0;cursor:pointer;border-radius:12px}
+.uiPHot:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiPNav{position:static}
+.uiPTab{position:absolute;border-radius:18% 18% 16% 16%/14% 14% 22% 22%;transition:box-shadow .15s,background .15s}
+.uiPTab:hover{background:#ffffff12}
+.uiPTab.active{box-shadow:0 0 0 2px #ffb04a,0 0 14px 3px #ff9a2acc,inset 0 0 18px #ff9a2a66;background:radial-gradient(ellipse at 50% 30%,#ffb04a22,transparent 70%)}
+.uiPTab.uiPHQ{border-radius:40% 40% 30% 30%}
+.uiPTab.uiPHQ.active{box-shadow:none;background:radial-gradient(ellipse at 50% 60%,#ffb04a55,transparent 65%);filter:drop-shadow(0 0 8px #ff9a2a)}
+.uiPSound span{position:absolute;left:33%;right:4%;top:0;bottom:0;display:flex;align-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(24 / 2000 * 100cqw);color:#f6efdc;white-space:nowrap;pointer-events:none}
+.uiPSound[aria-pressed=false] span{color:#c9c2b0}
+.uiPCoins{display:flex;align-items:center}.uiPCoins b{position:absolute;left:41%;right:4%;top:0;bottom:0;display:flex;align-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(29 / 2000 * 100cqw);color:#fff;white-space:nowrap;font-variant-numeric:lining-nums}
+.uiPAva{position:absolute;left:3.6%;top:12%;width:23.8%;height:76%;border-radius:50%;overflow:hidden}
+.uiPAva .mythlingArt{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+.uiPName{position:absolute;left:30%;right:15%;top:0;bottom:0;display:flex;align-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(22 / 2000 * 100cqw);color:#f6efdc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiPFlame{--logo-h:calc(82 / 2000 * 100cqw);pointer-events:none}
+.uiPFlame img{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 92%;animation:uiBurn 1.7s ease-in-out infinite}
+.uiPFlame .uiPFlameHot{mix-blend-mode:screen;filter:brightness(1.35) saturate(1.3) hue-rotate(-8deg);opacity:0;animation:uiBurn2 1.15s ease-in-out infinite,uiFlick .9s steps(1,end) infinite}
+.reduceMotion .uiPFlame *{animation:none!important}.reduceMotion .uiPFlameHot,.reduceMotion .uiPFlame .uiEmber{display:none}
+.uiPTab.uiPHQ.active{background:radial-gradient(ellipse at 50% 55%,#ffb04a88,#ff9a2a33 45%,transparent 70%);filter:none;box-shadow:0 0 0 2px #ffb04a99,0 0 22px 6px #ff9a2a88}
