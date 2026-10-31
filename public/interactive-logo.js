@@ -1,0 +1,12 @@
+// Decorative interactions only; no player progress or game economy changes.
+export function interactiveLogoMarkup(){return `<div class="emberLogoExperience"><button type="button" class="interactiveEmberLogo" id="interactiveEmberLogo" aria-label="Awaken the EMBERLINGS logo" aria-describedby="emberLogoHint"><img class="hqLogo" src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086" draggable="false"><span class="logoCrystalHalo" aria-hidden="true"></span><span class="logoEmberField" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i style="--ember-angle:${i*36}deg;--ember-distance:${55+(i%3)*15}px;--ember-delay:${i%3*35}ms"></i>`).join('')}</span><span class="logoTapMark" aria-hidden="true">✦</span></button><p id="emberLogoHint" class="emberLogoHint" role="status" aria-live="polite">Tap to awaken the ember</p></div>`}
+export function bindInteractiveLogo(button,hint,reducedMotion=()=>false){
+ if(!button||!hint)return ()=>{};
+ let stage=0,timer=0;const events=new AbortController();
+ const resetTilt=()=>{button.style.setProperty('--logo-rx','0deg');button.style.setProperty('--logo-ry','0deg');button.style.setProperty('--logo-light-x','50%');button.style.setProperty('--logo-light-y','40%')};
+ const quiet=()=>reducedMotion()||(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+ button.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||quiet())return;const r=button.getBoundingClientRect();if(!r.width||!r.height)return;const x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));button.style.setProperty('--logo-rx',(0.5-y)*10+'deg');button.style.setProperty('--logo-ry',(x-0.5)*12+'deg');button.style.setProperty('--logo-light-x',x*100+'%');button.style.setProperty('--logo-light-y',y*100+'%')},{signal:events.signal});
+ for(const event of ['pointerleave','pointercancel','blur'])button.addEventListener(event,resetTilt,{signal:events.signal});
+ button.addEventListener('click',()=>{clearTimeout(timer);stage=stage%3+1;button.dataset.logoStage=String(stage);button.classList.toggle('logoQuiet',quiet());button.classList.remove('logoAwakened');void button.offsetWidth;button.classList.add('logoAwakened');hint.textContent=['Flame awakened ✦','Crystal charged ✧','Ember storm unleashed ✨'][stage-1];timer=setTimeout(()=>button.classList.remove('logoAwakened'),950)},{signal:events.signal});
+ return ()=>{events.abort();clearTimeout(timer);button.classList.remove('logoAwakened');resetTilt()};
+}
