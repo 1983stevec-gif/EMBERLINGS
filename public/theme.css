@@ -931,3 +931,68 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .uiXBattle .pocketField:nth-child(3) .benchCard>*{zoom:calc(var(--z) * .27)}
 .uiXBattle .pocketField:nth-child(3) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(430*var(--u));font-size:calc(13*var(--u))}
 .uiXBattle .pocketField:nth-child(1) .pocketBench:has(.benchCard)+.battleIconStats{top:calc(412*var(--u))}
+
+/* ---------- Battle enhancements ---------- */
+#bxLayer{position:fixed;inset:0;pointer-events:none;z-index:9300;overflow:hidden}
+/* 1 turn signal */
+.bxMyTurn .pocketBoard>.pocketField:first-child .pocketActive{filter:drop-shadow(0 0 10px #ffb04a99)}
+.bxMyTurn .uiXBattle::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 calc(40*var(--u)) #ffb04a40;animation:bxGlow 2.4s ease-in-out infinite}
+@keyframes bxGlow{50%{box-shadow:inset 0 0 calc(70*var(--u)) #ffb04a66}}
+.bxBanner{position:absolute;left:0;right:0;top:38%;display:flex;justify-content:center;animation:bxSweep 1.9s cubic-bezier(.2,.8,.3,1) forwards}
+.bxBanner span{padding:14px 90px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(34px,4vw,64px);letter-spacing:.06em;color:#fff3d6;text-shadow:0 2px 0 #6b2a00,0 0 26px #ff9a3a;background:linear-gradient(90deg,transparent,#3a1a06e6 18%,#6a2e0ae6 50%,#3a1a06e6 82%,transparent);border-top:2px solid #e9b75a;border-bottom:2px solid #e9b75a}
+@keyframes bxSweep{0%{transform:translateX(-60vw);opacity:0}18%{transform:translateX(0);opacity:1}78%{transform:translateX(0);opacity:1}100%{transform:translateX(60vw);opacity:0}}
+/* 2 drag to play */
+.bxDraggable>.mythCard,.bxDraggable>.pocketCreature{cursor:grab}
+.bxLifted{opacity:.35}
+.bxGhost{position:fixed!important;z-index:9400;pointer-events:none;transform:rotate(-4deg) scale(1.04);box-shadow:0 20px 40px #000c!important;margin:0!important;zoom:1!important}
+.bxDrop{outline:2px dashed #ffd27a99;outline-offset:4px;border-radius:12px}
+.bxDropOver{outline:3px solid #ffd27a;box-shadow:0 0 26px #ffb04a99;background:#ffb04a1a}
+/* 3 attack preview */
+.pocketActive{position:relative}
+.bxPreview{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;display:grid;justify-items:center;gap:4px;padding:8px 16px 10px;border-radius:12px;background:#0b1022e6;border:1px solid #ffb04a;box-shadow:0 0 22px #ff7a3c88;pointer-events:none;font-family:'EB Garamond',Georgia,serif;color:#f6efdc;animation:bxPop .18s ease-out}
+.bxPreview b{font-size:30px;color:#ffb04a;line-height:1;font-family:'Cormorant Garamond',Georgia,serif}
+.bxPreview.ko b{color:#ff6a4a}.bxPreview.ko span{color:#ffd27a;font-weight:700;letter-spacing:.05em}
+.bxPreview span{font-size:13px;white-space:nowrap}
+.bxPreview i{display:block;width:120px;height:6px;border-radius:99px;background:linear-gradient(90deg,#3fae72 var(--left),#ff6a4a var(--left),#ff6a4a var(--hp),#1b2340 var(--hp))}
+@keyframes bxPop{from{transform:translate(-50%,-50%) scale(.85);opacity:0}}
+/* 4 lunge */
+.bxLunge{animation:bxLungeR .55s cubic-bezier(.3,1.4,.5,1)}
+.bxLungeL{animation:bxLungeLeft .55s cubic-bezier(.3,1.4,.5,1)}
+@keyframes bxLungeR{30%{transform:translateX(60px) rotate(4deg) scale(1.06)}60%{transform:translateX(-6px)}}
+@keyframes bxLungeLeft{30%{transform:translateX(-60px) rotate(-4deg) scale(1.06)}60%{transform:translateX(6px)}}
+/* 5 knockout */
+.bxEmber{position:fixed;left:0;top:0;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle,#fff3b0,#ff9a2a 60%,transparent);box-shadow:0 0 8px #ff7a1a}
+.bxPoint{position:fixed;left:0;top:0;margin:-22px 0 0 -22px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 18px 'Cormorant Garamond',Georgia,serif;color:#2a1405;background:radial-gradient(circle at 35% 30%,#fff1b0,#f2b53a 55%,#a8620c);box-shadow:0 0 18px #ffb04a}
+.bxPoint.theirs{background:radial-gradient(circle at 35% 30%,#ffd0c0,#e0603a 55%,#8a2010);color:#fff}
+.bxScorePop{animation:bxScore .6s ease-out}
+@keyframes bxScore{40%{transform:scale(1.18);filter:drop-shadow(0 0 10px #ffb04a)}}
+/* 6 opponent callouts */
+.bxCallout{position:absolute;left:50%;top:calc(130px + var(--n) * 46px);transform:translateX(-50%);max-width:min(560px,90vw);padding:9px 20px;border-radius:10px;background:#160c22eb;border:1px solid #c66a4a;color:#ffe2d6;font:500 16px 'EB Garamond',Georgia,serif;box-shadow:0 8px 24px #000a;animation:bxIn .3s ease-out;transition:opacity .4s,transform .4s;text-align:center}
+.bxCallout::before{content:"⚔ Opponent · ";color:#ff9a7a;font-weight:700}
+.bxCallout.out{opacity:0;transform:translate(-50%,-10px)}
+@keyframes bxIn{from{opacity:0;transform:translate(-50%,-14px)}}
+/* 7 hand fan */
+.handRow>.handCard{transform:rotate(var(--fan,0deg)) translateY(var(--lift,0px));transform-origin:50% 120%;transition:transform .18s ease,filter .18s;position:relative}
+.handRow>.handCard:hover,.handRow>.handCard:focus-within{transform:translateY(-14px) scale(1.04);z-index:5;filter:drop-shadow(0 10px 18px #000c)}
+.uiXBattle .handRow{overflow-y:visible;padding-top:calc(16*var(--u))!important}
+/* 8 result scene */
+.victoryCard.bxScene{position:relative;overflow:hidden;min-height:min(70vh,640px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#0b1022bb,#0b1022ee),url(/art/ui/battle.webp) center/cover!important;border:2px solid #c9a35a!important;border-radius:14px;max-width:1100px;margin:20px auto!important}
+.bxScene>*{position:relative;z-index:1}
+.bxRays{position:absolute!important;inset:-50%;z-index:0!important;background:repeating-conic-gradient(from 0deg,#ffcf6a22 0 6deg,transparent 6deg 18deg);animation:bxSpin 40s linear infinite;-webkit-mask:radial-gradient(circle,#000 10%,transparent 55%);mask:radial-gradient(circle,#000 10%,transparent 55%)}
+.bxLose .bxRays{background:repeating-conic-gradient(from 0deg,#8aa0ff18 0 6deg,transparent 6deg 18deg)}
+@keyframes bxSpin{to{transform:rotate(360deg)}}
+.bxKicker{margin:0;font-family:'EB Garamond',Georgia,serif;letter-spacing:.3em;text-transform:uppercase;color:#e9c27a;font-size:15px}
+.bxScene h1{font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(46px,6vw,84px)!important;color:#fff3d6!important;text-shadow:0 3px 0 #5a2a00,0 0 30px #ff9a3a88;margin:6px 0!important}
+.bxLose h1{text-shadow:0 3px 0 #101840,0 0 30px #6a8aff66}
+.bxScene .resultSeal{font-size:90px;filter:drop-shadow(0 0 20px #ffb04a)}
+.bxScene .rewardGrid strong{background:#0d1534e6!important;border:1px solid #c9a35a!important;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;animation:bxReward .5s ease-out backwards}
+.bxScene .rewardGrid strong:nth-child(2){animation-delay:.15s}.bxScene .rewardGrid strong:nth-child(3){animation-delay:.3s}
+@keyframes bxReward{from{transform:translateY(14px) scale(.9);opacity:0}}
+.reduceMotion .bxBanner,.reduceMotion .bxRays,.reduceMotion .bxLunge,.reduceMotion .bxLungeL{animation:none!important}
+.bxDraggable{touch-action:none}
+.bxGhost{transform:rotate(-4deg)!important}
+.bxCallout{top:calc(clamp(175px,19vh,230px) + var(--n) * 46px)}
+.victoryCard.bxScene{background:linear-gradient(#0b1022cc,#0b1022f0),url(/art/ui/battle.webp) 50% 100%/135% auto no-repeat,#0b1022!important}
+.victoryCard.bxScene{background:radial-gradient(ellipse at 50% 40%,#5a2e10cc,#140c1e 60%,#0b1022)!important}
+.victoryCard.bxScene.bxLose{background:radial-gradient(ellipse at 50% 40%,#1e2e6acc,#0e1430 60%,#0b1022)!important}
+.victoryCard.bxScene.bxDraw{background:radial-gradient(ellipse at 50% 40%,#3a3a5acc,#121426 60%,#0b1022)!important}
