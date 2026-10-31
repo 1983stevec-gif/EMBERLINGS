@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { versionGameAssets } from './lib/version-game-assets.mjs';
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
@@ -5,6 +7,9 @@ import { readExecutionProfile } from "./scripts/execution-profile.mjs";
 import { configureToolEnvironment } from "./scripts/tool-environment.mjs";
 import { sites } from "./scripts/vite/sites-vite-plugin";
 import { connectorPreview } from "./scripts/vite/connector-preview-plugin.mjs";
+
+const releaseInputs = ['game/index.html','public/theme.css','public/ui.js','public/ui-exact.js','public/enhancements.js'].map(path => readFileSync(new URL(path, import.meta.url), 'utf8'));
+const releaseVersion = versionGameAssets(releaseInputs[0], releaseInputs.slice(1)).version;
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   "00000000-0000-4000-8000-000000000000";
@@ -44,6 +49,7 @@ export default defineConfig(async ({ command }) => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    define: { __EMBER_ASSET_VERSION__: JSON.stringify(releaseVersion) },
     server: {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
