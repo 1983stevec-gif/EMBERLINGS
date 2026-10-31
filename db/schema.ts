@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
 export const players=sqliteTable('players',{
- userId:text('user_id').primaryKey(),recoveryHash:text('recovery_hash'),username:text('username').notNull(),usernameKey:text('username_key').notNull(),
+ userId:text('user_id').primaryKey(),recoveryHash:text('recovery_hash'),passwordHash:text('password_hash'),username:text('username').notNull(),usernameKey:text('username_key').notNull(),
  petMutation:text('pet_mutation'),petRarity:text('pet_rarity').notNull().default('Common'),petSecret:integer('pet_secret').notNull().default(0),petKind:integer('pet_kind').notNull().default(0),petShiny:integer('pet_shiny').notNull().default(0),title:text('title'),seenAt:integer('seen_at').notNull(),createdAt:integer('created_at').notNull()
 },t=>[uniqueIndex('players_username_unique').on(t.usernameKey)]);
 export const requests=sqliteTable('friend_requests',{
@@ -24,3 +24,7 @@ export const trades=sqliteTable('trades',{
 export const tradeReceipts=sqliteTable('trade_receipts',{
  id:text('id').primaryKey(),tradeId:text('trade_id').notNull().references(()=>trades.id),userId:text('user_id').notNull().references(()=>players.userId),outgoingAsset:text('outgoing_asset').notNull(),incomingAsset:text('incoming_asset').notNull(),outgoingLocalId:text('outgoing_local_id').notNull(),creature:text('creature').notNull(),acknowledged:integer('acknowledged').notNull().default(0),createdAt:integer('created_at').notNull()
 },t=>[uniqueIndex('trade_receipt_player').on(t.tradeId,t.userId),index('trade_receipts_pending').on(t.userId,t.acknowledged)]);
+
+export const cloudSaves=sqliteTable('cloud_saves',{
+ userId:text('user_id').primaryKey().references(()=>players.userId),data:text('data').notNull(),revision:integer('revision').notNull().default(0),device:text('device'),updatedAt:integer('updated_at').notNull()
+});
