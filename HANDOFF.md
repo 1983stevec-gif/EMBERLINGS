@@ -1,0 +1,69 @@
+# EMBERLINGS — handoff for another computer
+Updated October 31, 2026. Current live version: 30.
+
+## Play
+https://mythlings-adventure.proud-book-0456.chatgpt.site/
+
+## Continue development
+This is an existing game: update it, do not rebuild it. The user prefers quick changes and a few focused tests.
+
+GitHub repository: https://github.com/1983stevec-gif/EMBERLINGS
+The user created this repository as public. Preserve its visibility. Keep the existing Sites project for live publication.
+
+The accompanying Emberlings-source.zip contains the current tracked project. Emberlings-history.bundle contains its Git history and main branch. Both exclude local player saves, local databases, dependencies, and credentials.
+
+To restore history on another computer, install Git and Node.js 22.13 or newer, then run in the folder containing the bundle:
+
+```sh
+git clone Emberlings-history.bundle emberlings
+cd emberlings
+npm ci
+npm run build
+npm start -- --port 8848
+```
+
+Open http://127.0.0.1:8848/ after the server reports ready. For ZIP, extract it and run the same npm commands in the extracted project folder. Local multiplayer uses a separate local database; use the public game to reach the existing online friends and trade service.
+
+Clone the GitHub repository on the other computer with git clone https://github.com/1983stevec-gif/EMBERLINGS.git. Pull before editing; commit and push completed changes. Publishing the game still requires the Sites publishing workflow; pushing to GitHub alone does not update the public game.
+
+## Give this to Codex on the other computer
+Continue my existing EMBERLINGS game from this project. Read this handoff and inspect the current code before changing anything. Preserve gameplay, player progress, inventory, coins, Vault upgrades, multiplayer and all artwork. Keep changes quick and use only a few relevant checks plus the required build. Use the existing Sites project for publication, not a new project.
+
+Sites project ID: appgprj_6ade72f8031081918f304ef6bf4af0fb
+Live version: 30
+Source commit: 80cb1e8641e2431b6cb35074324c753ce3e7159e
+Save key: mythlings-playable-v1 — NEVER rename or clear it.
+
+Main implementation: game/index.html
+Card rules and Equip Best: public/card-engine.js
+Combat metadata/mutations: public/combat-rules.js
+Progression/Vault rates: public/card-progression.js
+Multiplayer: lib/card-api.mjs, lib/social-api.mjs, lib/trade-api.mjs
+Artwork: public/art/
+Focused tests: tests/equip-best.mjs, tests/visual-update.cjs
+Some older tests encode superseded requirements; inspect them before treating failures as regressions.
+
+## Current rules to preserve
+- Game title EMBERLINGS; creatures Mythlings. Sixteen species, illustrated 2D cards.
+- Deck: 1–20 cards, at least one Basic, max two copies of each card, limited by owned copies. Evolution stages are battle forms.
+- Equip Best considers the whole available collection, selects strongest actual copies including mutation/rarity, retains evolution chains and max three Merfling types. It optimizes a damage/health/rarity strength score; it does not guarantee wins. Vault/trade-locked Mythlings excluded.
+- Merfling is earned by ending a turn, including attacking. No initial free Merfling.
+- Packs award exactly five, with one-by-one or reveal-all animation.
+- Hacker Pack: 600,000 coins; Voltix (dragon), Noctalon (crow), Crystella, Frostbit, Umbryx and boosted Emberoo. Equal species odds. These species share the highest base damage with equal upgrades, including previously owned copies.
+- Celestial Pack: 6,000 coins; Sparquill, Cindermane, Glacipaw. Its former lineup is removed. No rare-dragon callout.
+- Cosmic now grants 100x Vault earnings, not 1,000x. Its attack modifier is unchanged.
+- Current whole base Vault rates: 4, 9, 20, 40, 80, 150, 280 by rarity. Unmutated rates cap at 450/sec after level/shiny/permanent bonuses; mutation multipliers apply AFTER that cap, so Cosmic can exceed 450. All displayed earning rates and collected coins remain whole numbers.
+- Vault rate edition 5 settles accrued earnings at prior rates before changing rates. Preserve pending fractions and prevent double collection.
+- No Rebirth or Shop UI. Preserve already-earned permanent coin bonuses. Adventure HQ is the bottom map tab; its obsolete island-name strip is removed.
+- Saved decks equip from top buttons. Hold/right-click a name for Delete. Deletion keeps the current equipped loadout and all creatures.
+
+## Player progress is separate from source code
+Owned Mythlings, wallet and much progression are stored in browser localStorage, not GitHub. A different computer/browser does NOT automatically receive that save. The public link and localhost also have separate saves. Do not clear website data or promise cloud save synchronization. No save-export interface was added in this handoff. Transfer saves as a separate explicit task; finish active trades/battles first. Online identity/friends use the hosted service and are not included in the ZIP/bundle.
+
+## Publishing
+Use the installed Sites skill. Read .openai/hosting.json; preserve project ID and public audience. Obtain fresh credentials through Sites tools; never put tokens in code, Git, handoff files or chat. Use the Sites source helper to prepare/push/package the exact source and build output, then save_site_version and deploy_site_version. A GitHub remote is for cross-computer code collaboration, separate from Sites publication.
+
+Original checkout:
+C:/Users/djste/Documents/Codex/2026-10-25/continue-developing-my-existing-playable-mythlings/work/mythlings-site
+
+Latest checks passed: focused Vault/Cosmic/migration and visual/preset checks; production build; successful native public deployment. No claim of full-suite or cross-device gameplay testing.
