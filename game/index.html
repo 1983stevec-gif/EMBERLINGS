@@ -902,7 +902,29 @@ function deleteSavedDeck(id){if(!state.deckPresets?.some(p=>p.id===id))return fa
 function showSavedDeckMenu(id){const p=state.deckPresets?.find(p=>p.id===id),area=$('#deckPresetMenu');if(!p||!area)return;area.innerHTML='<section class="panel savedDeckMenu" role="group" aria-label="Saved deck options"><strong>'+escapeHtml(p.name)+'</strong><p>Delete this saved deck? Your Mythlings and equipped cards stay yours.</p><button class="button" id="deleteSavedDeck">Delete</button> <button class="button alt" id="cancelDeckMenu">Cancel</button></section>';$('#deleteSavedDeck').onclick=()=>{if(deleteSavedDeck(id)){openPocketDeck();toast('Saved deck deleted.')}};$('#cancelDeckMenu').onclick=()=>area.innerHTML='';area.scrollIntoView?.({block:'nearest'})}
 const beforeSavedDeckMenu=openPocketDeck;openPocketDeck=function(){beforeSavedDeckMenu();if(view!=='decks'||state.cardBattle||state.cardOnlineId)return;const section=$('.deckSaves');if(!section)return;let area=$('#deckPresetMenu');if(!area){area=document.createElement('div');area.id='deckPresetMenu';section.appendChild(area)}document.querySelectorAll('[data-deck-preset]').forEach(button=>{const equip=button.onclick;let holdTimer=0,held=false,startX=0,startY=0;const cancel=()=>{clearTimeout(holdTimer);delete button.dataset.holding};button.onpointerdown=e=>{if(e.button!==0)return;held=false;startX=e.clientX;startY=e.clientY;button.dataset.holding='yes';holdTimer=setTimeout(()=>{if(button.isConnected&&view==='decks'){held=true;showSavedDeckMenu(button.dataset.deckPreset)}cancel()},550)};button.onpointermove=e=>{if(Math.hypot(e.clientX-startX,e.clientY-startY)>12)cancel()};button.onpointerup=cancel;button.onpointercancel=cancel;button.onpointerleave=cancel;button.onclick=e=>{if(held){held=false;e.preventDefault();return}equip?.(e)};button.oncontextmenu=e=>{e.preventDefault();cancel();held=true;showSavedDeckMenu(button.dataset.deckPreset)};button.onkeydown=e=>{if(e.key==='ContextMenu'||e.key==='Delete'||e.key==='F10'&&e.shiftKey){e.preventDefault();showSavedDeckMenu(button.dataset.deckPreset)}}})};
 
+/* Enhancement bridge: a narrow API and event hooks for /enhancements.js (album, achievements, sound, save backup, effects). */
+{const emit=(type,detail)=>{try{window.dispatchEvent(new CustomEvent('ember:'+type,{detail}))}catch(e){}};const views={};
+const fxFrame=frame;frame=function(content){fxFrame(content);emit('frame',{view})};
+const fxGo=go;go=function(v){if(views[v]){stopSocialViews();stopArena();stopVaultView();clearPackPresentation();clearInterval(cardTimer);clearTimeout(cardAI);scrollTo(0,0);view=v;return views[v]()}return fxGo(v)};
+const fxRoll=startPackRoll;startPackRoll=function(p,c){emit('packRoll',{creature:c});return fxRoll(p,c)};
+const fxReveal=revealPack;revealPack=function(c){const r=fxReveal(c);if(view==='reveal')emit('packReveal',{creature:c,rank:rarityRank(c),color:revealColor(c)});return r};
+const fxRevealAll=revealAllPack;revealAllPack=function(){const items=packCreatures();const r=fxRevealAll();if(view==='packSummary')emit('packSummary',{creatures:items});return r};
+const fxFusion=performFusion;performFusion=function(ids,confirmed){const r=fxFusion(ids,confirmed);if(r!==false&&view==='fusion-result')emit('fusion',{creature:state.owned[state.owned.length-1]});return r};
+const fxClaim=claimVault;claimVault=function(index=null){const before=state.coins,r=fxClaim(index);if(r>0)emit('coins',{amount:r,from:before,to:state.coins});return r};
+const fxWithdraw=withdrawVault;withdrawVault=function(index=0){const before=state.coins,r=fxWithdraw(index);if(r&&state.coins>before)emit('coins',{amount:state.coins-before,from:before,to:state.coins});return r};
+const fxResult=showCardResult;showCardResult=function(r){fxResult(r);emit('cardResult',{...r})};
+const fxCardRender=renderCardBattle;renderCardBattle=function(){const r=fxCardRender();if(view==='cardBattle'&&cardSession)emit('cardBattle',{match:cardSession.match,side:cardSession.side});return r};
+let fxMount=false;const fxRide=initRiding3D;initRiding3D=function(a,T){fxMount=true;try{return fxRide(a,T)}finally{fxMount=false}};
+const fxModel=creatureModel3D;creatureModel3D=function(T,kind,boss=false,shiny=false,bossLevel=0){const g=fxModel(T,kind,boss,shiny,bossLevel);if(!fxMount&&!boss)try{window.EmberFX?.decorateModel?.(T,g,{kind,shiny})}catch(e){}return g};
+const fxFriends=renderFriendLists;renderFriendLists=function(data){fxFriends(data);emit('friends',data)};
+window.EmberBridge=Object.freeze({get state(){return state},get view(){return view},key,species,RARITIES,MUTATIONS,
+ meta:c=>meta(c),rarityRank:c=>rarityRank(c),rarityLabel:c=>rarityLabel(c),revealColor:c=>revealColor(c),mutationTrait:c=>mutationTrait(c),
+ save:()=>save(),transact:fn=>economyTransaction(fn),toast:m=>toast(m),go:v=>go(v),bind:()=>bind(),portrait:c=>mythlingPortrait(c),
+ online:(path,body)=>onlineApi(path,body),vaulted:c=>vaulted(c),busy:()=>!!(state.pendingTradeId||Object.keys(state.tradeLocks||{}).length||state.cardBattle||state.cardOnlineId||pendingPackData()),
+ adopt:next=>{state=next;save()},registerView:(name,render)=>{views[name]=render},render:html=>frame(html)});
+}
+
 vaultData();migrateWholeVaultRates(state,Date.now(),coinMultiplier());
 launchEmberlings();})();
-</script></body></html>
+</script><script type="module" src="/enhancements.js"></script></body></html>
 
