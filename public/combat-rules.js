@@ -14,7 +14,13 @@ export const MOVE_PROFILES=[
  {basic:'Ice Fang',skill:'Twin Frost',ultimate:'Glacial Roar',mode:'twin',power:.95,count:2,spread:.08,speed:460,radius:9,cool:1.25,color:'#c3f5ff'},
  {basic:'Shadow Claw',skill:'Shadow Siphon',ultimate:'Midnight Eclipse',mode:'siphon',power:1.7,range:230,cool:1.4,color:'#c392ff'},
  {basic:'Cinder Kick',skill:'Ricochet Ember',ultimate:'Blazing Comet',mode:'bounce',power:1.6,count:1,spread:0,speed:510,radius:10,cool:1.1,color:'#ffbc79'},
- {basic:'Wing Slice',skill:'Spiral Gust',ultimate:'Sky Tempest',mode:'gust',power:1.6,range:195,cool:1.35,color:'#9dffe0'}
+ {basic:'Wing Slice',skill:'Spiral Gust',ultimate:'Sky Tempest',mode:'gust',power:1.6,range:195,cool:1.35,color:'#9dffe0'},
+ {basic:'Pebble Bash',skill:'Rooted Bastion',ultimate:'Ancient Grove',mode:'bloom',power:1.4,range:180,cool:1.8,color:'#8bbd69'},
+ {basic:'Bubble Bounce',skill:'River Remedy',ultimate:'Healing Tide',mode:'wave',power:1.5,count:1,speed:330,radius:18,cool:1.4,color:'#75cddd'},
+ {basic:'Needle Spark',skill:'Static Barrage',ultimate:'Quillstorm',mode:'fan',power:.65,count:3,spread:.2,speed:430,radius:7,cool:1.4,color:'#efce67'},
+ {basic:'Blazing Paw',skill:'Royal Inferno',ultimate:'Solar Roar',mode:'lunge',power:1.7,range:150,cool:1.25,color:'#f4a052'},
+ {basic:'Snow Pounce',skill:'Glacier Ambush',ultimate:'Winter Hunt',mode:'twin',power:.95,count:2,spread:.08,speed:470,radius:9,cool:1.3,color:'#b1e7f1'},
+ {basic:'Dusk Peck',skill:'Nightfall Siphon',ultimate:'Raven Eclipse',mode:'siphon',power:1.7,range:230,cool:1.4,color:'#ae8adb'}
 ];
 export function moveProfile(kind){return MOVE_PROFILES[kind]||MOVE_PROFILES[0]}
 export function skillShots(p,kind,base,dx,dy){const m=moveProfile(kind);if(!m.count)return [];const angle=Math.atan2(dy,dx);return Array.from({length:m.count},(_,i)=>{const a=angle+(i-(m.count-1)/2)*m.spread;return {x:p.x+dx*22,y:p.y+dy*22,vx:Math.cos(a)*m.speed,vy:Math.sin(a)*m.speed,r:m.radius,life:1.8,damage:Math.round(base*m.power),color:m.color,pierce:m.mode==='pierce'?2:0,bounces:m.mode==='bounce'?1:0,hitIds:[]}})}
