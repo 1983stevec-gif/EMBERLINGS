@@ -33,3 +33,5 @@ Training and the tutorial now teach Merfling, Bench, retreat, Trainer and evolut
 Run npm test for current Pocket-format rules, client/preservation, trading, D1 multiplayer and D1 trade-concurrency cases. Older five-card battle fixtures are historical and are no longer the maintained test entry point. Run TypeScript and the Sites build helper as well.
 
 Reference: developer overview https://dena.com/intl/news/4742/ and official battle FAQ https://support.pokemon.com/hc/en-us/articles/38906248102292-Pok%C3%A9mon-TCG-Pocket-Battle-Rules-FAQ . This is an Emberlings implementation of the core mobile format, not a copy of Pokémon's cards, assets or full card database.
+
+Custom deck update: 1–20 cards, at least one Basic. Mythling name copies are limited by actual owned copies, rather than two; Trainers remain limited to two per name. Opening hand is up to five cards. Co-op accepts short decks. Celestial Pack remains five Mythlings, with Voltix at 2% per draw and the other three species sharing 98%.
