@@ -15,7 +15,7 @@ function canvas(W, H, bg, cls, inner) {
   const [top, bottom] = CROP[cls] || [0, H];
   return `<div class="uiXCrop" style="--ratio:${W / (bottom - top)};aspect-ratio:${W}/${bottom - top}"><div class="uiX ${cls}" style="--W:${W};aspect-ratio:${W}/${H};margin-top:${(-top / W * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
-const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991] };
+const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -345,12 +345,56 @@ function mutationExact() {
 }
 const ELEMENT_ICON = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
 
+
+/* ---------------------------------------------------------------- Fusion Lab (mockup 1586 × 992) */
+// Rearranges the game's own Fusion Lab (same selection buttons and Fuse button) onto the mockup.
+const FUSE_TILES = [[177, 573, 418, 905], [432, 573, 668, 905], [682, 573, 918, 905], [932, 573, 1168, 905], [1183, 573, 1419, 905]];
+let fusePage = 0;
+function fusionExact() {
+  const app = $('#app'), preview = $('.fusionPreview'), picks = $$('[data-fusion-id]'), fuse = $('#fuse'); if (!preview || !fuse || $('.uiXFusion')) return;
+  const W = 1586, H = 992, p = box(W, H), st = B.state;
+  const chosen = picks.filter(b => b.classList.contains('picked')).map(b => st.owned.find(c => c.id === b.dataset.fusionId)).filter(Boolean);
+  const avail = picks.filter(b => !b.disabled).length;
+  const slot = (c, b) => `<div class="uiXFSlot" style="${p(...b)};${fs(W, 15)}">${B.art(c)}<span>${esc(B.species[c.kind]?.name || '')}<small>Level ${c.level || 1}${c.shiny ? ' · ★ Shiny' : ''}</small></span></div>`;
+  const ready = !fuse.disabled, hint = chosen.length === 2 ? (ready ? 'Ready to fuse.' : st.coins < 200 ? `Need ${fmt(200 - st.coins)} more coins.` : 'Collect at least three Mythlings to fuse.') : chosen.length === 1 ? 'Choose one more Mythling.' : 'Select two Mythlings to continue.';
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/fusion.webp', 'uiXFusion', `
+   ${hot(p(168, 58, 232, 78), 'data-go="home"', 'Back to Home')}<h1 class="uiSr">Fusion Lab</h1>
+   ${text(p(305, 199, 470, 227), W, 22, 'uiXFCount', `${chosen.length} / 2 selected`)}
+   ${chosen[0] ? slot(chosen[0], [305, 243, 498, 422]) : ''}${chosen[1] ? slot(chosen[1], [577, 243, 768, 422]) : ''}
+   <div class="uiXFBtn" style="${p(1144, 347, 1418, 401)};${fs(W, 19)}"></div>
+   ${text(p(1146, 410, 1420, 432), W, 14.5, 'uiXFHint', esc(hint))}
+   ${text(p(548, 538, 900, 562), W, 16, 'uiXFAvail', `${fmt(st.owned.length)} Mythlings &nbsp;·&nbsp; ${fmt(avail)} available`)}
+   <div class="uiXFPager" style="${p(1180, 534, 1420, 564)};${fs(W, 15)}"></div>
+   ${FUSE_TILES.map((b, i) => `<div class="uiXFTile" data-ftile="${i}" style="${p(...b)};${fs(W, 16)}"></div>`).join('')}
+   ${text(p(400, 941, 1186, 965), W, 15, 'uiXFFoot', chosen.length === 2 ? 'Both selected Mythlings will be consumed for a surprise result.' : 'Choose two eligible Mythlings from your inventory to begin.')}`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  fuse.className = 'uiXFFuse'; fuse.textContent = 'Fuse Selected Mythlings'; $('.uiXFBtn', wrap).append(fuse);
+  picks.forEach(b => {
+    const c = st.owned.find(x => x.id === b.dataset.fusionId), sp = B.species[c?.kind] || {}, picked = b.classList.contains('picked');
+    const reason = (b.querySelector('.pill')?.textContent || '').replace(/^[^A-Za-z✓]+/, '');
+    b.className = 'uiXFCard' + (picked ? ' sel' : '') + (b.disabled ? ' off' : '');
+    b.innerHTML = `<span class="uiXFArt">${c ? B.art(c) : ''}</span><strong>${esc(sp.name || '')}</strong><small>Level ${c?.level || 1} · ${esc(sp.element || '')}${c?.shiny ? ' · <b>★</b> Shiny' : ''}${c?.secret ? ' · Secret' : ''}</small>${b.disabled ? `<span class="uiXFProt">🛡 ${esc(reason.replace(/ · .*$/, ''))} · ${esc(/Vault/.test(reason) ? 'Take out first' : /Trade/.test(reason) ? 'In trade' : 'Protected')}</span><em>Cannot be fused</em>` : `<span class="uiXFChoose">${picked ? '✓ Selected' : 'Choose for Fusion'}</span>`}`;
+  });
+  const pages = Math.max(1, Math.ceil(picks.length / 5));
+  const firstPicked = picks.findIndex(b => b.classList.contains('sel')); if (fusePage >= pages) fusePage = pages - 1;
+  const paint = () => {
+    $$('[data-ftile]', wrap).forEach((t, i) => { t.replaceChildren(); const b = picks[fusePage * 5 + i]; if (b) t.append(b); });
+    const pg = $('.uiXFPager', wrap);
+    pg.innerHTML = pages > 1 ? `<button aria-label="Previous Mythlings" ${fusePage ? '' : 'disabled'}>‹</button><span>${fusePage * 5 + 1}–${Math.min(picks.length, fusePage * 5 + 5)} of ${picks.length}</span><button aria-label="Next Mythlings" ${fusePage < pages - 1 ? '' : 'disabled'}>›</button>` : '';
+    const [prev, next] = $$('button', pg); if (prev) prev.onclick = () => { fusePage--; paint(); }; if (next) next.onclick = () => { fusePage++; paint(); };
+  };
+  paint();
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation'].includes(B.view);
+  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse'].includes(B.view) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
+  if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
   if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });
@@ -362,7 +406,7 @@ if (B && UI) {
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
   let wasWide = wide();
-  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
