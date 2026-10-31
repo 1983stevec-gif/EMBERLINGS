@@ -415,6 +415,40 @@ addEventListener('popstate', e => {
   $('.uiMenu')?.remove(); fromHistory = true; B.go(v);
 });
 
+/* Illustrated rooms share the existing art; live headings and controls stay in the document. */
+const SANCTUM_ROOMS = {
+  mutation: ['THE MOONLIT SANCTUM', 'home-tile2.webp', 'violet'],
+  fusion: ['THE ALCHEMIST’S WORKSHOP', 'home-tile2.webp', 'violet'],
+  packs: ['THE COLLECTOR’S EMPORIUM', 'home-tile0.webp', 'gold'],
+  vault: ['THE TREASURY', 'home-tile1.webp', 'gold'],
+  decks: ['PREPARE YOUR ADVENTURE', 'home-tile1.webp', 'gold'],
+  training: ['THE MYTHLING ACADEMY', 'home-tile3.webp', 'green'],
+  friends: ['THE FELLOWSHIP HALL', 'home-tile3.webp', 'green'],
+  trading: ['THE FELLOWSHIP EXCHANGE', 'home-tile3.webp', 'green'],
+  album: ['THE ARCHIVIST’S COLLECTION', 'home-tile1.webp', 'gold'],
+  achievements: ['THE HALL OF HONOURS', 'home-tile2.webp', 'gold']
+};
+function paintSanctum() {
+  const room = SANCTUM_ROOMS[B.view];
+  document.body.classList.toggle('uiSanctum', !!room);
+  if (!room) return;
+  document.body.dataset.sanctum = room[2];
+  const app = $('#app');
+  if (!app || $('.uiSanctumBanner', app)) return;
+  let banner = $('#app > .hero'), heading = $('#app > h1');
+  if (!banner && heading) {
+    banner = document.createElement('section'); heading.before(banner); banner.append(heading);
+    const intro = banner.nextElementSibling;
+    if (intro?.matches('p') && !intro.querySelector('button,input,select')) banner.append(intro);
+  }
+  if (!banner) banner = $('.uiVaultHead') || $('.uiCVHead');
+  if (!banner) return;
+  banner.classList.add('uiSanctumBanner');
+  banner.style.setProperty('--sanctum-art', 'url(/art/ui/' + room[1] + ')');
+  const label = document.createElement('span'); label.className = 'uiSanctumKicker'; label.textContent = room[0];
+  banner.prepend(label);
+}
+
 /* ---------------------------------------------------------------- Wiring */
 // Measure live browser chrome instead of assuming a fixed iPad header or navigation height.
 let chromeFrame = 0, chromeHeader = null, chromeNav = null;
@@ -466,6 +500,7 @@ function onFrame() {
   const sound = $('#uiSoundToggle'); if (sound) sound.onclick = toggleSound; paintSoundControls();
   if (B.view === 'home') afterHome();
   if (B.view === 'vault') vaultLayout();
+  paintSanctum();
 }
 
 /* ---------------------------------------------------------------- Vault: rearranges the game's own Vault markup (same buttons and ids) */

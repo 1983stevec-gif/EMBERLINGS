@@ -13,7 +13,7 @@ for (const view of ['home','inventory','friends']) {
   const context = {
     B:{view}, scheduleTabletChrome(){}, disposeUserMenu(){}, trackHistory(){}, document:{body:{classList:{add(){},toggle(){}}}},
     SLIM_VIEWS:[], FULL_VIEWS:[], NAV_ART:Object.fromEntries(buttons.map(b=>[b.dataset.go,true])),
-    navIcon(g){decorated++;return g}, afterHome(){}, vaultLayout(){},
+    navIcon(g){decorated++;return g}, afterHome(){}, vaultLayout(){}, paintSanctum(){},
     toggleSound(){},paintSoundControls(){},userMenu(button){assert.equal(button,anchor);opened++},
     $(selector, parent){
       if(selector.includes('aria-current')) return {dataset:{go:view}};

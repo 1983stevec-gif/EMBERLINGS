@@ -30,3 +30,9 @@ Rotation and tablet-to-desktop transitions preserved the selected quest and play
 ## Limits
 
 This is browser emulation, not a physical iPad Safari certification. Real on-device keyboard behavior still needs a device check. No player saves, production multiplayer records or credentials were changed by the audit.
+
+## Illustrated sanctum update
+
+The subsequent design pass extends the Mutation Vault's gold framing and moonlit library setting to responsive Fusion, Packs, Vault, Deck Builder, Training, Friends, Trading, Album and Achievements. Chapter banners reuse the game's existing illustrations. Mutation choices have larger illustrated previews, and the large Mutation preview now has explicit portrait bounds so its image remains visible. All values and controls remain live; no artwork contains replacement gameplay data. The original desktop mockup screens remain in place.
+
+The 90-view tablet audit and 84 interactive checks were repeated for this design pass. Navigation, collection/preset/Vault and asset-version checks and the production build also passed.
