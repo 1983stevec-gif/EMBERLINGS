@@ -115,7 +115,7 @@ function questPanel(l) {
   let prize = null; try { prize = B.questPrize(l); } catch { }
   return `${text(p(1203, 98, 1560, 142), W, 33, 'uiXRegion', esc(B.regions[r][0]))}
    ${text(p(1205, 140, 1500, 166), W, 19, 'uiXLevel', `${boss ? 'Boss · ' : ''}Level ${l}`)}
-   <div class="uiXArt" style="${p(1196, 179, 1561, 399)}">${B.art({ kind: boss ? [0, 5, 6, 3, 7][r] : REGION_ART[r] })}</div>
+   <div class="uiXArt" style="${p(1196, 179, 1561, 399)};${fs(W, 17)}">${UI.questArt(l)}</div>
    ${text(p(1208, 408, 1560, 458), W, 36, 'uiXQuest', esc(questName(l)))}
    ${text(p(1210, 456, 1560, 486), W, 21, 'uiXStatus ' + (locked ? 'locked' : cleared ? 'done' : ''), locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play')}
    ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}

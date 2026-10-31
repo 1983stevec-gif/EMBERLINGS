@@ -538,3 +538,13 @@ body.uiExact:has(.uiXWelcome){background:#0a1430!important}
 .uiBrand .uiLogo .uiFlameGlow{background:radial-gradient(ellipse at 50% 62%,#ff9a3a88,#ff6a1a33 45%,transparent 70%)}
 .uiXLogo{background:none;border:0;padding:0;cursor:pointer}
 .uiBrand .uiLogo img{width:auto;height:auto;filter:none}.uiBrand .uiLogo .uiFlame{width:100%;height:100%}.uiBrand .uiLogo .uiWord{height:calc(var(--logo-h) * .458);width:auto;filter:drop-shadow(0 0 4px #ff9a3a33)}
+/* Quest picture per level / world */
+.uiWorldArt{position:absolute;inset:0;display:block;overflow:hidden}
+.uiWorldArt .mythlingArt{position:absolute!important;left:0!important;right:0!important;top:50%!important;width:100%!important;height:auto!important;aspect-ratio:1;transform:translateY(-50%);animation:uiWorldIn .45s ease-out}
+.uiWorldTint{position:absolute;inset:0;background:linear-gradient(0deg,color-mix(in srgb,var(--world) 45%,#000a) 0,transparent 38%),radial-gradient(ellipse at 50% 40%,transparent 55%,#0007 100%);pointer-events:none}
+.uiWorldTag{position:absolute;left:3%;bottom:5%;padding:.25em .8em;border-radius:99px;background:#0b0f15cc;border:1px solid var(--world);color:#fbecc8;font-family:'EB Garamond',Georgia,serif;font-size:max(13px,1em);white-space:nowrap}
+.uiWorldBoss .uiWorldTag{border-color:#e05a3a;color:#ffd2b0}
+
+.uiQuestArt .uiWorldArt{border-radius:inherit}
+@keyframes uiWorldIn{from{opacity:0;transform:translateY(-50%) scale(1.06)}to{opacity:1;transform:translateY(-50%) scale(1)}}
+.reduceMotion .uiWorldArt .mythlingArt{animation:none}
