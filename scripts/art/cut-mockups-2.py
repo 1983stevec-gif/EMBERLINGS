@@ -96,3 +96,16 @@ if mv is not None:
     # chooser tiles
     out = inp(out, [(452, 832, 1428, 968)], r=12, b=10)
     save(out, 'mutation.webp')
+
+# ---------- Fusion Lab (13.webp, 1586x992): live counts, button text, hint lines and the inventory row removed
+fl = cv2.imread(D + '13.webp')
+if fl is not None:
+    def inp2(img, rects, r=7, b=4):
+        mk = np.zeros(img.shape[:2], np.uint8)
+        for (x0, y0, x1, y1) in rects: mk[y0:y1, x0:x1] = 255
+        o = cv2.inpaint(img, mk, r, cv2.INPAINT_TELEA); bl = cv2.GaussianBlur(o, (0, 0), b)
+        return np.where(mk[..., None] > 0, bl, o)
+    f = inp2(fl, [(300, 198, 446, 228), (1142, 408, 1372, 434), (544, 536, 740, 563), (560, 940, 1020, 966)])
+    f = rowfill(f, [(1158, 356, 1404, 392)], blur=2)
+    f = inp2(f, [(168, 566, 1428, 914)], r=12, b=10)
+    save(f, 'fusion.webp')

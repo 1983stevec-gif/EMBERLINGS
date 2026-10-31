@@ -686,3 +686,34 @@ body.uiExact:has(.uiXMutation){background:#0a1028!important}
 .uiXMPetName{display:flex;align-items:center;justify-content:center;gap:.5em;height:29%;background:#0d1534;border-top:1px solid #2f3f7c;color:#f6efdc;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700}
 .uiXMPetName i{font-style:normal;font-size:.9em}
 .uiXMLine{font-size:.93em;left:7.2%}
+
+/* ---------- Fusion Lab (exact) ---------- */
+body.uiExact:has(.uiXFusion){background:#0a0f22!important}
+.uiXFCount{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#f6ecd6}
+.uiXFSlot{z-index:2;display:flex;flex-direction:column;border:2px solid #f2c45f;border-radius:12px;overflow:hidden;background:#0d1534;box-shadow:0 0 18px #f2b44a66}
+.uiXFSlot .mythlingArt{position:relative!important;width:100%!important;height:auto!important;aspect-ratio:1.25!important;flex:1}
+.uiXFSlot .mythlingArt img{object-fit:cover!important}
+.uiXFSlot>span:last-child{display:flex;flex-direction:column;align-items:center;padding:.3em 0 .4em;color:#f6ecd6;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1.15em}
+.uiXFSlot small{font-family:system-ui,'Segoe UI',sans-serif;font-weight:400;font-size:.68em;color:#c8d1ec}
+.uiXFBtn{z-index:3;display:flex}
+.uiXFFuse{flex:1;border-radius:6px;border:1px solid #ffe2a0;background:linear-gradient(180deg,#f7cc6a,#dc9a33);color:#2a1405;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:inherit;cursor:pointer;box-shadow:inset 0 1px 0 #fff8,0 4px 10px #0008}
+.uiXFFuse:disabled{background:linear-gradient(180deg,#7d6236,#695231);border-color:#b8925a;color:#3e2e17;cursor:not-allowed;box-shadow:none}
+.uiXFHint{color:#a9b8ec;font-family:system-ui,'Segoe UI',sans-serif!important}
+.uiXFAvail{color:#e2e6f4;font-family:system-ui,'Segoe UI',sans-serif!important}
+.uiXFPager{z-index:3;display:flex;align-items:center;justify-content:flex-end;gap:.6em;color:#e2e6f4;font-family:'EB Garamond',Georgia,serif}
+.uiXFPager button{background:#16234f;border:1px solid #6a7ac0;color:#f2e9d6;border-radius:6px;padding:.1em .7em;font-size:1.1em;cursor:pointer}.uiXFPager button:disabled{opacity:.4;cursor:default}
+.uiXFTile{z-index:3;display:flex}
+.uiXFCard{flex:1;display:flex;flex-direction:column;align-items:center;gap:.25em;padding:4.5% 5% 5%;margin:0;border-radius:10px;border:1px solid #4a5a8a;background:linear-gradient(180deg,#141d3e,#0e1530);cursor:pointer;box-shadow:0 6px 14px #000a;color:#f6ecd6}
+.uiXFCard:hover:not(.off){border-color:#c9a35a}.uiXFCard:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiXFCard.sel{border:2px solid #f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 26px #f2b44a88}
+.uiXFCard.off{cursor:not-allowed;opacity:1}
+.uiXFArt{position:relative;width:100%;aspect-ratio:1.12;border-radius:6px;overflow:hidden;border:2px solid #c9a35a66;margin-bottom:.3em}
+.uiXFArt .mythlingArt{position:absolute!important;left:0!important;right:0!important;top:50%!important;width:100%!important;height:auto!important;aspect-ratio:1;transform:translateY(-50%)}
+.uiXFCard strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.32em;font-weight:700}
+.uiXFCard small{font-family:system-ui,'Segoe UI',sans-serif;font-size:.84em;color:#c8d1ec}.uiXFCard small b{color:#ffd24a}
+.uiXFChoose{margin-top:.5em;width:84%;padding:.55em 0;border:2px solid #e9b75a;border-radius:6px;font-family:system-ui,'Segoe UI',sans-serif;font-weight:600;color:#f6ecd6;text-align:center}
+.uiXFCard.sel .uiXFChoose{background:linear-gradient(180deg,#f7cc6a,#dc9a33);color:#2a1405}
+.uiXFProt{margin-top:.4em;padding:.3em 1em;border:1px solid #6a7ac0;border-radius:99px;background:#1b2550;font-family:system-ui,'Segoe UI',sans-serif;font-size:.84em;color:#dfe5f6}
+.uiXFCard em{font-style:normal;font-family:system-ui,'Segoe UI',sans-serif;font-size:.82em;color:#9aa6c8}
+.uiXFFoot{justify-content:center;color:#e2e6f4;font-family:system-ui,'Segoe UI',sans-serif!important}
+.uiXFCount,.uiXFFuse,.uiXFSlot>span:last-child,.uiXFCard strong{font-variant-numeric:lining-nums}.uiXFFuse:disabled{color:#d9bd86}
