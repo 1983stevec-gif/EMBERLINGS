@@ -15,7 +15,7 @@ function canvas(W, H, bg, cls, inner) {
   const [top, bottom] = CROP[cls] || [0, H];
   return `<div class="uiXCrop" style="--ratio:${W / (bottom - top)};aspect-ratio:${W}/${bottom - top}"><div class="uiX ${cls}" style="--W:${W};aspect-ratio:${W}/${H};margin-top:${(-top / W * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
-const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024] };
+const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -282,12 +282,76 @@ function packsNarrow() {
   $$('.packTier').forEach((t, i) => { const icon = t.firstElementChild; if (icon && !t.querySelector('.uiPackArt') && PACK_IDS[i]) icon.outerHTML = `<img class="uiPackArt" src="/art/ui/pack-${PACK_IDS[i]}.webp" alt="" width="160" height="285">`; });
 }
 
+
+/* ---------------------------------------------------------------- Mutation Vault (mockup 1587 × 991) */
+// Rearranges the game's own Mutation Vault (same buttons, purchase and confirmation) onto the mockup.
+const MUT_CARDS = { spark: [687, 214, 920, 457], flame: [932, 214, 1165, 457], frost: [1177, 214, 1407, 457], storm: [687, 473, 920, 721], shadow: [933, 473, 1165, 721], cosmic: [1178, 473, 1407, 721] };
+const MUT_TILES = [[460, 840, 642, 960], [655, 840, 836, 960], [849, 840, 1030, 960], [1043, 840, 1225, 960], [1238, 840, 1420, 960]];
+let mutPage = 0, mutLastSel = null;
+function mutationExact() {
+  const app = $('#app'), opts = $$('[data-mutation]'), pets = $$('[data-mutate-pet]'); if (!opts.length || $('.uiXMutation')) return;
+  const W = 1587, H = 991, p = box(W, H), st = B.state;
+  const selBtn = pets.find(b => b.classList.contains('mutationSelected')), cid = selBtn?.dataset.mutatePet;
+  const c = st.owned.find(x => x.id === cid) || B.active(), mBtn = opts.find(b => b.classList.contains('selected')) || opts[0], m = B.MUTATIONS.find(x => x.id === mBtn.dataset.mutation);
+  const cmp = $$('.mutationComparison strong').map(e => e.textContent.trim()), cur = c.mutation ? B.MUTATIONS.find(x => x.id === c.mutation) : null;
+  const sp = B.species[c.kind] || {}, painted = c.kind === 0 && ['spark', 'flame'].includes(m.id);
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/mutation.webp', 'uiXMutation', `
+   <h1 class="uiSr">Mutation Vault</h1>
+   ${painted ? '' : `<div class="uiXMutArt" style="${p(232, 168, 640, 500)};--mut:${m.color}">${B.art({ ...c, mutation: m.id })}</div>`}
+   ${text(p(200, 170, 640, 206), W, 33, 'uiXMName', esc(sp.name || ''))}
+   ${text(p(201, 208, 640, 232), W, 19, 'uiXMLevel', `Level ${c.level || 1} · ${esc(B.rarityLabel(c))}`)}
+   <div class="uiTxt uiXMPill ${cur ? 'on' : ''}" style="${p(200, 240, 200 + (cur ? 160 : 135), 265)};${fs(W, 13.5)};--mut:${cur?.color || '#6f8ad8'}">${cur ? `${cur.icon} ${esc(cur.name)} active` : 'No active mutation'}</div>
+   ${text(p(374, 506, 520, 528), W, 13.5, 'uiXMPrev', `${esc(m.name).toUpperCase()} PREVIEW`)}
+   ${text(p(512, 561, 622, 581), W, 14.5, 'uiXMHead', `With ${esc(m.name)}`)}
+   ${text(p(385, 594, 445, 624), W, 22, 'uiXMVal', esc(cmp[0] || ''))}${text(p(535, 594, 600, 624), W, 22, 'uiXMVal gold', esc(cmp[1] || ''))}
+   ${text(p(385, 639, 445, 669), W, 22, 'uiXMVal', esc(cmp[2] || ''))}${text(p(535, 639, 600, 669), W, 22, 'uiXMVal gold', esc(cmp[3] || ''))}
+   ${text(p(378, 684, 520, 716), W, 24, 'uiXMPrice', `${fmt(m.cost)} <small>coins</small>`)}
+   <div class="uiXMBuy" style="${p(250, 722, 596, 765)};${fs(W, 19)}"></div>
+   <div class="uiTxt uiXMNeed" style="${p(250, 768, 596, 792)};${fs(W, 15)}"></div>
+   <div class="uiXMConfirm" style="${p(196, 556, 650, 806)};${fs(W, 15)}"></div>
+   ${Object.entries(MUT_CARDS).map(([id, b]) => `<div class="uiXMCard ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...b)};${fs(W, 14.5)}"></div>`).join('')}
+   ${text(p(204, 872, 420, 896), W, 15.5, 'uiXMCount', `${fmt(st.owned.length)} Mythlings`)}
+   <div class="uiXMPager" style="${p(204, 905, 430, 940)};${fs(W, 15)}"></div>
+   ${MUT_TILES.map((b, i) => `<div class="uiXMTile" data-mtile="${i}" style="${p(...b)};${fs(W, 17)}"></div>`).join('')}`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  // Mutation cards: the game's option buttons become the card hotspots; the live damage/vault line is drawn in place.
+  for (const b of opts) {
+    const host = $(`[data-mcard="${b.dataset.mutation}"]`, wrap); if (!host) continue;
+    const line = b.querySelectorAll(':scope > span')[1]?.textContent || '', row1 = MUT_CARDS[b.dataset.mutation][1] < 400;
+    b.className = 'uiXMOpt'; b.setAttribute('aria-label', `${b.dataset.mutation} mutation. ${line}`); b.innerHTML = '';
+    host.append(b);
+    host.insertAdjacentHTML('beforeend', `<span class="uiXMLine" style="top:${row1 ? 75.4 : 75.4}%">${esc(line)}</span>${host.classList.contains('sel') ? '<span class="uiXMBadge">SELECTED</span>' : ''}${host.classList.contains('active') ? '<span class="uiXMBadge act">ACTIVE</span>' : ''}`);
+  }
+  // Buy button, status line and replacement confirmation.
+  const buy = $('#mutate'), status = $('#mutationStatus'), confirmBox = $('#mutationConfirm');
+  if (buy) { buy.className = 'uiXMBtn'; buy.textContent = c.mutation === m.id ? 'ALREADY ACTIVE' : `APPLY ${m.name.toUpperCase()}`; $('.uiXMBuy', wrap).append(buy); }
+  if (status) { $('.uiXMNeed', wrap).append(status); status.textContent = status.textContent.replace(/^([\d,]+) more coins needed$/, 'Need $1 more coins'); }
+  if (confirmBox) { $('.uiXMConfirm', wrap).append(confirmBox); new MutationObserver(() => wrap.querySelector('.uiXMConfirm').classList.toggle('on', !!confirmBox.children.length)).observe(confirmBox, { childList: true }); }
+  // Chooser: five tiles per page from the game's creature buttons (the game itself pages by 24).
+  if (cid !== mutLastSel) { const i = pets.findIndex(b => b.dataset.mutatePet === cid); if (i >= 0) mutPage = Math.floor(i / 5); mutLastSel = cid; }
+  const pages = Math.max(1, Math.ceil(pets.length / 5)); mutPage = Math.min(mutPage, pages - 1);
+  pets.forEach(b => {
+    const pet = st.owned.find(x => x.id === b.dataset.mutatePet), ps = B.species[pet?.kind] || {}, mut = pet?.mutation ? B.MUTATIONS.find(x => x.id === pet.mutation) : null;
+    b.className = 'uiXMPet' + (b.dataset.mutatePet === cid ? ' sel' : '');
+    b.innerHTML = `<span class="uiXMPetArt">${pet ? B.art(pet) : ''}</span><span class="uiXMPetName"><i>${mut ? mut.icon : ELEMENT_ICON[ps.element] || '✦'}</i>${esc(ps.name || '')}</span>`;
+    b.setAttribute('aria-label', `${ps.name}, level ${pet?.level || 1}${mut ? ', ' + mut.name + ' mutation' : ''}`);
+  });
+  const paint = () => { $$('[data-mtile]', wrap).forEach((t, i) => { t.replaceChildren(); const b = pets[mutPage * 5 + i]; if (b) t.append(b); }); const pg = $('.uiXMPager', wrap); pg.innerHTML = pages > 1 ? `<button aria-label="Previous Mythlings" ${mutPage ? '' : 'disabled'}>‹</button><span>${mutPage * 5 + 1}–${Math.min(pets.length, mutPage * 5 + 5)} of ${pets.length}</span><button aria-label="Next Mythlings" ${mutPage < pages - 1 ? '' : 'disabled'}>›</button>` : ''; const [prev, next] = $$('button', pg); if (prev) prev.onclick = () => { mutPage--; paint(); }; if (next) next.onclick = () => { mutPage++; paint(); }; };
+  paint();
+  const more = [$('#mutationPrev'), $('#mutationNext')].filter(Boolean);
+  if (more.length) { const pg = $('.uiXMPager', wrap); more.forEach(b => { b.className = 'uiXMMore'; b.textContent = b.id === 'mutationPrev' ? '« earlier' : 'later »'; pg.append(b); }); }
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+}
+const ELEMENT_ICON = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs'].includes(B.view);
+  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation'].includes(B.view);
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
+  if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
   if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });
   if (!exact && B.view === 'username') welcomeNarrow();
@@ -298,7 +362,7 @@ if (B && UI) {
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
   let wasWide = wide();
-  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
