@@ -996,3 +996,52 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .victoryCard.bxScene{background:radial-gradient(ellipse at 50% 40%,#5a2e10cc,#140c1e 60%,#0b1022)!important}
 .victoryCard.bxScene.bxLose{background:radial-gradient(ellipse at 50% 40%,#1e2e6acc,#0e1430 60%,#0b1022)!important}
 .victoryCard.bxScene.bxDraw{background:radial-gradient(ellipse at 50% 40%,#3a3a5acc,#121426 60%,#0b1022)!important}
+
+/* ---------- Pack opening: card shuffle ---------- */
+.psHidden{position:absolute!important;opacity:0!important;pointer-events:none;height:0!important;overflow:hidden}
+.psStage{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;height:clamp(300px,46vh,440px);margin:6px auto 14px;max-width:900px;--rar:#ffd568}
+.psSide{position:relative;height:100%;display:grid;place-items:center;overflow:visible}
+.psMini{position:absolute;width:150px;filter:brightness(.6) saturate(.8)}
+.psMini .psFace{zoom:.65}
+.psCenter{position:relative;perspective:900px;display:grid;place-items:center}
+.psCard{position:relative;z-index:2;transform-style:preserve-3d}
+.psFace{width:230px;pointer-events:none}.psFace .mythCard{width:230px!important;max-width:none!important;margin:0!important}
+.psCenter .psFace{zoom:clamp(.9,calc(42vh / 350px),1.2)}
+.psFlip{animation:psFlip .14s ease-in-out}
+@keyframes psFlip{0%{transform:rotateY(0) scale(1)}50%{transform:rotateY(90deg) scale(.96)}100%{transform:rotateY(0) scale(1)}}
+.psGlow{position:absolute;inset:-30% -40%;z-index:1;background:radial-gradient(circle,color-mix(in srgb,var(--rar) 45%,transparent),transparent 62%);opacity:.35;transition:opacity .3s}
+.psTense .psGlow{opacity:.65;animation:psPulse .5s ease-in-out infinite}
+@keyframes psPulse{50%{transform:scale(1.08)}}
+.psTense .psCard{animation:psShake .12s linear infinite}
+@keyframes psShake{25%{transform:translate(-2px,1px) rotate(-.6deg)}75%{transform:translate(2px,-1px) rotate(.6deg)}}
+.psLand{animation:psLand .7s cubic-bezier(.2,1.6,.4,1)!important}
+@keyframes psLand{0%{transform:rotateY(180deg) scale(.7)}60%{transform:rotateY(0) scale(1.12)}100%{transform:scale(1)}}
+.psDone .psGlow{opacity:1;animation:psBurst 1s ease-out}
+@keyframes psBurst{0%{transform:scale(.3);opacity:1}60%{opacity:1}100%{transform:scale(1.25);opacity:.75}}
+.psDone.r4 .psCard,.psDone.r5 .psCard,.psDone.r6 .psCard{filter:drop-shadow(0 0 22px var(--rar))}
+.psSpark{position:absolute;z-index:3;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--rar);box-shadow:0 0 10px var(--rar);animation:psSpark 1s ease-out forwards}
+@keyframes psSpark{to{transform:rotate(var(--a)) translateX(calc(var(--d) + 120px)) scale(.2);opacity:0}}
+@media(max-width:700px){.psSide{display:none}.psStage{grid-template-columns:1fr}}
+.psStage,.psStage *{pointer-events:none}
+
+/* ---------- Tablet fixes ---------- */
+/* larger tap targets on map level markers (painted and stacked maps) */
+.uiXNode::before,.uiNode::before{content:"";position:absolute;inset:-10px;border-radius:50%}
+.uiXNode,.uiNode{touch-action:manipulation}
+/* Card Vault: tools wrap instead of pushing the page sideways */
+@media(max-width:1250px){
+ .uiCVHead{grid-template-columns:1fr!important}
+ .uiCVHead>div:first-child{grid-row:auto!important}
+ .uiCVTools{flex-wrap:wrap!important;justify-content:flex-start!important}
+ .uiCVTools .uiSearch{max-width:none!important;flex:1 1 220px}
+ .uiCVHead .uiCVTabs{justify-content:flex-start!important;flex-wrap:wrap}
+ .uiCVTabs .shopCategories{flex-wrap:wrap}
+ .uiDeckBuilder{grid-template-columns:minmax(0,1fr)!important}
+ .uiDeckSide{position:static!important}
+}
+@media(max-width:1250px) and (min-width:700px){.uiCVGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.uiDeckBuilder,.uiVaultCol{min-width:0}
+/* touch devices: no hover-only lifts that stick after a tap */
+@media(hover:none){.handRow>.handCard:hover{transform:rotate(var(--fan,0deg)) translateY(var(--lift,0px));filter:none}.uiTile:hover,.uiHomeCard:hover{transform:none}}
+.uiMer{position:relative;overflow:hidden}.uiMer input{left:0;top:0;width:1px;height:1px}
+@media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{min-height:calc(100dvh - 60px);display:flex;flex-direction:column;justify-content:center}}
