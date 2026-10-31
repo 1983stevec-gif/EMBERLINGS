@@ -1,8 +1,8 @@
 // Exact Home, Adventure HQ and Mythling Vault screens built from the supplied mockups (public/art/ui/*.webp).
 // The cleaned mockup is the background; live values, our cards and our art are placed at the mockup's pixel positions.
-// Below EXACT_MIN_WIDTH the stacked layouts in ui.js are used instead.
+// Tablets share the desktop artwork and panels; only phone-width screens use the stacked layouts.
 const B = window.EmberBridge, UI = window.EmberUI;
-const EXACT_MIN_WIDTH = 1000;
+const EXACT_MIN_WIDTH = 768;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
