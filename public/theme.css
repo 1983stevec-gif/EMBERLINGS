@@ -559,3 +559,38 @@ body.uiExact:has(.uiXPacks){background:#0b1230!important}
 .uiXPackNotice{z-index:3;display:none;align-items:center;justify-content:center;gap:1%;background:#0b1230;border:1px solid #c9a35a;border-radius:8px;padding:.3em}
 .uiXPackNotice.on{display:flex}.uiXPackNotice .uiXPackBtn{flex:0 1 auto;padding:0 1.2em;height:100%}
 .uiPackArt{display:block;width:120px;height:auto;margin:6px auto 10px;filter:drop-shadow(0 8px 14px #000a)}
+/* Larger logo: lettering scaled up relative to the flame */
+.uiLogo .uiWord,.uiBrand .uiLogo .uiWord{height:calc(var(--logo-h) * .6);margin-top:calc(var(--logo-h) * .2)}
+.uiBrand .uiLogo{--logo-h:60px}
+.uiTopSlim .uiBrand .uiLogo{--logo-h:54px}
+.uiTopSlim .uiBrandText small{margin-left:calc(54px * .85)}
+@media(max-width:899px){.uiBrand .uiLogo{--logo-h:40px}}
+@media(max-width:420px){.uiBrand .uiLogo{--logo-h:34px}}
+
+/* ---------- One header on every screen ---------- */
+body.uiTheme .uiTop,body.uiTheme:not(.uiDark) .uiTop:not(.uiTopSlim),body.uiExact .uiTop{display:block!important;position:sticky;top:0;z-index:40;margin:0 calc(50% - 50vw) 14px!important;padding:0!important;background:linear-gradient(180deg,#151d3d,#0b1128)!important;border:0!important;border-bottom:1px solid #9a7638!important;box-shadow:0 1px 0 #e9b75a22,0 8px 22px #0008!important}
+.uiTopIn{display:flex;align-items:center;gap:18px;max-width:1580px;height:74px;margin:0 auto;padding:0 24px}
+body.uiExact .uiTop{margin-bottom:0!important}
+body:has(.cardArena) .uiTop{display:none!important}
+.uiTop .uiNav{margin:0 auto}
+.uiTop .uiNav button,.uiTop .uiNav button.active{font-family:'EB Garamond',Georgia,serif;font-size:19px;font-weight:500;letter-spacing:0;text-transform:none;padding:22px 22px 20px;border-bottom:3px solid transparent;background:none;color:#ece4d2}
+.uiTop .uiNav button.active{color:#f1c76a;border-bottom-color:#f1c76a}
+.uiTop .uiNav button:hover{color:#ffd27a}
+.uiTop .coins{background:#0b1230!important;border:1px solid #9a7638!important;font-size:19px!important;padding:5px 16px 5px 6px!important}
+.uiTop .uiUser{background:#0b1230;border:1px solid #9a7638}
+.uiTop .uiBrand .uiLogo{--logo-h:58px}
+@media(min-width:900px){body.uiTheme .nav{display:none!important}body.uiTheme #app{padding-bottom:30px}}
+@media(max-width:1180px) and (min-width:900px){.uiTop .uiNav button,.uiTop .uiNav button.active{padding:22px 12px 20px;font-size:17px}.uiTop .uiUserName{display:none}.uiTop .uiBrand .uiLogo{--logo-h:48px}}
+@media(max-width:899px){.uiTopIn{height:58px;padding:0 12px;gap:8px}.uiTop .uiBrand .uiLogo{--logo-h:38px}.uiTop .uiNav{display:none}.uiTop .uiUserName{display:none}.uiTop .uiRight{margin-left:auto}}
+@media(max-width:420px){.uiTop .uiBrand .uiLogo{--logo-h:32px}}
+/* menu with every screen */
+.uiMenu{max-height:calc(100dvh - 90px);overflow:auto;min-width:250px}
+.uiMenuHead{margin:8px 12px 2px;font-family:'EB Garamond',Georgia,serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b49a66}
+.uiMenu button span{display:inline-block;width:1.4em;text-align:center}
+.uiMenuMain{display:none}
+@media(max-width:899px){.uiMenuMain{display:block;border-bottom:1px solid #e9b75a33;padding-bottom:4px;margin-bottom:4px}}
+/* painted pages sit under the header with their own painted header cropped off */
+body .uiExactPage,body .uiExactPage.uiXWelcomePage,body .uiExactPage.uiXPacksPage,body .uiExactPage:has(.uiXVault){width:100%!important;margin:0}
+.uiXCrop{width:min(100%,calc((100dvh - 75px) * var(--ratio)));margin:0 auto;overflow:hidden;container-type:inline-size}
+.uiXCrop>.uiX{width:100%}
+@media(max-width:1000px){.uiVaultHead{grid-template-columns:1fr!important;gap:12px}.uiVaultTitle h1{white-space:normal}.uiVaultStats{border:0;padding:0}}
