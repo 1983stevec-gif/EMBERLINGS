@@ -87,15 +87,15 @@ function deckTop(n = 3) {
   const pool = cards.length ? cards : (B.state.owned || []);
   return pool.slice(0, n);
 }
-function home() {
+function home(options = {}) {
   const st = B.state, cleared = (st.cleared || []).length, species = (st.discovered || []).length, fan = deckTop(3);
   const order = fan.length === 3 ? [fan[1], fan[0], fan[2]] : fan;
   const tile = (go, art, icon, title, sub, inner) => `<button class="uiTile" data-go="${go}"><span class="uiTileArt" data-ui-art="${art}">${inner}</span><span class="uiTileBar"><span class="uiTileIcon" aria-hidden="true">${icon}</span><span><strong>${title}</strong><small>${sub}</small></span><span class="uiChevron" aria-hidden="true">›</span></span></button>`;
-  return `<section class="uiHome">
+  return `<section class="uiHome ${options.tablet ? 'uiTabletHome' : ''}">
   <div class="uiHero" data-ui-art="hero"><div class="uiHeroScene" aria-hidden="true">${heroScene()}</div>
     <div class="uiHeroText"><p class="uiKicker">Your next adventure</p><h1>Awaken the ember.</h1><p>Collect Mythlings. Master your deck. Explore the islands.</p>
     ${st.cardBattle ? '<button class="uiCta" id="uiResume">Resume card battle <span>›</span></button>' : '<button class="uiCta" data-go="map">Explore islands <span>›</span></button>'}</div></div>
-  <aside class="uiDeckPanel uiFrame"><h2><span aria-hidden="true">🂠</span> Your battle deck</h2><div class="uiFan">${order.map((c, i) => card(c, order.length === 3 && i === 1 ? 'uiFanMain' : '')).join('')}</div>
+  <aside class="uiDeckPanel uiFrame"><h2><span aria-hidden="true">🂠</span> Your battle deck</h2><div class="uiFan">${order.map((c, i) => options.printedDeck ? '<div class="uiTabletPrintedCard">'+B.cardHTML(c)+'</div>' : card(c, order.length === 3 && i === 1 ? 'uiFanMain' : '')).join('')}</div>
     <button class="uiBtnGold" data-go="decks">🂠 Edit deck</button><button class="uiBtnLine" data-go="training">⚔ Training field</button></aside>
   <div class="uiTiles features">
     ${tile('inventory', 'collection', '📖', 'Mythling Collection', `${fmt(st.owned.length)} cards • ${species} / ${B.species.length} species`, `<span class="uiTrio">${[0, 4, 2, 7].map(k => `<span>${B.art({ kind: k })}</span>`).join('')}</span>`)}

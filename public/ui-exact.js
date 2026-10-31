@@ -7,6 +7,7 @@ const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [..
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 const wide = () => innerWidth >= EXACT_MIN_WIDTH;
+const tabletLayout = () => wide() && innerWidth <= 1366;
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 // Canvas helpers: positions are given in mockup pixels and converted to percentages / container units.
@@ -36,6 +37,7 @@ function deckTop(n = 3) {
 
 /* ---------------------------------------------------------------- Home (mockup 1586 × 992) */
 function home() {
+  if (tabletLayout()) return UI.baseHome({ tablet: true, printedDeck: true });
   if (!wide()) return UI.baseHome();
   const W = 1586, H = 992, p = box(W, H), st = B.state, cleared = (st.cleared || []).length, deck = deckTop(3), active = B.active?.() || st.owned?.[0];
   const fan = [[1152, 197, 1268, 375, -8, deck[1]], [1420, 197, 1536, 375, 8, deck[2]], [1268, 166, 1420, 398, 0, deck[0]]].filter(f => f[5]);
@@ -97,7 +99,7 @@ function map() {
   const levels = r => { const reg = B.regions[r], out = []; for (let l = reg[1]; l <= reg[2]; l++) out.push(l); return out; };
   const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
   const far = shownRegion >= 3;
-  return `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `
+  const markup = `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `
 
 
 
@@ -112,8 +114,10 @@ function map() {
    <div id="uiQuest">${questPanel(selected)}</div>
    ${text(p(246, 930, 600, 962), W, 19, 'uiXJourney', `${cleared.length} / 100 levels complete`)}
    <i class="uiXFill" style="${p(456, 944.5, 456 + 720 * cleared.length / 100, 947.5)}"></i>`)}</section>`;
+  return tabletLayout() ? tabletMapMarkup(markup) : markup;
 }
 function questPanel(l) {
+  if (tabletLayout()) return tabletQuestPanel(l);
   const W = 1586, H = 992, p = box(W, H), r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared, deck = deckTop(3);
   let prize = null; try { prize = B.questPrize(l); } catch { }
   return `${text(p(1203, 98, 1560, 142), W, 33, 'uiXRegion', esc(B.regions[r][0]))}
@@ -126,6 +130,26 @@ function questPanel(l) {
    ${deck.map((c, i) => fitCard(p(1201 + i * 123, 593, 1311 + i * 123, 755), c)).join('')}
    <button class="uiHot uiXBegin ${locked ? 'locked' : ''}" id="uiBegin" style="${p(1200, 788, 1556, 860)}" ${locked ? 'aria-disabled="true"' : ''} aria-label="${locked ? 'Locked' : 'Begin battle'}">${locked ? `<span style="${fs(W, 22)}">🔒 Complete earlier quests</span>` : ''}</button>`;
 }
+
+// Reuse the desktop map artwork and node positions, cropped to its map panel.
+// The live quest panel flows beside/below it instead of shrinking with a screenshot.
+function tabletMapMarkup(markup) {
+  const template = document.createElement('template'); template.innerHTML = markup;
+  const scene = $('.uiXMap', template.content), quest = $('#uiQuest', template.content);
+  const details = quest.innerHTML; quest.remove();
+  $$('.uiXJourney,.uiXFill', scene).forEach(el => el.remove());
+  const count = (B.state.cleared || []).length;
+  return `<section class="uiTabletMapPage"><div class="uiTabletMapWindow uiFrame"><div class="uiTabletMapScene uiXMap uiX" style="background-image:url(/art/ui/map.webp)">${scene.innerHTML}</div></div>
+   <aside class="uiTabletQuest uiFrame" id="uiQuest">${details}</aside>
+   <section class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${count} / 100 levels complete</span><span class="uiTrack" aria-label="${count} of 100 levels complete"><i class="uiTrackFill" style="width:${count}%"></i>${[10,25,45,70,100].map(n=>`<b style="left:${n}%" class="${(B.state.cleared||[]).includes(n)?'on':''}"></b>`).join('')}</span><span class="uiMilestones">Boss milestones <em>10 · 25 · 45 · 70 · 100</em></span></section></section>`;
+}
+function tabletQuestPanel(l) {
+  const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared||[]).includes(l), locked = l > B.limit() && !cleared;
+  let prize = null; try { prize = B.questPrize(l); } catch { }
+  return `<div class="uiTabletQuestSummary"><h2>${esc(B.regions[r][0])}</h2><p class="uiLevel">${boss?'Boss · ':''}Level ${l}</p><div class="uiQuestArt">${UI.questArt(l)}</div><p class="uiDesc">${esc(boss?'Defeat '+boss+' to open the next island.':REGION_TEXT[r])}${prize?` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>`:''}</p></div>
+  <div class="uiTabletQuestLoadout"><h3>${esc(questName(l))}</h3><p class="uiStatus ${locked?'locked':cleared?'done':''}">${locked?'Locked':cleared?'Completed · replay':'Ready to play'}</p><div class="uiDeckHead"><strong>Your deck</strong><button class="uiLink" data-go="decks">Edit deck ›</button></div><div class="uiTabletDeck">${deckTop(3).map(c=>'<div class="uiTabletPrintedCard">'+B.cardHTML(c)+'</div>').join('')}</div><button class="uiTabletBegin uiBegin ${locked?'locked':''}" id="uiBegin" ${locked?'disabled':''}>${locked?'Complete earlier quests':cleared?'Replay battle':'Begin battle'}</button></div>`;
+}
+
 function selectLevel(l) {
   if (!wide()) return UI.baseSelect(l);
   if (!Number.isInteger(l)) return;
@@ -437,7 +461,8 @@ function friendsExact(data) {
 
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
-  const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
+  document.body.classList.toggle('uiTablet', tabletLayout());
+  const exact = !(tabletLayout() && ['home','map'].includes(B.view)) && wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends'].includes(B.view) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
@@ -453,8 +478,9 @@ if (B && UI) {
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
-  let wasWide = wide();
-  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  const layoutMode = () => !wide() ? 'phone' : tabletLayout() ? 'tablet' : 'desktop';
+  let wasWide = layoutMode();
+  addEventListener('resize', () => { const now = layoutMode(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }

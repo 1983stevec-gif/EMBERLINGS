@@ -802,3 +802,69 @@ body.uiExact:has(.uiXFriends){background:#0b1433!important}
 .uiSoundToggle:focus-visible{outline:3px solid #fff0bb;outline-offset:3px}
 @media(max-width:600px){.uiTopIn{height:auto;flex-wrap:wrap!important;gap:5px;padding-block:7px}.uiTop .uiRight{margin-left:auto;gap:6px;flex-wrap:wrap;justify-content:flex-end}.uiSoundToggle{min-height:44px;padding:6px 8px;font-size:13px}.uiTop .coins{font-size:15px!important;padding-right:8px!important}}
 .uiSettings label{display:flex;align-items:center;gap:10px;min-height:44px}.uiSettings input[type="checkbox"]{width:20px;height:20px;margin:0;flex:none;accent-color:#e9b75a}
+
+/* Tablet layouts reuse desktop art and cards, with live panels in normal page flow. */
+body.uiTablet:not(.arenaActive) #app{max-width:none;padding:0 16px calc(112px + env(safe-area-inset-bottom))!important;min-height:100dvh}
+body.uiTablet .uiXCrop{width:100%}
+.uiTabletHome{gap:16px;grid-template-columns:minmax(0,1fr) minmax(280px,.56fr);grid-template-areas:"hero deck" "tiles tiles" "journey journey" "util util" "drawer drawer";padding:0 0 12px;min-height:calc(100dvh - 180px)}
+.uiTabletHome .uiHero{min-height:clamp(360px,49dvh,520px);background-image:url(/art/ui/home-hero.webp);background-position:65% center}
+.uiTabletHome .uiHeroScene{display:none}
+.uiTabletHome .uiHeroText{left:24px;right:20px;bottom:28px;max-width:90%}
+.uiTabletHome .uiHeroText h1{font-size:clamp(34px,4.3vw,58px)}
+.uiTabletHome .uiHeroText p{font-size:18px;max-width:420px}
+.uiTabletHome .uiCta{min-height:52px;padding:14px 24px;font-size:20px}
+.uiTabletHome .uiDeckPanel{padding:20px 16px}
+.uiTabletHome .uiDeckPanel h2{font-size:18px;letter-spacing:.08em}
+.uiTabletHome .uiFan{flex:1;height:auto;min-height:200px;gap:8px;margin:14px 0 22px;align-items:center}
+.uiTabletPrintedCard{min-width:0;width:100%;max-width:200px}
+.uiTabletPrintedCard>.mythCard{width:100%;max-width:none;margin:0}
+.uiTabletHome .uiTabletPrintedCard{max-width:150px}
+.uiTabletHome .uiBtnGold,.uiTabletHome .uiBtnLine{min-height:48px;font-size:17px}
+.uiTabletHome .uiTiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.uiTabletHome .uiTileArt{height:clamp(135px,18dvh,195px)}
+.uiTabletHome .uiTileBar{padding:12px;gap:8px}
+.uiTabletHome .uiTileBar strong{font-size:20px}
+.uiTabletHome .uiTileBar small{font-size:14px}
+.uiTabletHome .uiTileIcon{display:none}
+.uiTabletHome .uiUtility{flex-wrap:wrap;justify-content:center;padding:10px;gap:4px}
+.uiTabletHome .uiUtility button{min-height:44px;padding:8px 12px}
+.uiTabletMapPage{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(310px,1fr);grid-template-areas:"map quest" "journey journey";gap:16px;align-items:start;padding-bottom:16px;min-height:calc(100dvh - 180px)}
+.uiTabletMapWindow{grid-area:map;position:relative;overflow:hidden;width:100%;aspect-ratio:1177/851;background:#0b2333}
+.uiTabletMapScene.uiX{position:absolute;left:0;top:0;width:134.749363%;aspect-ratio:1586/992;margin-top:-5.607477%;container-type:inline-size}
+.uiTabletMapScene .uiXNode::before{content:"";position:absolute;inset:-7px;border-radius:50%}
+.uiTabletMapScene .uiXChip,.uiTabletMapScene .uiXCurrent{min-height:36px;font-size:13px!important}
+.uiTabletMapWindow .uiHot{min-width:32px;min-height:32px}
+.uiTabletQuest{grid-area:quest;display:flex;flex-direction:column;gap:10px;padding:18px;min-width:0;scroll-margin-block:90px 130px}
+.uiTabletQuest h2{font-size:23px;margin:0 0 4px}
+.uiTabletQuest .uiLevel{font-size:15px;margin:0 0 12px}
+.uiTabletQuest .uiQuestArt{aspect-ratio:2.2}
+.uiTabletQuest .uiDesc{font-size:15px;line-height:1.4;margin:10px 0}
+.uiTabletQuest h3{font-family:var(--ui-serif);font-size:30px;line-height:1.1;margin:0 0 5px;color:#fff6e4}
+.uiTabletQuest .uiStatus{font-size:19px;margin:0 0 14px}
+.uiTabletQuest .uiDeckHead{margin-top:12px;gap:10px}
+.uiTabletQuest .uiDeckHead strong{font-size:14px;letter-spacing:.08em}
+.uiTabletQuest .uiLink{min-height:44px;font-size:16px}
+.uiTabletDeck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+.uiTabletQuest .uiBegin{width:100%;min-height:52px;font-size:22px;padding:14px 8px;scroll-margin-block:100px 125px}
+.uiTabletMapPage>.uiJourneyBar{grid-area:journey;flex-wrap:wrap;gap:14px;padding:16px 20px}
+.uiTabletMapPage .uiJourneyBar .uiTrack{min-width:200px;height:26px}
+@media(min-width:768px) and (max-width:999px){
+ .uiTabletHome{grid-template-columns:1fr;grid-template-areas:"hero" "deck" "tiles" "journey" "util" "drawer"}
+ .uiTabletHome .uiHero{min-height:clamp(350px,40dvh,480px);background-position:center}
+ .uiTabletHome .uiDeckPanel{display:grid;grid-template-columns:minmax(0,1fr) 190px;grid-template-areas:"title title" "fan edit" "fan train";gap:10px 20px;align-items:center}
+ .uiTabletHome .uiDeckPanel h2{grid-area:title;margin:0}
+ .uiTabletHome .uiFan{grid-area:fan;min-height:0;margin:0;justify-content:space-evenly}
+ .uiTabletHome .uiDeckPanel>.uiBtnGold{grid-area:edit;align-self:end}.uiTabletHome .uiDeckPanel>.uiBtnLine{grid-area:train;align-self:start}
+ .uiTabletHome .uiTabletPrintedCard{max-width:135px}
+ .uiTabletHome .uiTiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .uiTabletHome .uiTileArt{height:155px}
+ .uiTabletHome .uiJourney{flex-wrap:wrap;gap:14px;padding:16px 20px}
+ .uiTabletHome .uiJourney .uiTrack{order:3;flex-basis:100%;height:32px}
+ .uiTabletHome .uiJourneyEnd{margin-left:auto;font-size:16px}
+ .uiTabletMapPage{grid-template-columns:1fr;grid-template-areas:"map" "quest" "journey"}
+ .uiTabletQuest{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px;padding:20px}
+ .uiTabletQuest .uiQuestArt{aspect-ratio:1.65}
+ .uiTabletQuest .uiTabletDeck{gap:10px}
+ .uiTabletMapPage .uiJourneyBar .uiTrack{flex-basis:100%;order:3}
+}
+.uiTabletHome .uiHero::after{background:linear-gradient(90deg,#0b111bf5 0,#0b111be8 43%,#0b111b30 67%,transparent 82%)}
