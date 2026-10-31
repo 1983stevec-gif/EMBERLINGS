@@ -109,3 +109,15 @@ if fl is not None:
     f = rowfill(f, [(1158, 356, 1404, 392)], blur=2)
     f = inp2(f, [(168, 566, 1428, 914)], r=12, b=10)
     save(f, 'fusion.webp')
+
+# ---------- Friends (14.webp, 1586x992): username, typed name, error box and friend count removed
+fr = cv2.imread(D + '14.webp')
+if fr is not None:
+    def inp3(img, rects, r=7, b=4):
+        mk = np.zeros(img.shape[:2], np.uint8)
+        for (x0, y0, x1, y1) in rects: mk[y0:y1, x0:x1] = 255
+        o = cv2.inpaint(img, mk, r, cv2.INPAINT_TELEA); bl = cv2.GaussianBlur(o, (0, 0), b)
+        return np.where(mk[..., None] > 0, bl, o)
+    g = inp3(fr, [(238, 230, 445, 276), (132, 454, 320, 494), (1036, 347, 1054, 369)], b=3)
+    g = rowfill(g, [(116, 582, 716, 682)], blur=2)
+    save(g, 'friends.webp')
