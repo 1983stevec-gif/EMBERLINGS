@@ -1369,3 +1369,15 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXMLPrice.packs{font-family:"Cormorant Garamond",Georgia,serif;color:#f3d48a;font-size:1.15em}
 .uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
 .uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
+
+/* Fill portrait tablets with the dedicated Friends scene rather than a landscape thumbnail. */
+@media(min-width:760px) and (max-width:1199px) and (orientation:portrait){
+ body.uiExact:has(.uiXFriendsTab) #app{background:#0b1433;min-height:100dvh}
+ .uiXFTPage{min-height:calc(100dvh - 60px - var(--tabH,96px));background:#0b1433}
+ .uiXFTPage .uiXCrop{width:100%!important}
+}
+
+.uiPortraitPainting{background:#0b1430;padding:0 10px 18px;min-height:calc(100dvh - 60px - var(--tabH,96px))}
+.uiPortraitArtRow{display:grid;gap:10px;align-items:start;margin-bottom:10px}
+.uiPortraitArtRow .uiXPiece{width:100%}
+.uiPortraitPainting .uiX{width:auto;max-width:none}

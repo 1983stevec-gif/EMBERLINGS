@@ -6,10 +6,8 @@ const EXACT_MIN_WIDTH = 760;   // tablets (iPad portrait is 768 wide) get the sa
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
-// Landscape tablets (and anything 1000+ wide) get the painted layouts; portrait tablets get the full-height stacked layouts,
-// because a 16:10 painting on a tall screen would only fill the top third.
-// Adventure HQ keeps the painted map on every tablet, as requested.
-const wide = () => innerWidth >= 1000 || (innerWidth >= EXACT_MIN_WIDTH && (innerWidth > innerHeight || B.view === 'map'));
+// Every tablet keeps the painted artwork. Friends and battle have dedicated portrait art.
+const wide = () => innerWidth >= EXACT_MIN_WIDTH && !(innerWidth < 1200 && innerHeight > innerWidth && ['friends', 'cardBattle'].includes(B.view));
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 // Canvas helpers: positions are given in mockup pixels and converted to percentages / container units.
@@ -22,6 +20,30 @@ function canvas(W, H, bg, cls, inner) {
 function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
   const w = x1 - x0;
   return `<div class="uiXPiece" style="aspect-ratio:${w}/${y1 - y0};${extra}"><div class="uiX ${cls}" style="--W:${W};width:${(W / w * 100).toFixed(4)}%;aspect-ratio:${W}/${H};margin-left:${(-x0 / w * 100).toFixed(4)}%;margin-top:${(-y0 / w * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
+}
+// Reflow rectangles of the same painting; move live nodes so handlers and IDs stay intact.
+function portraitPainting(wrap, cls, W, H, bg, rows) {
+  if (!(innerWidth >= EXACT_MIN_WIDTH && innerWidth < 1200 && innerHeight > innerWidth)) return;
+  const old = $('.' + cls, wrap); if (!old) return;
+  const nodes = [...old.children], bounds = rows.flat(), hosts = [];
+  const stage = document.createElement('div'); stage.className = 'uiPortraitPainting';
+  for (const rects of rows) {
+    const row = document.createElement('div'); row.className = 'uiPortraitArtRow';
+    row.style.gridTemplateColumns = 'repeat(' + rects.length + ', minmax(0,1fr))';
+    for (const rect of rects) {
+      const t = document.createElement('template'); t.innerHTML = piece(W, H, bg, cls, rect, '');
+      const crop = t.content.firstElementChild; hosts.push($('.uiX', crop)); row.append(crop);
+    }
+    stage.append(row);
+  }
+  for (const node of nodes) {
+    if (node.classList.contains('uiSr')) { stage.prepend(node); continue; }
+    const x = (parseFloat(node.style.left) + parseFloat(node.style.width) / 2) / 100 * W;
+    const y = (parseFloat(node.style.top) + parseFloat(node.style.height) / 2) / 100 * H;
+    const i = bounds.findIndex(([x0,y0,x1,y1]) => x >= x0 && x <= x1 && y >= y0 && y <= y1);
+    hosts[i < 0 ? 0 : i].append(node);
+  }
+  wrap.replaceChildren(stage);
 }
 // Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
 const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
@@ -230,6 +252,7 @@ function vaultExact() {
   app.insertBefore(wrap, $('.back') || app.firstChild.nextSibling);
   [$('.back'), title, intro, old, grid].forEach(el => el?.remove());
   for (const panel of $$('#app > .panel, #app > details, #app > p')) panel.classList.add('uiXBelow');
+  portraitPainting(wrap, 'uiXVault', W, H, '/art/ui/vault.webp', [[[0,80,W,210]], [[35,210,532,595],[535,210,1007,595]], [[1007,210,1502,595],[35,595,532,970]], [[535,595,1007,970],[1007,595,1502,970]]]);
 }
 
 
@@ -300,6 +323,7 @@ function packsExact() {
     for (const r of rewards) { r.className = 'uiXPackBtn'; r.textContent = r.textContent.replace(' · 5 Mythlings', ''); notice.append(r); }
   }
   for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  portraitPainting(wrap, 'uiXPacks', W, H, '/art/ui/packs.webp', [[[0,69,W,158]], [[110,158,542,476],[548,158,990,476]], [[995,158,1428,476],[110,479,542,796]], [[548,479,990,796],[995,479,1428,796]], [[110,800,1428,940]], [[0,940,W,H]]]);
 }
 // Phones: the painted pack wrapper replaces the emoji on each pack card.
 const PACK_IDS = ['pack', 'star', 'crystal', 'mythic', 'legend', 'celestial', 'hacker'];
@@ -375,6 +399,7 @@ function mutationExact() {
   const more = [$('#mutationPrev'), $('#mutationNext')].filter(Boolean);
   if (more.length) { const pg = $('.uiXMPager', wrap); more.forEach(b => { b.className = 'uiXMMore'; b.textContent = b.id === 'mutationPrev' ? '« earlier' : 'later »'; pg.append(b); }); }
   for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  portraitPainting(wrap, 'uiXMutation', W, H, '/art/ui/mutation.webp', [[[0,55,W,160]], [[175,160,665,552],[175,552,665,826]], [[670,160,1425,826]], [[175,832,1425,H]]]);
 }
 const ELEMENT_ICON = { Fire: '🔥', Water: '💧', Nature: '🍃', Lightning: '⚡', Moon: '🌙', Crystal: '💎', Ice: '❄️', Shadow: '🌑', Wind: '🌪️' };
 
@@ -631,7 +656,7 @@ if (B && UI) {
   window.addEventListener('ember:fusion', e => fusionResult(e.detail.creature));
   let wasWide = wide();
   let wasSplit = mapSplit();
-  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (split !== wasSplit && ['mutation','vault','packs'].includes(B.view)) { wasSplit = split; wasWide = now; return B.go(B.view); } if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
