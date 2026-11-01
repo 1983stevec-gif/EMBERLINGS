@@ -161,7 +161,7 @@ function focusWorldLevel(l, smooth=true) {
   if (node.offsetLeft>=viewport.scrollLeft+24 && node.offsetLeft<=viewport.scrollLeft+viewport.clientWidth-24) return;
   viewport.scrollTo({left:node.offsetLeft-viewport.clientWidth/2,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'});
 }
-function phoneQuestContents(l){const info=questInfo(l);return `<div class="uiPhoneQuestArt">${UI.questArt(l)}</div><h2>${esc(B.regions[info.r][0])}</h2><h3>${esc(questName(l))} · Level ${B.adventureLabel(l)}</h3><p>${info.locked?'Complete earlier quests to unlock':info.cleared?'Completed · replay':'Ready to play'}${info.prize?' · 🪙 '+fmt(info.prize.coins):''}</p><button class="button alt" data-go="decks">Edit deck</button><div class="uiPhoneQuestDeck">${deckTop(3).map(c=>B.cardHTML(c)).join('')}</div><button id="uiBegin" class="button gold ${info.locked?'locked':''}" ${info.locked?'disabled':''}>${info.locked?'Complete earlier quests':info.cleared?'Replay battle':'Begin battle'}</button>`}
+function phoneQuestContents(l){const info=questInfo(l);return `<div class="uiPhoneQuestArt">${UI.questArt(l)}</div><h2>${esc(B.regions[info.r][0])}</h2><h3>${esc(questName(l))} · Level ${B.adventureLabel(l)}</h3><p>${info.locked?'Complete earlier quests to unlock':info.cleared?'Completed · replay':'Ready to play'}${info.prize?' · 🪙 '+fmt(info.prize.coins):''}</p>${info.prize?.bossQuest?'<p class="uiBossReward">👑 Win this boss’s Legendary card for My Binder.</p>':''}<button class="button alt" data-go="decks">Edit deck</button><div class="uiPhoneQuestDeck">${deckTop(3).map(c=>B.cardHTML(c)).join('')}</div><button id="uiBegin" class="button gold ${info.locked?'locked':''}" ${info.locked?'disabled':''}>${info.locked?'Complete earlier quests':info.cleared?'Replay battle':'Begin battle'}</button>`}
 function phoneQuest(l){return `<div id="uiQuest" class="uiPhoneQuest">${phoneQuestContents(l)}</div>`}
 function questInfo(l) {
   const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
@@ -175,7 +175,7 @@ function questTop(l) {
    <div class="uiXArt" style="${p(1196, 179, 1561, 399)};${fs(W, 17)}">${UI.questArt(l)}</div>
    ${text(p(1208, 408, 1560, 458), W, 36, 'uiXQuest', esc(questName(l)))}
    ${text(p(1210, 456, 1560, 486), W, 21, 'uiXStatus ' + (locked ? 'locked' : cleared ? 'done' : ''), locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play')}
-   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to reach level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}`;
+   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? prize?.bossQuest?`Win: ${esc(boss)} card · Level ${B.adventureLabel(l+1).split('.')[0]}.`:`Boss card collected · Level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}`;
 }
 function questBottom(l) {
   const W = 1586, H = 992, p = box(W, H), { locked } = questInfo(l), deck = deckTop(3);

@@ -307,9 +307,9 @@ let threePromise = null;
 function three() { return threePromise ||= import('/vendor/three.module.min.js').catch(() => null); }
 const artCache = new Map();
 function loadArt(kind) {
-  const sp = B.species[kind], single = kind >= 10, src = single ? `/art/mythlings/${sp.art}.webp` : '/art/mythlings-atlas-v2.png';
+  const sp = B.species[kind], boss=!!sp.boss, single = kind >= 10&&!boss, src = boss?'/art/mythlings/bosses-atlas.png':single ? `/art/mythlings/${sp.art}.webp` : '/art/mythlings-atlas-v2.png';
   if (!artCache.has(src)) artCache.set(src, new Promise(res => { const img = new Image(); img.decoding = 'async'; img.onload = () => res(img); img.onerror = () => res(null); img.src = src; }));
-  return artCache.get(src).then(img => img && (single ? { img, sx: 0, sy: 0, sw: img.width, sh: img.height } : { img, sx: (kind % 5) * img.width / 5, sy: (kind < 5 ? 0 : 1) * img.height / 2, sw: img.width / 5, sh: img.height / 2 }));
+  return artCache.get(src).then(img => img && (boss?{img,sx:sp.artCol*img.width/3,sy:sp.artRow*img.height/2,sw:img.width/3,sh:img.height/2}:single ? { img, sx: 0, sy: 0, sw: img.width, sh: img.height } : { img, sx: (kind % 5) * img.width / 5, sy: (kind < 5 ? 0 : 1) * img.height / 2, sw: img.width / 5, sh: img.height / 2 }));
 }
 function roundRect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 // Draws a printed-card face. onReady fires again when the artwork arrives.

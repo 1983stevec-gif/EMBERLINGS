@@ -1,3 +1,12 @@
+// Boss species append to the original IDs; never reorder existing creatures.
+export const BOSS_CARDS=Object.freeze([
+ {name:'Magmarok',kind:16,emoji:'🌋',element:'Fire',animal:'Volcanic Bear',power:45,rarity:'Legendary',island:0,boss:true,artCol:0,artRow:0},
+ {name:'Thorn Guardian',kind:17,emoji:'🌳',element:'Nature',animal:'Ancient Stag',power:45,rarity:'Legendary',island:1,boss:true,artCol:1,artRow:0},
+ {name:'Frostfang',kind:18,emoji:'🐺',element:'Ice',animal:'Ice Wolf',power:45,rarity:'Legendary',island:2,boss:true,artCol:2,artRow:0},
+ {name:'Voltitan',kind:19,emoji:'🐉',element:'Lightning',animal:'Thunder Dragon',power:45,rarity:'Legendary',island:3,boss:true,artCol:0,artRow:1},
+ {name:'Voidra',kind:20,emoji:'🌑',element:'Shadow',animal:'Void Wyvern',power:45,rarity:'Legendary',island:4,boss:true,artCol:1,artRow:1}
+].map(Object.freeze));
+export const CREATURE_COUNT=21;
 export const RARITIES=['Common','Uncommon','Rare','Mythic','Legendary','Celestial','Secret'];
 export const RARITY_DAMAGE=[0,10,24,42,64,92,130];
 export const VAULT_RATES=[5,12,25,50,100,200,400];
@@ -22,6 +31,13 @@ export const MOVE_PROFILES=[
  {basic:'Snow Pounce',skill:'Glacier Ambush',ultimate:'Winter Hunt',mode:'twin',power:.95,count:2,spread:.08,speed:470,radius:9,cool:1.3,color:'#b1e7f1'},
  {basic:'Dusk Peck',skill:'Nightfall Siphon',ultimate:'Raven Eclipse',mode:'siphon',power:1.7,range:230,cool:1.4,color:'#ae8adb'}
 ];
+MOVE_PROFILES.push(
+ {...MOVE_PROFILES[13],basic:'Obsidian Claw',skill:'Volcanic Slam',ultimate:'Caldera Roar'},
+ {...MOVE_PROFILES[2],basic:'Bark Antler',skill:'Thornquake',ultimate:'Ancient Canopy'},
+ {...MOVE_PROFILES[6],basic:'Glacier Bite',skill:'Glacial Fang',ultimate:'Whiteout Roar'},
+ {...MOVE_PROFILES[3],basic:'Thunder Talon',skill:'Stormbreaker',ultimate:'Tempest Crown'},
+ {...MOVE_PROFILES[7],basic:'Umbral Claw',skill:'Void Collapse',ultimate:'Endless Eclipse'}
+);
 export function moveProfile(kind){return MOVE_PROFILES[kind]||MOVE_PROFILES[0]}
 export function skillShots(p,kind,base,dx,dy){const m=moveProfile(kind);if(!m.count)return [];const angle=Math.atan2(dy,dx);return Array.from({length:m.count},(_,i)=>{const a=angle+(i-(m.count-1)/2)*m.spread;return {x:p.x+dx*22,y:p.y+dy*22,vx:Math.cos(a)*m.speed,vy:Math.sin(a)*m.speed,r:m.radius,life:1.8,damage:Math.round(base*m.power),color:m.color,pierce:m.mode==='pierce'?2:0,bounces:m.mode==='bounce'?1:0,hitIds:[]}})}
 

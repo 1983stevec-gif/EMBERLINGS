@@ -257,7 +257,7 @@ const WORLDS = [
 ];
 function questArt(l) {
   const r = B.regions.findIndex(x => l >= x[1] && l <= x[2]), w = WORLDS[r] || WORLDS[0], boss = !!B.bosses[l];
-  const kind = boss ? w.boss : w.pool[(l - B.regions[r][1]) % w.pool.length];
+  const kind = boss ? B.species.findIndex(c=>c.name===B.bosses[l]) : w.pool[(l - B.regions[r][1]) % w.pool.length];
   return `<span class="uiWorldArt ${boss ? 'uiWorldBoss' : ''}" style="--world:${w.color}">${B.art({ kind, rarity: boss ? 'Legendary' : 'Common' })}<span class="uiWorldTint" aria-hidden="true"></span><span class="uiWorldTag">${w.icon} ${esc(B.regions[r][0])}${boss ? ' · Boss' : ''}</span></span>`;
 }
 function questPanel(l) {
@@ -267,7 +267,7 @@ function questPanel(l) {
   return `<h2>${esc(region[0])}</h2><p class="uiLevel">${boss ? 'Boss · ' : ''}Level ${B.adventureLabel(l)}</p>
    <div class="uiQuestArt ${boss ? 'uiBossArt' : ''}">${questArt(l)}</div>
    <h3>${esc(questName(l))}</h3><p class="uiStatus ${locked ? 'locked' : cleared ? 'done' : ''}">${locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play'}</p>
-   <p class="uiDesc">${boss ? `Defeat ${esc(boss)} to reach level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>` : ''}</p>
+   <p class="uiDesc">${boss ? prize?.bossQuest?`Win: ${esc(boss)} card · Level ${B.adventureLabel(l+1).split('.')[0]}.`:`Boss card collected · Level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>` : ''}</p>
    <div class="uiDivider" aria-hidden="true">◆</div>
    <div class="uiDeckHead"><strong>Your deck</strong><button class="uiLink" data-go="decks">Edit deck ›</button></div>
    <div class="uiDeckRow">${deck.map(c => card(c)).join('') || '<p class="small">Build a deck in Battle Deck.</p>'}</div>

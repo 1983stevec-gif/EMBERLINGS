@@ -1563,3 +1563,6 @@ body.uiPhone .uiWorldLegend{flex:1 1 100%}
 body.uiPhone .uiWorldControls{flex:1 1 100%;display:grid;grid-template-columns:44px 44px minmax(0,1fr) 44px 44px;gap:4px}
 body.uiPhone .uiWorldControls button{min-width:0;padding:6px 4px}
 body.uiPhone .uiWorldControls #uiXCurrent{font-size:12px;padding:6px 2px}
+
+/* Island Guardian cards use the same printed card frame as the original collection. */
+.mythlingArt>.mythlingSheet.mythlingBossSheet{width:300%!important;height:200%!important;left:calc(var(--art-col)*-100%)!important;top:calc(var(--art-row)*-100%)!important}

@@ -7,7 +7,8 @@ const ext = st => st?.ember || {};
 const count = (st, test) => owned(st).filter(test).length;
 const cleared = st => Array.isArray(st?.cleared) ? st.cleared : [];
 const legacyBossChampion = st => [10,25,45,70,100].every(l => cleared(st).includes(l));
-export const SPECIES_COUNT = 16;
+import { CREATURE_COUNT } from './combat-rules.js';
+export const SPECIES_COUNT = CREATURE_COUNT;
 
 // Collection album: three stamps per species, each claimed once.
 export const ALBUM_STAMPS = [
