@@ -1420,3 +1420,6 @@ body .uiWorldHQ{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;
 .uiWorldJourney{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:14px;border:1px solid #917348;color:#e4d6ba;font:16px var(--ui-serif)}
 .uiWorldJourney progress{flex:1;min-width:140px;accent-color:#deb85d;height:12px}
 @media(max-width:1199px){body .uiWorldHQ{grid-template-columns:minmax(0,1fr)}.uiWorldQuest{width:100%}.uiWorldQuest>.uiXPiece{max-width:420px;margin:auto}.uiWorldQuest .uiXPanelRow>.uiXPiece{flex:1!important}.uiWorldViewport{--world-height:clamp(400px,min(60dvh,calc((100vw - 24px) * 760 / 1177)),620px)}}
+
+.uiXMNote{white-space:normal;flex-direction:column;justify-content:center;gap:.35em;line-height:1.25;text-align:center;padding:.3em .5em}
+.uiXMNote small{font-size:.9em;color:#c4bba5}
