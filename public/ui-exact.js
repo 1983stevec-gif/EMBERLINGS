@@ -24,7 +24,9 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
   return `<div class="uiXPiece" style="aspect-ratio:${w}/${y1 - y0};${extra}"><div class="uiX ${cls}" style="--W:${W};width:${(W / w * 100).toFixed(4)}%;aspect-ratio:${W}/${H};margin-left:${(-x0 / w * 100).toFixed(4)}%;margin-top:${(-y0 / w * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
 // Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
-const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
+// Tablet layouts are for touch screens only, so a narrow desktop or laptop window keeps the desktop designs.
+const touchTablet = () => matchMedia('(pointer:coarse)').matches;
+const mapSplit = () => touchTablet() && innerWidth < 1200 && innerHeight > innerWidth;
 const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
@@ -515,7 +517,7 @@ function friendsExact(data) {
 
 
 /* ---------------------------------------------------------------- Friends, portrait tablet (mockup 1045 × 1506) */
-const tabPortrait = () => innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
+const tabPortrait = () => touchTablet() && innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
 function friendsTab(data) {
   const app = $('#app'), form = $('#addFriendForm'), lists = $('#friendLists'); if (!lists || !data?.me || (!form && !$('.uiXFTPage'))) return;
   const W = 1045, H = 1506, p = box(W, H), st = B.state, me = (B.active?.() || st.owned?.[0]);

@@ -1043,7 +1043,7 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 
 /* ---------- Tablet menu (700–1199 px) ---------- */
 .uiTabMenu{display:none}
-@media(min-width:700px) and (max-width:1199px){
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){
  :root{--tabw:min(168px,calc((100vw - 72px) / 5));--tabH:calc(var(--tabw) * .3 + 22px + 20px)}
  .uiTabMenu{display:flex;justify-content:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:45;padding:7px 12px max(7px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b1230f0,#070b1af7);border-top:1px solid #9a7638;box-shadow:0 -8px 24px #000a}
  body.uiTheme .nav,body.uiTheme .uiTop .uiNav{display:none!important}
@@ -1275,7 +1275,7 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXBattleTab .attackPanel{top:calc(350*var(--u));height:calc(456*var(--u))}
 .uiXBattleTab .handCard>.pocketCreature,.uiXBattleTab .handCard>.mythCard{zoom:calc(var(--z) * .84)}
 .uiXBattleTab .handCard{flex-basis:calc(196*var(--u));width:calc(196*var(--u))}
-@media(min-width:700px) and (max-width:1199px){body:has(.uiXBattleTab) #app{padding-bottom:6px!important}body:has(.uiXBattleTab) .uiXCrop{width:min(100%,calc((100dvh - 84px) * var(--ratio)))!important}}
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){body:has(.uiXBattleTab) #app{padding-bottom:6px!important}body:has(.uiXBattleTab) .uiXCrop{width:min(100%,calc((100dvh - 84px) * var(--ratio)))!important}}
 
 .uiXBattleTab .battleBar>strong{display:block!important;text-align:center}
 .uiXBattleTab .battleBar>strong small{display:block}
