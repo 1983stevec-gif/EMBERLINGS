@@ -9,7 +9,8 @@ for(const small of [[pool[0]],[pool[47],pool[48],pool[49]]]){const result=equipB
 console.log('PASS legal strongest-copy selection, evolution lines, three Merfling types, small collections, no inventory changes ('+Math.round(performance.now()-start)+'ms)');
 // Level path: a new move every 25 levels, capped at level 100; specials are fixed per card.
 import {attacks,battleCard,levelPerks,MAX_LEVEL} from '../public/card-engine.js';
-for(const [lv,n] of [[1,2],[24,2],[25,3],[50,4],[75,5],[100,6],[250,6]])assert.equal(attacks(battleCard({id:'lv-'+lv,kind:0,level:lv})).length,n);
+for(const [lv,n] of [[1,2],[24,2],[25,3],[50,4],[75,4],[100,4],[250,4]])assert.equal(attacks(battleCard({id:'lv-'+lv,kind:0,level:lv})).length,n);
 assert.equal(MAX_LEVEL,100);assert.deepEqual(levelPerks({id:'same',kind:3,level:100}),levelPerks({id:'same',kind:3,level:100}));
 assert(battleCard({id:'x',kind:0,level:100}).maxhp>battleCard({id:'x',kind:0,level:1}).maxhp);
-console.log('PASS level path moves at 25/50/75/100, max level 100, fixed special abilities');
+assert.deepEqual(attacks(battleCard({id:'r',kind:0,level:75})).slice(2).map(m=>m.id),['lv50','lv75']);assert.deepEqual(attacks(battleCard({id:'r',kind:0,level:100})).slice(2).map(m=>m.id),['lv75','lv100']);
+console.log('PASS level path moves at 25/50/75/100 (newest two kept), max level 100, fixed special abilities');

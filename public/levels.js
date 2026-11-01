@@ -23,7 +23,7 @@ function next() {
   const o = document.createElement('div'); o.className = 'uiFAbility uiLvUp' + (special ? ' ' + special.kind : ''); o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Level up');
   o.style.setProperty('--glow', special?.kind === 'veryRare' ? '#ff8af0' : special ? '#7fd8ff' : '#ffcf6a');
   o.innerHTML = `<div class="uiFAbBox"><p class="uiFAbKick">Level up!</p><h2>${esc(B.species[c.kind]?.name || '')} <span class="uiLvNum">Lv ${to}${to >= MAX_LEVEL ? ' · MAX' : ''}</span></h2>
-    <ul class="uiLvList">${big.map(r => `<li class="${r.kind}"><strong>${esc(r.text)}</strong>${r.kind === 'move' ? `<span>${r.cost} Merfling · base damage +${r.bonus}</span>` : r.detail ? `<span>${esc(r.detail)}</span>` : ''}</li>`).join('')}${hp ? `<li class="hp"><strong>+${hp} HP</strong></li>` : ''}</ul>
+    <ul class="uiLvList">${big.map(r => `<li class="${r.kind}"><strong>${esc(r.text)}</strong>${r.kind === 'move' ? `<span>${r.replaces ? `Replaces ${esc(r.replaces)} · ` : ''}${r.cost} Merfling · base damage +${r.bonus}</span>` : r.detail ? `<span>${esc(r.detail)}</span>` : ''}</li>`).join('')}${hp ? `<li class="hp"><strong>+${hp} HP</strong></li>` : ''}</ul>
     <div class="uiLvCard"></div><button class="button gold" type="button">Continue</button></div>`;
   const card = $('.uiLvCard', o); card.innerHTML = `<div class="uiLvCardIn">${B.cardHTML(c)}</div>`;
   document.body.appendChild(o);
