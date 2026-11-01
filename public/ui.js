@@ -89,6 +89,15 @@ function homeCards() {
   return `<section class="uiHomeCards" aria-labelledby="uiHomeCardsTitle"><h2 id="uiHomeCardsTitle"><img src="/art/ui/home-cards-title.webp" alt="Your adventure starts here." width="1130" height="76"></h2>
    <div class="uiHomeCardGrid">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" ${go === 'backup' ? 'id="uiCardBackup"' : `data-go="${go}"`} aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
 }
+
+/* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown 700–1199 px wide. */
+function tabletMenu() {
+  if ($('.uiTabMenu')) $('.uiTabMenu').remove();
+  const v = B.view, nv = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  const nav = document.createElement('nav'); nav.className = 'uiTabMenu'; nav.setAttribute('aria-label', 'Main');
+  nav.innerHTML = NAV.map(([g, t]) => `<button class="uiTabTile ${nv === g ? 'on' : ''}" data-go="${g}" ${nv === g ? 'aria-current="page"' : ''}><img src="/art/ui/tab-${g}.webp" alt="" width="360" height="307"><span>${g === 'inventory' ? 'My Binder' : t}</span></button>`).join('');
+  document.body.appendChild(nav); B.bind();
+}
 /* ---------------------------------------------------------------- Home */
 const card = (c, cls = '') => `<div class="uiMiniCard ${cls}" style="--el:${ELEMENT_COLORS[B.species[c.kind]?.element] || '#c9a35a'}">${B.art(c)}<span class="uiEl">${ELEMENT_ICONS[B.species[c.kind]?.element] || '✦'}</span></div>`;
 function deckTop(n = 3) {
@@ -421,6 +430,7 @@ addEventListener('popstate', e => {
 
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
+  tabletMenu();
   trackHistory(B.view);
   document.body.classList.add('uiTheme');
   document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));

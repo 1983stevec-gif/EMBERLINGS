@@ -1045,3 +1045,26 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 @media(hover:none){.handRow>.handCard:hover{transform:rotate(var(--fan,0deg)) translateY(var(--lift,0px));filter:none}.uiTile:hover,.uiHomeCard:hover{transform:none}}
 .uiMer{position:relative;overflow:hidden}.uiMer input{left:0;top:0;width:1px;height:1px}
 @media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{min-height:calc(100dvh - 60px);display:flex;flex-direction:column;justify-content:center}}
+
+/* ---------- Tablet menu (700–1199 px) ---------- */
+.uiTabMenu{display:none}
+@media(min-width:700px) and (max-width:1199px){
+ :root{--tabm:min(126px,calc((100vw - 60px) / 5 * .92))}
+ .uiTabMenu{display:flex;justify-content:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:45;padding:8px 12px max(8px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b1230f0,#070b1af7);border-top:1px solid #9a7638;box-shadow:0 -8px 24px #000a}
+ body.uiTheme .nav,body.uiTheme .uiTop .uiNav{display:none!important}
+ body.uiTheme .uiTop .uiPBar{display:none!important}
+ body.uiTheme .uiTop .uiTopIn{display:flex!important;height:60px}
+ body.uiTheme #app{padding-bottom:calc(var(--tabm) * 1.22 + 30px)!important}
+ body.uiExact #app{padding-bottom:calc(var(--tabm) * 1.22 + 22px)!important}
+ .uiXCrop{width:min(100%,calc((100dvh - 60px - var(--tabm) * 1.22 - 22px) * var(--ratio)))!important}
+ body:has(.cardArena) .uiTabMenu{display:none}
+}
+.uiTabTile{position:relative;flex:0 0 var(--tabm);width:var(--tabm);padding:0;margin:0;border:2px solid #9a7a46;border-radius:10px;background:#0b1230;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 4px 12px #0009;transition:transform .15s,box-shadow .15s;touch-action:manipulation}
+.uiTabTile img{display:block;width:100%;height:auto;aspect-ratio:360/307}
+.uiTabTile span{display:grid;place-items:center;height:calc(var(--tabm) * .2);background:url(/art/ui/tab-bar.webp) center/100% 100% no-repeat;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(var(--tabm) * .14);color:#f6efdc;white-space:nowrap;letter-spacing:.01em}
+.uiTabTile.on{border:3px solid #ffcf6a;box-shadow:0 0 0 1px #6a4a10,0 0 18px #ffb04acc,0 0 34px #ff9a2a66;transform:translateY(-4px)}
+.uiTabTile.on span{background:linear-gradient(180deg,#7a4a14,#4a2a08);color:#fff3d6;border-top:1px solid #ffcf6a}
+.uiTabTile.on::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;transform:rotate(45deg);background:#ffcf6a;box-shadow:0 0 8px #ffb04a}
+.uiTabTile:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media(hover:hover){.uiTabTile:not(.on):hover{transform:translateY(-2px);border-color:#d9b77a}}
+@media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{justify-content:flex-start!important}body.uiExact:has(.uiXMap) #app>.uiExactPage{margin-block:auto!important}}
