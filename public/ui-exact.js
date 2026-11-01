@@ -25,7 +25,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 }
 // Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
 const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -573,6 +573,24 @@ function battleExact() {
 }
 const battleRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1672).toFixed(4)); });
 
+/* ---------------------------------------------------------------- Card battle, portrait tablet (mockup 1045 × 1505) */
+function battleTab() {
+  const arena = $('.cardArena'); if (!arena || $('.uiXBattleTab', arena)) return;
+  const W = 1045, H = 1505;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXBTPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/battle-tab.webp', 'uiXBattleTab', `<button class="uiHot uiXBTArrow" data-dir="-1" style="${box(W, H)(12, 1342, 50, 1404)}" aria-label="Scroll hand left"></button><button class="uiHot uiXBTArrow" data-dir="1" style="${box(W, H)(998, 1342, 1036, 1404)}" aria-label="Scroll hand right"></button>`);
+  const host = $('.uiXBattleTab', wrap), stage = document.createElement('div'); stage.className = 'uiXBLayer'; host.append(stage);
+  for (const el of [...arena.children]) stage.append(el);
+  $$(':scope > details', stage).forEach((d, i) => d.classList.add(i ? 'uiXBLog' : 'uiXBDiscard'));
+  const retreat = $('.retreatPanel', stage), panel = $('.attackPanel', stage); if (retreat && panel) panel.append(retreat);
+  // Score only (the names are already above each side): "0 : 0" with the first-to / turn line under it.
+  const score = $('.battleBar > strong', stage); if (score) { const [a, b] = $$(':scope > b', score), small = $('small', score); if (a && b) score.replaceChildren(a, ' : ', b, ...(small ? [small] : [])); }
+  arena.append(wrap);
+  const z = () => host.style.setProperty('--z', (host.clientWidth / W).toFixed(4)); z(); battleTabRO.observe(host);
+  $$('.uiXBTArrow', wrap).forEach(b => b.onclick = () => { const row = $('.handRow', wrap); if (row) row.scrollBy({ left: +b.dataset.dir * row.clientWidth * .8, behavior: 'smooth' }); });
+}
+const battleTabRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1045).toFixed(4)); });
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
@@ -582,6 +600,7 @@ function onFrame() {
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
   if (['fusion', 'fuse'].includes(B.view) && !exact && $('.fusionPreview')) fusionNarrow();
   if (B.view === 'cardBattle' && exact) battleExact();
+  if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
   if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });
