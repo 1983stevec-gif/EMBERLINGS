@@ -25,7 +25,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 }
 // Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
 const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -306,6 +306,9 @@ function packsNarrow() {
 
 /* ---------------------------------------------------------------- Mutation Vault (mockup 1587 × 991) */
 // Rearranges the game's own Mutation Vault (same buttons, purchase and confirmation) onto the mockup.
+// Page 2 of the mutation cards: the newer mutations, drawn live in the same six painted card frames.
+const MUT_NEW = ['bloom', 'tide', 'crystal', 'solar', 'void', 'prism'];
+let mutCardPage = 0, mutCardSel = null;
 const MUT_CARDS = { spark: [687, 214, 920, 457], flame: [932, 214, 1165, 457], frost: [1177, 214, 1407, 457], storm: [687, 473, 920, 721], shadow: [933, 473, 1165, 721], cosmic: [1178, 473, 1407, 721] };
 const MUT_TILES = [[460, 840, 642, 960], [655, 840, 836, 960], [849, 840, 1030, 960], [1043, 840, 1225, 960], [1238, 840, 1420, 960]];
 let mutPage = 0, mutLastSel = null;
@@ -327,26 +330,31 @@ function mutationExact() {
    ${text(p(512, 561, 622, 581), W, 14.5, 'uiXMHead', `With ${esc(m.name)}`)}
    ${text(p(385, 594, 445, 624), W, 22, 'uiXMVal', esc(cmp[0] || ''))}${text(p(535, 594, 600, 624), W, 22, 'uiXMVal gold', esc(cmp[1] || ''))}
    ${text(p(385, 639, 445, 669), W, 22, 'uiXMVal', esc(cmp[2] || ''))}${text(p(535, 639, 600, 669), W, 22, 'uiXMVal gold', esc(cmp[3] || ''))}
-   ${text(p(378, 684, 520, 716), W, 24, 'uiXMPrice', `${fmt(m.cost)} <small>coins</small>`)}
+   ${m.packOnly ? text(p(330, 680, 560, 718), W, 22, 'uiXMPrice uiXMPacks', '🎁 Found in packs') : text(p(378, 684, 520, 716), W, 24, 'uiXMPrice', `${fmt(m.cost)} <small>coins</small>`)}
    <div class="uiXMBuy" style="${p(250, 722, 596, 765)};${fs(W, 19)}"></div>
    <div class="uiTxt uiXMNeed" style="${p(250, 768, 596, 792)};${fs(W, 15)}"></div>
    <div class="uiXMConfirm" style="${p(196, 556, 650, 806)};${fs(W, 15)}"></div>
-   ${Object.entries(MUT_CARDS).map(([id, b]) => `<div class="uiXMCard ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...b)};${fs(W, 14.5)}"></div>`).join('')}
+   ${(() => { if (m.id !== mutCardSel) { mutCardSel = m.id; mutCardPage = MUT_NEW.includes(m.id) ? 1 : 0; } const slots = Object.values(MUT_CARDS);
+     return [Object.keys(MUT_CARDS), MUT_NEW].map((ids, pg) => ids.map((id, i) => { const x = B.MUTATIONS.find(q => q.id === id); return `<div class="uiXMCard uiXMP${pg} ${pg ? 'uiXMLive' : ''} ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...slots[i])};${fs(W, 14.5)};--mut:${x?.color}">${pg && x ? `<span class="uiXMLArt">${B.art({ ...c, mutation: id })}</span><span class="uiXMLName"><i>${x.icon}</i>${esc(x.name)}</span><span class="uiXMLPrice packs">🎁 Packs only</span>` : ''}</div>`; }).join('')).join(''); })()}
+   <div class="uiXMCardPager" style="${p(1268, 170, 1410, 204)};${fs(W, 15)}"><button type="button" data-mcp="0" aria-label="Original mutations">‹</button><span></span><button type="button" data-mcp="1" aria-label="More mutations">›</button></div>
+   <div class="uiTxt uiXMNote" style="${p(884, 767, 1215, 789)};${fs(W, 13.5)}">Bloom, Tide, Crystal, Solar, Void and Prism come only from packs.</div>
    ${text(p(204, 872, 420, 896), W, 15.5, 'uiXMCount', `${fmt(st.owned.length)} Mythlings`)}
    <div class="uiXMPager" style="${p(204, 905, 430, 940)};${fs(W, 15)}"></div>
    ${MUT_TILES.map((b, i) => `<div class="uiXMTile" data-mtile="${i}" style="${p(...b)};${fs(W, 17)}"></div>`).join('')}`);
   app.insertBefore(wrap, app.firstChild.nextSibling);
+  const showCards = () => { wrap.classList.toggle('uiXMPage1', mutCardPage === 1); $('.uiXMCardPager span', wrap).textContent = `${mutCardPage + 1} / 2`; $$('[data-mcp]', wrap).forEach(b => b.disabled = +b.dataset.mcp === mutCardPage); };
+  $$('[data-mcp]', wrap).forEach(b => b.onclick = () => { mutCardPage = +b.dataset.mcp; showCards(); }); showCards();
   // Mutation cards: the game's option buttons become the card hotspots; the live damage/vault line is drawn in place.
   for (const b of opts) {
     const host = $(`[data-mcard="${b.dataset.mutation}"]`, wrap); if (!host) continue;
-    const line = b.querySelectorAll(':scope > span')[1]?.textContent || '', row1 = MUT_CARDS[b.dataset.mutation][1] < 400;
+    const line = b.querySelectorAll(':scope > span')[1]?.textContent || '';
     b.className = 'uiXMOpt'; b.setAttribute('aria-label', `${b.dataset.mutation} mutation. ${line}`); b.innerHTML = '';
     host.append(b);
-    host.insertAdjacentHTML('beforeend', `<span class="uiXMLine" style="top:${row1 ? 75.4 : 75.4}%">${esc(line)}</span>${host.classList.contains('sel') ? '<span class="uiXMBadge">SELECTED</span>' : ''}${host.classList.contains('active') ? '<span class="uiXMBadge act">ACTIVE</span>' : ''}`);
+    host.insertAdjacentHTML('beforeend', `<span class="uiXMLine" style="top:75.4%">${esc(line)}</span>${host.classList.contains('sel') ? '<span class="uiXMBadge">SELECTED</span>' : ''}${host.classList.contains('active') ? '<span class="uiXMBadge act">ACTIVE</span>' : ''}`);
   }
   // Buy button, status line and replacement confirmation.
   const buy = $('#mutate'), status = $('#mutationStatus'), confirmBox = $('#mutationConfirm');
-  if (buy) { buy.className = 'uiXMBtn'; buy.textContent = c.mutation === m.id ? 'ALREADY ACTIVE' : `APPLY ${m.name.toUpperCase()}`; $('.uiXMBuy', wrap).append(buy); }
+  if (buy) { buy.className = 'uiXMBtn'; buy.textContent = c.mutation === m.id ? 'ALREADY ACTIVE' : m.packOnly ? 'FOUND IN PACKS ONLY' : `APPLY ${m.name.toUpperCase()}`; $('.uiXMBuy', wrap).append(buy); }
   if (status) { $('.uiXMNeed', wrap).append(status); status.textContent = status.textContent.replace(/^([\d,]+) more coins needed$/, 'Need $1 more coins'); }
   if (confirmBox) { $('.uiXMConfirm', wrap).append(confirmBox); new MutationObserver(() => wrap.querySelector('.uiXMConfirm').classList.toggle('on', !!confirmBox.children.length)).observe(confirmBox, { childList: true }); }
   // Chooser: five tiles per page from the game's creature buttons (the game itself pages by 24).
@@ -506,6 +514,55 @@ function friendsExact(data) {
 }
 
 
+/* ---------------------------------------------------------------- Friends, portrait tablet (mockup 1045 × 1506) */
+const tabPortrait = () => innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
+function friendsTab(data) {
+  const app = $('#app'), form = $('#addFriendForm'), lists = $('#friendLists'); if (!lists || !data?.me || (!form && !$('.uiXFTPage'))) return;
+  const W = 1045, H = 1506, p = box(W, H), st = B.state, me = (B.active?.() || st.owned?.[0]);
+  let wrap = $('.uiXFTPage');
+  if (!wrap) {
+    wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXFTPage';
+    wrap.innerHTML = canvas(W, H, '/art/ui/friends-tab.webp', 'uiXFriendsTab', `
+     <h1 class="uiSr">Friends</h1>
+     <div class="uiXFTAva" style="${p(70, 302, 232, 442)}">${me ? B.art(me) : ''}</div>
+     ${text(p(265, 340, 700, 394), W, 36, 'uiXFTName', esc(data.me.username))}
+     <button class="uiHot" data-copy-name style="${p(262, 310, 700, 394)}" aria-label="Copy username"></button>
+     <button class="uiHot" id="uiXFTAddBtn" style="${p(720, 333, 985, 412)}" aria-expanded="false" aria-controls="uiXFTAdd" aria-label="Add Player"></button>
+     <button class="uiHot" id="uiXRecToggle" style="${p(36, 478, 1010, 548)}" aria-expanded="false" aria-controls="uiXRecovery" aria-label="Player recovery code"></button>
+     <div class="uiTxt uiXFTCount" style="${p(338, 598, 400, 644)};${fs(W, 36)}"></div>
+     <div class="uiXFTList" style="${p(52, 652, 996, 945)}"></div>
+     <div class="uiXFTAdd" id="uiXFTAdd" hidden style="left:${36 / W * 100}%;top:${(420 / H * 100).toFixed(3)}%;width:${974 / W * 100}%;${fs(W, 20)}"><h2>Add a player</h2><form class="uiXFTForm"></form><div class="uiXFTStatus"></div></div>`);
+    app.insertBefore(wrap, app.firstChild.nextSibling);
+    const input = $('#friendName'), send = $('#sendFriend'), f = $('.uiXFTForm', wrap), add = $('#uiXFTAdd', wrap), addBtn = $('#uiXFTAddBtn', wrap);
+    input.className = 'uiXFTInput'; input.placeholder = "Friend's username"; input.setAttribute('aria-label', "Player's username");
+    send.className = 'uiXFTFind'; send.textContent = 'Find Player';
+    f.append(input, send); f.onsubmit = form.onsubmit; form.remove();
+    const err = $('#friendsError'); $('.uiXFTStatus', wrap).append(err);
+    const open = v => { add.hidden = !v; addBtn.setAttribute('aria-expanded', String(v)); if (v) input.focus(); };
+    addBtn.onclick = () => open(add.hidden);
+    new MutationObserver(() => { if (err.textContent.trim()) open(true); }).observe(err, { childList: true, characterData: true, subtree: true });
+    $$('[data-copy-name]', wrap).forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(data.me.username); B.toast('Username copied: ' + data.me.username); } catch { B.toast('Your username is ' + data.me.username); } });
+    const rec = $$('#app > details.panel').find(d => /recovery code/i.test(d.textContent));
+    if (rec) { rec.id = 'uiXRecovery'; rec.classList.add('uiXRecovery'); $('summary', rec)?.remove(); wrap.after(rec); const t = $('#uiXRecToggle', wrap); t.onclick = () => { rec.open = !rec.open; t.setAttribute('aria-expanded', String(rec.open)); if (rec.open) rec.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }; }
+    $('.uiXFTList', wrap).append(lists);
+    for (const el of [...app.children]) if (el !== wrap && el !== rec && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  }
+  // Every refresh: the count, and each friend as a row like the design (the game's own buttons keep working).
+  $('.uiXFTCount', wrap).textContent = data.friends.length;
+  for (const h of $$('h2', lists)) if (/^Your Friends/.test(h.textContent)) { h.classList.add('uiSr'); h.closest('section')?.classList.add('uiXFTFriends'); }
+  for (const row of $$('.uiXFTFriends .friendRow', lists)) {
+    if (row.classList.contains('uiXFTRow')) continue;
+    const name = $('strong', row)?.textContent || '', fr = data.friends.find(x => x.username === name); if (!fr) continue;
+    const trade = $('[data-trade-invite]', row), duel = $('[data-mode="duel"]', row), coop = $('[data-mode="coop"]', row);
+    const btns = document.createElement('div'); btns.className = 'uiXFTBtns';
+    for (const [b, k, label] of [[trade, 'trade', 'Trade'], [duel, 'duel', 'Battle Against'], [coop, 'coop', 'Battle Together']]) if (b) { b.className = 'uiXFTBtn uiXFTBtn-' + k; b.textContent = ''; b.setAttribute('aria-label', `${label} with ${name}`); btns.append(b); }
+    row.className = 'friendRow uiXFTRow';
+    row.replaceChildren();
+    row.insertAdjacentHTML('afterbegin', `<span class="uiXFTRowAva">${B.art(fr.pet)}</span><span class="uiXFTRowWho"><strong>${esc(name)}</strong><small class="${fr.online ? 'on' : ''}"><i></i>${fr.online ? 'Online' : 'Offline'}</small></span><span class="uiXFTRowLine" aria-hidden="true"></span>`);
+    row.append(btns);
+  }
+}
+
 /* ---------------------------------------------------------------- Card battle (mockup 1672 × 941) */
 // The painted arena and frames are the background; the game's own battle elements (fields, centre panel,
 // hand, piles, log, buttons) are moved into the painted spots. Runs on every battle render.
@@ -524,6 +581,24 @@ function battleExact() {
 }
 const battleRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1672).toFixed(4)); });
 
+/* ---------------------------------------------------------------- Card battle, portrait tablet (mockup 1045 × 1505) */
+function battleTab() {
+  const arena = $('.cardArena'); if (!arena || $('.uiXBattleTab', arena)) return;
+  const W = 1045, H = 1505;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXBTPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/battle-tab.webp', 'uiXBattleTab', `<button class="uiHot uiXBTArrow" data-dir="-1" style="${box(W, H)(12, 1342, 50, 1404)}" aria-label="Scroll hand left"></button><button class="uiHot uiXBTArrow" data-dir="1" style="${box(W, H)(998, 1342, 1036, 1404)}" aria-label="Scroll hand right"></button>`);
+  const host = $('.uiXBattleTab', wrap), stage = document.createElement('div'); stage.className = 'uiXBLayer'; host.append(stage);
+  for (const el of [...arena.children]) stage.append(el);
+  $$(':scope > details', stage).forEach((d, i) => d.classList.add(i ? 'uiXBLog' : 'uiXBDiscard'));
+  const retreat = $('.retreatPanel', stage), panel = $('.attackPanel', stage); if (retreat && panel) panel.append(retreat);
+  // Score only (the names are already above each side): "0 : 0" with the first-to / turn line under it.
+  const score = $('.battleBar > strong', stage); if (score) { const [a, b] = $$(':scope > b', score), small = $('small', score); if (a && b) score.replaceChildren(a, ' : ', b, ...(small ? [small] : [])); }
+  arena.append(wrap);
+  const z = () => host.style.setProperty('--z', (host.clientWidth / W).toFixed(4)); z(); battleTabRO.observe(host);
+  $$('.uiXBTArrow', wrap).forEach(b => b.onclick = () => { const row = $('.handRow', wrap); if (row) row.scrollBy({ left: +b.dataset.dir * row.clientWidth * .8, behavior: 'smooth' }); });
+}
+const battleTabRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1045).toFixed(4)); });
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
@@ -533,6 +608,7 @@ function onFrame() {
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
   if (['fusion', 'fuse'].includes(B.view) && !exact && $('.fusionPreview')) fusionNarrow();
   if (B.view === 'cardBattle' && exact) battleExact();
+  if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
   if (B.view === 'packs') queueMicrotask(() => { if (B.view !== 'packs') return; if (exact) packsExact(); else packsNarrow(); });
@@ -543,11 +619,11 @@ if (B && UI) {
   Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: wide });
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
-  window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
+  window.addEventListener('ember:friends', e => { if (B.view !== 'friends') return; if (wide()) { document.body.classList.add('uiExact'); friendsExact(e.detail); } else if (tabPortrait()) { document.body.classList.add('uiExact'); friendsTab(e.detail); } });
   window.addEventListener('ember:fusion', e => fusionResult(e.detail.creature));
   let wasWide = wide();
   let wasSplit = mapSplit();
-  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
