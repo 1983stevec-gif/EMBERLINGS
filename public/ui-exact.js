@@ -108,9 +108,7 @@ function map() {
   };
   const levels = r => { const reg = B.regions[r], out = []; for (let l = reg[1]; l <= reg[2]; l++) out.push(l); return out; };
   const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
-  const far = shownRegion >= 3;
   const mapInner = `
-   ${far ? `<div class="uiXSheet" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
    <svg class="uiXRoute" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${shownRegion > 0 ? route(shownRegion) : ''}</svg>
    ${levels(0).map(node).join('')}${shownRegion > 0 ? levels(shownRegion).map(node).join('') : ''}
    ${hot(p(170, 712, 410, 750), 'data-region="0"', 'Ember Meadows, levels 1 to 10')}${hot(p(745, 318, 1022, 384), 'data-region="1"', 'Crystalwood Forest, levels 11 to 25')}${hot(p(860, 725, 1032, 790), 'data-region="2"', 'Frozen Peaks, levels 26 to 45')}
@@ -531,6 +529,7 @@ const battleRO = new ResizeObserver(entries => { for (const e of entries) e.targ
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   lastRenderedView = B.view;
+  document.body.classList.toggle('uiMapOpen', B.view === 'map');
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
