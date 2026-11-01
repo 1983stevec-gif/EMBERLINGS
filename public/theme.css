@@ -1369,6 +1369,57 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
 .uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
 
+/* ---------- Mythling Index as a parchment field guide (deliberately unlike the blue card binder) ---------- */
+.fgBook{max-width:1240px;margin:8px auto 24px;padding:22px 26px 26px;border-radius:14px;background:radial-gradient(ellipse at 30% 0,#f7ecd0,#ead8ad 60%,#dcc28c);border:3px solid #7a5426;box-shadow:inset 0 0 60px #9a6e3355,0 0 0 6px #3a2614,0 18px 40px #000a;color:#3b2a16;font-family:'EB Garamond',Georgia,serif}
+.fgHead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:2px solid #8a6534;padding-bottom:12px;margin-bottom:16px}
+.fgKick{margin:0;font-family:Cinzel,Georgia,serif;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#8a5a22}
+.fgHead h1{margin:2px 0 4px;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(30px,4vw,46px);font-weight:700;color:#3b2410}
+.fgSub{margin:0;max-width:640px;font-size:17px;color:#5a4128}
+.fgCount{position:relative;display:flex;align-items:center;gap:10px;padding:10px 16px 16px;border:2px solid #8a6534;border-radius:10px;background:#f5e8c6}
+.fgCount b{font-family:'Cormorant Garamond',Georgia,serif;font-size:44px;line-height:1;color:#7a3b12;font-variant-numeric:lining-nums}
+.fgCount span{font-size:14px;line-height:1.2;color:#5a4128}
+.fgCount i{position:absolute;left:10px;right:10px;bottom:6px;height:5px;border-radius:9px;background:linear-gradient(90deg,#b5642a var(--p),#d6c193 var(--p))}
+.fgPages{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:22px;align-items:start}
+.fgGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fgEntry{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 10px;border:1px solid #a98250;border-radius:8px;background:#f7edd2;color:#3b2a16;cursor:pointer;font:inherit;box-shadow:0 2px 4px #6a4a2233;transition:transform .12s}
+.fgEntry:hover{transform:translateY(-2px);border-color:#7a5426}
+.fgEntry.on{border:2px solid #b5642a;background:#fff4d8;box-shadow:0 0 0 3px #b5642a33,0 4px 10px #6a4a2244}
+.fgEntry:focus-visible{outline:3px solid #7a3b12;outline-offset:2px}
+.fgNo{font-family:Cinzel,Georgia,serif;font-size:11px;letter-spacing:.08em;color:#8a5a22;font-variant-numeric:lining-nums}
+.fgPic{position:relative;width:100%;aspect-ratio:1.2;overflow:hidden;border-radius:50% / 42%;background:radial-gradient(circle,#fff8e4,#e6d3a4)}
+.fgPic .mythlingArt,.fgPlate .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.fgPic .mythlingArt img,.fgPlate .mythlingArt img{object-fit:cover!important}
+.fgEntry.seen .fgPic{filter:sepia(.25) saturate(.9)}
+.fgEntry.unseen .fgPic .mythlingArt,.fgRight.unknown .fgPlate .mythlingArt{filter:brightness(0) opacity(.55)}
+.fgName{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:17px;line-height:1.1;text-align:center}
+.fgEntry.unseen .fgName{color:#9a8462;letter-spacing:.2em}
+.fgRight{position:sticky;top:12px;padding:18px 20px 20px;border:2px solid #8a6534;border-radius:12px;background:linear-gradient(180deg,#fbf2da,#f1e2bb);box-shadow:inset 0 0 30px #b08a5033}
+.fgNoBig{margin:0;font-family:Cinzel,Georgia,serif;font-size:14px;letter-spacing:.2em;color:#8a5a22}
+.fgRight h2{margin:2px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:700;color:#3b2410}
+.fgAnimal{margin:0 0 10px;font-style:italic;font-size:18px;color:#6a4a28}
+.fgPlate{position:relative;width:100%;aspect-ratio:1.35;overflow:hidden;border:6px double #8a6534;border-radius:6px;background:#e6d3a4}
+.fgFacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 8px}
+.fgFacts div{padding:6px 10px;border-left:3px solid #b5642a;background:#f7ecd0}
+.fgFacts dt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8a5a22}
+.fgFacts dd{margin:2px 0 0;display:flex;align-items:center;gap:.35em;font-size:19px;font-weight:600;color:#2e2010;font-variant-numeric:lining-nums}
+.fgNote{margin:8px 0;font-size:17px;color:#4a3420}
+.fgRight h3{margin:12px 0 4px;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:#3b2410}
+.fgMoves{list-style:none;margin:0;padding:0}
+.fgMoves li{display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px dashed #a98250;font-size:17px}
+.fgMoves b{font-variant-numeric:lining-nums;color:#7a3b12}
+.fgMeta{margin:8px 0 0;font-size:16px;color:#4a3420}.fgMeta b{color:#7a3b12;font-variant-numeric:lining-nums}
+.fgLinks{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:900px){.fgPages{grid-template-columns:1fr}.fgRight{position:static}.fgGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.fgHead{flex-wrap:wrap}}
+@media(max-width:520px){.fgBook{padding:14px}.fgGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Getting-started guide: progress dots and a tip line */
+.tourDots{display:flex;gap:5px;margin:8px 0 2px}
+.tourDots i{flex:1;height:5px;border-radius:9px;background:#ffffff26}
+.tourDots i.done{background:#c9a35a}.tourDots i.on{background:#ffd27a;box-shadow:0 0 6px #ffd27a}
+.tourBubble p b{color:#ffd98a}
+.tourBubble .tourTip{margin-top:-4px!important;padding:8px 10px;border-radius:8px;background:#ffffff12;font-size:15px!important;color:#cfd8f2!important}
+.fgEntry.unseen .fgPic .mythlingArt{filter:none!important;opacity:0}
+.fgEntry.unseen .fgPic{background:repeating-linear-gradient(45deg,#e3cfa0 0 6px,#dcc694 6px 12px);box-shadow:inset 0 0 0 2px #b0905a}
+.fgEntry.unseen .fgPic::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(28px,3vw,44px);color:#8a6534}
 /* ---------- Training centre (Attack Academy design) ---------- */
 .uiXAcademy>*{position:absolute}
 .uiXATitle{margin:0;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;line-height:1.05;white-space:nowrap;background:linear-gradient(180deg,#fff3c8,#f2c96a 55%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000a)}
