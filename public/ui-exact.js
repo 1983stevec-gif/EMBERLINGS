@@ -2,11 +2,14 @@
 // The cleaned mockup is the background; live values, our cards and our art are placed at the mockup's pixel positions.
 // Below EXACT_MIN_WIDTH the stacked layouts in ui.js are used instead.
 const B = window.EmberBridge, UI = window.EmberUI;
-const EXACT_MIN_WIDTH = 1000;
+const EXACT_MIN_WIDTH = 760;   // tablets (iPad portrait is 768 wide) get the same painted layouts as desktop
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
-const wide = () => innerWidth >= EXACT_MIN_WIDTH;
+// Landscape tablets (and anything 1000+ wide) get the painted layouts; portrait tablets get the full-height stacked layouts,
+// because a 16:10 painting on a tall screen would only fill the top third.
+// Adventure HQ keeps the painted map on every tablet, as requested.
+const wide = () => innerWidth >= 1000 || (innerWidth >= EXACT_MIN_WIDTH && (innerWidth > innerHeight || B.view === 'map'));
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 // Canvas helpers: positions are given in mockup pixels and converted to percentages / container units.
