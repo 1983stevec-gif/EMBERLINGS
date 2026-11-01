@@ -1,5 +1,5 @@
 # EMBERLINGS — handoff for another computer
-Updated October 31, 2026. Current live version: 46.
+Updated October 31, 2026. Current live version: 47.
 
 ## Play
 https://mythlings-adventure.proud-book-0456.chatgpt.site/
@@ -30,8 +30,8 @@ Clone the GitHub repository on the other computer with git clone https://github.
 Continue my existing EMBERLINGS game from this project. Read this handoff and inspect the current code before changing anything. Preserve gameplay, player progress, inventory, coins, Vault upgrades, multiplayer and all artwork. Keep changes quick and use only a few relevant checks plus the required build. Use the existing Sites project for publication, not a new project.
 
 Sites project ID: appgprj_6ade72f8031081918f304ef6bf4af0fb
-Live version: 46
-Source commit: 212781890136be9d59ee13bbcefc1d09d64c703e (exact GitHub main fff84a2 content; Sites ancestry retained)
+Live version: 47
+Source commit: 69ab0dbba58a54a31ec5486e7f1dddb86dfa535a (PR #19 merge)
 Save key: mythlings-playable-v1 — NEVER rename or clear it.
 
 Main implementation: game/index.html
@@ -80,3 +80,20 @@ Published version 46 publicly to https://mythlings-adventure.proud-book-0456.cha
 - Step 6 checks 1-4: NOT VERIFIED visually. Browser control timed out; public URL open was queued. Welcome art/logo, all painted screens/header, 768-1199px bottom picture menu/gold selection, and pack shuffle/reveal require browser review.
 - Step 6 check 5: API checks PASS; cross-browser UI and game-save loading NOT VERIFIED.
 - Step 6 check 6: existing-player coins/cards/progress NOT VERIFIED on their device. No existing player data was cleared or modified; save key unchanged; focused preservation checks pass.
+
+## Publish result - October 31, 2026: PR #19
+
+PR #19 merged with user approval. Published version 47 from exact main commit 69ab0dbba58a54a31ec5486e7f1dddb86dfa535a to https://mythlings-adventure.proud-book-0456.chatgpt.site/. Public audience preserved. No additional gameplay or artwork changes.
+
+Free accounts (username + password), cloud save under Account, and a level path through 100 now exist. Save key remains mythlings-playable-v1.
+
+- npm run install:ci and npm run build: PASS.
+- Live migrations 0006 and 0007 already applied; both skipped. title, password_hash and cloud_saves verified before publish.
+- Live browser at 820x1180: painted Adventure HQ and burning-logo assets loaded; flame CSS animations uiBurn/uiBurn2/uiFlick active. Full-width portrait map, quest/deck panels and bottom journey bar verified.
+- Five bottom picture buttons and gold selected tile: PASS.
+- Home Your adventure starts here cards and working Login & Password route: PASS.
+- Fusion Lab printed cards: PASS.
+- Profile Log out: PASS.
+- Account screen reports a cloud save. Password setup, independent-session login and exact save retrieval via API: PASS on isolated test account QA_mvx6f788; sessions logged out. Full second-browser game-save import remains NOT VERIFIED; no existing player password changed.
+- Existing browser player tero: 400 coins before and after reload; collection remains visible with five cards. No claim of exhaustive preservation audit for all players.
+- Full visual coverage of every painted screen not performed. Tablet viewport override reset after checks.
