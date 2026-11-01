@@ -8,7 +8,7 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 
 ## 1. Get the latest code
 - Repository: https://github.com/1983stevec-gif/EMBERLINGS (branch `main`).
-- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #17 from 1983stevec-gif/tablet-menu" or later.
+- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #28 from 1983stevec-gif/trade-design" or later.
 - Read `HANDOFF.md` and `.openai/hosting.json` before publishing.
 
 ## 2. Rules (from HANDOFF.md, do not break)
@@ -17,37 +17,31 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 - Get fresh credentials through the Sites tools. Never put tokens in code, Git, handoff files or chat.
 - Do not commit credentials, browser saves, local databases or `node_modules`.
 
-## 3. Apply the two new database migrations
-The live D1 database needs these before the new code goes live, or sign-in, cloud save and titles will fail:
-
-| File | What it does |
-|---|---|
-| `drizzle/0006_zippy_guardian.sql` | `ALTER TABLE players ADD title text;` |
-| `drizzle/0007_easy_molecule_man.sql` | adds `players.password_hash` and creates the `cloud_saves` table |
-
-Use the same method that applied migrations 0000 to 0005 on the live site. Both are additive only: no existing rows or columns are changed or deleted. If 0006 or 0007 is already applied, skip it. Don't run it twice.
+## 3. Database
+No new migrations in this release. Migrations 0006 and 0007 should already be applied on the live site; if either is missing, apply it once using the same method as before. Multi-card trades reuse the existing `host_offer` / `guest_offer` columns, and old single-card offers still work.
 
 ## 4. Build and check
 ```
 npm run install:ci
 npm run build
-npm test
+node tests/trades-server.mjs
+node tests/equip-best.mjs
 ```
-The build must succeed. Fix only real build errors; don't rewrite features.
+The build and these two tests must pass. Some older tests (dragon-pack, cards-client, cards-server, cards, new-six, pocket-client, short-decks) already failed before this release; don't rewrite features to fix them.
 
 ## 5. Publish
 Follow the "Publishing" section of `HANDOFF.md`: use the Sites source helper to prepare, push and package the exact source and build output, then `save_site_version` and `deploy_site_version`.
 
 ## 6. Check the live site
 Open the public link and confirm:
-1. The welcome/username screen shows the new art and the animated burning logo.
-2. Home, Packs, My Binder (Card Vault, Mutation Vault, Fusion Lab), Adventure HQ map, Friends and Battle all show the new painted screens and the shared header.
-3. On a tablet-sized window (about 768–1199px wide), the five-tile picture menu appears at the bottom and the selected tile is gold.
-4. Opening a pack plays the card-shuffle animation, then reveals the cards.
-5. Account & cloud save: setting a password, signing in on another browser and loading the cloud save all work (this confirms migrations 0006 and 0007).
-6. An existing player's coins, cards and progress are still there.
+1. Desktop: the intro guide has large, readable text and walks a new player through 12 simple steps; Packs and Friends fit the screen.
+2. Training (Attack Academy) and Battle Rules show the new painted designs.
+3. Mythling Index looks like a parchment field guide, not the card inventory.
+4. Battle: knocked-out Mythlings show a clear "Knocked out" banner; the hand has big ‹ › arrows and swipes on tablet; End Turn is a button without "[Space]"; losing shows a "Defeated!" screen with tips, winning shows a Victory screen with rewards.
+5. Friend Trading and Trade Room match the new designs; you can offer up to 5 Mythlings with + between them, and "Choose a Mythling" shows real cards grouped by species.
+6. An existing player's coins, cards, levels and progress are still there.
 
 ## 7. Update the handoff
-Add the new publish date and result to `HANDOFF.md`. Replace the old line saying there's no cloud save: there are now free accounts (username + password) with cloud save, under Account in the user menu. Commit and push that change to GitHub.
+Add the new publish date and result to `HANDOFF.md`. Commit and push that change to GitHub.
 
-Report back: the live URL, the deployed version, whether both migrations ran, and the result of each check in step 6.
+Report back: the live URL, the deployed version, and the result of each check in step 6.
