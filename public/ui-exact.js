@@ -88,7 +88,7 @@ function levelPos(l) {
   const pts = ISLAND_PATHS[r]; const n = reg[2] - reg[1] + 1;
   return r >= 3 ? pts[i % pts.length] : along(pts, n)[i];
 }
-let selected = null, shownRegion = null;
+let selected = null, shownRegion = null, lastRenderedView = null;
 const regionOf = l => B.regions.findIndex(r => l >= r[1] && l <= r[2]);
 const REGION_ART = [0, 5, 14, 3, 7];
 const REGION_TEXT = ['Your journey begins in the meadows.', 'Crystal light hides clever rivals.', 'Icy winds test every deck.', 'Storms crackle over the valley.', 'Only the bravest enter the dark.'];
@@ -96,7 +96,11 @@ function questName(l) { return window.EmberUI.questName ? window.EmberUI.questNa
 function map() {
   if (!wide()) return UI.baseMap();
   const W = 1586, H = 992, p = box(W, H), max = B.limit(), cleared = B.state.cleared || [];
-  if (!selected) selected = Math.min(100, max);
+  // Enter HQ on the illustrated islands; later regions open only when requested.
+  if (!selected || lastRenderedView !== 'map') {
+    selected = Math.min(45, max);
+    shownRegion = regionOf(selected);
+  }
   if (shownRegion === null) shownRegion = regionOf(selected);
   const node = l => {
     const [x, y] = levelPos(l), done = cleared.includes(l), locked = l > max && !done, boss = !!B.bosses[l], s = boss ? 44 : 38;
@@ -526,6 +530,7 @@ const battleRO = new ResizeObserver(entries => { for (const e of entries) e.targ
 
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
+  lastRenderedView = B.view;
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
   document.body.classList.toggle('uiExact', exact);
   if (exact && B.view === 'vault') vaultExact();
@@ -540,6 +545,9 @@ function onFrame() {
   if (exact) { const c = $('.uiX'); if (c) ro.observe(c); fitCards(); const u = $('#uiUser'); if (u && !u.dataset.bound) { u.dataset.bound = '1'; } }
 }
 if (B && UI) {
+  document.addEventListener('click', event => {
+    if (event.target.closest('[data-go="map"]')) lastRenderedView = null;
+  }, true);
   Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: wide });
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
