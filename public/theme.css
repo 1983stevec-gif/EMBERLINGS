@@ -1146,6 +1146,3 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{font-size:.62em!important;height:auto!important;max-height:1.8em;overflow:hidden}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts>*{flex:none}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts svg{width:1.4em;height:1.4em}
-
-/* Keep achievement popups from covering Adventure HQ. Unlocks remain in Achievements. */
-body.uiMapOpen .fxBanner{display:none}
