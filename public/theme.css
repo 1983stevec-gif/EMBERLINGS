@@ -1368,3 +1368,37 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXMLPrice.packs{font-family:"Cormorant Garamond",Georgia,serif;color:#f3d48a;font-size:1.15em}
 .uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
 .uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
+
+/* ---------- Training centre (Attack Academy design) ---------- */
+.uiXAcademy>*{position:absolute}
+.uiXATitle{margin:0;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;line-height:1.05;white-space:nowrap;background:linear-gradient(180deg,#fff3c8,#f2c96a 55%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000a)}
+.uiXATag{font-family:'EB Garamond',Georgia,serif!important;color:#fbf3e2;white-space:nowrap;text-shadow:0 1px 3px #000}
+.uiXAPass{font-family:'EB Garamond',Georgia,serif!important;color:#cdd5ea;white-space:nowrap;font-variant-numeric:lining-nums}
+.uiXATile{z-index:1;padding:0;margin:0;border:1px solid #33467e;border-radius:6px;background:linear-gradient(180deg,#0f1a3d,#0a1230);cursor:pointer;box-shadow:inset 0 0 0 1px #0007}
+.uiXATile:hover{border-color:#8a74c8}
+.uiXATile.sel{border:2px solid #f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 22px #f2b44a77}
+.uiXATile:focus-visible{outline:3px solid #ffd27a;outline-offset:2px}
+.uiXAClip{z-index:2;overflow:hidden;border-radius:6px;pointer-events:none;box-shadow:0 4px 10px #000a}
+.uiXAClip>.uiFit{position:absolute}
+.uiXAFoot{position:absolute;left:0;right:0;bottom:0;height:15%;display:flex;align-items:center;gap:.5em;padding:0 .9em;background:linear-gradient(180deg,#f6eed8,#eadfc0);border-top:1px solid #cdb98a;color:#2b3446;font-family:system-ui,'Segoe UI',sans-serif}
+.uiXAFoot .elementIcon{font-size:1.25em}
+.uiXAFoot b{font-weight:700}.uiXAFoot i{width:1px;height:1.1em;background:#6b6656;margin:0 .35em}
+.uiXAFoot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiXACheck{z-index:3;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4a3a1c,#1c140a);border:2px solid #f2c45f;color:#ffd27a;font-weight:900;font-size:calc(18*100cqw/1536);box-shadow:0 0 10px #f2b44a88}
+.uiXAPager{z-index:3;display:flex;align-items:center;justify-content:flex-end;gap:.5em;padding:0 .4em;border-radius:99px;background:#0d1534;color:#f3dcae;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-variant-numeric:lining-nums}
+.uiXAPager button{width:1.8em;height:1.8em;border-radius:50%;border:1px solid #c9a35a;background:#0b1022;color:#f3dcae;cursor:pointer;font-size:1em;line-height:1}
+.uiXAPager button:disabled{opacity:.35;cursor:default}
+.uiXAPortrait{z-index:2;overflow:hidden;border-radius:50%}
+.uiXAPortrait .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXAPortrait .mythlingArt img{object-fit:cover!important}
+.uiXAName{text-align:center;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;background:linear-gradient(180deg,#fff3c8,#f2c96a 60%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000a);line-height:1.15}
+.uiXALevel{display:flex;align-items:center;justify-content:center;gap:.6em;font-family:'EB Garamond',Georgia,serif!important;color:#f3ead8;font-variant-numeric:lining-nums}
+.uiXALevel .elementIcon{font-size:1.2em}.uiXALevel i{font-style:normal;color:#cdd5ea}
+.uiXAStep{display:flex;flex-direction:column;gap:.15em;font-family:'EB Garamond',Georgia,serif!important;color:#dfe5f6;line-height:1.2}
+.uiXAStep b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1.3em;color:#fff4e0}
+.uiXAStep span{max-width:15em}
+.uiXAFoot{z-index:3}
+.uiXAName,.uiXALevel{justify-content:center}
+.uiXAStep{align-items:flex-start!important;justify-content:center}
+.uiXATitle,.uiXAName{background:linear-gradient(180deg,#fff0b8 20%,#f0c25c 60%,#c5862a 85%)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.uiXATitle{background:linear-gradient(180deg,#ffe9a6 10%,#efbd55 50%,#b97a22 90%)!important;-webkit-background-clip:text!important;background-clip:text!important}.uiXAStep span{max-width:17em}
