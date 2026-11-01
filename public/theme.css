@@ -1368,3 +1368,24 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXMLPrice.packs{font-family:"Cormorant Garamond",Georgia,serif;color:#f3d48a;font-size:1.15em}
 .uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
 .uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
+
+/* ---------- Battle Rules (design) ---------- */
+.uiXRules>*{position:absolute}
+.uiXRTab{z-index:3;border-radius:6px;border:1px solid transparent;background:transparent;color:transparent;cursor:pointer;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700}
+.uiXRulesPage:not([data-tab="quick"]) .uiXRTab{color:#e6ecff;background:linear-gradient(180deg,#1d2c5e,#13204a);border-color:#4b5f9e}
+.uiXRulesPage:not([data-tab="quick"]) .uiXRTab.on{color:#2a1405;background:linear-gradient(180deg,#ffd982,#e5a13a 60%,#c8741a);border-color:#ffe7b0;box-shadow:0 0 12px #f2b44a77}
+.uiXRTab:focus-visible{outline:3px solid #ffd27a;outline-offset:2px}
+.uiXRCond{justify-content:center;text-align:center;white-space:normal;line-height:1.25;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif!important}
+.uiXRPanel{z-index:4;overflow-y:auto;padding:1.4em 2em;border:2px solid #c9a35a;border-radius:10px;background:linear-gradient(180deg,#121b3ef7,#0b1230fa);box-shadow:0 10px 30px #000c;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif;scrollbar-width:thin;scrollbar-color:#c9a35a88 transparent}
+.uiXRPanel h2{margin:.9em 0 .3em;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6em;color:#f3d48a}
+.uiXRPanel h2:first-child{margin-top:0}
+.uiXRPanel p{margin:.3em 0 .6em;line-height:1.5;max-width:60em}
+.uiXRulesPage[data-tab="full"] .uiXRConds,.uiXRulesPage[data-tab="cond"] .uiXRFull{display:none}
+.uiXRConds ul{list-style:none;margin:.6em 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(16em,1fr));gap:.8em}
+.uiXRConds li{display:flex;gap:.8em;align-items:flex-start;padding:.8em 1em;border:1px solid #3a4b82;border-radius:8px;background:#ffffff08}
+.uiXRConds li>span{font-size:1.8em;line-height:1}
+.uiXRConds b{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3em;color:#fff4e0}
+.uiXRConds li p{margin:.2em 0 0}
+.uiXRNote{padding:.7em 1em;border-left:3px solid #c9a35a;background:#ffffff0a}
+.uiXRPanel .muted{color:#9aa6c8}
+.uiXRPanel{background:linear-gradient(180deg,#121b3e,#0b1230)!important}
