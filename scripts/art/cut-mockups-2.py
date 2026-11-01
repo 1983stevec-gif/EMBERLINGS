@@ -131,3 +131,32 @@ if hc is not None:
         (x0, x1), (y0, y1) = XS[i % 4], YS[i // 4]
         save(hc[y0:y1, x0:x1], f'home-card-{n}.webp', 90)
     save(hc[52:128, 205:1335], 'home-cards-title.webp', 90)
+
+# ---------- Card battle (22.webp, 1672x941): arena and frames kept; every live value, card and text removed
+bt = cv2.imread(D + '22.webp')
+if bt is not None:
+    def inp4(img, rects, r=9, b=6):
+        mk = np.zeros(img.shape[:2], np.uint8)
+        for (x0, y0, x1, y1) in rects: mk[y0:y1, x0:x1] = 255
+        o = cv2.inpaint(img, mk, r, cv2.INPAINT_TELEA); bl = cv2.GaussianBlur(o, (0, 0), b)
+        return np.where(mk[..., None] > 0, bl, o)
+    t = inp4(bt, [
+        (168, 70, 264, 108), (688, 68, 990, 110), (1426, 68, 1500, 108),            # concede, score, timer
+        (805, 131, 870, 149), (600, 152, 1072, 186), (630, 186, 1048, 206),          # quest text, title, coin line
+        (392, 158, 482, 182), (330, 300, 515, 352),                                  # my name, choose-an-active text
+        (360, 526, 512, 551), (1180, 548, 1340, 575),                                # pile counts
+        (1140, 154, 1362, 182), (1148, 193, 1352, 452), (1150, 452, 1350, 486),      # opponent name, card, HP
+        (734, 238, 942, 532),                                                        # centre panel contents
+        (150, 606, 1522, 884), (198, 898, 470, 924),                                 # hand tray contents, discard text
+    ])
+    # panel interiors: plain navy (vertical gradient sampled just inside each frame) instead of blurred ghosts
+    rng = np.random.default_rng(3)
+    for (x0, y0, x1, y1) in [(734, 238, 942, 532), (150, 606, 1522, 884), (1148, 193, 1352, 452)]:
+        top = np.median(bt[y0 - 4:y0, x0:x1].reshape(-1, 3), axis=0); bot = np.median(bt[y1:y1 + 4, x0:x1].reshape(-1, 3), axis=0)
+        if (x0, y0) == (1148, 193):
+            top = np.median(bt[150:160, 1100:1400].reshape(-1, 3), axis=0); bot = np.median(bt[470:480, 1100:1400].reshape(-1, 3), axis=0)
+        k = np.linspace(0, 1, y1 - y0)[:, None, None]
+        g = top * (1 - k) + bot * k + rng.normal(0, 2.2, (y1 - y0, x1 - x0, 1))
+        t[y0:y1, x0:x1] = np.clip(np.broadcast_to(g, (y1 - y0, x1 - x0, 3)), 0, 255).astype(np.uint8)
+        e = t[y0 - 3:y1 + 3, x0 - 3:x1 + 3]; t[y0 - 3:y1 + 3, x0 - 3:x1 + 3] = cv2.GaussianBlur(e, (0, 0), 1.5)
+    save(t, 'battle.webp', 90)
