@@ -91,7 +91,7 @@ function homeCards() {
    <div class="uiHomeCardGrid features">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" data-go="${go}" aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
 }
 
-/* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown 700–1199 px wide. */
+/* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown on touch screens 700–1199 px wide (desktop windows keep the painted header). */
 function tabletMenu() {
   if ($('.uiTabMenu')) $('.uiTabMenu').remove();
   const v = B.view, nv = ['index', 'decks', 'album', 'mutationBook'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
