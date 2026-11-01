@@ -27,7 +27,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 // Tablet layouts are for touch screens only, so a narrow desktop or laptop window keeps the desktop designs.
 const touchTablet = () => matchMedia('(pointer:coarse)').matches;
 const mapSplit = () => touchTablet() && innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505], uiXAcademy: [48, 956] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505], uiXRules: [58, 1024], uiXAcademy: [48, 956] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -601,6 +601,35 @@ function battleTab() {
 }
 const battleTabRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1045).toFixed(4)); });
 
+/* ---------------------------------------------------------------- Battle Rules (mockup 1536 × 1024) */
+// Quick start is the design itself. Full rules (the game's own text) and Special conditions open in a panel
+// over the content area. Three condition lines in the design did not match the rules and are drawn correctly.
+const CONDITIONS = [['☠', 'Poison', 'Deals 10 damage between turns.'], ['🔥', 'Burn', 'Deals 20 damage between turns, then a coin flip may cure it.'], ['💤', 'Sleep', 'Cannot attack or retreat. A coin flip between turns may wake it.'], ['⚡', 'Paralysis', 'Cannot attack or retreat until its player’s turn ends.'], ['🌀', 'Confusion', 'Flip a coin before attacking. Tails: the attack fails and it takes 30 damage.']];
+let rulesTab = 'quick';
+function rulesExact() {
+  const app = $('#app'), sections = $$('#app > section.panel'); if (!sections.length || $('.uiXRules')) return;
+  const W = 1536, H = 1024, p = box(W, H);
+  const full = sections.map(sec => sec.innerHTML).join('');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXRulesPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/rules.webp', 'uiXRules', `
+   <h1 class="uiSr">Battle Rules</h1>
+   ${[['quick', 38, 'Quick start'], ['full', 276, 'Full rules'], ['cond', 512, 'Special conditions']].map(([id, x, t]) => `<button type="button" class="uiXRTab" data-rtab="${id}" style="${p(x, 182, x + 226, 230)};${fs(W, 20)}">${t}</button>`).join('')}
+   ${text(p(672, 906, 818, 946), W, 13.5, 'uiXRCond', 'Cannot attack or retreat;<br>a coin flip may wake it.')}
+   ${text(p(834, 906, 992, 946), W, 13.5, 'uiXRCond', 'Cannot attack or retreat<br>until its turn ends.')}
+   ${text(p(1020, 906, 1184, 946), W, 13.5, 'uiXRCond', 'Coin before attacking;<br>tails: 30 damage to itself.')}
+   ${hot(p(1252, 866, 1492, 902), 'data-rtab="cond"', 'View condition details')}
+   ${hot(p(34, 962, 276, 1012), 'data-go="decks"', 'Build Deck')}${hot(p(292, 962, 546, 1012), 'data-go="map"', 'Adventure')}
+   <div class="uiXRPanel" style="${p(22, 242, 1516, 950)};${fs(W, 17)}" hidden><div class="uiXRFull">${full}</div>
+    <div class="uiXRConds"><h2>Special conditions</h2><p>A Mythling hit by a special condition keeps it until it is cured, retreats, evolves or is knocked out. Retreating clears every condition.</p>
+     <ul>${CONDITIONS.map(([i, n, d]) => `<li><span>${i}</span><div><b>${n}</b><p>${d}</p></div></li>`).join('')}</ul>
+     <p class="uiXRNote">Sleep, Paralysis and Confusion replace each other. Poison and Burn can be added on top of them. A Clearwater Charm or Meadow Medic Trainer removes all conditions.</p></div></div>`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  const show = t => { rulesTab = t; wrap.dataset.tab = t; $('.uiXRPanel', wrap).hidden = t === 'quick'; $$('.uiXRTab', wrap).forEach(b => { b.classList.toggle('on', b.dataset.rtab === t); b.setAttribute('aria-pressed', String(b.dataset.rtab === t)); }); $('.uiXRPanel', wrap).scrollTop = 0; };
+  $$('[data-rtab]', wrap).forEach(b => b.onclick = () => show(b.dataset.rtab));
+  show(rulesTab); B.bind();
+}
+
 /* ---------------------------------------------------------------- Training centres (Attack Academy mockup 1536 × 1024) */
 // The game picks a random centre; the design is used for all five, with each centre's title, tagline and first steps.
 const CENTRES = {
@@ -664,6 +693,7 @@ function onFrame() {
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
   if (['fusion', 'fuse'].includes(B.view) && !exact && $('.fusionPreview')) fusionNarrow();
   if (B.view === 'cardBattle' && exact) battleExact();
+  if (B.view === 'rules' && wide() && $('#app > section.panel')) { document.body.classList.add('uiExact'); rulesExact(); }
   if (B.view === 'training' && wide() && $('[data-practice-pet]')) { document.body.classList.add('uiExact'); academyExact(); }
   if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
