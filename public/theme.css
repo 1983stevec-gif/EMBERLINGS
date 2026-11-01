@@ -1107,3 +1107,42 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .uiFAbStats dt{font-size:11px;color:#c8d1ec}.uiFAbStats dd{margin:2px 0 0;font-size:20px;font-weight:700;font-variant-numeric:lining-nums}
 @media(prefers-reduced-motion:reduce){.uiFResult.uiFReveal,.uiFAbility,.uiFAbBox,.uiFAbMove b{animation:none}}
 .hero.center:has(.uiFResult){display:flex;flex-direction:column;align-items:center;text-align:center}
+
+/* ---------- Level path: extra moves and special abilities on printed cards ---------- */
+.printedMoves.manyMoves{gap:3px}
+.printedMoves.manyMoves .printedMove{font-size:8px}
+.printedMoves.manyMoves .printedMove>strong{font-size:12px}
+.printedMoves.moves5 .printedMove,.printedMoves.moves6 .printedMove{font-size:7px;line-height:1.1}
+.printedMoves.moves5 .printedMove>strong,.printedMoves.moves6 .printedMove>strong{font-size:10.5px}
+.printCard:has(.moves3,.moves4) .cardArt{aspect-ratio:1.75!important;min-height:0!important}
+.printCard:has(.moves5,.moves6) .cardArt{aspect-ratio:2.3!important;min-height:0!important}
+.printCard:has(.manyMoves) .printedMoves{flex:1 1 auto;justify-content:space-evenly}
+.printCard:has(.manyMoves) .cardSpecies{margin-bottom:2px}
+.cardSpecial{margin:2px 0 3px;padding:2px 6px;border-radius:99px;font-size:7.5px;font-weight:800;letter-spacing:.03em;text-align:center;color:#06263a;background:linear-gradient(90deg,#9be7ff,#d7f6ff)}
+.cardSpecial.veryRare{color:#3a0638;background:linear-gradient(90deg,#ff9bf0,#ffd6fa,#ffe28a);box-shadow:0 0 6px #ff8af0aa}
+/* Level-up popup (shares the fusion popup frame) */
+.uiLvNum{display:inline-block;margin-left:6px;padding:2px 10px;border-radius:99px;background:var(--glow);color:#1a1205;font-family:system-ui,'Segoe UI',sans-serif;font-size:14px;font-weight:800;vertical-align:middle}
+.uiLvList{list-style:none;margin:14px 0 10px;padding:0;display:grid;gap:8px;text-align:left}
+.uiLvList li{padding:9px 12px;border-radius:10px;background:#ffffff0d;border:1px solid #ffffff1a}
+.uiLvList li strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px}
+.uiLvList li span{font-size:12.5px;color:#c8d1ec}
+.uiLvList li.move{border-color:#ffcf6a88}.uiLvList li.ability{border-color:#9fe3a388}
+.uiLvList li.rare{border-color:#7fd8ff;box-shadow:0 0 14px #7fd8ff55}.uiLvList li.veryRare{border-color:#ff8af0;box-shadow:0 0 18px #ff8af077}
+.uiLvList li.rare strong{color:#9be7ff}.uiLvList li.veryRare strong{color:#ffb3f5}
+.uiLvCard{width:150px;height:216px;margin:6px auto 14px;position:relative}
+.uiLvCardIn{position:absolute;left:0;top:0;width:230px;transform:scale(.652);transform-origin:0 0}
+.uiLvCardIn .mythCard{width:230px;max-width:none;margin:0}
+.uiLvUp .uiFAbBox{width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto}
+.uiLvList:has(li:nth-child(4)){grid-template-columns:1fr 1fr}
+.uiLvList:has(li:nth-child(4)) li strong{font-size:17px}
+/* Battle: Mythlings with level moves get a compact two-column attack list */
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune{display:inline-grid!important;width:calc(50% - 4px)!important;margin:2px!important;padding:.35em .5em!important;min-height:0!important;height:auto!important;vertical-align:top;grid-template-columns:1fr auto!important;grid-template-rows:auto auto!important;grid-template-areas:"name name" "cost power"!important;gap:.1em .3em!important;align-items:center;text-align:left}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveGlyph{display:none!important}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveName{grid-area:name;font-size:.92em!important;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveName .keycap{display:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .movePower{grid-area:power;font-size:1.35em!important;line-height:1}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{grid-area:cost;display:flex;gap:1px}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune small,.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune>span:not([class]){display:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{font-size:.62em!important;height:auto!important;max-height:1.8em;overflow:hidden}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts>*{flex:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts svg{width:1.4em;height:1.4em}

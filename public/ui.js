@@ -69,13 +69,14 @@ function userMenu(anchor) {
   m.innerHTML = `${e.title ? `<p class="uiMenuTitle">🏷 ${esc(e.title)}</p>` : ''}
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
-   <hr><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button><button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
+   <hr>${B.state.playerUsername ? `<p class="uiMenuTitle">Logged in as ${esc(B.state.playerUsername)}</p><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Account &amp; password</button><button role="menuitem" id="uiLogoutGo"><span aria-hidden="true">🚪</span> Log out</button>` : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button>'}<button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
    <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
     if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
+    if (b.id === 'uiLogoutGo') { m.remove(); window.EmberCloud?.logout(); return; }
     if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
