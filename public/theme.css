@@ -1383,3 +1383,230 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .tradeAddSlot{width:132px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed #c9a35a;border-radius:12px;background:#0d1534;color:#f3dcae;font:inherit;font-weight:700;cursor:pointer}
 .tradeAddSlot span{font-size:46px;line-height:1;color:#ffd27a}
 .tradeAddSlot:hover{background:#15204a;border-style:solid}
+/* ---------- Defeat screen ---------- */
+.uiDefeat{max-width:900px;margin:16px auto;padding:28px 28px 30px!important;border:2px solid #b2453a!important;border-radius:16px!important;background:radial-gradient(ellipse at 50% 0,#4a1c24,#1a1530 55%,#0e1430)!important;box-shadow:0 0 40px #b2453a44,0 18px 40px #000a!important;text-align:center;color:#f2e9d6}
+.uiDefKick{margin:0;font-family:Cinzel,Georgia,serif;letter-spacing:.24em;text-transform:uppercase;font-size:14px;color:#e8a99e}
+.uiDefTitle{margin:6px 0 6px!important;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;font-size:clamp(46px,7vw,72px)!important;line-height:1;color:#ff8a72!important;text-shadow:0 0 24px #ff5a3f66,0 3px 0 #3a0c10}
+.uiDefWhy{margin:4px 0;font-size:20px;color:#fff1e6}
+.uiDefSafe{margin:2px 0 14px;font-size:16px;color:#c8d1ec}
+.uiDefActions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.uiDefActions .button{font-size:18px;padding:12px 22px}
+.uiDefTipsHead{margin:26px 0 10px;font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;color:#f3d48a}
+.uiDefTips{list-style:none;margin:0;padding:0;display:grid;gap:10px;text-align:left}
+.uiDefTips li{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 16px;border:1px solid #3a4b82;border-radius:10px;background:#0d1534cc}
+.uiDefIco{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a4f8f,#1a2650);border:1px solid #c9a35a;font-size:22px}
+.uiDefTips b{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:#fff4e0}
+.uiDefTips p{margin:2px 0 0;font-size:16px;line-height:1.4;color:#d7ddf0}.uiDefTips p b{font-size:inherit;font-family:inherit;color:#ffd27a}
+.uiDefTips .button{white-space:nowrap}
+@media(max-width:620px){.uiDefTips li{grid-template-columns:auto 1fr}.uiDefTips .button{grid-column:1/-1}}
+.uiDefeat p{max-width:none!important}.uiDefeat:after{display:none!important}
+.uiDefWhy,.uiDefSafe{text-align:center}
+
+/* ---------- Battle hand: swipe, big arrows, clear Bench button ---------- */
+.handRow{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.handRow>.handCard{touch-action:pan-x}
+.bxHandNav{position:absolute;z-index:6;width:clamp(44px,5vw,64px);height:clamp(44px,5vw,64px);margin:0;padding:0;transform:translate(-50%,-50%);border-radius:50%;border:2px solid #ffd27a;background:radial-gradient(circle at 35% 30%,#2a3a72,#0b1230);color:#ffe7b0;font-size:clamp(28px,3.2vw,42px);line-height:1;font-weight:700;cursor:pointer;box-shadow:0 0 0 3px #0008,0 6px 16px #000c,0 0 16px #f2b44a55;display:grid;place-items:center;padding-bottom:.08em}
+.bxHandNav.prev{transform:translate(0,-50%)}.bxHandNav.next{transform:translate(-100%,-50%)}
+.bxHandNav:hover{background:radial-gradient(circle at 35% 30%,#3a4f95,#121c46)}.bxHandNav:active{transform:translate(var(--tx,0),-50%) scale(.94)}
+.bxHandNav[hidden]{display:none}
+
+/* Active and Bench side by side, both clearly visible */
+.handCard:has([data-active]):has([data-bench]){display:grid!important;grid-template-columns:1fr 1fr;column-gap:6px;align-items:start}
+.handCard:has([data-active]):has([data-bench])>:not(button){grid-column:1/-1}
+.handCard [data-bench]{background:linear-gradient(180deg,#3b8fd6,#1f5ea8)!important;color:#fff!important;border:2px solid #bfe3ff!important;font-weight:700!important;text-shadow:0 1px 1px #0008;box-shadow:0 3px 8px #0008!important}
+.handCard [data-bench]:disabled{background:linear-gradient(180deg,#4a5670,#343d52)!important;border-color:#6b7690!important;color:#c9d1e4!important;opacity:1}
+.handCard [data-bench] svg,.handCard [data-active] svg{width:1.1em;height:1.1em}
+.uiXBattle .handCard>.button,.uiXBattleTab .handCard>.button{font-size:calc(17*var(--u))!important;padding:calc(7*var(--u)) 0!important;min-height:calc(36*var(--u))}
+
+/* ---------- Battle centre panel: everything visible without scrolling ---------- */
+.attackPanel .bxHide{display:none!important}
+.attackPanel .bxMerfLine{font-size:.85em!important;margin-bottom:.2em!important}
+.uiXBattle .attackPanel,.uiXBattleTab .attackPanel{overflow:hidden!important}
+.uiXBattle .attackPanel h2{margin:calc(4*var(--u)) 0 calc(2*var(--u))!important}
+.uiXBattle .attackPanel:has(.attackRune) .attackRune{min-height:0!important;padding:calc(3*var(--u)) calc(6*var(--u))!important;margin:calc(2*var(--u))!important;width:calc(50% - 4px)!important;display:inline-grid!important;grid-template-columns:1fr auto!important;grid-template-areas:"name power" "cost power"!important;font-size:calc(11*var(--u))!important}
+.uiXBattle .attackRune .moveGlyph,.uiXBattle .attackRune .keycap,.uiXBattle .attackRune small{display:none!important}
+.uiXBattle .attackRune .moveName{grid-area:name;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiXBattle .attackRune .movePower{grid-area:power;font-size:1.7em!important}
+.uiXBattle .attackRune .moveCosts{grid-area:cost;display:flex;gap:1px;font-size:.8em}
+.bxRetreat{position:static!important;margin:6px 0 0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;inset:auto!important;width:auto!important}
+.bxRetreat>h2,.bxRetreat>p{display:none!important}
+.bxRetreat .energyChoices:empty{display:none}
+.bxRetreat [data-retreat]{display:block;width:100%;margin:3px 0 0!important;padding:5px 6px!important;font-size:.9em!important;background:linear-gradient(180deg,#2b4b86,#1a3263)!important;color:#e8f2ff!important;border:1px solid #8fb8ef!important;border-radius:7px!important;box-shadow:none!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* End Turn: a solid, raised button */
+#endPocketTurn{display:flex!important;align-items:center;justify-content:center;gap:.4em;width:100%;margin-top:6px!important;padding:.55em 0!important;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700!important;font-size:1.25em!important;color:#2a1405!important;background:linear-gradient(180deg,#ffe39a,#f0b347 50%,#c8741a)!important;border:2px solid #fff0c4!important;border-radius:10px!important;box-shadow:inset 0 2px 0 #fffb,inset 0 -3px 0 #8a4a10,0 0 0 2px #5a320c,0 6px 12px #000a!important;text-shadow:0 1px 0 #fff6}
+#endPocketTurn:hover{filter:brightness(1.08)}#endPocketTurn:active{transform:translateY(2px);box-shadow:inset 0 2px 0 #fffb,inset 0 -1px 0 #8a4a10,0 0 0 2px #5a320c,0 2px 6px #000a!important}
+#endPocketTurn svg{width:1em;height:1em}
+.uiXBattle #endPocketTurn{font-size:calc(19*var(--u))!important;padding:calc(7*var(--u)) 0!important}
+.uiXBattleTab #endPocketTurn{font-size:calc(23*var(--u))!important;padding:calc(10*var(--u)) 0!important}
+
+/* ---------- Knockout moment ---------- */
+.bxKO{position:fixed;inset:0;z-index:95;display:grid;place-items:center;background:#05081acc;animation:uiFIn .25s ease-out both;cursor:pointer}
+.bxKO.out{animation:uiFOut .3s ease-in forwards}
+.bxKOBox{width:min(380px,92vw);padding:20px 22px;text-align:center;border-radius:16px;background:linear-gradient(180deg,#1a1f3e,#0b1028);border:2px solid var(--ko,#ffcf6a);box-shadow:0 0 40px color-mix(in srgb,var(--ko,#ffcf6a) 45%,transparent);color:#f2e9d6;animation:uiFPop .45s cubic-bezier(.2,.9,.3,1.3) both}
+.bxKO.mine{--ko:#ff7a66}.bxKO.theirs{--ko:#ffd27a}
+.bxKOKick{margin:0;font-family:Cinzel,Georgia,serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ko)}
+.bxKOBox h2{margin:2px 0 10px;font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;color:var(--ko);text-shadow:0 0 16px color-mix(in srgb,var(--ko) 50%,transparent)}
+.bxKOCard{position:relative;width:150px;height:216px;margin:0 auto 8px}
+.bxKOIn{position:absolute;left:0;top:0;width:230px;transform:scale(.652);transform-origin:0 0;filter:grayscale(.85) brightness(.75)}
+.bxKOIn .mythCard{width:230px;max-width:none;margin:0}
+.bxKO .bxKOCard{animation:bxKOFall .7s .2s ease-in both}
+@keyframes bxKOFall{from{transform:none}to{transform:rotate(-8deg) translateY(6px)}}
+.bxKOX{position:absolute;inset:0;display:grid;place-items:center;font-size:110px;line-height:1;color:var(--ko);text-shadow:0 0 12px #000,0 0 30px var(--ko);animation:uiFPop .4s .45s cubic-bezier(.2,.9,.3,1.4) both}
+.bxKOName{margin:0;font-size:18px}
+.bxKOPts{margin:6px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:700;color:#ffd27a}
+.bxKOScore{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0;font-size:16px;color:#c8d1ec}
+.bxKOScore b{font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;color:#fff;font-variant-numeric:lining-nums}
+.bxKOScore small{flex-basis:100%;font-size:12px}
+.bxKOHint{margin:8px 0 0;padding:8px;border-radius:8px;background:#ffffff12;font-size:15px}
+.bxKOOk{margin-top:12px;padding:8px 30px;border-radius:8px;border:2px solid #fff0c4;background:linear-gradient(180deg,#ffe39a,#f0b347 50%,#c8741a);color:#2a1405;font-weight:700;font-size:16px;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.bxKO,.bxKOBox,.bxKO .bxKOCard,.bxKOX{animation:none}}
+
+/* ---------- Victory screen ---------- */
+.uiVictory{position:relative;overflow:hidden;max-width:900px;margin:16px auto;padding:28px!important;border:2px solid #f2c45f!important;border-radius:16px!important;background:radial-gradient(ellipse at 50% 0,#5a4214,#1f1a36 55%,#0e1430)!important;box-shadow:0 0 50px #f2b44a55,0 18px 40px #000a!important;text-align:center;color:#f2e9d6}
+.uiVictory:after{display:none!important}.uiVictory p{max-width:none!important}
+.uiVictory>*{position:relative}
+.uiVRays{position:absolute!important;left:50%;top:-60%;width:900px;height:900px;margin-left:-450px;background:repeating-conic-gradient(from 0deg,#ffd76a14 0 8deg,transparent 8deg 20deg);animation:uiVSpin 30s linear infinite;pointer-events:none}
+@keyframes uiVSpin{to{transform:rotate(360deg)}}
+.uiVTitle{margin:4px 0 2px!important;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;font-size:clamp(50px,8vw,80px)!important;line-height:1;background:linear-gradient(180deg,#fff3c8,#f2c96a 55%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent!important;filter:drop-shadow(0 3px 0 #3a2408) drop-shadow(0 0 20px #ffcf6a88);animation:uiFPop .6s cubic-bezier(.2,.9,.3,1.4) both}
+.uiVQuest{margin:2px 0 6px;font-size:20px;color:#fff1d6}
+.uiVHead{margin:20px 0 10px;font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;color:#f3d48a}
+.uiVLoot{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.uiVLoot li{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 10px;border:1px solid #c9a35a88;border-radius:12px;background:#0d1534cc;animation:uiFPop .5s cubic-bezier(.2,.9,.3,1.3) both}
+.uiVLoot li:nth-child(2){animation-delay:.12s}.uiVLoot li:nth-child(3){animation-delay:.24s}.uiVLoot li:nth-child(4){animation-delay:.36s}.uiVLoot li:nth-child(5){animation-delay:.48s}
+.uiVIco{font-size:34px;line-height:1}
+.uiVLoot b{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;color:#ffe08a;font-variant-numeric:lining-nums}
+.uiVLoot small{font-size:14px;color:#c8d1ec}
+.uiVLoot li.island,.uiVLoot li.pack{border-color:#ffd27a;box-shadow:0 0 18px #ffd27a44}
+.uiVTeam{list-style:none;margin:0 0 18px;padding:0;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.uiVTeam li{width:120px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.uiVPic{position:relative;display:block;width:84px;height:84px;border-radius:50%;overflow:hidden;border:2px solid #c9a35a}
+.uiVPic .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}.uiVPic .mythlingArt img{object-fit:cover!important}
+.uiVTeam b{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px}
+.uiVTeam small{font-size:13px;color:#c8d1ec;font-variant-numeric:lining-nums}
+.uiVTeam li.up .uiVPic{border-color:#7dffb0;box-shadow:0 0 14px #7dffb0aa}.uiVTeam li.up small{color:#7dffb0;font-weight:700}
+@media(prefers-reduced-motion:reduce){.uiVRays,.uiVTitle,.uiVLoot li{animation:none}}
+/* Knockout popup sits above all other battle messages */
+.bxKO{z-index:200}
+body:has(.bxKO) #bxLayer .bxCallout,body:has(.bxKO) #bxLayer .bxBanner{opacity:0!important}
+.bxKOCard{height:232px}
+.uiVTitle{background:none!important;color:#ffd968!important;-webkit-text-fill-color:#ffd968;filter:none!important;text-shadow:0 2px 0 #7a4a10,0 4px 0 #3a2408,0 0 26px #ffcf6aaa}
+body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background:linear-gradient(180deg,#3b8fd6,#1f5ea8)!important;color:#fff!important;border:2px solid #bfe3ff!important}
+/* Special ability: a small gem on the card art, so it never covers the moves */
+.printCard .cardArt{position:relative}
+.printCard .cardSpecial{position:absolute;left:4px;bottom:4px;z-index:2;margin:0;max-width:calc(100% - 8px);padding:2px 7px;border-radius:99px;font-size:8px;font-weight:800;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 4px #0008}
+/* ---------- Battle Rules (design) ---------- */
+.uiXRules>*{position:absolute}
+.uiXRTab{z-index:3;border-radius:6px;border:1px solid transparent;background:transparent;color:transparent;cursor:pointer;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700}
+.uiXRulesPage:not([data-tab="quick"]) .uiXRTab{color:#e6ecff;background:linear-gradient(180deg,#1d2c5e,#13204a);border-color:#4b5f9e}
+.uiXRulesPage:not([data-tab="quick"]) .uiXRTab.on{color:#2a1405;background:linear-gradient(180deg,#ffd982,#e5a13a 60%,#c8741a);border-color:#ffe7b0;box-shadow:0 0 12px #f2b44a77}
+.uiXRTab:focus-visible{outline:3px solid #ffd27a;outline-offset:2px}
+.uiXRCond{justify-content:center;text-align:center;white-space:normal;line-height:1.25;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif!important}
+.uiXRPanel{z-index:4;overflow-y:auto;padding:1.4em 2em;border:2px solid #c9a35a;border-radius:10px;background:linear-gradient(180deg,#121b3ef7,#0b1230fa);box-shadow:0 10px 30px #000c;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif;scrollbar-width:thin;scrollbar-color:#c9a35a88 transparent}
+.uiXRPanel h2{margin:.9em 0 .3em;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6em;color:#f3d48a}
+.uiXRPanel h2:first-child{margin-top:0}
+.uiXRPanel p{margin:.3em 0 .6em;line-height:1.5;max-width:60em}
+.uiXRulesPage[data-tab="full"] .uiXRConds,.uiXRulesPage[data-tab="cond"] .uiXRFull{display:none}
+.uiXRConds ul{list-style:none;margin:.6em 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(16em,1fr));gap:.8em}
+.uiXRConds li{display:flex;gap:.8em;align-items:flex-start;padding:.8em 1em;border:1px solid #3a4b82;border-radius:8px;background:#ffffff08}
+.uiXRConds li>span{font-size:1.8em;line-height:1}
+.uiXRConds b{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3em;color:#fff4e0}
+.uiXRConds li p{margin:.2em 0 0}
+.uiXRNote{padding:.7em 1em;border-left:3px solid #c9a35a;background:#ffffff0a}
+.uiXRPanel .muted{color:#9aa6c8}
+.uiXRPanel{background:linear-gradient(180deg,#121b3e,#0b1230)!important}
+/* ---------- Mythling Index as a parchment field guide (deliberately unlike the blue card binder) ---------- */
+.fgBook{max-width:1240px;margin:8px auto 24px;padding:22px 26px 26px;border-radius:14px;background:radial-gradient(ellipse at 30% 0,#f7ecd0,#ead8ad 60%,#dcc28c);border:3px solid #7a5426;box-shadow:inset 0 0 60px #9a6e3355,0 0 0 6px #3a2614,0 18px 40px #000a;color:#3b2a16;font-family:'EB Garamond',Georgia,serif}
+.fgHead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:2px solid #8a6534;padding-bottom:12px;margin-bottom:16px}
+.fgKick{margin:0;font-family:Cinzel,Georgia,serif;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#8a5a22}
+.fgHead h1{margin:2px 0 4px;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(30px,4vw,46px);font-weight:700;color:#3b2410}
+.fgSub{margin:0;max-width:640px;font-size:17px;color:#5a4128}
+.fgCount{position:relative;display:flex;align-items:center;gap:10px;padding:10px 16px 16px;border:2px solid #8a6534;border-radius:10px;background:#f5e8c6}
+.fgCount b{font-family:'Cormorant Garamond',Georgia,serif;font-size:44px;line-height:1;color:#7a3b12;font-variant-numeric:lining-nums}
+.fgCount span{font-size:14px;line-height:1.2;color:#5a4128}
+.fgCount i{position:absolute;left:10px;right:10px;bottom:6px;height:5px;border-radius:9px;background:linear-gradient(90deg,#b5642a var(--p),#d6c193 var(--p))}
+.fgPages{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:22px;align-items:start}
+.fgGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fgEntry{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 10px;border:1px solid #a98250;border-radius:8px;background:#f7edd2;color:#3b2a16;cursor:pointer;font:inherit;box-shadow:0 2px 4px #6a4a2233;transition:transform .12s}
+.fgEntry:hover{transform:translateY(-2px);border-color:#7a5426}
+.fgEntry.on{border:2px solid #b5642a;background:#fff4d8;box-shadow:0 0 0 3px #b5642a33,0 4px 10px #6a4a2244}
+.fgEntry:focus-visible{outline:3px solid #7a3b12;outline-offset:2px}
+.fgNo{font-family:Cinzel,Georgia,serif;font-size:11px;letter-spacing:.08em;color:#8a5a22;font-variant-numeric:lining-nums}
+.fgPic{position:relative;width:100%;aspect-ratio:1.2;overflow:hidden;border-radius:50% / 42%;background:radial-gradient(circle,#fff8e4,#e6d3a4)}
+.fgPic .mythlingArt,.fgPlate .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.fgPic .mythlingArt img,.fgPlate .mythlingArt img{object-fit:cover!important}
+.fgEntry.seen .fgPic{filter:sepia(.25) saturate(.9)}
+.fgEntry.unseen .fgPic .mythlingArt,.fgRight.unknown .fgPlate .mythlingArt{filter:brightness(0) opacity(.55)}
+.fgName{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:17px;line-height:1.1;text-align:center}
+.fgEntry.unseen .fgName{color:#9a8462;letter-spacing:.2em}
+.fgRight{position:sticky;top:12px;padding:18px 20px 20px;border:2px solid #8a6534;border-radius:12px;background:linear-gradient(180deg,#fbf2da,#f1e2bb);box-shadow:inset 0 0 30px #b08a5033}
+.fgNoBig{margin:0;font-family:Cinzel,Georgia,serif;font-size:14px;letter-spacing:.2em;color:#8a5a22}
+.fgRight h2{margin:2px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:700;color:#3b2410}
+.fgAnimal{margin:0 0 10px;font-style:italic;font-size:18px;color:#6a4a28}
+.fgPlate{position:relative;width:100%;aspect-ratio:1.35;overflow:hidden;border:6px double #8a6534;border-radius:6px;background:#e6d3a4}
+.fgFacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 8px}
+.fgFacts div{padding:6px 10px;border-left:3px solid #b5642a;background:#f7ecd0}
+.fgFacts dt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8a5a22}
+.fgFacts dd{margin:2px 0 0;display:flex;align-items:center;gap:.35em;font-size:19px;font-weight:600;color:#2e2010;font-variant-numeric:lining-nums}
+.fgNote{margin:8px 0;font-size:17px;color:#4a3420}
+.fgRight h3{margin:12px 0 4px;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:#3b2410}
+.fgMoves{list-style:none;margin:0;padding:0}
+.fgMoves li{display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px dashed #a98250;font-size:17px}
+.fgMoves b{font-variant-numeric:lining-nums;color:#7a3b12}
+.fgMeta{margin:8px 0 0;font-size:16px;color:#4a3420}.fgMeta b{color:#7a3b12;font-variant-numeric:lining-nums}
+.fgLinks{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:900px){.fgPages{grid-template-columns:1fr}.fgRight{position:static}.fgGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.fgHead{flex-wrap:wrap}}
+@media(max-width:520px){.fgBook{padding:14px}.fgGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Getting-started guide: progress dots and a tip line */
+.tourDots{display:flex;gap:5px;margin:8px 0 2px}
+.tourDots i{flex:1;height:5px;border-radius:9px;background:#ffffff26}
+.tourDots i.done{background:#c9a35a}.tourDots i.on{background:#ffd27a;box-shadow:0 0 6px #ffd27a}
+.tourBubble p b{color:#ffd98a}
+.tourBubble .tourTip{margin-top:-4px!important;padding:8px 10px;border-radius:8px;background:#ffffff12;font-size:15px!important;color:#cfd8f2!important}
+.fgEntry.unseen .fgPic .mythlingArt{filter:none!important;opacity:0}
+.fgEntry.unseen .fgPic{background:repeating-linear-gradient(45deg,#e3cfa0 0 6px,#dcc694 6px 12px);box-shadow:inset 0 0 0 2px #b0905a}
+.fgEntry.unseen .fgPic::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(28px,3vw,44px);color:#8a6534}
+/* ---------- Training centre (Attack Academy design) ---------- */
+.uiXAcademy>*{position:absolute}
+.uiXATitle{margin:0;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;line-height:1.05;white-space:nowrap;background:linear-gradient(180deg,#fff3c8,#f2c96a 55%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000a)}
+.uiXATag{font-family:'EB Garamond',Georgia,serif!important;color:#fbf3e2;white-space:nowrap;text-shadow:0 1px 3px #000}
+.uiXAPass{font-family:'EB Garamond',Georgia,serif!important;color:#cdd5ea;white-space:nowrap;font-variant-numeric:lining-nums}
+.uiXATile{z-index:1;padding:0;margin:0;border:1px solid #33467e;border-radius:6px;background:linear-gradient(180deg,#0f1a3d,#0a1230);cursor:pointer;box-shadow:inset 0 0 0 1px #0007}
+.uiXATile:hover{border-color:#8a74c8}
+.uiXATile.sel{border:2px solid #f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 22px #f2b44a77}
+.uiXATile:focus-visible{outline:3px solid #ffd27a;outline-offset:2px}
+.uiXAClip{z-index:2;overflow:hidden;border-radius:6px;pointer-events:none;box-shadow:0 4px 10px #000a}
+.uiXAClip>.uiFit{position:absolute}
+.uiXAFoot{position:absolute;left:0;right:0;bottom:0;height:15%;display:flex;align-items:center;gap:.5em;padding:0 .9em;background:linear-gradient(180deg,#f6eed8,#eadfc0);border-top:1px solid #cdb98a;color:#2b3446;font-family:system-ui,'Segoe UI',sans-serif}
+.uiXAFoot .elementIcon{font-size:1.25em}
+.uiXAFoot b{font-weight:700}.uiXAFoot i{width:1px;height:1.1em;background:#6b6656;margin:0 .35em}
+.uiXAFoot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiXACheck{z-index:3;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4a3a1c,#1c140a);border:2px solid #f2c45f;color:#ffd27a;font-weight:900;font-size:calc(18*100cqw/1536);box-shadow:0 0 10px #f2b44a88}
+.uiXAPager{z-index:3;display:flex;align-items:center;justify-content:flex-end;gap:.5em;padding:0 .4em;border-radius:99px;background:#0d1534;color:#f3dcae;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-variant-numeric:lining-nums}
+.uiXAPager button{width:1.8em;height:1.8em;border-radius:50%;border:1px solid #c9a35a;background:#0b1022;color:#f3dcae;cursor:pointer;font-size:1em;line-height:1}
+.uiXAPager button:disabled{opacity:.35;cursor:default}
+.uiXAPortrait{z-index:2;overflow:hidden;border-radius:50%}
+.uiXAPortrait .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXAPortrait .mythlingArt img{object-fit:cover!important}
+.uiXAName{text-align:center;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;background:linear-gradient(180deg,#fff3c8,#f2c96a 60%,#c98d2e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000a);line-height:1.15}
+.uiXALevel{display:flex;align-items:center;justify-content:center;gap:.6em;font-family:'EB Garamond',Georgia,serif!important;color:#f3ead8;font-variant-numeric:lining-nums}
+.uiXALevel .elementIcon{font-size:1.2em}.uiXALevel i{font-style:normal;color:#cdd5ea}
+.uiXAStep{display:flex;flex-direction:column;gap:.15em;font-family:'EB Garamond',Georgia,serif!important;color:#dfe5f6;line-height:1.2}
+.uiXAStep b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1.3em;color:#fff4e0}
+.uiXAStep span{max-width:15em}
+.uiXAFoot{z-index:3}
+.uiXAName,.uiXALevel{justify-content:center}
+.uiXAStep{align-items:flex-start!important;justify-content:center}
+.uiXATitle,.uiXAName{background:linear-gradient(180deg,#fff0b8 20%,#f0c25c 60%,#c5862a 85%)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.uiXATitle{background:linear-gradient(180deg,#ffe9a6 10%,#efbd55 50%,#b97a22 90%)!important;-webkit-background-clip:text!important;background-clip:text!important}.uiXAStep span{max-width:17em}
+/* Explorer's Guide (intro popup): larger, easier-to-read text */
+.tourBubble{width:min(440px,calc(100vw - 24px))!important;padding:18px 22px!important;border-radius:16px!important;background:linear-gradient(135deg,#1d2c4f,#101a33)!important}
+.tourStep{font-size:13px!important;letter-spacing:.12em!important;font-weight:600}
+.tourStep button{font-size:30px!important}
+.tourItem{gap:14px!important;margin-top:10px!important}
+.tourItem>.uiGlyph{width:36px!important;height:36px!important}
+.tourItem h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:26px!important;line-height:1.15}
+.tourBubble p{font-family:system-ui,'Segoe UI',Roboto,sans-serif;font-size:17px!important;line-height:1.5!important;margin:12px 0 14px!important;color:#f4f6ff}
+.tourButtons .button{font-size:17px!important;padding:11px 18px!important}
+@media(max-width:600px){.tourItem h2{font-size:22px!important}.tourBubble p{font-size:16px!important}}
+/* Desktop: Packs and Friends painted pages fit the screen height exactly */
+@media(min-width:900px) and (pointer:fine){.uiXCrop:has(>.uiXPacks),.uiXCrop:has(>.uiXFriends){width:min(100%,calc((100dvh - min(8.8vw,176px) - 16px) * var(--ratio)))!important}}
