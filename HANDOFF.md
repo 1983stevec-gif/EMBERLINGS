@@ -1,5 +1,5 @@
 # EMBERLINGS — handoff for another computer
-Updated October 31, 2026. Current live version: 30.
+Updated October 31, 2026. Current live version: 46.
 
 ## Play
 https://mythlings-adventure.proud-book-0456.chatgpt.site/
@@ -30,8 +30,8 @@ Clone the GitHub repository on the other computer with git clone https://github.
 Continue my existing EMBERLINGS game from this project. Read this handoff and inspect the current code before changing anything. Preserve gameplay, player progress, inventory, coins, Vault upgrades, multiplayer and all artwork. Keep changes quick and use only a few relevant checks plus the required build. Use the existing Sites project for publication, not a new project.
 
 Sites project ID: appgprj_6ade72f8031081918f304ef6bf4af0fb
-Live version: 30
-Source commit: 80cb1e8641e2431b6cb35074324c753ce3e7159e
+Live version: 46
+Source commit: 212781890136be9d59ee13bbcefc1d09d64c703e (exact GitHub main fff84a2 content; Sites ancestry retained)
 Save key: mythlings-playable-v1 — NEVER rename or clear it.
 
 Main implementation: game/index.html
@@ -58,7 +58,7 @@ Some older tests encode superseded requirements; inspect them before treating fa
 - Saved decks equip from top buttons. Hold/right-click a name for Delete. Deletion keeps the current equipped loadout and all creatures.
 
 ## Player progress is separate from source code
-Owned Mythlings, wallet and much progression are stored in browser localStorage, not GitHub. A different computer/browser does NOT automatically receive that save. The public link and localhost also have separate saves. Do not clear website data or promise cloud save synchronization. No save-export interface was added in this handoff. Transfer saves as a separate explicit task; finish active trades/battles first. Online identity/friends use the hosted service and are not included in the ZIP/bundle.
+Free accounts (username + password) and cloud save are available under Account in the user menu. Local progress still uses mythlings-playable-v1; never rename or clear this key. On another browser, sign in and explicitly load the cloud save. GitHub does not contain player saves. Localhost and the public site have separate browser storage. Finish active trades and battles before transferring saves.
 
 ## Publishing
 Use the installed Sites skill. Read .openai/hosting.json; preserve project ID and public audience. Obtain fresh credentials through Sites tools; never put tokens in code, Git, handoff files or chat. Use the Sites source helper to prepare/push/package the exact source and build output, then save_site_version and deploy_site_version. A GitHub remote is for cross-computer code collaboration, separate from Sites publication.
@@ -67,3 +67,16 @@ Original checkout:
 C:/Users/djste/Documents/Codex/2026-10-25/continue-developing-my-existing-playable-mythlings/work/mythlings-site
 
 Latest checks passed: focused Vault/Cosmic/migration and visual/preset checks; production build; successful native public deployment. No claim of full-suite or cross-device gameplay testing.
+
+## Publish result - October 31, 2026 (America/Chicago)
+
+Published version 46 publicly to https://mythlings-adventure.proud-book-0456.chatgpt.site/ from GitHub PR #17 merge fff84a2. No gameplay or artwork changes.
+
+- npm run install:ci: PASS. npm run build: PASS.
+- npm test: FAIL in tests/dragon-pack.cjs at assert(dragon.damage>other.damage); conflicts with the documented equal-damage lineup. Tests and gameplay were not rewritten.
+- node tests/visual-update.cjs: all 3 reports PASS.
+- Migration 0006 already applied; not rerun. Migration 0007 applied by Sites before Worker publication; password_hash and cloud_saves verified afterward.
+- Live account API: password setup, separate-session login, and exact cloud-save payload retrieval PASS using isolated account QA_mvx4a6az. Both test sessions logged out. This verifies the server roundtrip, not browser game-save import.
+- Step 6 checks 1-4: NOT VERIFIED visually. Browser control timed out; public URL open was queued. Welcome art/logo, all painted screens/header, 768-1199px bottom picture menu/gold selection, and pack shuffle/reveal require browser review.
+- Step 6 check 5: API checks PASS; cross-browser UI and game-save loading NOT VERIFIED.
+- Step 6 check 6: existing-player coins/cards/progress NOT VERIFIED on their device. No existing player data was cleared or modified; save key unchanged; focused preservation checks pass.
