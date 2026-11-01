@@ -967,10 +967,10 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .bxCallout.out{opacity:0;transform:translate(-50%,-10px)}
 @keyframes bxIn{from{opacity:0;transform:translate(-50%,-14px)}}
 /* Straight battle hand: keep every card upright in one sideways-scrolling row. */
-.handRow{display:flex;flex-wrap:nowrap;align-items:flex-start;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;gap:14px;min-width:0;max-width:100%;padding:12px 4px 18px;touch-action:pan-x pan-y;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
-.handRow>.handCard{flex:0 0 auto;transform:none;position:relative}
+.handRow{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;touch-action:pan-x pan-y;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.handRow>.handCard{transform:none;position:relative}
 .handRow>.handCard:hover,.handRow>.handCard:focus-within{transform:none}
-.uiXBattle .handRow{overflow-y:hidden;padding-top:calc(8*var(--u))!important}
+.uiXBattle .handRow{overflow-y:hidden;padding-top:calc(16*var(--u))!important}
 /* 8 result scene */
 .victoryCard.bxScene{position:relative;overflow:hidden;min-height:min(70vh,640px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#0b1022bb,#0b1022ee),url(/art/ui/battle.webp) center/cover!important;border:2px solid #c9a35a!important;border-radius:14px;max-width:1100px;margin:20px auto!important}
 .bxScene>*{position:relative;z-index:1}
