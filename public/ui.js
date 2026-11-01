@@ -59,7 +59,7 @@ function head() {
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
-  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles'], ['account', '☁', 'Account & cloud save']]]
+  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
 ];
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
@@ -69,14 +69,14 @@ function userMenu(anchor) {
   m.innerHTML = `${e.title ? `<p class="uiMenuTitle">🏷 ${esc(e.title)}</p>` : ''}
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
-   <hr><button role="menuitem" id="uiBackupGo"><span aria-hidden="true">💾</span> Save Backup</button><button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
+   <hr><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button><button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
    <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
     if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
-    if (b.id === 'uiBackupGo' || b.id === 'uiSettingsGo') { const kind = b.id === 'uiBackupGo' ? 'backup' : 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
+    if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
   setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
@@ -84,10 +84,10 @@ function userMenu(anchor) {
 
 
 /* Home feature cards: cut from the supplied artwork; each card is a button to its screen. */
-const HOME_CARDS = [['decks', 'Battle Deck'], ['rules', 'Battle Rules'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['index', 'Index'], ['training', 'Training Field'], ['fusion', 'Fusion Lab'], ['vault', 'Vault'], ['mutation', 'Mutation Vault'], ['trading', 'Friend Trading'], ['backup', 'Save Backup']];
+const HOME_CARDS = [['decks', 'Battle Deck'], ['rules', 'Battle Rules'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['index', 'Index'], ['training', 'Training Field'], ['fusion', 'Fusion Lab'], ['vault', 'Vault'], ['mutation', 'Mutation Vault'], ['trading', 'Friend Trading'], ['account', 'Login & Password']];
 function homeCards() {
   return `<section class="uiHomeCards" aria-labelledby="uiHomeCardsTitle"><h2 id="uiHomeCardsTitle"><img src="/art/ui/home-cards-title.webp" alt="Your adventure starts here." width="1130" height="76"></h2>
-   <div class="uiHomeCardGrid features">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" ${go === 'backup' ? 'id="uiCardBackup"' : `data-go="${go}"`} aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
+   <div class="uiHomeCardGrid features">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" data-go="${go}" aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
 }
 
 /* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown 700–1199 px wide. */
@@ -137,7 +137,6 @@ function heroScene() {
 function afterHome() {
   $('#uiResume')?.addEventListener('click', () => B.resumeBattle());
   $('#uiBackupBtn')?.addEventListener('click', () => drawer('backup'));
-  $('#uiCardBackup')?.addEventListener('click', () => drawer('backup'));
   $('#uiGear')?.addEventListener('click', () => drawer('settings'));
   applyArt();
 }
@@ -155,12 +154,13 @@ function drawer(kind) {
    <p><label><input type="checkbox" id="reducedMotion" ${st.reducedMotion ? 'checked' : ''}> Reduce motion (turns off 3D reveals and effects)</label></p>
    <p><label><input type="checkbox" id="uiMute" ${ext().muted ? 'checked' : ''}> Mute sound</label></p>
    ${(st.cosmetics?.owned || []).includes('collectible-founder') ? '<p class="collectibleEmblem">☀ First Light · Collection Emblem</p>' : ''}
-   <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button></p>
+   <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button> <button class="button alt" id="uiSetBackup">💾 Save Backup</button></p>
    <details><summary>Test save tools</summary><p class="small">One-time reset for this browser only. Your current save is backed up first.</p><button class="button alt" id="resetTest" ${reset ? 'disabled' : ''}>Reset My Test Progress Once</button></details></section>`;
   B.bind();
   $('#reducedMotion').onchange = e => { st.reducedMotion = e.target.checked; B.save(); B.go('home'); };
   $('#uiMute').onchange = e => { ext().muted = e.target.checked; B.save(); };
   $('#resetTest').onclick = () => B.resetTest();
+  $('#uiSetBackup').onclick = () => { d.dataset.kind = ''; drawer('backup'); };
 }
 
 /* ---------------------------------------------------------------- Adventure HQ */
