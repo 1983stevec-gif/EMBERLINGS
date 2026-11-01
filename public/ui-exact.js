@@ -7,7 +7,8 @@ const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [..
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 // Every tablet keeps the painted artwork. Friends and battle have dedicated portrait art.
-const wide = () => innerWidth >= EXACT_MIN_WIDTH && !(innerWidth < 1200 && innerHeight > innerWidth && ['friends', 'cardBattle'].includes(B.view));
+const phoneLayout = () => innerWidth < 700 || (innerWidth < 1000 && innerHeight < 500);
+const wide = () => !phoneLayout() && innerWidth >= EXACT_MIN_WIDTH && !(innerWidth < 1200 && innerHeight > innerWidth && ['friends', 'cardBattle'].includes(B.view));
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
 
 // Canvas helpers: positions are given in mockup pixels and converted to percentages / container units.
@@ -138,7 +139,6 @@ function worldTrailPath(points) {
   }).join(' ');
 }
 function map() {
-  if (!wide()) return UI.baseMap();
   const W=1586,H=992,bg='/art/ui/map.webp',max=B.limit(),cleared=B.state.cleared||[];
   if (!selected || lastRenderedView!=='map') selected=Math.min(45,max);
   shownRegion=regionOf(selected);
@@ -151,16 +151,18 @@ function map() {
     const a=worldLevelPos(r[2]),b=worldLevelPos(B.regions[i+1][1]),mid=(a[0]+b[0])/2;
     return `<path class="uiWorldSeaPath" d="M ${a.join(' ')} C ${mid} ${a[1]}, ${mid} ${b[1]}, ${b.join(' ')}"/>`;
   }).join('');
-  const quest=mapSplit()?`<div class="uiXPanelRow">${piece(W,H,bg,'uiXMap',[1186,66,1586,540],`<div id="uiQuest">${questTop(selected)}</div>`,'flex:340')}${piece(W,H,bg,'uiXMap',[1186,540,1586,880],`<div id="uiQuest2">${questBottom(selected)}</div>`,'flex:474')}</div>`:piece(W,H,bg,'uiXMap',[1186,66,1586,880],`<div id="uiQuest">${questPanel(selected)}</div>`);
+  const quest=phoneLayout()?phoneQuest(selected):mapSplit()?`<div class="uiXPanelRow">${piece(W,H,bg,'uiXMap',[1186,66,1586,540],`<div id="uiQuest">${questTop(selected)}</div>`,'flex:340')}${piece(W,H,bg,'uiXMap',[1186,540,1586,880],`<div id="uiQuest2">${questBottom(selected)}</div>`,'flex:474')}</div>`:piece(W,H,bg,'uiXMap',[1186,66,1586,880],`<div id="uiQuest">${questPanel(selected)}</div>`);
   return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>Five islands · 100 quests</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>46 – 70</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>71 – 100</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldToolbar"><div class="uiWorldLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${r[1]}–${r[2]}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">‹</button><button id="uiXPrev" aria-label="Previous quest">−</button><button id="uiXCurrent">Current level (${max})</button><button id="uiXNext" aria-label="Next quest">+</button><button data-world-pan="1" aria-label="Scroll map right">›</button></div></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 levels complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss milestones · 10 · 25 · 45 · 70 · 100</small></div></section>`;
 }
 function focusWorldLevel(l, smooth=true) {
   const viewport=$('.uiWorldViewport'),node=$(`.uiWorldCanvas [data-level="${l}"]`);
   if (!viewport||!node) return;
-  if (regionOf(l)<3) { viewport.scrollTo({left:0,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'}); return; }
+  if (regionOf(l)<3 && viewport.scrollWidth/2<=viewport.clientWidth+2) { viewport.scrollTo({left:0,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'}); return; }
   if (node.offsetLeft>=viewport.scrollLeft+24 && node.offsetLeft<=viewport.scrollLeft+viewport.clientWidth-24) return;
   viewport.scrollTo({left:node.offsetLeft-viewport.clientWidth/2,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'});
 }
+function phoneQuestContents(l){const info=questInfo(l);return `<div class="uiPhoneQuestArt">${UI.questArt(l)}</div><h2>${esc(B.regions[info.r][0])}</h2><h3>${esc(questName(l))} · Level ${l}</h3><p>${info.locked?'Complete earlier quests to unlock':info.cleared?'Completed · replay':'Ready to play'}${info.prize?' · 🪙 '+fmt(info.prize.coins):''}</p><button class="button alt" data-go="decks">Edit deck</button><div class="uiPhoneQuestDeck">${deckTop(3).map(c=>B.cardHTML(c)).join('')}</div><button id="uiBegin" class="button gold ${info.locked?'locked':''}" ${info.locked?'disabled':''}>${info.locked?'Complete earlier quests':info.cleared?'Replay battle':'Begin battle'}</button>`}
+function phoneQuest(l){return `<div id="uiQuest" class="uiPhoneQuest">${phoneQuestContents(l)}</div>`}
 function questInfo(l) {
   const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
   let prize = null; try { prize = B.questPrize(l); } catch { }
@@ -183,17 +185,15 @@ function questBottom(l) {
 }
 const questPanel = l => questTop(l) + questBottom(l);
 function selectLevel(l) {
-  if (!wide()) return UI.baseSelect(l);
   if (!Number.isInteger(l)||l<1||l>100) return;
   selected=l;shownRegion=regionOf(l);
   const q=$('#uiQuest'),q2=$('#uiQuest2');if(!q)return;
-  if(q2){q.innerHTML=questTop(l);q2.innerHTML=questBottom(l)}else q.innerHTML=questPanel(l);
+  if(phoneLayout())q.innerHTML=phoneQuestContents(l);else if(q2){q.innerHTML=questTop(l);q2.innerHTML=questBottom(l)}else q.innerHTML=questPanel(l);
   $$('.uiWorldCanvas .uiXNode').forEach(n=>{const active=+n.dataset.level===l;n.classList.toggle('uiSel',active);n.setAttribute('aria-pressed',String(active))});
   $$('[data-region]').forEach(b=>b.classList.toggle('on',+b.dataset.region===shownRegion));
   afterMap(false);
 }
 function afterMap(initial=true) {
-  if(!wide())return UI.baseAfterMap();
   B.bind();
   const begin=$('#uiBegin');if(begin)begin.onclick=()=>{if(!begin.classList.contains('locked'))B.beginBattle(selected)};
   $$('.uiWorldCanvas .uiXNode').forEach(n=>n.onclick=()=>selectLevel(+n.dataset.level));
@@ -558,7 +558,7 @@ function friendsExact(data) {
 
 
 /* ---------------------------------------------------------------- Friends, portrait tablet (mockup 1045 × 1506) */
-const tabPortrait = () => innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
+const tabPortrait = () => !phoneLayout() && innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
 function friendsTab(data) {
   const app = $('#app'), form = $('#addFriendForm'), lists = $('#friendLists'); if (!lists || !data?.me || (!form && !$('.uiXFTPage'))) return;
   const W = 1045, H = 1506, p = box(W, H), st = B.state, me = (B.active?.() || st.owned?.[0]);
@@ -668,9 +668,10 @@ if (B && UI) {
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:friends', e => { if (B.view !== 'friends') return; if (wide()) { document.body.classList.add('uiExact'); friendsExact(e.detail); } else if (tabPortrait()) { document.body.classList.add('uiExact'); friendsTab(e.detail); } });
   window.addEventListener('ember:fusion', e => fusionResult(e.detail.creature));
+  let wasPhone = phoneLayout();
   let wasWide = wide();
   let wasSplit = mapSplit();
-  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (split !== wasSplit && ['mutation','vault','packs'].includes(B.view)) { wasSplit = split; wasWide = now; return B.go(B.view); } if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(), split = mapSplit(); const nowPhone=phoneLayout();if(nowPhone!==wasPhone){wasPhone=nowPhone;wasWide=now;wasSplit=split;if(['home','map','vault','packs','mutation','fusion','friends','inventory','index','decks'].includes(B.view))return B.go(B.view);} if (split !== wasSplit && ['mutation','vault','packs'].includes(B.view)) { wasSplit = split; wasWide = now; return B.go(B.view); } if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }

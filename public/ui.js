@@ -61,8 +61,10 @@ const MENU = [
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault'], ['mutationBook', '🧬', 'Mutation Collection']]],
   ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
 ];
+let dismissUserMenu=()=>{};
 function userMenu(anchor) {
-  const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
+  const old = $('.uiMenu'); if (old) { dismissUserMenu(); return; }
+  dismissUserMenu();
   const e = ext(), r = anchor.getBoundingClientRect();
   const m = document.createElement('div'); m.className = 'uiMenu'; m.setAttribute('role', 'menu');
   m.style.top = r.bottom + 8 + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
@@ -80,7 +82,10 @@ function userMenu(anchor) {
     if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
-  setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
+  const outside=ev=>{if(!m.contains(ev.target)&&!anchor.contains(ev.target))dismissUserMenu()};
+  const escape=ev=>{if(ev.key==='Escape'){dismissUserMenu();anchor.focus()}};
+  dismissUserMenu=()=>{m.remove();anchor.setAttribute('aria-expanded','false');document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape)};
+  setTimeout(()=>{if(m.isConnected){document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape)}},0);
 }
 
 
@@ -285,6 +290,7 @@ function afterMap() {
 /* ---------------------------------------------------------------- My Card Binder (inventory / index) */
 const TAB_ELEMENTS = [['Fire', '🔥'], ['Water', '💧'], ['Nature', '🍃'], ['Moon', '🌙'], ['', '✦']];
 function binderLayout({ index, page }) {
+  const pageSize = phoneLayout() ? 4 : 12;
   const heading = $('.binderHeading'), filters = $('.binderFilters'), book = $('.magicalBinder'); if (!heading || !filters || !book || $('.uiBinderHead')) return;
   const st = B.state, f = B.binderState(), count = index ? `${(st.discovered || []).length} / ${B.species.length} species` : `${st.owned.length} cards`;
   const swap = $('button[data-go]', heading);
@@ -306,10 +312,10 @@ function binderLayout({ index, page }) {
   filters.replaceWith(bar);
   let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
   // Book: numbered pockets, side tabs and the logo cover.
-  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * 12 + i + 1).padStart(2, '0')}</span>`));
+  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * pageSize + i + 1).padStart(2, '0')}</span>`));
   // Standard binder: always a full 12-pocket page; empty sleeves fill the rest.
   const pagesEl = $('.binderPages', book), filled = $$('.binderPocket', book).length;
-  if (pagesEl && filled < 12) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: 12 - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * 12 + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
+  if (pagesEl && filled < pageSize) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: pageSize - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * pageSize + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
   if (pagesEl && !filled) $('p.panel', pagesEl)?.classList.add('uiNoMatch');
   book.insertAdjacentHTML('afterbegin', '<span class="uiSpine" aria-hidden="true"></span>');
   book.insertAdjacentHTML('beforeend', `<img class="uiVineTop" src="/art/ui/binder-vine-top.webp" alt="" aria-hidden="true"><img class="uiVineSide" src="/art/ui/binder-vine-side.webp" alt="" aria-hidden="true"><nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="background-image:url(/art/ui/binder-tab-${(el || 'all').toLowerCase()}.webp)"></button>`).join('')}</nav>`);
@@ -416,7 +422,12 @@ addEventListener('popstate', e => {
 });
 
 /* ---------------------------------------------------------------- Wiring */
+const phoneLayout = () => innerWidth < 700 || (innerWidth < 1000 && innerHeight < 500);
+function phoneChrome(){document.body.classList.toggle('uiPhone',phoneLayout());const vv=window.visualViewport,editing=document.activeElement?.matches('textarea,input:not([type=checkbox]):not([type=radio])');document.body.classList.toggle('uiPhoneKeyboard',!!editing&&!!vv&&vv.height<innerHeight*.75);document.documentElement.style.setProperty('--phone-visible-height',(vv?.height||innerHeight)+'px');const nav=document.querySelector('#app > .nav');for(const b of nav?.querySelectorAll('[data-go="inventory"]')||[])for(const n of b.childNodes)if(n.nodeType===3&&n.textContent.trim()==='Inventory')n.textContent='My Binder';}
+window.addEventListener('resize',phoneChrome);window.visualViewport?.addEventListener('resize',phoneChrome);document.addEventListener('focusin',phoneChrome);document.addEventListener('focusout',phoneChrome);
 function onFrame() {
+  dismissUserMenu();
+  phoneChrome();
   tabletMenu();
   trackHistory(B.view);
   document.body.classList.add('uiTheme');

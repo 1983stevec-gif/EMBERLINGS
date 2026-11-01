@@ -1446,3 +1446,105 @@ body .uiWorldHQ{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;
 .uiWorldControls button{flex:none;min-width:44px;min-height:44px;padding:6px 9px;background:linear-gradient(#1b2939,#101b27);font-size:20px;border-color:#806b42;box-shadow:inset 0 0 0 1px #0008}
 .uiWorldControls #uiXCurrent{font-size:14px;padding:6px 12px}
 @media(max-width:799px){.uiWorldToolbar{justify-content:center}.uiWorldControls{margin-left:0}.uiWorldLegend{flex:1 1 auto;justify-content:center}.uiWorldRegions button{font-size:13px;padding:6px}.uiWorldRegions button small{font-size:11px}}
+
+/* Phone audit: use live, readable controls in portrait and short landscape windows. */
+body.uiPhone{--phone-nav:76px;--phone-top:60px;overflow-x:hidden}
+body.uiPhone #app{width:100%;max-width:100%!important;padding:0 12px calc(var(--phone-nav) + 24px + env(safe-area-inset-bottom))!important;box-sizing:border-box}
+body.uiPhone .uiTop{margin:0 -12px 12px;padding:0 8px!important;position:sticky;top:0;z-index:50}
+body.uiPhone .uiTopIn{display:flex!important;width:100%;height:60px!important;gap:6px;justify-content:space-between;min-width:0}
+body.uiPhone .uiPBar,body.uiPhone .uiNav,body.uiPhone .uiTabMenu{display:none!important}
+body.uiPhone .uiBrand{min-width:0;flex:0 1 145px;padding:0!important}
+body.uiPhone .uiBrand .uiLogo{--logo-h:30px;max-width:145px;width:100%}
+body.uiPhone .uiRight{gap:5px;min-width:0}
+body.uiPhone .uiRight .coins{padding:5px 7px!important;font-size:13px!important;gap:4px;min-width:0}
+body.uiPhone .uiRight .uiCoin{width:16px;height:16px;flex:none}
+body.uiPhone #uiUser{padding:3px 5px!important;min-width:44px;min-height:44px}
+body.uiPhone .uiAvatar{width:28px;height:28px}
+body.uiPhone .nav{display:flex!important;justify-content:space-around;gap:2px;padding:6px 4px max(6px,env(safe-area-inset-bottom));min-height:68px;box-sizing:border-box}
+body.uiPhone .nav button{flex:1;max-width:20%;width:auto!important;min-height:48px;padding:3px 1px!important;font-size:10px;line-height:1.2}
+body.uiPhone .nav .ico{display:block;font-size:21px}
+body.uiPhone :is(button,select,input,summary){min-height:44px;max-width:100%;box-sizing:border-box;scroll-margin-top:74px;scroll-margin-bottom:calc(var(--phone-nav) + 20px)}
+body.uiPhone :is(input,select,textarea){font-size:16px;min-width:0}
+body.uiPhone input[type=checkbox],body.uiPhone input[type=radio]{min-height:20px;width:20px;height:20px}
+body.uiPhone .uiMenu{max-width:calc(100vw - 16px);max-height:calc(100dvh - 150px);overflow-y:auto}
+body.uiPhone .panel,body.uiPhone .grid>*,body.uiPhone section,body.uiPhone .hero{min-width:0;max-width:100%;box-sizing:border-box}
+body.uiPhone .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body.uiPhone .fxBanner{top:66px;left:10px;right:10px;transform:none;max-width:none;width:auto;max-height:140px;overflow:auto;padding:10px 12px;font-size:13px;pointer-events:none}
+body.uiPhone .fxBannerIcon{font-size:24px}
+body.uiPhone .tourBubble{bottom:calc(var(--phone-nav) + 10px);max-height:calc(100dvh - 160px);overflow:auto}
+body.uiPhone .uiDeckBuilder{display:block}
+body.uiPhone .uiCVHead,body.uiPhone .uiCVTools,body.uiPhone .uiDSHead{flex-wrap:wrap;gap:10px}
+body.uiPhone .uiCVTools{justify-content:flex-start}
+body.uiPhone .uiCVGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px;padding:12px!important}
+body.uiPhone .uiDeckSide{position:static;max-width:100%;padding:14px!important;margin-top:16px}
+body.uiPhone .uiDeckName input{min-width:0;width:100%}
+body.uiPhone .uiDeckLine{grid-template-columns:32px 18px minmax(0,1fr) auto auto;gap:5px}
+body.uiPhone .uiMer{min-height:44px;gap:6px}
+body.uiPhone .uiMer input{position:static;opacity:1;pointer-events:auto;width:20px;height:20px}
+body.uiPhone .uiBinderHead{flex-wrap:wrap;gap:12px}
+body.uiPhone .uiBinderBar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body.uiPhone .uiSearch{grid-column:1/-1;max-width:100%;width:100%}
+body.uiPhone .uiBinderBar .uiSelect,body.uiPhone .uiMore{min-width:0!important;width:100%}
+body.uiPhone .uiMore>div{min-width:210px;max-width:calc(100vw - 40px)}
+body.uiPhone .magicalBinder{width:calc(100% - 36px)!important;max-width:calc(100% - 36px);margin:14px 36px 14px 0!important;padding:10px 6px 10px 28px!important}
+body.uiPhone .binderPages{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+body.uiPhone .binderPocket{padding:22px 3px 6px!important;min-height:0}
+body.uiPhone .uiSpine{width:24px}
+body.uiPhone .uiBinderTabs{right:-34px}
+body.uiPhone .uiBinderTabs button{width:30px;min-height:44px;height:44px}
+body.uiPhone .uiVineTop,body.uiPhone .uiVineSide,body.uiPhone .binderHand{display:none}
+body.uiPhone .binderCover{inset:0;width:100%;height:100%;background-size:cover!important}
+body.uiPhone .uiBinderFoot{grid-template-columns:1fr;gap:10px;padding:12px 0;margin:0;min-height:0;justify-items:center}
+body.uiPhone .uiBinderFoot>*{max-width:100%;min-width:0;justify-self:center}
+body.uiPhone .mutationPortrait{display:block;width:100%;max-width:225px;height:225px;box-sizing:border-box}
+body.uiPhone .mutationPortrait>.mythlingPortrait{width:100%;height:100%}
+body.uiPhone .mutationOptions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+body.uiPhone .mutationOption{padding:12px;min-width:0}
+body.uiPhone .mutationOptionPortrait{float:none;margin:0 auto 10px}
+body.uiPhone .mutationOption span{display:block;white-space:normal;overflow-wrap:anywhere}
+body.uiPhone .mutationComparison{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);gap:8px}
+body.uiPhone .mutationLayout{grid-template-columns:minmax(0,1fr)}
+body.uiPhone .vaultSlots,body.uiPhone .tradeOffers{grid-template-columns:minmax(0,1fr)}
+body.uiPhone .uiVaultHead{grid-template-columns:minmax(0,1fr)}
+body.uiPhone .uiVaultTitle h1{white-space:normal;font-size:24px}
+body.uiPhone .uiVaultSaved{padding:12px;min-width:0;flex-wrap:wrap}
+body.uiPhone .friendRow,body.uiPhone .friendActions,body.uiPhone .tradeActions{flex-wrap:wrap;gap:8px}
+body.uiPhone .friendActions .button{flex:1 1 100px;white-space:normal}
+body.uiPhone .friendRow strong{overflow-wrap:anywhere}
+body.uiPhone .uiWorldHQ{padding:0!important;grid-template-columns:minmax(0,1fr);gap:12px}
+body.uiPhone .uiWorldViewport{--world-height:400px}
+body.uiPhone .uiWorldIntro{font-size:13px;padding:10px}
+body.uiPhone .uiWorldIslandTitle{font-size:18px}
+body.uiPhone .uiWorldControls{margin:0;flex:1;justify-content:center}
+body.uiPhone .uiWorldRegions{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:6px}
+body.uiPhone .uiWorldRegions button{flex:0 0 auto;min-width:130px}
+body.uiPhone .uiWorldLegend{gap:10px;font-size:12px;flex:1;justify-content:center}
+body.uiPhone .uiPhoneQuest{padding:14px;min-width:0}
+body.uiPhone .uiPhoneQuestArt{height:180px;overflow:hidden;border:1px solid #a58a4c;border-radius:8px;margin-bottom:14px}
+body.uiPhone .uiPhoneQuestArt>*{height:100%;width:100%;object-fit:cover}
+body.uiPhone .uiPhoneQuestDeck{display:flex;gap:10px;overflow-x:auto;padding:12px 0}
+body.uiPhone .uiPhoneQuestDeck>.mythCard{flex:0 0 150px;max-width:150px;min-width:150px}
+body.uiPhone #uiBegin{width:100%;min-height:52px;font-size:18px}
+body.uiPhone .uiWorldJourney{gap:10px;padding:12px;font-size:14px}
+body.uiPhone .pocketArena{padding:10px}
+body.uiPhone .pocketBoard{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+body.uiPhone .attackPanel{grid-column:1/-1;grid-row:2}
+body.uiPhone .handRow{max-width:100%;overflow-x:auto;flex-wrap:nowrap;gap:10px}
+body.uiPhone .handCard{transform:none!important;min-width:175px;flex:0 0 175px}
+body.uiPhone .practiceOptions{grid-template-columns:minmax(0,1fr);gap:10px}
+body.uiPhone .practiceOptions button{min-height:56px}
+body.uiPhone .uiCloudBox{max-height:calc(100dvh - 32px);overflow:auto;padding:18px}
+@media(orientation:landscape) and (max-height:500px){body.uiPhone{--phone-nav:58px}body.uiPhone .nav{min-height:54px;padding-top:3px;padding-bottom:3px}body.uiPhone .nav button{min-height:44px}body.uiPhone .uiWorldViewport{--world-height:360px}body.uiPhone .mutationLayout{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px}body.uiPhone .grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+body.uiPhone .binderPocket .mythCard{width:100%!important;max-width:100%!important;min-width:0;height:auto;aspect-ratio:63/88}
+
+body.uiPhone .uiCVPager button{min-width:44px}
+body.uiPhone.uiPhoneKeyboard .nav{display:none!important}
+body.uiPhone.uiPhoneKeyboard{--phone-nav:0px}
+body.uiPhone .uiCloudBox{max-height:calc(var(--phone-visible-height,100dvh) - 32px)}
+body.uiPhone .uiPhoneQuestArt{position:relative}
+body.uiPhone .uiPhoneQuestArt .uiWorldArt{pointer-events:none}
+body.uiPhone .hero::after{opacity:.18;font-size:32px;right:10px;top:15px}
+body.uiPhone #uiQuest.uiPhoneQuest{position:static;inset:auto;pointer-events:auto}
+body.uiPhone.arenaActive #app{padding:0!important}
+body.uiPhone.arenaActive .nav,body.uiPhone.arenaActive .uiTop{display:none!important}
