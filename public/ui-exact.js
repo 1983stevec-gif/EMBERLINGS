@@ -18,7 +18,14 @@ function canvas(W, H, bg, cls, inner) {
   const [top, bottom] = CROP[cls] || [0, H];
   return `<div class="uiXCrop" style="--ratio:${W / (bottom - top)};aspect-ratio:${W}/${bottom - top}"><div class="uiX ${cls}" style="--W:${W};aspect-ratio:${W}/${H};margin-top:${(-top / W * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
 }
-const CROP = { uiXHome: [78, 992], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941] };
+// A rectangle of a mockup [x0, y0, x1, y1] shown on its own; content keeps full-canvas positions.
+function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
+  const w = x1 - x0;
+  return `<div class="uiXPiece" style="aspect-ratio:${w}/${y1 - y0};${extra}"><div class="uiX ${cls}" style="--W:${W};width:${(W / w * 100).toFixed(4)}%;aspect-ratio:${W}/${H};margin-left:${(-x0 / w * 100).toFixed(4)}%;margin-top:${(-y0 / w * 100).toFixed(4)}%;background-image:url(${bg})">${inner}</div></div>`;
+}
+// Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
+const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -40,27 +47,15 @@ function deckTop(n = 3) {
 /* ---------------------------------------------------------------- Home (mockup 1586 × 992) */
 function home() {
   if (!wide()) return UI.baseHome();
-  const W = 1586, H = 992, p = box(W, H), st = B.state, cleared = (st.cleared || []).length, deck = deckTop(3), active = B.active?.() || st.owned?.[0];
+  const W = 1586, H = 992, p = box(W, H), st = B.state, deck = deckTop(3);
   const fan = [[1152, 197, 1268, 375, -8, deck[1]], [1420, 197, 1536, 375, 8, deck[2]], [1268, 166, 1420, 398, 0, deck[0]]].filter(f => f[5]);
   return `<section class="uiHome uiExactPage">${canvas(W, H, '/art/ui/home.webp', 'uiXHome', `
-
-
-
-
-
-
    <h1 class="uiSr">Awaken the ember.</h1>
    ${hot(p(48, 430, 422, 500), 'data-go="map"', 'Explore islands')}
    ${st.cardBattle ? `<button class="uiXResume" id="uiResume" style="${p(48, 508, 422, 540)};${fs(W, 17)}">Resume card battle ›</button>` : ''}
    <div class="uiXFan">${fan.map(([x0, y0, x1, y1, r, c]) => fitCard(p(x0, y0, x1, y1), c, r)).join('')}</div>
    ${hot(p(1170, 413, 1515, 470), 'data-go="decks"', 'Edit deck')}${hot(p(1170, 483, 1515, 527), 'data-go="training"', 'Training field')}
-   <div class="features uiXLayer">${hot(p(33, 560, 413, 800), 'data-go="inventory"', 'Mythling Collection')}${hot(p(423, 560, 787, 800), 'data-go="packs"', 'Open Packs')}${hot(p(798, 560, 1162, 800), 'data-go="fusion"', 'Fusion Lab')}${hot(p(1172, 560, 1553, 800), 'data-go="trading"', 'Friend Trading')}</div>
-   ${text(p(113, 768, 330, 796), W, 19, 'uiXSub', `${fmt(st.owned.length)} cards &nbsp;•&nbsp; ${(st.discovered || []).length} / ${B.species.length} species`)}
-   ${hot(p(32, 813, 1556, 913), 'data-go="map"', 'Your adventure')}
-   ${text(p(150, 862, 400, 899), W, 27, 'uiXQuests', `${cleared} / 100 <small>quests</small>`)}
-   <i class="uiXFill" style="${p(425, 885.5, 425 + 813 * cleared / 100, 888.5)}"></i>
-   ${hot(p(60, 925, 185, 970), 'data-go="index"', 'Index')}${hot(p(215, 925, 380, 970), 'data-go="rules"', 'Battle Rules')}${hot(p(415, 925, 530, 970), 'data-go="vault"', 'Vault')}${hot(p(560, 925, 745, 970), 'data-go="mutation"', 'Mutation Vault')}
-   <button class="uiHot" id="uiBackupBtn" style="${p(1290, 925, 1450, 970)}" aria-label="Save Backup"></button><button class="uiHot" id="uiGear" style="${p(1480, 925, 1545, 970)}" aria-label="Settings"></button>`)}
+`)}
    ${UI.homeCards()}<div id="uiDrawer" class="uiXDrawer"></div></section>`;
 }
 
@@ -100,10 +95,7 @@ function map() {
   const levels = r => { const reg = B.regions[r], out = []; for (let l = reg[1]; l <= reg[2]; l++) out.push(l); return out; };
   const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
   const far = shownRegion >= 3;
-  return `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `
-
-
-
+  const mapInner = `
    ${far ? `<div class="uiXSheet" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
    <svg class="uiXRoute" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${shownRegion > 0 ? route(shownRegion) : ''}</svg>
    ${levels(0).map(node).join('')}${shownRegion > 0 ? levels(shownRegion).map(node).join('') : ''}
@@ -111,31 +103,47 @@ function map() {
    <button class="uiXChip ${shownRegion === 3 ? 'on' : ''}" data-region="3" style="${p(490, 846, 688, 886)};${fs(W, 15)}">Thunder Valley <b>46 – 70</b></button>
    <button class="uiXChip ${shownRegion === 4 ? 'on' : ''}" data-region="4" style="${p(696, 846, 892, 886)};${fs(W, 15)}">Shadow Realm <b>71 – 100</b></button>
    ${hot(p(914, 842, 950, 878), 'id="uiXPrev"', 'Previous level')}${hot(p(959, 842, 995, 878), 'id="uiXNext"', 'Next level')}
-   <button class="uiXCurrent" id="uiXCurrent" style="${p(1013, 844, 1146, 878)};${fs(W, 16)}">Current level (${max})</button>
+   <button class="uiXCurrent" id="uiXCurrent" style="${p(1013, 844, 1146, 878)};${fs(W, 16)}">Current level (${max})</button>`;
+  const journey = `${text(p(246, 930, 600, 962), W, 19, 'uiXJourney', `${cleared.length} / 100 levels complete`)}
+   <i class="uiXFill" style="${p(456, 944.5, 456 + 720 * cleared.length / 100, 947.5)}"></i>`;
+  if (mapSplit()) {
+    const bg = '/art/ui/map.webp', c = 'uiXMap';
+    return `<section class="uiExactPage uiXMapSplit">${piece(W, H, bg, c, [0, 66, 1186, 890], mapInner)}
+   <div class="uiXPanelRow">${piece(W, H, bg, c, [1186, 66, 1586, 540], `<div id="uiQuest">${questTop(selected)}</div>`, 'flex:340')}${piece(W, H, bg, c, [1186, 540, 1586, 880], `<div id="uiQuest2">${questBottom(selected)}</div>`, 'flex:474')}</div>
+   ${piece(W, H, bg, c, [0, 890, 1586, 992], journey)}</section>`;
+  }
+  return `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `${mapInner}
    <div id="uiQuest">${questPanel(selected)}</div>
-   ${text(p(246, 930, 600, 962), W, 19, 'uiXJourney', `${cleared.length} / 100 levels complete`)}
-   <i class="uiXFill" style="${p(456, 944.5, 456 + 720 * cleared.length / 100, 947.5)}"></i>`)}</section>`;
+   ${journey}`)}</section>`;
 }
-function questPanel(l) {
-  const W = 1586, H = 992, p = box(W, H), r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared, deck = deckTop(3);
+function questInfo(l) {
+  const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
   let prize = null; try { prize = B.questPrize(l); } catch { }
+  return { r, boss, cleared, locked, prize };
+}
+function questTop(l) {
+  const W = 1586, H = 992, p = box(W, H), { r, boss, cleared, locked, prize } = questInfo(l);
   return `${text(p(1203, 98, 1560, 142), W, 33, 'uiXRegion', esc(B.regions[r][0]))}
    ${text(p(1205, 140, 1500, 166), W, 19, 'uiXLevel', `${boss ? 'Boss · ' : ''}Level ${l}`)}
    <div class="uiXArt" style="${p(1196, 179, 1561, 399)};${fs(W, 17)}">${UI.questArt(l)}</div>
    ${text(p(1208, 408, 1560, 458), W, 36, 'uiXQuest', esc(questName(l)))}
    ${text(p(1210, 456, 1560, 486), W, 21, 'uiXStatus ' + (locked ? 'locked' : cleared ? 'done' : ''), locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play')}
-   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}
-   ${hot(p(1478, 556, 1562, 582), 'data-go="decks"', 'Edit deck')}
+   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}`;
+}
+function questBottom(l) {
+  const W = 1586, H = 992, p = box(W, H), { locked } = questInfo(l), deck = deckTop(3);
+  return `${hot(p(1478, 556, 1562, 582), 'data-go="decks"', 'Edit deck')}
    ${deck.map((c, i) => fitCard(p(1201 + i * 123, 593, 1311 + i * 123, 755), c)).join('')}
    <button class="uiHot uiXBegin ${locked ? 'locked' : ''}" id="uiBegin" style="${p(1200, 788, 1556, 860)}" ${locked ? 'aria-disabled="true"' : ''} aria-label="${locked ? 'Locked' : 'Begin battle'}">${locked ? `<span style="${fs(W, 22)}">🔒 Complete earlier quests</span>` : ''}</button>`;
 }
+const questPanel = l => questTop(l) + questBottom(l);
 function selectLevel(l) {
   if (!wide()) return UI.baseSelect(l);
   if (!Number.isInteger(l)) return;
   selected = l; const r = regionOf(l);
   if (r !== shownRegion) { shownRegion = r; return B.go('map'); }
-  const q = $('#uiQuest'); if (!q) return;
-  q.innerHTML = questPanel(l); $$('.uiXNode').forEach(n => n.classList.toggle('uiSel', +n.dataset.level === l)); afterMap();
+  const q = $('#uiQuest'), q2 = $('#uiQuest2'); if (!q) return;
+  if (q2) { q.innerHTML = questTop(l); q2.innerHTML = questBottom(l); } else q.innerHTML = questPanel(l); $$('.uiXNode').forEach(n => n.classList.toggle('uiSel', +n.dataset.level === l)); afterMap();
 }
 function afterMap() {
   if (!wide()) return UI.baseAfterMap();
@@ -477,7 +485,8 @@ if (B && UI) {
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
   let wasWide = wide();
-  addEventListener('resize', () => { const now = wide(); if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  let wasSplit = mapSplit();
+  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
