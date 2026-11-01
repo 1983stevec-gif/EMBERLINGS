@@ -14,3 +14,9 @@ assert.equal(MAX_LEVEL,100);assert.deepEqual(levelPerks({id:'same',kind:3,level:
 assert(battleCard({id:'x',kind:0,level:100}).maxhp>battleCard({id:'x',kind:0,level:1}).maxhp);
 assert.deepEqual(attacks(battleCard({id:'r',kind:0,level:75})).slice(2).map(m=>m.id),['lv50','lv75']);assert.deepEqual(attacks(battleCard({id:'r',kind:0,level:100})).slice(2).map(m=>m.id),['lv75','lv100']);
 console.log('PASS level path moves at 25/50/75/100 (newest two kept), max level 100, fixed special abilities');
+// Mutations: Spark–Cosmic can be bought; Bloom, Tide, Crystal, Solar, Void and Prism come only from packs.
+import {MUTATIONS,canBuyMutation,rollPackMutation} from '../public/combat-rules.js';
+assert.equal(MUTATIONS.length,12);
+assert.deepEqual(MUTATIONS.filter(canBuyMutation).map(m=>m.id),['spark','flame','frost','storm','shadow','cosmic']);
+assert.equal(rollPackMutation(6,()=>0.99),null);assert(MUTATIONS.some(m=>m.id===rollPackMutation(6,()=>0)));
+console.log('PASS 12 mutations, six buyable, six pack-only');
