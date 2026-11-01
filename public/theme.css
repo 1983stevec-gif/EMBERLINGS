@@ -1147,3 +1147,225 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{font-size:.62em!important;height:auto!important;max-height:1.8em;overflow:hidden}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts>*{flex:none}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts svg{width:1.4em;height:1.4em}
+
+/* ---------- Friends, portrait tablet (mockup 1045 × 1506): sizes in mockup pixels via --u ---------- */
+.uiXFriendsTab{--u:calc(100cqw / 1045)}
+.uiXFTAva{position:absolute;overflow:hidden;border-radius:calc(6*var(--u))}
+.uiXFTAva .mythlingArt,.uiXFTRowAva .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXFTAva .mythlingArt img,.uiXFTRowAva .mythlingArt img{object-fit:cover!important}
+.uiXFTName{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#fff4e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.uiXFTCount{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#f6ecd6;line-height:1.2}
+.uiXFTList{position:absolute;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#c9a35a66 transparent;font-size:calc(16*var(--u))}
+.uiXFTList #friendLists{display:block}
+.uiXFTList .panel{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+.uiXFTList section:not(.uiXFTFriends){padding:calc(10*var(--u)) calc(16*var(--u))!important;border-bottom:1px solid #2d3a5f!important}
+.uiXFTList section:not(.uiXFTFriends) h2{margin:0 0 .4em;font-family:'Cormorant Garamond',Georgia,serif;font-size:calc(24*var(--u));color:#f2c45f}
+.uiXFTList section:not(.uiXFTFriends) .friendRow{display:flex;align-items:center;justify-content:space-between;gap:1em;padding:.4em 0;font-size:calc(19*var(--u))}
+.uiXFTList .uiXFTFriends>p.muted{margin:0;padding:calc(110*var(--u)) calc(40*var(--u));text-align:center;font-size:calc(21*var(--u));color:#c8d1ec}
+.uiXFTRow{position:relative;display:block!important;height:calc(147*var(--u));border-bottom:1px solid #2d3a5f;padding:0!important;margin:0!important;background:linear-gradient(180deg,#0e173300,#0e17334d)}
+.uiXFTRow:last-child{border-bottom:0}
+.uiXFTRowAva{position:absolute;left:calc(14*var(--u));top:calc(12*var(--u));width:calc(131*var(--u));height:calc(121*var(--u));overflow:hidden;border:calc(2*var(--u)) solid #c9a35a;border-radius:calc(6*var(--u));box-shadow:0 0 0 calc(1*var(--u)) #3a2a10,0 calc(3*var(--u)) calc(8*var(--u)) #000a}
+.uiXFTRowWho{position:absolute;left:calc(168*var(--u));top:calc(30*var(--u));width:calc(150*var(--u));display:flex;flex-direction:column;gap:calc(14*var(--u))}
+.uiXFTRowWho strong{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(30*var(--u));color:#fff4e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
+.uiXFTRowWho small{display:flex;align-items:center;gap:calc(12*var(--u));font-family:'EB Garamond',Georgia,serif;font-size:calc(20*var(--u));color:#c8d1ec}
+.uiXFTRowWho small i{width:calc(18*var(--u));height:calc(18*var(--u));border-radius:50%;background:#8a90a2;box-shadow:inset 0 calc(-2*var(--u)) calc(3*var(--u)) #0006}
+.uiXFTRowWho small.on i{background:#5fe08a;box-shadow:0 0 calc(8*var(--u)) #5fe08a}
+.uiXFTRowLine{position:absolute;left:calc(331*var(--u));top:calc(30*var(--u));height:calc(88*var(--u));width:1px;background:linear-gradient(180deg,transparent,#c9a35a88,transparent)}
+.uiXFTBtns{position:absolute;left:calc(350*var(--u));top:calc(29*var(--u));display:flex;gap:calc(14*var(--u))}
+.uiXFTBtn{height:calc(87*var(--u));padding:0;margin:0;border:0;border-radius:calc(6*var(--u));background:center/100% 100% no-repeat;cursor:pointer;font-size:0;box-shadow:none;transition:filter .15s,transform .1s}
+.uiXFTBtn-trade{width:calc(171*var(--u));background-image:url(/art/ui/friends-btn-trade.webp)}
+.uiXFTBtn-duel{width:calc(192*var(--u));background-image:url(/art/ui/friends-btn-duel.webp)}
+.uiXFTBtn-coop{width:calc(190*var(--u));background-image:url(/art/ui/friends-btn-coop.webp)}
+.uiXFTBtn:hover:not(:disabled){filter:brightness(1.12)}.uiXFTBtn:active:not(:disabled){transform:scale(.97)}
+.uiXFTBtn:disabled{filter:grayscale(.6) brightness(.7);cursor:default}
+.uiXFTBtn:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiXFTAdd{position:absolute;z-index:5;padding:1em 1.2em 1.1em;border:2px solid #c9a35a;border-radius:10px;background:linear-gradient(180deg,#141d3ef7,#0b1028fa);box-shadow:0 12px 30px #000c,0 0 24px #f2b44a44;color:#f6ecd6}
+.uiXFTAdd h2{margin:0 0 .6em;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4em}
+.uiXFTForm{display:flex;gap:.6em}
+.uiXFTInput{flex:1;min-width:0;font-size:1em!important;padding:.6em .8em!important;border:1px solid #c9a35a99!important;border-radius:8px!important;background:#0a1028!important;color:#fff!important}
+.uiXFTFind{flex:none;padding:.6em 1.2em;border:1px solid #ffe7a3;border-radius:8px;background:linear-gradient(180deg,#f7cc6a,#dc9a33);color:#2a1405;font-weight:700;font-size:1em;cursor:pointer}
+.uiXFTStatus:not(:empty){margin-top:.7em;font-size:.85em;color:#dfe5f6}
+.uiXFTStatus .button{font-size:.9em}
+.uiXFTName,.uiXFTCount,.uiXFTRowWho strong{font-variant-numeric:lining-nums}
+
+/* ---------- Card battle, portrait tablet (mockup 1045 × 1505; positions in mockup pixels) ---------- */
+body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
+.uiXBattleTab{--u:calc(100cqw / 1045);font-family:'EB Garamond',Georgia,serif;color:#f2e9d6}
+.uiXBattleTab>.uiXBLayer{top:0}
+.uiXBattleTab .mythCard{margin:0!important}
+.uiXBattleTab .pocketActive .mythCard,.uiXBattleTab .handCard .mythCard,.uiXBattleTab .benchCard .mythCard{width:230px!important;max-width:none!important;min-width:0!important}
+/* score, timer and Concede: right side of the hand panel's top row */
+.uiXBattleTab .battleBar{position:absolute!important;left:calc(700*var(--u));top:calc(1002*var(--u));width:calc(312*var(--u));height:calc(46*var(--u));display:flex;align-items:center;justify-content:space-between;gap:calc(8*var(--u));margin:0!important;padding:0!important;border:0!important;background:none!important}
+.uiXBattleTab #leaveCards{height:calc(34*var(--u));padding:0 calc(12*var(--u));font-size:calc(15*var(--u));background:#0b1022d9!important;border:1px solid #c9a35a!important;color:#f3dcae!important;border-radius:calc(7*var(--u));box-shadow:none!important;flex:none}
+.uiXBattleTab .battleBar>strong{flex:1;display:flex;flex-direction:column;align-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(17*var(--u));color:#f6efdc;white-space:nowrap;overflow:hidden;line-height:1.1;font-variant-numeric:lining-nums}
+.uiXBattleTab .battleBar>strong b{font-size:1.35em;color:#fff;margin:0 .15em}
+.uiXBattleTab .battleBar>strong small{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:.62em;letter-spacing:.18em;color:#cfd6ea}
+.uiXBattleTab .battleBar>div{flex:none;display:flex;flex-direction:column;align-items:center;line-height:1}
+.uiXBattleTab #cardCountdown{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(20*var(--u));color:#fff;background:none!important;padding:0!important;font-variant-numeric:lining-nums}
+.uiXBattleTab .battleBar>div small{font-size:calc(10*var(--u));color:#cfd6ea}
+/* turn caption: top of the centre panel, under the compass */
+.uiXBattleTab .battleCaption{position:absolute!important;left:calc(424*var(--u));top:calc(296*var(--u));width:calc(200*var(--u));text-align:center;background:none!important;margin:0!important;padding:0!important}
+.uiXBattleTab .battleCaption .pill,.uiXBattleTab .battleCaption p{display:none}
+.uiXBattleTab .battleCaption h1{margin:0!important;font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;font-size:calc(24*var(--u))!important;color:#f8e7bd!important;line-height:1.1}
+/* boards */
+.uiXBattleTab .pocketBoard{position:absolute;inset:0;display:block!important;margin:0!important;pointer-events:none}
+.uiXBattleTab .pocketBoard>*{pointer-events:auto}
+.uiXBattleTab .pocketField{position:absolute!important;top:calc(150*var(--u));width:calc(345*var(--u));height:calc(805*var(--u));text-align:center;margin:0!important;padding:0!important;background:none!important;border:0!important}
+.uiXBattleTab .pocketField>*{position:absolute;margin:0!important}
+.uiXBattleTab .pocketField:nth-child(1){left:calc(65*var(--u))}
+.uiXBattleTab .pocketField:nth-child(3){left:calc(640*var(--u))}
+.uiXBattleTab .pocketField>h2{left:calc(20*var(--u));width:calc(305*var(--u));top:calc(24*var(--u));height:calc(34*var(--u));display:flex;align-items:center;justify-content:center;gap:.35em;font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:calc(23*var(--u));color:#f6efdc;white-space:nowrap;overflow:hidden}
+.uiXBattleTab .pocketField>h2 svg{width:1.05em;height:1.05em;color:#e9c27a}
+.uiXBattleTab .pocketActive{display:flex;align-items:center;justify-content:center;left:calc(15*var(--u));top:calc(68*var(--u));width:calc(317*var(--u));height:calc(466*var(--u))}
+.uiXBattleTab .pocketField:nth-child(3) .pocketActive{left:calc(14*var(--u));width:calc(314*var(--u));height:calc(499*var(--u))}
+.uiXBattleTab .pocketActive .pocketCreature{position:relative}
+.uiXBattleTab .pocketActive>*{zoom:calc(var(--z) * 1.18)}
+.uiXBattleTab .emptyCard{zoom:1!important;height:100%!important;width:100%;max-width:none!important;background:none!important;border:0!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5em;font-family:'EB Garamond',Georgia,serif;font-size:calc(25*var(--u));color:#e8e2d2}
+.uiXBattleTab .emptyCard svg{width:1.4em;height:1.4em;color:#b9c3ee}
+.uiXBattleTab .cardHP{left:calc(23*var(--u));top:calc(547*var(--u));width:calc(300*var(--u));height:calc(11*var(--u));max-width:none!important;background:#3a4256;border-radius:99px;overflow:hidden}
+.uiXBattleTab .pocketField:nth-child(3) .cardHP{left:calc(27*var(--u));top:calc(577*var(--u));width:calc(289*var(--u))}
+.uiXBattleTab .cardHP i{display:block;height:100%;background:linear-gradient(90deg,#3fd06a,#7fe89a)}
+.uiXBattleTab .battleIconStats{display:flex!important;align-items:center;justify-content:center;gap:1.6em;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif}
+.uiXBattleTab .battleIconStats span{display:inline-flex;align-items:center;gap:.4em}.uiXBattleTab .battleIconStats .uiGlyph{width:1.2em;height:1.2em}
+.uiXBattleTab .battleIconStats b{color:#f6efdc;font-weight:500;font-variant-numeric:lining-nums}
+.uiXBattleTab .cardHP+.battleIconStats{left:calc(40*var(--u));top:calc(570*var(--u));width:calc(265*var(--u));height:calc(38*var(--u));font-size:calc(22*var(--u))}
+.uiXBattleTab .pocketField:nth-child(3) .cardHP+.battleIconStats{top:calc(596*var(--u))}
+.uiXBattleTab .pocketBench{display:grid!important;grid-template-columns:repeat(3,1fr);column-gap:calc(10*var(--u));left:calc(17*var(--u));top:calc(618*var(--u));width:calc(311*var(--u));height:calc(120*var(--u));margin:0!important}
+.uiXBattleTab .pocketField:nth-child(3) .pocketBench{left:calc(15*var(--u));top:calc(639*var(--u));width:calc(312*var(--u));height:calc(108*var(--u))}
+.uiXBattleTab .benchEmpty{visibility:hidden}
+.uiXBattleTab .benchCard{display:flex;justify-content:center;align-items:center;min-width:0;background:none!important;border:0!important;padding:0!important}
+.uiXBattleTab .benchCard>*{zoom:calc(var(--z) * .36)}
+.uiXBattleTab .pocketBench+.battleIconStats{left:calc(60*var(--u));top:calc(752*var(--u));width:calc(225*var(--u));height:calc(38*var(--u));font-size:calc(22*var(--u))}
+.uiXBattleTab .pocketField:nth-child(3) .pocketBench+.battleIconStats{top:calc(762*var(--u))}
+/* centre panel */
+.uiXBattleTab .attackPanel{position:absolute!important;left:calc(424*var(--u));top:calc(330*var(--u));width:calc(200*var(--u));height:calc(476*var(--u));overflow:auto;padding:calc(4*var(--u)) calc(8*var(--u))!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important;font-size:calc(15*var(--u));scrollbar-width:thin;scrollbar-color:#c9a35a66 transparent}
+.uiXBattleTab .attackPanel h2{display:flex;align-items:center;gap:.5em;margin:calc(10*var(--u)) 0 calc(4*var(--u));font-family:Cinzel,'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:calc(17*var(--u));letter-spacing:.02em;color:#f3d48a;text-transform:uppercase}
+.uiXBattleTab .attackPanel h2 svg{width:1.15em;height:1.15em;color:#e9c27a}
+.uiXBattleTab .attackPanel p{margin:0 0 calc(6*var(--u));color:#e6e9f4;line-height:1.3;font-size:calc(15*var(--u))}
+.uiXBattleTab .attackPanel h2+p+h2,.uiXBattleTab .attackPanel p+h2{border-top:1px solid #c9a35a66;padding-top:calc(10*var(--u))}
+.uiXBattleTab .attackPanel .button{display:block;width:100%;margin:calc(10*var(--u)) 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;text-transform:none;letter-spacing:0;font-size:calc(19*var(--u));padding:calc(7*var(--u)) 0}
+.uiXBattleTab #readyPocket,.uiXBattleTab #endPocketTurn{font-size:calc(24*var(--u));padding:calc(10*var(--u)) 0;background:linear-gradient(180deg,#ffd982,#e5a13a 55%,#c8741a)!important;border:2px solid #ffe7b0!important;color:#2a1405!important;border-radius:calc(8*var(--u))}
+.uiXBattleTab #readyPocket:disabled,.uiXBattleTab #endPocketTurn:disabled{background:linear-gradient(180deg,#8a6d3a,#6b5330)!important;color:#d9c79c!important;border-color:#a8895a!important}
+.uiXBattleTab #showPocketRules{width:56%;margin:calc(12*var(--u)) auto 0;background:#0b1022!important;border:1px solid #c9a35a!important;color:#f3dcae!important;box-shadow:none!important}
+.uiXBattleTab .battleTips{margin:calc(10*var(--u)) 0 0;text-align:center;font-size:calc(15*var(--u))}
+.uiXBattleTab .attackRune{font-size:calc(14*var(--u))!important}
+/* hand */
+.uiXBattleTab .pocketHand{position:absolute!important;left:calc(50*var(--u));top:calc(998*var(--u));width:calc(955*var(--u));height:calc(445*var(--u));display:block!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+.uiXBattleTab .pocketHand>h2{position:absolute;left:calc(4*var(--u));top:calc(4*var(--u));margin:0;display:flex;align-items:center;gap:.35em;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(31*var(--u));color:#f6efdc;font-variant-numeric:lining-nums}
+.uiXBattleTab .pocketHand>h2 svg{width:1.3em;height:1.3em;color:#e9c27a}
+.uiXBattleTab .pocketHand>p{position:absolute;left:calc(145*var(--u));top:calc(8*var(--u));width:calc(500*var(--u));margin:0;font-family:'EB Garamond',Georgia,serif;font-size:calc(18*var(--u));line-height:1.25;color:#f2ead8}
+.uiXBattleTab .handRow{position:absolute;left:calc(8*var(--u));top:calc(60*var(--u));width:calc(942*var(--u));height:calc(345*var(--u));display:flex!important;gap:calc(14*var(--u));overflow-x:auto;overflow-y:hidden;align-items:flex-start;padding:calc(4*var(--u)) calc(4*var(--u))!important;scrollbar-width:thin;scrollbar-color:#9fc3ff99 #ffffff1a;scroll-snap-type:x proximity}
+.uiXBattleTab .handCard{flex:0 0 calc(214*var(--u));width:calc(214*var(--u));display:flex;flex-direction:column;align-items:center;gap:calc(6*var(--u));padding:0!important;background:none!important;border:0!important;scroll-snap-align:start;transform:none!important}
+.uiXBattleTab .handCard>.pocketCreature,.uiXBattleTab .handCard>.mythCard{zoom:calc(var(--z) * .92)}
+.uiXBattleTab .handCard>.button{width:100%;margin:0!important;padding:calc(5*var(--u)) 0!important;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(17*var(--u));text-transform:none;letter-spacing:0}
+.uiXBattleTab .handCard>.button:disabled{background:linear-gradient(180deg,#6a5530,#54432a)!important;color:#c9b88f!important}
+.uiXBattleTab .handCard>.button svg{width:1em;height:1em}
+.uiXBattleTab #pocketHandTarget{position:absolute;left:calc(8*var(--u));top:calc(408*var(--u));width:calc(940*var(--u));font-size:calc(15*var(--u));display:flex;flex-wrap:wrap;align-items:center;gap:calc(6*var(--u))}
+.uiXBattleTab #pocketHandTarget .button{font-size:calc(14*var(--u));padding:calc(4*var(--u)) calc(10*var(--u));margin:0}
+/* discard pile and battle log on the floor below the hand */
+.uiXBattleTab details.uiXBDiscard,.uiXBattleTab details.uiXBLog{position:absolute!important;top:calc(1458*var(--u));height:calc(36*var(--u));margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;font-size:calc(16*var(--u));color:#e6e9f4}
+.uiXBattleTab details.uiXBDiscard{left:calc(40*var(--u));width:calc(470*var(--u))}
+.uiXBattleTab details.uiXBLog{left:calc(535*var(--u));width:calc(470*var(--u));text-align:right}
+.uiXBattleTab details>summary{cursor:pointer;line-height:calc(36*var(--u))}
+.uiXBattleTab details[open]>:not(summary){position:absolute;bottom:calc(40*var(--u));left:0;right:0;max-height:calc(420*var(--u));overflow:auto;background:#0d1534f2;border:1px solid #c9a35a;border-radius:calc(8*var(--u));padding:calc(8*var(--u));text-align:left;z-index:5}
+.uiXBattleTab #cardError{position:absolute!important;left:calc(145*var(--u));width:calc(540*var(--u));top:calc(1040*var(--u));margin:0;color:#ffb0a0;font-size:calc(14*var(--u));pointer-events:none}
+.uiXBattleTab .uiXBTArrow{z-index:3}
+.uiXBattleTab .battleBar{top:calc(1002*var(--u))!important;z-index:2}
+.uiXBattleTab #readyPocket,.uiXBattleTab #endPocketTurn{width:100%!important;display:flex!important;justify-content:center;align-items:center;gap:.35em}
+.uiXBattleTab .battleCaption h1{font-size:calc(21*var(--u))!important}
+.uiXBattleTab .attackPanel{top:calc(350*var(--u));height:calc(456*var(--u))}
+.uiXBattleTab .handCard>.pocketCreature,.uiXBattleTab .handCard>.mythCard{zoom:calc(var(--z) * .84)}
+.uiXBattleTab .handCard{flex-basis:calc(196*var(--u));width:calc(196*var(--u))}
+@media(min-width:700px) and (max-width:1199px){body:has(.uiXBattleTab) #app{padding-bottom:6px!important}body:has(.uiXBattleTab) .uiXCrop{width:min(100%,calc((100dvh - 84px) * var(--ratio)))!important}}
+
+.uiXBattleTab .battleBar>strong{display:block!important;text-align:center}
+.uiXBattleTab .battleBar>strong small{display:block}
+.uiXBattleTab .attackPanel h2{margin:calc(7*var(--u)) 0 calc(3*var(--u))}
+.uiXBattleTab .attackPanel p{font-size:calc(14*var(--u));margin-bottom:calc(4*var(--u))}
+
+.uiXBattleTab .attackPanel{display:block!important}
+.uiXBattleTab .attackRune{display:grid!important;width:100%!important;margin:calc(5*var(--u)) 0!important;padding:calc(6*var(--u)) calc(9*var(--u))!important;min-height:0!important;height:auto!important;grid-template-columns:1fr auto!important;grid-template-rows:auto auto!important;grid-template-areas:"name power" "cost power"!important;gap:calc(2*var(--u)) calc(6*var(--u))!important;align-items:center;text-align:left}
+.uiXBattleTab .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune{width:100%!important;display:grid!important;margin:calc(4*var(--u)) 0!important}
+.uiXBattleTab .attackRune .moveGlyph,.uiXBattleTab .attackRune .keycap{display:none!important}
+.uiXBattleTab .attackRune .moveName{grid-area:name;font-size:calc(15*var(--u))!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiXBattleTab .attackRune .movePower{grid-area:power;font-size:calc(24*var(--u))!important;line-height:1}
+.uiXBattleTab .attackRune .moveCosts{grid-area:cost;display:flex;gap:2px;font-size:calc(11*var(--u))!important}
+.uiXBattleTab .attackRune small{display:none}
+.uiXBattleTab .retreatPanel{position:static!important;margin:calc(10*var(--u)) 0 0!important;padding:calc(8*var(--u)) 0 0!important;border:0!important;border-top:1px solid #c9a35a66!important;background:none!important;box-shadow:none!important}
+.uiXBattleTab .retreatPanel h2{font-size:calc(13*var(--u))!important;margin:0 0 calc(3*var(--u))!important}
+.uiXBattleTab .retreatPanel p{font-size:calc(13*var(--u))!important}
+.uiXBattleTab .retreatPanel .button{font-size:calc(16*var(--u))!important;margin-top:calc(5*var(--u))!important}
+
+/* ---------- New mutations: card-art effects (same approach as the original six) ---------- */
+.art-bloom>.mythlingSheet{filter:saturate(1.15) brightness(1.04)}
+.art-bloom .mutationArtEffect{background:radial-gradient(circle at 14% 82%,#ffd6ea 0 2px,transparent 3px),radial-gradient(circle at 82% 22%,#fff0f7 0 2px,transparent 3px),radial-gradient(circle at 55% 90%,#ffe1ef 0 1.5px,transparent 2.5px),radial-gradient(ellipse at 50% 115%,#6fd36a8c,transparent 60%),linear-gradient(160deg,#c4ffb033,transparent 55%);box-shadow:inset 0 -10px 22px #63c95a55}
+.art-bloom .mutationArtMark{color:#c9ffb8}
+.art-tide>.mythlingSheet{filter:saturate(.95) hue-rotate(-6deg)}
+.art-tide .mutationArtEffect{background:repeating-radial-gradient(ellipse at 50% 120%,transparent 0 18px,#8fe0ff33 19px 21px,transparent 22px 34px),linear-gradient(180deg,transparent 45%,#2c8fd066);box-shadow:inset 0 -14px 24px #2b8fd56b}
+.art-tide .mutationArtMark{color:#a9e4ff}
+.art-crystal>.mythlingSheet{filter:saturate(.85) brightness(1.08)}
+.art-crystal .mutationArtEffect{background:conic-gradient(from 30deg at 20% 25%,transparent 0 40deg,#e6fff866 45deg,transparent 60deg 360deg),conic-gradient(from 200deg at 80% 70%,transparent 0 30deg,#d2fff266 35deg,transparent 52deg 360deg),linear-gradient(135deg,#b9f5e633,transparent 40%,#8fe7d044);box-shadow:inset 0 0 20px #a8f3e099}
+.art-crystal .mutationArtMark{color:#d8fff4}
+.art-solar>.mythlingSheet{filter:saturate(1.2) brightness(1.06) sepia(.12)}
+.art-solar .mutationArtEffect{background:radial-gradient(circle at 78% 18%,#fff6c4 0 6%,#ffd34d99 10%,transparent 32%),repeating-conic-gradient(from 0deg at 78% 18%,#ffe08a26 0 6deg,transparent 6deg 18deg);box-shadow:inset 0 0 22px #ffbf3a73}
+.art-solar .mutationArtMark{color:#ffe27a}
+.art-void>.mythlingSheet{filter:saturate(.55) brightness(.8) contrast(1.1)}
+.art-void .mutationArtEffect{background:radial-gradient(circle at 50% 48%,transparent 34%,#120c3acc 82%),radial-gradient(circle at 50% 48%,transparent 30%,#8f84ff55 34%,transparent 38%);box-shadow:inset 0 0 26px #2a1f7acc}
+.art-void .mutationArtMark{background:#1c1450dc;color:#c4bdff;border-color:#8f84ff}
+.art-prism>.mythlingSheet{animation:prismHue 6s linear infinite}
+.art-prism .mutationArtEffect{background:linear-gradient(115deg,#ff8ad844,#ffd36a44 20%,#8affc444 40%,#7ac8ff44 60%,#c49bff44 80%,#ff8ad844);mix-blend-mode:screen;box-shadow:inset 0 0 24px #ffffff66}
+.art-prism .mutationArtMark{background:linear-gradient(135deg,#ff9ad8,#ffe08a,#9affd0,#8ac8ff);color:#1a1530;border-color:#fff}
+@keyframes prismHue{to{filter:hue-rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.art-prism>.mythlingSheet{animation:none;filter:hue-rotate(40deg)}}
+/* Mutation Vault: two pages of mutation cards (page 2 drawn live in the painted frames) */
+.uiXMP1{display:none}.uiXMPage1 .uiXMP1{display:block}.uiXMPage1 .uiXMP0{display:none}
+.uiXMLive{border-radius:calc(10/14.5*1em);border:1px solid #4a5a8a;background:linear-gradient(180deg,#121b3c,#0b1230);overflow:hidden;box-shadow:0 6px 14px #000a}
+.uiXMLive.sel{border:2px solid var(--mut);box-shadow:0 0 0 1px #000,0 0 20px color-mix(in srgb,var(--mut) 55%,transparent)}
+.uiXMLArt{position:absolute;left:3%;right:3%;top:3%;height:50%;overflow:hidden;border-radius:6px}
+.uiXMLArt .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXMLArt .mythlingArt img{object-fit:cover!important}
+.uiXMLName{position:absolute;left:8%;top:56%;display:flex;align-items:center;gap:.35em;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1.55em;color:var(--mut);text-shadow:0 1px 2px #000}
+.uiXMLName i{font-style:normal;font-size:.9em}
+.uiXMLPrice{position:absolute;left:0;right:0;top:86%;display:flex;align-items:center;justify-content:center;gap:.4em;font-family:system-ui,'Segoe UI',sans-serif;font-weight:700;font-size:1.05em;color:#f6efdc;font-variant-numeric:lining-nums}
+.uiXMLPrice b{width:1.1em;height:1.1em;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#f2b62b 55%,#a86b0a)}
+.uiXMLive .uiXMOpt{z-index:2}
+.uiXMCardPager{display:flex;align-items:center;justify-content:flex-end;gap:.5em;color:#f3dcae;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;background:#0d1534;border-radius:99px;padding:0 .4em;z-index:3}
+.uiXMCardPager button{width:1.7em;height:1.7em;border-radius:50%;border:1px solid #c9a35a;background:#0b1022;color:#f3dcae;cursor:pointer;font-size:1em;line-height:1}
+.uiXMCardPager button:disabled{opacity:.35;cursor:default}
+.uiXMNote{background:#0f1729;color:#b7c0d8;font-family:system-ui,'Segoe UI',sans-serif;white-space:nowrap}
+
+/* ---------- Mutation Collection: one page per Mythling ---------- */
+.uiMutBook{max-width:1180px;margin:0 auto;color:#f6ecd6}
+.uiMBHead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
+.uiMBHead h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,4vw,40px)}
+.uiMBHead p{margin:4px 0 0;color:#c8d1ec;max-width:640px}.uiMBHead strong{color:#ffd27a;font-variant-numeric:lining-nums}
+.uiMBPager{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0}
+.uiMBPager button{width:42px;height:42px;border-radius:50%;border:1px solid #c9a35a;background:#0b1022;color:#f3dcae;font-size:22px;cursor:pointer}
+.uiMBPager select{min-width:220px;padding:9px 12px;border-radius:10px;border:1px solid #c9a35a99;background:#0d1534;color:#f6ecd6;font:inherit;font-size:16px}
+.uiMBTitle{margin:10px 0 12px;text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px}
+.uiMBTitle small{display:block;font-family:'EB Garamond',Georgia,serif;font-size:15px;font-weight:400;color:#c8d1ec;font-variant-numeric:lining-nums}
+.uiMBGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;padding:16px;border:2px solid #9a7638;border-radius:14px;background:linear-gradient(180deg,#141d3e,#0b1230);box-shadow:inset 0 0 40px #0008}
+@media(max-width:1000px){.uiMBGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.uiMBGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px}}
+.uiMBSlot{position:relative;margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.uiMBFit{display:block;position:relative;width:100%;aspect-ratio:.66;overflow:hidden;border-radius:8px}
+.uiMBFitIn{position:absolute;left:0;top:0;width:230px;transform:scale(var(--s,1));transform-origin:0 0;pointer-events:none}
+.uiMBFitIn .mythCard{width:230px;max-width:none;margin:0}
+.uiMBSlot.got .uiMBFit{box-shadow:0 0 0 2px var(--mut),0 0 16px color-mix(in srgb,var(--mut) 50%,transparent)}
+.uiMBSlot.miss .uiMBFitIn{filter:grayscale(1) brightness(.22) contrast(1.2)}
+.uiMBSlot.miss .uiMBFit{box-shadow:0 0 0 1px #3a4568}
+.uiMBLock{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,4vw,46px);font-weight:700;color:var(--mut);opacity:.8;text-shadow:0 0 12px #000}
+.uiMBSlot figcaption{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:17px;color:var(--mut);line-height:1.1}
+.uiMBSlot figcaption i{font-style:normal}
+.uiMBSlot figcaption small{display:block;font-family:'EB Garamond',Georgia,serif;font-weight:400;font-size:12.5px;color:#c8d1ec;font-variant-numeric:lining-nums}
+/* Trades: the offered card is the printed card (mutation effect included) with its mutation bonuses */
+.tradeCardPrint{width:230px;margin:8px auto;zoom:.92}
+.tradeCardPrint .mythCard{width:230px;max-width:none;margin:0 auto}
+.tradeMutStats{margin:6px 0;font-weight:700;color:var(--mutation-color,#f3dcae)}
+.tradeMutStats.none{font-weight:400;color:#9aa6c8}
+.tradeMutFilter{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;font-size:14px;color:#c8d1ec}
+.tradeMutFilter select{padding:7px 10px;border-radius:8px;border:1px solid #c9a35a99;background:#0d1534;color:#f6ecd6;font:inherit}
+.tradeChoices .creature.mini .mythlingArt{position:relative;width:100%;height:100%}
+.uiXMLPrice.packs{font-family:"Cormorant Garamond",Georgia,serif;color:#f3d48a;font-size:1.15em}
+.uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
+.uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
