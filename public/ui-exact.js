@@ -117,42 +117,35 @@ const regionOf = l => B.regions.findIndex(r => l >= r[1] && l <= r[2]);
 const REGION_ART = [0, 5, 14, 3, 7];
 const REGION_TEXT = ['Your journey begins in the meadows.', 'Crystal light hides clever rivals.', 'Icy winds test every deck.', 'Storms crackle over the valley.', 'Only the bravest enter the dark.'];
 function questName(l) { return window.EmberUI.questName ? window.EmberUI.questName(l) : `Quest ${l}`; }
+// All five regions share one continuous, horizontally scrollable world.
+const WORLD_W = 2354, WORLD_H = 760;
+function worldLevelPos(l) {
+  const r = regionOf(l);
+  if (r < 3) { const [x,y] = levelPos(l); return [x,y-66]; }
+  const i = l-B.regions[r][1], columns = r===3?5:6, row = Math.floor(i/columns);
+  const column = row%2 ? columns-1-i%columns : i%columns;
+  return [1177+(r===3?65+column*100:650+column*90),220+row*92];
+}
 function map() {
   if (!wide()) return UI.baseMap();
-  const W = 1586, H = 992, p = box(W, H), max = B.limit(), cleared = B.state.cleared || [];
-  // Enter HQ on the illustrated islands; later regions open only when requested.
-  if (!selected || lastRenderedView !== 'map') {
-    selected = Math.min(45, max);
-    shownRegion = regionOf(selected);
-  }
-  if (shownRegion === null) shownRegion = regionOf(selected);
-  const node = l => {
-    const [x, y] = levelPos(l), done = cleared.includes(l), locked = l > max && !done, boss = !!B.bosses[l], s = boss ? 44 : 38;
-    return `<button class="node uiXNode ${done ? 'done' : ''} ${locked ? 'locked' : ''} ${boss ? 'boss' : ''} ${l === selected ? 'uiSel' : ''}" data-level="${l}" style="${p(x - s / 2, y - (boss ? 26 : s / 2), x + s / 2, y + (boss ? 26 : s / 2))};${fs(W, boss ? 19 : 17)}" aria-label="Quest ${l}${boss ? ', boss' : ''}${done ? ', completed' : locked ? ', locked' : ', ready'}"><span>${l}</span></button>`;
-  };
-  const levels = r => { const reg = B.regions[r], out = []; for (let l = reg[1]; l <= reg[2]; l++) out.push(l); return out; };
-  const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
-  const far = shownRegion >= 3;
-  const mapInner = `
-   ${far ? `<div class="uiXSheet" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
-   <svg class="uiXRoute" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${shownRegion > 0 ? route(shownRegion) : ''}</svg>
-   ${levels(0).map(node).join('')}${shownRegion > 0 ? levels(shownRegion).map(node).join('') : ''}
-   ${hot(p(170, 712, 410, 750), 'data-region="0"', 'Ember Meadows, levels 1 to 10')}${hot(p(745, 318, 1022, 384), 'data-region="1"', 'Crystalwood Forest, levels 11 to 25')}${hot(p(860, 725, 1032, 790), 'data-region="2"', 'Frozen Peaks, levels 26 to 45')}
-   <button class="uiXChip ${shownRegion === 3 ? 'on' : ''}" data-region="3" style="${p(490, 846, 688, 886)};${fs(W, 15)}">Thunder Valley <b>46 – 70</b></button>
-   <button class="uiXChip ${shownRegion === 4 ? 'on' : ''}" data-region="4" style="${p(696, 846, 892, 886)};${fs(W, 15)}">Shadow Realm <b>71 – 100</b></button>
-   ${hot(p(914, 842, 950, 878), 'id="uiXPrev"', 'Previous level')}${hot(p(959, 842, 995, 878), 'id="uiXNext"', 'Next level')}
-   <button class="uiXCurrent" id="uiXCurrent" style="${p(1013, 844, 1146, 878)};${fs(W, 16)}">Current level (${max})</button>`;
-  const journey = `${text(p(246, 930, 600, 962), W, 19, 'uiXJourney', `${cleared.length} / 100 levels complete`)}
-   <i class="uiXFill" style="${p(456, 944.5, 456 + 720 * cleared.length / 100, 947.5)}"></i>`;
-  if (mapSplit()) {
-    const bg = '/art/ui/map.webp', c = 'uiXMap';
-    return `<section class="uiExactPage uiXMapSplit">${piece(W, H, bg, c, [0, 66, 1186, 890], mapInner)}
-   <div class="uiXPanelRow">${piece(W, H, bg, c, [1186, 66, 1586, 540], `<div id="uiQuest">${questTop(selected)}</div>`, 'flex:340')}${piece(W, H, bg, c, [1186, 540, 1586, 880], `<div id="uiQuest2">${questBottom(selected)}</div>`, 'flex:474')}</div>
-   ${piece(W, H, bg, c, [0, 890, 1586, 992], journey)}</section>`;
-  }
-  return `<section class="uiExactPage">${canvas(W, H, '/art/ui/map.webp', 'uiXMap', `${mapInner}
-   <div id="uiQuest">${questPanel(selected)}</div>
-   ${journey}`)}</section>`;
+  const W=1586,H=992,bg='/art/ui/map.webp',max=B.limit(),cleared=B.state.cleared||[];
+  if (!selected || lastRenderedView!=='map') selected=Math.min(45,max);
+  shownRegion=regionOf(selected);
+  const nodes=Array.from({length:100},(_,i)=>{
+    const l=i+1,[x,y]=worldLevelPos(l),done=cleared.includes(l),locked=l>max&&!done,boss=!!B.bosses[l];
+    return `<button class="node uiXNode ${done?'done':''} ${locked?'locked':''} ${boss?'boss':''} ${l===selected?'uiSel':''}" data-level="${l}" style="left:${x/WORLD_W*100}%;top:${y/WORLD_H*100}%" aria-label="Quest ${l}${boss?', boss':''}${done?', completed':locked?', locked':', ready'}" aria-pressed="${l===selected}">${l}</button>`;
+  }).join('');
+  const routes=B.regions.map((r,i)=>`<polyline class="uiWorldPath" points="${Array.from({length:r[2]-r[1]+1},(_,k)=>worldLevelPos(r[1]+k).join(',')).join(' ')}"/>`).join('');
+  const connectors=B.regions.slice(0,-1).map((r,i)=>`<polyline class="uiWorldSeaPath" points="${worldLevelPos(r[2]).join(',')} ${worldLevelPos(B.regions[i+1][1]).join(',')}"/>`).join('');
+  const quest=mapSplit()?`<div class="uiXPanelRow">${piece(W,H,bg,'uiXMap',[1186,66,1586,540],`<div id="uiQuest">${questTop(selected)}</div>`,'flex:340')}${piece(W,H,bg,'uiXMap',[1186,540,1586,880],`<div id="uiQuest2">${questBottom(selected)}</div>`,'flex:474')}</div>`:piece(W,H,bg,'uiXMap',[1186,66,1586,880],`<div id="uiQuest">${questPanel(selected)}</div>`);
+  return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>Five islands · 100 quests</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>46 – 70</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>71 – 100</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldLegend"><span class="lgDone">● Completed</span><span class="lgReady">● Ready</span><span class="lgLocked">● Locked</span><span class="lgBoss">◆ Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${r[1]}–${r[2]}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">← Scroll left</button><button id="uiXPrev">‹ Previous quest</button><button id="uiXCurrent">Current level (${max})</button><button id="uiXNext">Next quest ›</button><button data-world-pan="1" aria-label="Scroll map right">Scroll right →</button></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 levels complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss milestones · 10 · 25 · 45 · 70 · 100</small></div></section>`;
+}
+function focusWorldLevel(l, smooth=true) {
+  const viewport=$('.uiWorldViewport'),node=$(`.uiWorldCanvas [data-level="${l}"]`);
+  if (!viewport||!node) return;
+  if (regionOf(l)<3) { viewport.scrollTo({left:0,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'}); return; }
+  if (node.offsetLeft>=viewport.scrollLeft+24 && node.offsetLeft<=viewport.scrollLeft+viewport.clientWidth-24) return;
+  viewport.scrollTo({left:node.offsetLeft-viewport.clientWidth/2,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'});
 }
 function questInfo(l) {
   const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
@@ -177,22 +170,27 @@ function questBottom(l) {
 const questPanel = l => questTop(l) + questBottom(l);
 function selectLevel(l) {
   if (!wide()) return UI.baseSelect(l);
-  if (!Number.isInteger(l)) return;
-  selected = l; const r = regionOf(l);
-  if (r !== shownRegion) { shownRegion = r; return B.go('map'); }
-  const q = $('#uiQuest'), q2 = $('#uiQuest2'); if (!q) return;
-  if (q2) { q.innerHTML = questTop(l); q2.innerHTML = questBottom(l); } else q.innerHTML = questPanel(l); $$('.uiXNode').forEach(n => n.classList.toggle('uiSel', +n.dataset.level === l)); afterMap();
+  if (!Number.isInteger(l)||l<1||l>100) return;
+  selected=l;shownRegion=regionOf(l);
+  const q=$('#uiQuest'),q2=$('#uiQuest2');if(!q)return;
+  if(q2){q.innerHTML=questTop(l);q2.innerHTML=questBottom(l)}else q.innerHTML=questPanel(l);
+  $$('.uiWorldCanvas .uiXNode').forEach(n=>{const active=+n.dataset.level===l;n.classList.toggle('uiSel',active);n.setAttribute('aria-pressed',String(active))});
+  $$('[data-region]').forEach(b=>b.classList.toggle('on',+b.dataset.region===shownRegion));
+  afterMap(false);
 }
-function afterMap() {
-  if (!wide()) return UI.baseAfterMap();
+function afterMap(initial=true) {
+  if(!wide())return UI.baseAfterMap();
   B.bind();
-  $('#uiBegin')?.addEventListener('click', () => { if (!$('#uiBegin').classList.contains('locked')) B.beginBattle(selected); });
-  $$('.uiXNode').forEach(n => n.onclick = () => selectLevel(+n.dataset.level));
-  $('#uiXPrev')?.addEventListener('click', () => selectLevel(Math.max(1, selected - 1)));
-  $('#uiXNext')?.addEventListener('click', () => selectLevel(Math.min(100, selected + 1)));
-  $('#uiXCurrent')?.addEventListener('click', () => selectLevel(B.limit()));
-  $$('[data-region]').forEach(b => b.onclick = () => { const r = +b.dataset.region, reg = B.regions[r], cl = B.state.cleared || []; let l = reg[1]; while (l < reg[2] && cl.includes(l)) l++; selected = Math.min(l, Math.max(reg[1], B.limit())); shownRegion = r; B.go('map'); });
-  fitCards();
+  const begin=$('#uiBegin');if(begin)begin.onclick=()=>{if(!begin.classList.contains('locked'))B.beginBattle(selected)};
+  $$('.uiWorldCanvas .uiXNode').forEach(n=>n.onclick=()=>selectLevel(+n.dataset.level));
+  const choose=l=>{selectLevel(l);focusWorldLevel(l)};
+  if($('#uiXPrev'))$('#uiXPrev').onclick=()=>choose(Math.max(1,selected-1));
+  if($('#uiXNext'))$('#uiXNext').onclick=()=>choose(Math.min(100,selected+1));
+  if($('#uiXCurrent'))$('#uiXCurrent').onclick=()=>choose(B.limit());
+  $$('[data-region]').forEach(b=>b.onclick=()=>{const r=B.regions[+b.dataset.region],cleared=B.state.cleared||[];let l=r[1];while(l<r[2]&&cleared.includes(l))l++;choose(l)});
+  $$('[data-world-pan]').forEach(b=>b.onclick=()=>{const viewport=$('.uiWorldViewport');viewport.scrollBy({left:+b.dataset.worldPan*viewport.clientWidth*.8,behavior:B.state.reducedMotion?'instant':'smooth'})});
+  const viewport=$('.uiWorldViewport');if(viewport)viewport.onkeydown=e=>{if(e.target!==viewport)return;if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();viewport.scrollBy({left:(e.key==='ArrowLeft'?-1:1)*viewport.clientWidth*.7,behavior:B.state.reducedMotion?'instant':'smooth'})}};
+  fitCards();if(initial)requestAnimationFrame(()=>focusWorldLevel(selected,false));
 }
 
 /* ---------------------------------------------------------------- Mythling Vault (mockup 1536 × 1024) */

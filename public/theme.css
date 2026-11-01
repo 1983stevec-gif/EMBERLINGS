@@ -1389,3 +1389,34 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiPortraitPainting::after{right:0;background-position:95.5% top;mask-image:linear-gradient(270deg,#000 85%,transparent)}
 .uiPortraitArtRow{position:relative;z-index:1}
 .uiPortraitPainting>.uiPortraitArtRow:first-of-type{margin-inline:calc(-1 * var(--portrait-gutter));margin-top:0}
+
+/* One continuous archipelago: every region remains on the map while the player scrolls. */
+body .uiWorldHQ{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;padding:12px!important;background:#0b1523;box-sizing:border-box}
+.uiWorldMapArea{min-width:0;border:1px solid #917348;background:#0b1a29}
+.uiWorldIntro{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 16px;font-family:var(--ui-serif);color:#e5d6b8}
+.uiWorldIntro strong{font-weight:400;color:#ffd386}
+.uiWorldViewport{--world-height:clamp(400px,calc(100dvh - 310px),620px);height:var(--world-height);overflow-x:auto;overflow-y:hidden;max-width:100%;touch-action:pan-x pan-y;overscroll-behavior-x:contain;scrollbar-color:#c7a15a #0b1726;scrollbar-width:auto;-webkit-overflow-scrolling:touch}
+.uiWorldViewport:focus-visible{outline:3px solid #ffd386;outline-offset:-3px}
+.uiWorldCanvas{position:relative;isolation:isolate;height:100%;width:calc(var(--world-height) * 2354 / 760);background:#163f51}
+.uiWorldOriginal,.uiWorldNewIslands{position:absolute;top:0;height:100%;width:50%;pointer-events:none;background-repeat:no-repeat}
+.uiWorldOriginal{left:0;background-image:url(/art/ui/map.webp);background-size:calc(var(--world-height) * 1586 / 760) calc(var(--world-height) * 992 / 760);background-position:left calc(var(--world-height) * -66 / 760)}
+.uiWorldNewIslands{right:0;background:url(/art/ui/map-eastern-islands.webp) center/100% 100% no-repeat}
+.uiWorldCanvas>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.uiWorldPath,.uiWorldSeaPath{fill:none;stroke:#f3dc9c;stroke-width:3;stroke-dasharray:4 8;opacity:.85}
+.uiWorldSeaPath{stroke:#b5def0;stroke-width:2;stroke-dasharray:5 12;opacity:.55}
+.uiWorldCanvas .uiXNode.node{width:40px;height:40px;font-size:17px;line-height:1;transform:translate(-50%,-50%);font-variant-numeric:lining-nums}
+.uiWorldCanvas .uiXNode.node:hover{transform:translate(-50%,-50%) scale(1.08)}
+.uiWorldCanvas .uiXNode::before{inset:-2px}
+.uiWorldIslandTitle{position:absolute;top:10%;z-index:2;padding:8px 16px;color:#ffe5ae;background:#0d1e2ec9;border:1px solid #b2975a;border-radius:6px;font:600 24px var(--ui-display);text-align:center;pointer-events:none;text-shadow:0 2px 3px #000}
+.uiWorldIslandTitle small{display:block;font:16px var(--ui-serif);margin-top:4px}
+.uiWorldThunder{left:54%}.uiWorldShadow{left:80%}
+.uiWorldLegend{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:12px;color:#e5d6b8;font:15px var(--ui-serif)}
+.uiWorldLegend .lgDone{color:#98d27a}.uiWorldLegend .lgReady{color:#77baff}.uiWorldLegend .lgLocked{color:#afb4c0}.uiWorldLegend .lgBoss{color:#f4c85f;background:none!important}
+.uiWorldRegions,.uiWorldControls{display:flex;flex-wrap:wrap;gap:8px;padding:8px 12px}
+.uiWorldRegions button,.uiWorldControls button{flex:1 1 auto;min-height:44px;border:1px solid #a0844e;border-radius:6px;background:#142337;color:#f4e4c6;padding:8px 10px;font:16px var(--ui-serif);cursor:pointer}
+.uiWorldRegions button small{display:block;color:#c7b58d;font-size:13px;margin-top:3px}
+.uiWorldRegions button.on{background:linear-gradient(#eed093,#bc863a);color:#25180a}.uiWorldRegions button.on small{color:#493115}
+.uiWorldQuest{min-width:0;align-self:start;border:1px solid #917348;background:#0b1523}
+.uiWorldJourney{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:14px;border:1px solid #917348;color:#e4d6ba;font:16px var(--ui-serif)}
+.uiWorldJourney progress{flex:1;min-width:140px;accent-color:#deb85d;height:12px}
+@media(max-width:1199px){body .uiWorldHQ{grid-template-columns:minmax(0,1fr)}.uiWorldQuest{width:100%}.uiWorldQuest>.uiXPiece{max-width:420px;margin:auto}.uiWorldQuest .uiXPanelRow>.uiXPiece{flex:1!important}.uiWorldViewport{--world-height:clamp(400px,min(60dvh,calc((100vw - 24px) * 760 / 1177)),620px)}}
