@@ -27,7 +27,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 // Tablet layouts are for touch screens only, so a narrow desktop or laptop window keeps the desktop designs.
 const touchTablet = () => matchMedia('(pointer:coarse)').matches;
 const mapSplit = () => touchTablet() && innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505], uiXTrading: [0, 905], uiXTradeRoom: [0, 1024] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505], uiXRules: [58, 1024], uiXAcademy: [48, 956], uiXTrading: [0, 905], uiXTradeRoom: [0, 1024] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -674,6 +674,89 @@ function tradeRoomExact() {
   if (!tradePets[them.name]) loadTradePets().then(() => { $$('.uiXTRAva', wrap)[1].innerHTML = tradeAva(them.name); $$('.uiXTRAva', wrap)[0].innerHTML = tradeAva(me.name); });
 }
 
+/* ---------------------------------------------------------------- Battle Rules (mockup 1536 × 1024) */
+// Quick start is the design itself. Full rules (the game's own text) and Special conditions open in a panel
+// over the content area. Three condition lines in the design did not match the rules and are drawn correctly.
+const CONDITIONS = [['☠', 'Poison', 'Deals 10 damage between turns.'], ['🔥', 'Burn', 'Deals 20 damage between turns, then a coin flip may cure it.'], ['💤', 'Sleep', 'Cannot attack or retreat. A coin flip between turns may wake it.'], ['⚡', 'Paralysis', 'Cannot attack or retreat until its player’s turn ends.'], ['🌀', 'Confusion', 'Flip a coin before attacking. Tails: the attack fails and it takes 30 damage.']];
+let rulesTab = 'quick';
+function rulesExact() {
+  const app = $('#app'), sections = $$('#app > section.panel'); if (!sections.length || $('.uiXRules')) return;
+  const W = 1536, H = 1024, p = box(W, H);
+  const full = sections.map(sec => sec.innerHTML).join('');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXRulesPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/rules.webp', 'uiXRules', `
+   <h1 class="uiSr">Battle Rules</h1>
+   ${[['quick', 38, 'Quick start'], ['full', 276, 'Full rules'], ['cond', 512, 'Special conditions']].map(([id, x, t]) => `<button type="button" class="uiXRTab" data-rtab="${id}" style="${p(x, 182, x + 226, 230)};${fs(W, 20)}">${t}</button>`).join('')}
+   ${text(p(672, 906, 818, 946), W, 13.5, 'uiXRCond', 'Cannot attack or retreat;<br>a coin flip may wake it.')}
+   ${text(p(834, 906, 992, 946), W, 13.5, 'uiXRCond', 'Cannot attack or retreat<br>until its turn ends.')}
+   ${text(p(1020, 906, 1184, 946), W, 13.5, 'uiXRCond', 'Coin before attacking;<br>tails: 30 damage to itself.')}
+   ${hot(p(1252, 866, 1492, 902), 'data-rtab="cond"', 'View condition details')}
+   ${hot(p(34, 962, 276, 1012), 'data-go="decks"', 'Build Deck')}${hot(p(292, 962, 546, 1012), 'data-go="map"', 'Adventure')}
+   <div class="uiXRPanel" style="${p(22, 242, 1516, 950)};${fs(W, 17)}" hidden><div class="uiXRFull">${full}</div>
+    <div class="uiXRConds"><h2>Special conditions</h2><p>A Mythling hit by a special condition keeps it until it is cured, retreats, evolves or is knocked out. Retreating clears every condition.</p>
+     <ul>${CONDITIONS.map(([i, n, d]) => `<li><span>${i}</span><div><b>${n}</b><p>${d}</p></div></li>`).join('')}</ul>
+     <p class="uiXRNote">Sleep, Paralysis and Confusion replace each other. Poison and Burn can be added on top of them. A Clearwater Charm or Meadow Medic Trainer removes all conditions.</p></div></div>`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  const show = t => { rulesTab = t; wrap.dataset.tab = t; $('.uiXRPanel', wrap).hidden = t === 'quick'; $$('.uiXRTab', wrap).forEach(b => { b.classList.toggle('on', b.dataset.rtab === t); b.setAttribute('aria-pressed', String(b.dataset.rtab === t)); }); $('.uiXRPanel', wrap).scrollTop = 0; };
+  $$('[data-rtab]', wrap).forEach(b => b.onclick = () => show(b.dataset.rtab));
+  show(rulesTab); B.bind();
+}
+
+/* ---------------------------------------------------------------- Training centres (Attack Academy mockup 1536 × 1024) */
+// The game picks a random centre; the design is used for all five, with each centre's title, tagline and first steps.
+const CENTRES = {
+  'Attack Academy': { tag: 'Master your Merfling. Power your next attack.', steps: [['Attach Merfling', 'Attach a Merfling and choose a powered attack.'], ['Choose a powered attack', 'Five challenges. Score at least 3 for EXP.']] },
+  'Element Challenge': { tag: 'Read every rival. Strike with the right element.', steps: [['Read the opponent', 'Match each opponent with its elemental counter.'], ['Pick the counter element', 'Five challenges. Score at least 3 for EXP.']] },
+  'Survival Trial': { tag: 'Guard, heal and outlast every charge.', steps: [['Protect your card', 'Use your Bench, retreat, healing and cures.'], ['Guard or strike', 'Five challenges. Score at least 3 for EXP.']] },
+  'Combo Workshop': { tag: 'Chain Merfling, Trainers and attacks in order.', steps: [['Plan the sequence', 'Sequence Merfling, Trainers, evolution and attacks.'], ['Choose the next step', 'Five challenges. Score at least 3 for EXP.']] },
+  'Speed Strategy': { tag: 'Think fast. Counter in ten seconds.', steps: [['Beat the clock', 'Choose the right elemental counter in ten seconds.'], ['Pick the counter element', 'Five challenges. Score at least 3 for EXP.']] }
+};
+const ACAD_TILES = [[76, 312, 386, 622], [400, 312, 708, 622], [719, 312, 1027, 622], [76, 634, 386, 942], [400, 634, 708, 942], [719, 634, 1027, 942]];
+let acadSel = null, acadPage = 0;
+function academyExact() {
+  const app = $('#app'), picks = $$('[data-practice-pet]'); if (!picks.length || $('.uiXAcademy')) return;
+  const W = 1536, H = 1024, p = box(W, H), st = B.state;
+  const name = $('#app .hero h1')?.textContent.trim() || 'Attack Academy', info = CENTRES[name] || { tag: $('#app .hero h1 + p')?.textContent || '', steps: CENTRES['Attack Academy'].steps };
+  const cards = picks.map(b => st.owned.find(c => c.id === b.dataset.practicePet)).filter(Boolean);
+  if (!cards.some(c => c.id === acadSel)) acadSel = (cards.find(c => c.id === B.active()?.id) || cards[0]).id;
+  const pages = Math.max(1, Math.ceil(cards.length / 6)); acadPage = Math.min(acadPage, pages - 1);
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXAcadPage';
+  const hidden = document.createElement('div'); hidden.hidden = true; picks.forEach(b => hidden.append(b));
+  const paint = () => {
+    const sel = cards.find(c => c.id === acadSel), sp = B.species[sel.kind] || {}, t = document.createElement('div'); t.innerHTML = B.cardHTML(sel);
+    const icon = $('.cardTop .elementIcon', t)?.outerHTML || '';
+    const tiles = cards.slice(acadPage * 6, acadPage * 6 + 6).map((c, i) => {
+      const [x0, y0, x1, y1] = ACAD_TILES[i], d = document.createElement('div'); d.innerHTML = B.cardHTML(c);
+      const el = B.species[c.kind]?.element || '', ic = $('.cardTop .elementIcon', d)?.outerHTML || '', mv = $('.printedMoveName', d)?.textContent || '';
+      return `<button type="button" class="uiXATile ${c.id === acadSel ? 'sel' : ''}" data-acad="${c.id}" style="${p(x0, y0, x1, y1)}" aria-pressed="${c.id === acadSel}" aria-label="${esc(B.species[c.kind]?.name || '')}, level ${c.level || 1}"></button>
+        <div class="uiXAClip" style="${p(x0 + 17, y0 + 11, x1 - 18, y1 - 12)}">${fitCard('left:0;top:0;width:100%;height:100%', c)}<div class="uiXAFoot" style="${fs(W, 14)}">${ic}<b>${esc(el)}</b><i></i><span>${esc(mv)}</span></div></div>
+        ${c.id === acadSel ? `<span class="uiXACheck" style="${p(x1 - 36, y0 - 10, x1 - 2, y0 + 24)}" aria-hidden="true">✓</span>` : ''}`;
+    }).join('');
+    wrap.innerHTML = canvas(W, H, '/art/ui/academy.webp', 'uiXAcademy', `
+     <h1 class="uiTxt uiXATitle" style="${p(76, 64, 640, 136)};${fs(W, 60)}">${esc(name)}</h1>
+     ${text(p(82, 132, 700, 164), W, 23, 'uiXATag', esc(info.tag))}
+     ${text(p(86, 222, 640, 246), W, 15.5, 'uiXAPass', `5 rewarded sessions per UTC day &nbsp;•&nbsp; ${fmt(st.items?.trainingPasses || 0)} Academy Pass${(st.items?.trainingPasses || 0) === 1 ? '' : 'es'}`)}
+     ${tiles}
+     ${pages > 1 ? `<div class="uiXAPager" style="${p(842, 268, 1022, 304)};${fs(W, 16)}"><button type="button" data-ap="-1" ${acadPage ? '' : 'disabled'} aria-label="Previous Mythlings">‹</button><span>${acadPage + 1} / ${pages}</span><button type="button" data-ap="1" ${acadPage < pages - 1 ? '' : 'disabled'} aria-label="More Mythlings">›</button></div>` : ''}
+     <div class="uiXAPortrait" style="${p(1186, 338, 1352, 504)}">${B.art(sel)}</div>
+     ${text(p(1110, 504, 1430, 554), W, 40, 'uiXAName', esc(sp.name || ''))}
+     <div class="uiTxt uiXALevel" style="${p(1110, 552, 1430, 578)};${fs(W, 18)}">${icon}<span>Level ${sel.level || 1}</span><i>•</i><span>${esc(sp.element || '')}</span></div>
+     ${info.steps.map(([h, d], i) => `<div class="uiTxt uiXAStep" style="${p(1184 + i * 5, 598 + i * 72, 1440, 660 + i * 72)};${fs(W, 15)}"><b>${esc(h)}</b><span>${esc(d)}</span></div>`).join('')}
+     ${hot(p(1083, 815, 1455, 872), 'id="uiXAStart"', `Start training with ${sp.name || 'this Mythling'}`)}
+     ${hot(p(1130, 910, 1408, 942), 'data-go="training"', 'Try another center')}`);
+    wrap.append(hidden);
+    $$('[data-acad]', wrap).forEach(b => b.onclick = () => { acadSel = b.dataset.acad; paint(); });
+    $$('[data-ap]', wrap).forEach(b => b.onclick = () => { acadPage += +b.dataset.ap; paint(); });
+    $('#uiXAStart', wrap).onclick = () => hidden.querySelector(`[data-practice-pet="${acadSel}"]`)?.click();
+    B.bind(); const c = $('.uiX', wrap); if (c) ro.observe(c); requestAnimationFrame(fitCards);
+  };
+  paint();
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  requestAnimationFrame(fitCards);
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
@@ -685,6 +768,8 @@ function onFrame() {
   if (B.view === 'cardBattle' && exact) battleExact();
   if (B.view === 'trading' && wide() && $('#tradeFriendList')) { document.body.classList.add('uiExact'); tradingExact(); }
   if (B.view === 'trade' && wide() && $('#app .tradeOffers')) { document.body.classList.add('uiExact'); tradeRoomExact(); }
+  if (B.view === 'rules' && wide() && $('#app > section.panel')) { document.body.classList.add('uiExact'); rulesExact(); }
+  if (B.view === 'training' && wide() && $('[data-practice-pet]')) { document.body.classList.add('uiExact'); academyExact(); }
   if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
