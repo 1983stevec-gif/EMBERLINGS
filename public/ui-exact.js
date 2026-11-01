@@ -119,12 +119,23 @@ const REGION_TEXT = ['Your journey begins in the meadows.', 'Crystal light hides
 function questName(l) { return window.EmberUI.questName ? window.EmberUI.questName(l) : `Quest ${l}`; }
 // All five regions share one continuous, horizontally scrollable world.
 const WORLD_W = 2354, WORLD_H = 760;
+const EASTERN_TRAILS = [
+ [[80,610],[165,630],[250,600],[335,635],[425,600],[500,550],[470,470],[390,450],[310,485],[225,450],[140,480],[75,420],[105,340],[190,310],[275,345],[360,310],[450,335],[510,265],[455,200],[370,180],[285,225],[205,185],[110,245],[140,145],[280,120]],
+ [[650,600],[735,640],[825,605],[915,640],[1005,605],[1080,560],[1100,475],[1015,440],[930,480],[845,440],[760,475],[675,425],[655,340],[735,300],[820,340],[905,305],[990,340],[1085,295],[1120,190],[1030,220],[940,185],[850,220],[760,185],[680,225],[660,140],[730,70],[840,70],[960,85],[1020,140],[850,140]]
+];
 function worldLevelPos(l) {
-  const r = regionOf(l);
-  if (r < 3) { const [x,y] = levelPos(l); return [x,y-66]; }
-  const i = l-B.regions[r][1], columns = r===3?5:6, row = Math.floor(i/columns);
-  const column = row%2 ? columns-1-i%columns : i%columns;
-  return [1177+(r===3?65+column*100:650+column*90),220+row*92];
+  const r=regionOf(l);
+  if(r<3){const [x,y]=levelPos(l);return [x,y-66]}
+  const [x,y]=EASTERN_TRAILS[r-3][l-B.regions[r][1]];
+  return [1177+x,y];
+}
+// A smooth trail passes through every quest marker, with gentle bends between them.
+function worldTrailPath(points) {
+  return points.map((p,i)=>{
+    if(!i)return 'M '+p.join(' ');
+    const a=points[i-1],before=points[Math.max(0,i-2)],after=points[Math.min(points.length-1,i+1)];
+    return `C ${a[0]+(p[0]-before[0])/6} ${a[1]+(p[1]-before[1])/6}, ${p[0]-(after[0]-a[0])/6} ${p[1]-(after[1]-a[1])/6}, ${p[0]} ${p[1]}`;
+  }).join(' ');
 }
 function map() {
   if (!wide()) return UI.baseMap();
@@ -135,10 +146,13 @@ function map() {
     const l=i+1,[x,y]=worldLevelPos(l),done=cleared.includes(l),locked=l>max&&!done,boss=!!B.bosses[l];
     return `<button class="node uiXNode ${done?'done':''} ${locked?'locked':''} ${boss?'boss':''} ${l===selected?'uiSel':''}" data-level="${l}" style="left:${x/WORLD_W*100}%;top:${y/WORLD_H*100}%" aria-label="Quest ${l}${boss?', boss':''}${done?', completed':locked?', locked':', ready'}" aria-pressed="${l===selected}">${l}</button>`;
   }).join('');
-  const routes=B.regions.map((r,i)=>`<polyline class="uiWorldPath" points="${Array.from({length:r[2]-r[1]+1},(_,k)=>worldLevelPos(r[1]+k).join(',')).join(' ')}"/>`).join('');
-  const connectors=B.regions.slice(0,-1).map((r,i)=>`<polyline class="uiWorldSeaPath" points="${worldLevelPos(r[2]).join(',')} ${worldLevelPos(B.regions[i+1][1]).join(',')}"/>`).join('');
+  const routes=B.regions.map(r=>`<path class="uiWorldPath" d="${worldTrailPath(Array.from({length:r[2]-r[1]+1},(_,k)=>worldLevelPos(r[1]+k)))}"/>`).join('');
+  const connectors=B.regions.slice(0,-1).map((r,i)=>{
+    const a=worldLevelPos(r[2]),b=worldLevelPos(B.regions[i+1][1]),mid=(a[0]+b[0])/2;
+    return `<path class="uiWorldSeaPath" d="M ${a.join(' ')} C ${mid} ${a[1]}, ${mid} ${b[1]}, ${b.join(' ')}"/>`;
+  }).join('');
   const quest=mapSplit()?`<div class="uiXPanelRow">${piece(W,H,bg,'uiXMap',[1186,66,1586,540],`<div id="uiQuest">${questTop(selected)}</div>`,'flex:340')}${piece(W,H,bg,'uiXMap',[1186,540,1586,880],`<div id="uiQuest2">${questBottom(selected)}</div>`,'flex:474')}</div>`:piece(W,H,bg,'uiXMap',[1186,66,1586,880],`<div id="uiQuest">${questPanel(selected)}</div>`);
-  return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>Five islands · 100 quests</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>46 – 70</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>71 – 100</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldLegend"><span class="lgDone">● Completed</span><span class="lgReady">● Ready</span><span class="lgLocked">● Locked</span><span class="lgBoss">◆ Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${r[1]}–${r[2]}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">← Scroll left</button><button id="uiXPrev">‹ Previous quest</button><button id="uiXCurrent">Current level (${max})</button><button id="uiXNext">Next quest ›</button><button data-world-pan="1" aria-label="Scroll map right">Scroll right →</button></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 levels complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss milestones · 10 · 25 · 45 · 70 · 100</small></div></section>`;
+  return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>Five islands · 100 quests</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>46 – 70</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>71 – 100</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldToolbar"><div class="uiWorldLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${r[1]}–${r[2]}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">‹</button><button id="uiXPrev" aria-label="Previous quest">−</button><button id="uiXCurrent">Current level (${max})</button><button id="uiXNext" aria-label="Next quest">+</button><button data-world-pan="1" aria-label="Scroll map right">›</button></div></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 levels complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss milestones · 10 · 25 · 45 · 70 · 100</small></div></section>`;
 }
 function focusWorldLevel(l, smooth=true) {
   const viewport=$('.uiWorldViewport'),node=$(`.uiWorldCanvas [data-level="${l}"]`);

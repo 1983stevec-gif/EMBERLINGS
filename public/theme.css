@@ -1423,3 +1423,26 @@ body .uiWorldHQ{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;
 
 .uiXMNote{white-space:normal;flex-direction:column;justify-content:center;gap:.35em;line-height:1.25;text-align:center;padding:.3em .5em}
 .uiXMNote small{font-size:.9em;color:#c4bba5}
+
+/* Match the older compact map strip and blend the painted ocean at the join. */
+.uiWorldOriginal{z-index:1;mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 110px),transparent calc(100% - 20px),transparent)}
+.uiWorldNewIslands{z-index:0;left:calc(50% - 110px);right:0;width:calc(50% + 110px)}
+.uiWorldCanvas>svg{z-index:2}
+.uiWorldIslandTitle{z-index:3;top:auto;bottom:8px;padding:4px 8px;background:linear-gradient(90deg,transparent,#0a1c2b77,transparent);border:0;border-radius:0;font-size:20px;line-height:1;letter-spacing:.04em;text-shadow:0 2px 4px #000}
+.uiWorldIslandTitle small{font-size:13px;line-height:1;margin-top:2px}
+.uiWorldPath{stroke:#f5deb0;stroke-width:4;stroke-dasharray:2 9;stroke-linecap:round;opacity:.95;filter:drop-shadow(0 1px 2px #081523)}
+.uiWorldSeaPath{stroke-linecap:round}
+.uiWorldToolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid #8a7043;background:linear-gradient(#152332,#0b1622);box-shadow:inset 0 0 0 2px #0003}
+.uiWorldLegend{flex:none;gap:12px;margin:0;padding:8px 10px;border:1px solid #77613b;border-radius:5px;background:#09131de6;font-size:13px}
+.uiWorldLegend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.uiWorldLegend i{display:inline-block;width:14px;height:14px;box-sizing:border-box;border:2px solid #9fa4b3;border-radius:50%}
+.uiWorldLegend i.lgBoss{border-radius:3px 3px 50% 50%;background:#78271a!important}
+.uiWorldRegions{order:2;flex:1 1 100%;gap:6px;padding:0}
+.uiWorldRegions button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:1 1 auto;min-height:44px;padding:6px 9px;border-color:#9a7a43;border-radius:7px;background:linear-gradient(#172536,#0d1927);font-size:14px;box-shadow:inset 0 0 0 1px #0008}
+.uiWorldRegions button small{display:inline;margin:0;font-size:12px}
+.uiWorldRegions button.on{background:linear-gradient(#49391e,#2c2415);border-color:#e0bb6b;color:#ffe7ac;box-shadow:inset 0 0 0 1px #e7c37744,0 0 8px #dba84f22}
+.uiWorldRegions button.on small{color:#e2c684}
+.uiWorldControls{order:1;gap:6px;margin-left:auto;padding:0}
+.uiWorldControls button{flex:none;min-width:44px;min-height:44px;padding:6px 9px;background:linear-gradient(#1b2939,#101b27);font-size:20px;border-color:#806b42;box-shadow:inset 0 0 0 1px #0008}
+.uiWorldControls #uiXCurrent{font-size:14px;padding:6px 12px}
+@media(max-width:799px){.uiWorldToolbar{justify-content:center}.uiWorldControls{margin-left:0}.uiWorldLegend{flex:1 1 auto;justify-content:center}.uiWorldRegions button{font-size:13px;padding:6px}.uiWorldRegions button small{font-size:11px}}
