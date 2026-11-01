@@ -1,3 +1,4 @@
+import { BOSS_LEVELS } from './card-progression.js';
 // Achievements, titles and collection-album rules. Shared by the game (progress) and the server (title validation).
 // Progress is computed from the save itself, so earlier progress counts retroactively.
 
@@ -5,7 +6,7 @@ const owned = st => Array.isArray(st?.owned) ? st.owned : [];
 const ext = st => st?.ember || {};
 const count = (st, test) => owned(st).filter(test).length;
 const cleared = st => Array.isArray(st?.cleared) ? st.cleared : [];
-const BOSS_LEVELS = [10, 25, 45, 70, 100];
+const legacyBossChampion = st => [10,25,45,70,100].every(l => cleared(st).includes(l));
 export const SPECIES_COUNT = 16;
 
 // Collection album: three stamps per species, each claimed once.
@@ -39,8 +40,8 @@ export const ACHIEVEMENTS = [
   a('quest-1', '🗺️', 'First Quest', 'Win your first quest.', 'Rookie Tamer', 1, st => cleared(st).length),
   a('quest-25', '🗺️', 'Island Hopper', 'Complete 25 quests.', 'Island Hopper', 25, st => cleared(st).length),
   a('quest-100', '🗺️', 'World Conqueror', 'Complete all 100 quests.', 'World Conqueror', 100, st => cleared(st).length),
-  a('boss-1', '👑', 'Magma Breaker', 'Defeat Magmarok, the level 10 boss.', 'Magma Breaker', 1, st => cleared(st).includes(10) ? 1 : 0),
-  a('boss-all', '👑', "Voidra's Bane", 'Defeat all five island bosses.', "Voidra's Bane", 5, st => BOSS_LEVELS.filter(l => cleared(st).includes(l)).length),
+  a('boss-1', '👑', 'Magma Breaker', 'Defeat Magmarok, the level 1.9 boss.', 'Magma Breaker', 1, st => cleared(st).includes(9) || cleared(st).includes(10) ? 1 : 0),
+  a('boss-all', '👑', "Voidra's Bane", 'Defeat every .9 stage boss.', "Voidra's Bane", BOSS_LEVELS.length, st => legacyBossChampion(st) ? BOSS_LEVELS.length : BOSS_LEVELS.filter(l => cleared(st).includes(l)).length),
   a('species-8', '🔎', 'Explorer', 'Discover 8 Mythling species.', 'Explorer', 8, st => (st.discovered || []).length),
   a('species-all', '🔎', 'Mythling Scholar', 'Discover every Mythling species.', 'Mythling Scholar', SPECIES_COUNT, st => (st.discovered || []).length),
   a('cards-100', '📚', 'Collector', 'Own 100 Mythling cards.', 'Collector', 100, st => owned(st).length),

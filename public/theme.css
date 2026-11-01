@@ -1548,3 +1548,18 @@ body.uiPhone .hero::after{opacity:.18;font-size:32px;right:10px;top:15px}
 body.uiPhone #uiQuest.uiPhoneQuest{position:static;inset:auto;pointer-events:auto}
 body.uiPhone.arenaActive #app{padding:0!important}
 body.uiPhone.arenaActive .nav,body.uiPhone.arenaActive .uiTop{display:none!important}
+
+/* Decimal adventure stages retain their integer save IDs and readable map badges. */
+.uiWorldCanvas .uiXNode.node{font-size:14px;font-variant-numeric:tabular-nums}
+.uiWorldCanvas .uiXNode[data-level="10"]{width:46px;height:46px}
+.uiWorldRange{position:absolute;z-index:3;display:grid;place-items:center;height:4%;background:#0a1724;color:#f4e3bd;border:1px solid #9c895c;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%);font:600 clamp(12px,1.3vw,16px) var(--ui-serif);pointer-events:none}
+.uiWorldForestRange{left:35.2%;top:37.4%;width:5.1%}
+.uiWorldPeaksRange{left:37.7%;top:90.7%;width:5.1%}
+.uiWorldQuest .uiXPanelRow{align-items:flex-start}
+.uiXBattleTab .battleCaption .pill{display:block;margin:0 0 calc(5*var(--u));padding:0;border:0;background:none;color:#f3d48a;font-size:calc(13*var(--u));line-height:1.3}
+.uiWorldQuest .uiXPanelRow>.uiXPiece:first-child{flex:340!important}
+.uiWorldQuest .uiXPanelRow>.uiXPiece:last-child{flex:474!important}
+body.uiPhone .uiWorldLegend{flex:1 1 100%}
+body.uiPhone .uiWorldControls{flex:1 1 100%;display:grid;grid-template-columns:44px 44px minmax(0,1fr) 44px 44px;gap:4px}
+body.uiPhone .uiWorldControls button{min-width:0;padding:6px 4px}
+body.uiPhone .uiWorldControls #uiXCurrent{font-size:12px;padding:6px 2px}

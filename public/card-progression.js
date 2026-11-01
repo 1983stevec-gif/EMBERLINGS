@@ -1,4 +1,8 @@
 import {rarityRank,mutationCoins} from './combat-rules.js';
+// Keep integer quest IDs in saves; decimal stage labels are presentation only.
+export function adventureLabel(quest){return `${Math.floor((quest-1)/9)+1}.${(quest-1)%9+1}`}
+export const BOSS_LEVELS=Object.freeze(Array.from({length:11},(_,i)=>(i+1)*9));
+export const ADVENTURE_BOSSES=Object.freeze(Object.fromEntries(BOSS_LEVELS.map(l=>[l,l<=10?'Magmarok':l<=25?'Thorn Guardian':l<=45?'Frostfang':l<=70?'Voltitan':'Voidra'])));
 export const SHOP_ITEMS=[
 {id:'cover-ember',category:'Binders',name:'Emberbound Cover',cost:600,type:'cover',value:'ember',description:'Warm leather binder and gold page edges.'},
 {id:'cover-moon',category:'Binders',name:'Moonweave Cover',cost:900,type:'cover',value:'moon',description:'Violet binder with a silver moon seal.'},

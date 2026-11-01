@@ -96,7 +96,7 @@ function home() {
 
 /* ---------------------------------------------------------------- Adventure HQ (mockup 1586 × 992) */
 // Level positions in mockup pixels: Ember Meadows uses the painted node spots; the other islands follow their painted terrain.
-const MEADOW = [[150, 480], [214, 497], [273, 531], [341, 549], [410, 580], [471, 541], [474, 482], [530, 451], [625, 447]];
+const MEADOW = [[150, 480], [214, 497], [273, 531], [341, 549], [410, 580], [471, 541], [474, 482], [530, 451], [570, 365]];
 function along(points, n) {
   const seg = []; let total = 0;
   for (let i = 1; i < points.length; i++) { const d = Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]); seg.push(d); total += d; }
@@ -117,7 +117,7 @@ let selected = null, shownRegion = null, lastRenderedView = null;
 const regionOf = l => B.regions.findIndex(r => l >= r[1] && l <= r[2]);
 const REGION_ART = [0, 5, 14, 3, 7];
 const REGION_TEXT = ['Your journey begins in the meadows.', 'Crystal light hides clever rivals.', 'Icy winds test every deck.', 'Storms crackle over the valley.', 'Only the bravest enter the dark.'];
-function questName(l) { return window.EmberUI.questName ? window.EmberUI.questName(l) : `Quest ${l}`; }
+function questName(l) { return window.EmberUI.questName ? window.EmberUI.questName(l) : `Quest ${B.adventureLabel(l)}`; }
 // All five regions share one continuous, horizontally scrollable world.
 const WORLD_W = 2354, WORLD_H = 760;
 const EASTERN_TRAILS = [
@@ -144,7 +144,7 @@ function map() {
   shownRegion=regionOf(selected);
   const nodes=Array.from({length:100},(_,i)=>{
     const l=i+1,[x,y]=worldLevelPos(l),done=cleared.includes(l),locked=l>max&&!done,boss=!!B.bosses[l];
-    return `<button class="node uiXNode ${done?'done':''} ${locked?'locked':''} ${boss?'boss':''} ${l===selected?'uiSel':''}" data-level="${l}" style="left:${x/WORLD_W*100}%;top:${y/WORLD_H*100}%" aria-label="Quest ${l}${boss?', boss':''}${done?', completed':locked?', locked':', ready'}" aria-pressed="${l===selected}">${l}</button>`;
+    return `<button class="node uiXNode ${done?'done':''} ${locked?'locked':''} ${boss?'boss':''} ${l===selected?'uiSel':''}" data-level="${l}" style="left:${x/WORLD_W*100}%;top:${y/WORLD_H*100}%" aria-label="Quest ${B.adventureLabel(l)}${boss?', boss':''}${done?', completed':locked?', locked':', ready'}" aria-pressed="${l===selected}">${B.adventureLabel(l)}</button>`;
   }).join('');
   const routes=B.regions.map(r=>`<path class="uiWorldPath" d="${worldTrailPath(Array.from({length:r[2]-r[1]+1},(_,k)=>worldLevelPos(r[1]+k)))}"/>`).join('');
   const connectors=B.regions.slice(0,-1).map((r,i)=>{
@@ -152,7 +152,7 @@ function map() {
     return `<path class="uiWorldSeaPath" d="M ${a.join(' ')} C ${mid} ${a[1]}, ${mid} ${b[1]}, ${b.join(' ')}"/>`;
   }).join('');
   const quest=phoneLayout()?phoneQuest(selected):mapSplit()?`<div class="uiXPanelRow">${piece(W,H,bg,'uiXMap',[1186,66,1586,540],`<div id="uiQuest">${questTop(selected)}</div>`,'flex:340')}${piece(W,H,bg,'uiXMap',[1186,540,1586,880],`<div id="uiQuest2">${questBottom(selected)}</div>`,'flex:474')}</div>`:piece(W,H,bg,'uiXMap',[1186,66,1586,880],`<div id="uiQuest">${questPanel(selected)}</div>`);
-  return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>Five islands · 100 quests</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>46 – 70</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>71 – 100</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldToolbar"><div class="uiWorldLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${r[1]}–${r[2]}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">‹</button><button id="uiXPrev" aria-label="Previous quest">−</button><button id="uiXCurrent">Current level (${max})</button><button id="uiXNext" aria-label="Next quest">+</button><button data-world-pan="1" aria-label="Scroll map right">›</button></div></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 levels complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss milestones · 10 · 25 · 45 · 70 · 100</small></div></section>`;
+  return `<section class="uiExactPage uiWorldHQ"><h1 class="uiSr">Adventure HQ</h1><div class="uiWorldMapArea"><div class="uiWorldIntro"><span>100 stages · Boss at every .9</span><strong>Swipe left or right to explore ↔</strong></div><div class="uiWorldViewport" tabindex="0" role="region" aria-label="Adventure islands, scroll left or right"><div class="uiWorldCanvas"><div class="uiWorldOriginal" aria-hidden="true"></div><div class="uiWorldNewIslands" aria-hidden="true"></div><span class="uiWorldRange uiWorldForestRange">${B.adventureLabel(11)} – ${B.adventureLabel(25)}</span><span class="uiWorldRange uiWorldPeaksRange">${B.adventureLabel(26)} – ${B.adventureLabel(45)}</span><div class="uiWorldIslandTitle uiWorldThunder">Thunder Valley <small>${B.adventureLabel(46)} – ${B.adventureLabel(70)}</small></div><div class="uiWorldIslandTitle uiWorldShadow">Shadow Realm <small>${B.adventureLabel(71)} – ${B.adventureLabel(100)}</small></div><svg viewBox="0 0 ${WORLD_W} ${WORLD_H}" preserveAspectRatio="none" aria-hidden="true">${connectors}${routes}</svg>${nodes}</div></div><div class="uiWorldToolbar"><div class="uiWorldLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div><div class="uiWorldRegions">${B.regions.map((r,i)=>`<button data-region="${i}" class="${i===shownRegion?'on':''}">${esc(r[0])}<small>${B.adventureLabel(r[1])}–${B.adventureLabel(r[2])}</small></button>`).join('')}</div><div class="uiWorldControls"><button data-world-pan="-1" aria-label="Scroll map left">‹</button><button id="uiXPrev" aria-label="Previous quest">−</button><button id="uiXCurrent">Current level (${B.adventureLabel(max)})</button><button id="uiXNext" aria-label="Next quest">+</button><button data-world-pan="1" aria-label="Scroll map right">›</button></div></div></div><aside class="uiWorldQuest">${quest}</aside><div class="uiWorldJourney"><strong>Your journey</strong><span>${cleared.length} / 100 stages complete</span><progress value="${cleared.length}" max="100" aria-label="Journey progress"></progress><small>Boss at every .9 stage</small></div></section>`;
 }
 function focusWorldLevel(l, smooth=true) {
   const viewport=$('.uiWorldViewport'),node=$(`.uiWorldCanvas [data-level="${l}"]`);
@@ -161,7 +161,7 @@ function focusWorldLevel(l, smooth=true) {
   if (node.offsetLeft>=viewport.scrollLeft+24 && node.offsetLeft<=viewport.scrollLeft+viewport.clientWidth-24) return;
   viewport.scrollTo({left:node.offsetLeft-viewport.clientWidth/2,behavior:smooth&&!B.state.reducedMotion?'smooth':'instant'});
 }
-function phoneQuestContents(l){const info=questInfo(l);return `<div class="uiPhoneQuestArt">${UI.questArt(l)}</div><h2>${esc(B.regions[info.r][0])}</h2><h3>${esc(questName(l))} · Level ${l}</h3><p>${info.locked?'Complete earlier quests to unlock':info.cleared?'Completed · replay':'Ready to play'}${info.prize?' · 🪙 '+fmt(info.prize.coins):''}</p><button class="button alt" data-go="decks">Edit deck</button><div class="uiPhoneQuestDeck">${deckTop(3).map(c=>B.cardHTML(c)).join('')}</div><button id="uiBegin" class="button gold ${info.locked?'locked':''}" ${info.locked?'disabled':''}>${info.locked?'Complete earlier quests':info.cleared?'Replay battle':'Begin battle'}</button>`}
+function phoneQuestContents(l){const info=questInfo(l);return `<div class="uiPhoneQuestArt">${UI.questArt(l)}</div><h2>${esc(B.regions[info.r][0])}</h2><h3>${esc(questName(l))} · Level ${B.adventureLabel(l)}</h3><p>${info.locked?'Complete earlier quests to unlock':info.cleared?'Completed · replay':'Ready to play'}${info.prize?' · 🪙 '+fmt(info.prize.coins):''}</p><button class="button alt" data-go="decks">Edit deck</button><div class="uiPhoneQuestDeck">${deckTop(3).map(c=>B.cardHTML(c)).join('')}</div><button id="uiBegin" class="button gold ${info.locked?'locked':''}" ${info.locked?'disabled':''}>${info.locked?'Complete earlier quests':info.cleared?'Replay battle':'Begin battle'}</button>`}
 function phoneQuest(l){return `<div id="uiQuest" class="uiPhoneQuest">${phoneQuestContents(l)}</div>`}
 function questInfo(l) {
   const r = regionOf(l), boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
@@ -171,11 +171,11 @@ function questInfo(l) {
 function questTop(l) {
   const W = 1586, H = 992, p = box(W, H), { r, boss, cleared, locked, prize } = questInfo(l);
   return `${text(p(1203, 98, 1560, 142), W, 33, 'uiXRegion', esc(B.regions[r][0]))}
-   ${text(p(1205, 140, 1500, 166), W, 19, 'uiXLevel', `${boss ? 'Boss · ' : ''}Level ${l}`)}
+   ${text(p(1205, 140, 1500, 166), W, 19, 'uiXLevel', `${boss ? 'Boss · ' : ''}Level ${B.adventureLabel(l)}`)}
    <div class="uiXArt" style="${p(1196, 179, 1561, 399)};${fs(W, 17)}">${UI.questArt(l)}</div>
    ${text(p(1208, 408, 1560, 458), W, 36, 'uiXQuest', esc(questName(l)))}
    ${text(p(1210, 456, 1560, 486), W, 21, 'uiXStatus ' + (locked ? 'locked' : cleared ? 'done' : ''), locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play')}
-   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}`;
+   ${text(p(1211, 490, 1565, 522), W, 17, 'uiXDesc', `${boss ? `Defeat ${esc(boss)} to reach level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span>🪙 ${fmt(prize.coins)}</span>` : ''}`)}`;
 }
 function questBottom(l) {
   const W = 1586, H = 992, p = box(W, H), { locked } = questInfo(l), deck = deckTop(3);

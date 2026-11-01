@@ -188,7 +188,7 @@ const ISLE = [
 ];
 let selected = null;
 const regionOf = l => B.regions.findIndex(r => l >= r[1] && l <= r[2]);
-function questName(l) { if (B.bosses[l]) return B.bosses[l]; const r = regionOf(l), list = QUEST_NAMES[r] || [], i = l - B.regions[r][1]; return list[i % list.length] || `Quest ${l}`; }
+function questName(l) { if (B.bosses[l]) return B.bosses[l]; const r = regionOf(l), list = QUEST_NAMES[r] || [], i = l - B.regions[r][1]; return list[i % list.length] || `Quest ${B.adventureLabel(l)}`; }
 function nodeCenter(l) { const p = B.positionLevel(l); return [p.x + 22, p.y + 21]; }
 function seeded(n) { const x = Math.sin(n * 91.7) * 43758.5453; return x - Math.floor(x); }
 function islandPath(cx, cy, rx, ry, seed) {
@@ -229,7 +229,7 @@ function mapNodes() {
   let out = '';
   for (let l = 1; l <= 100; l++) {
     const p = B.positionLevel(l), done = cleared.includes(l), locked = l > max && !done, boss = !!B.bosses[l];
-    out += `<button class="node uiNode ${done ? 'done' : ''} ${locked ? 'locked' : ''} ${boss ? 'boss' : ''} ${l === selected ? 'uiSel' : ''}" data-level="${l}" style="left:${p.x}px;top:${p.y}px" aria-label="Quest ${l}: ${esc(questName(l))}${boss ? ', boss' : ''}${done ? ', completed, replay' : locked ? ', locked' : ', ready'}"><span>${l}</span></button>`;
+    out += `<button class="node uiNode ${done ? 'done' : ''} ${locked ? 'locked' : ''} ${boss ? 'boss' : ''} ${l === selected ? 'uiSel' : ''}" data-level="${l}" style="left:${p.x}px;top:${p.y}px" aria-label="Quest ${B.adventureLabel(l)}: ${esc(questName(l))}${boss ? ', boss' : ''}${done ? ', completed, replay' : locked ? ', locked' : ', ready'}"><span>${B.adventureLabel(l)}</span></button>`;
   }
   return out;
 }
@@ -237,14 +237,14 @@ function map() {
   const max = B.limit(), cleared = (B.state.cleared || []).length;
   if (!selected || selected > 100) selected = Math.min(100, max);
   if (!map.fitted) { map.fitted = true; const w = innerWidth >= 900 ? Math.min(innerWidth, 1560) - 440 : innerWidth - 24; B.state.map = { x: 0, y: 0, ...(B.state.map || {}), z: Math.max(.4, Math.min(1, w / 1800)) }; }
-  const labels = B.regions.map(r => { const pts = []; for (let l = r[1]; l <= r[2]; l++) pts.push(nodeCenter(l)); const cx = (Math.min(...pts.map(p => p[0])) + Math.max(...pts.map(p => p[0]))) / 2, by = Math.max(...pts.map(p => p[1])); return `<div class="uiRegion" style="left:${cx - 150}px;top:${by + 48}px"><strong>${esc(r[0])}</strong><span>${r[1]} – ${r[2]}</span></div>`; }).join('');
+  const labels = B.regions.map(r => { const pts = []; for (let l = r[1]; l <= r[2]; l++) pts.push(nodeCenter(l)); const cx = (Math.min(...pts.map(p => p[0])) + Math.max(...pts.map(p => p[0]))) / 2, by = Math.max(...pts.map(p => p[1])); return `<div class="uiRegion" style="left:${cx - 150}px;top:${by + 48}px"><strong>${esc(r[0])}</strong><span>${B.adventureLabel(r[1])} – ${B.adventureLabel(r[2])}</span></div>`; }).join('');
   return `<section class="uiHQ"><div class="uiMapPanel uiFrame"><div class="mapWrap uiMap" id="mapWrap" data-ui-art="map"><div class="world" id="world">${mapSVG()}${labels}${mapNodes()}</div>
    <div class="uiMapTitle"><h1>Adventure HQ</h1><p>Choose your next adventure.</p></div>
    <div class="uiCompassRose" aria-hidden="true"><span>N</span><b>✦</b></div>
    <div class="uiLegend"><span><i class="lgDone"></i>Completed</span><span><i class="lgReady"></i>Ready</span><span><i class="lgLocked"></i>Locked</span><span><i class="lgBoss"></i>Boss</span></div>
-   <div class="uiZoom mapControls"><button data-map="out" aria-label="Zoom out">−</button><button data-map="in" aria-label="Zoom in">+</button><button data-map="current">Current level (${max})</button></div></div></div>
+   <div class="uiZoom mapControls"><button data-map="out" aria-label="Zoom out">−</button><button data-map="in" aria-label="Zoom in">+</button><button data-map="current">Current level (${B.adventureLabel(max)})</button></div></div></div>
    <aside class="uiQuest uiFrame" id="uiQuest">${questPanel(selected)}</aside>
-   <div class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${cleared} / 100 levels complete</span><span class="uiTrack"><i class="uiTrackFill" style="width:${cleared}%"></i>${[10, 25, 45, 70, 100].map(p => `<b style="left:${p}%" class="${(B.state.cleared || []).includes(p) ? 'on' : ''}"></b>`).join('')}</span><span class="uiMilestones">Boss milestones <em>10 · 25 · 45 · 70 · 100</em></span></div></section>`;
+   <div class="uiJourneyBar uiFrame"><strong>Your journey</strong><span>${cleared} / 100 stages complete</span><span class="uiTrack"><i class="uiTrackFill" style="width:${cleared}%"></i>${B.bossLevels.map(p => `<b style="left:${p}%" class="${(B.state.cleared || []).includes(p) ? 'on' : ''}"></b>`).join('')}</span><span class="uiMilestones">Boss at every <em>.9 stage</em></span></div></section>`;
 }
 
 /* Quest picture: a Mythling native to the level's world, changing level by level, framed in that world's colours. */
@@ -264,10 +264,10 @@ function questPanel(l) {
   const r = regionOf(l), region = B.regions[r], boss = B.bosses[l], cleared = (B.state.cleared || []).includes(l), locked = l > B.limit() && !cleared;
   let prize = null; try { prize = B.questPrize(l); } catch { }
   const deck = deckTop(3), artKind = boss ? [0, 5, 6, 3, 7][r] : REGION_ART[r];
-  return `<h2>${esc(region[0])}</h2><p class="uiLevel">${boss ? 'Boss · ' : ''}Level ${l}</p>
+  return `<h2>${esc(region[0])}</h2><p class="uiLevel">${boss ? 'Boss · ' : ''}Level ${B.adventureLabel(l)}</p>
    <div class="uiQuestArt ${boss ? 'uiBossArt' : ''}">${questArt(l)}</div>
    <h3>${esc(questName(l))}</h3><p class="uiStatus ${locked ? 'locked' : cleared ? 'done' : ''}">${locked ? 'Locked' : cleared ? 'Completed · replay' : 'Ready to play'}</p>
-   <p class="uiDesc">${boss ? `Defeat ${esc(boss)} to open the next island.` : esc(REGION_TEXT[r])}${prize ? ` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>` : ''}</p>
+   <p class="uiDesc">${boss ? `Defeat ${esc(boss)} to reach level ${B.adventureLabel(l+1).split('.')[0]}.` : esc(REGION_TEXT[r])}${prize ? ` <span class="uiPrize">🪙 ${fmt(prize.coins)}</span>` : ''}</p>
    <div class="uiDivider" aria-hidden="true">◆</div>
    <div class="uiDeckHead"><strong>Your deck</strong><button class="uiLink" data-go="decks">Edit deck ›</button></div>
    <div class="uiDeckRow">${deck.map(c => card(c)).join('') || '<p class="small">Build a deck in Battle Deck.</p>'}</div>
