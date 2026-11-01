@@ -330,14 +330,14 @@ function mutationExact() {
    ${text(p(512, 561, 622, 581), W, 14.5, 'uiXMHead', `With ${esc(m.name)}`)}
    ${text(p(385, 594, 445, 624), W, 22, 'uiXMVal', esc(cmp[0] || ''))}${text(p(535, 594, 600, 624), W, 22, 'uiXMVal gold', esc(cmp[1] || ''))}
    ${text(p(385, 639, 445, 669), W, 22, 'uiXMVal', esc(cmp[2] || ''))}${text(p(535, 639, 600, 669), W, 22, 'uiXMVal gold', esc(cmp[3] || ''))}
-   ${text(p(378, 684, 520, 716), W, 24, 'uiXMPrice', `${fmt(m.cost)} <small>coins</small>`)}
+   ${m.packOnly ? text(p(330, 680, 560, 718), W, 22, 'uiXMPrice uiXMPacks', '🎁 Found in packs') : text(p(378, 684, 520, 716), W, 24, 'uiXMPrice', `${fmt(m.cost)} <small>coins</small>`)}
    <div class="uiXMBuy" style="${p(250, 722, 596, 765)};${fs(W, 19)}"></div>
    <div class="uiTxt uiXMNeed" style="${p(250, 768, 596, 792)};${fs(W, 15)}"></div>
    <div class="uiXMConfirm" style="${p(196, 556, 650, 806)};${fs(W, 15)}"></div>
    ${(() => { if (m.id !== mutCardSel) { mutCardSel = m.id; mutCardPage = MUT_NEW.includes(m.id) ? 1 : 0; } const slots = Object.values(MUT_CARDS);
-     return [Object.keys(MUT_CARDS), MUT_NEW].map((ids, pg) => ids.map((id, i) => { const x = B.MUTATIONS.find(q => q.id === id); return `<div class="uiXMCard uiXMP${pg} ${pg ? 'uiXMLive' : ''} ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...slots[i])};${fs(W, 14.5)};--mut:${x?.color}">${pg && x ? `<span class="uiXMLArt">${B.art({ ...c, mutation: id })}</span><span class="uiXMLName"><i>${x.icon}</i>${esc(x.name)}</span><span class="uiXMLPrice"><b></b>${fmt(x.cost)}</span>` : ''}</div>`; }).join('')).join(''); })()}
+     return [Object.keys(MUT_CARDS), MUT_NEW].map((ids, pg) => ids.map((id, i) => { const x = B.MUTATIONS.find(q => q.id === id); return `<div class="uiXMCard uiXMP${pg} ${pg ? 'uiXMLive' : ''} ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...slots[i])};${fs(W, 14.5)};--mut:${x?.color}">${pg && x ? `<span class="uiXMLArt">${B.art({ ...c, mutation: id })}</span><span class="uiXMLName"><i>${x.icon}</i>${esc(x.name)}</span><span class="uiXMLPrice packs">🎁 Packs only</span>` : ''}</div>`; }).join('')).join(''); })()}
    <div class="uiXMCardPager" style="${p(1268, 170, 1410, 204)};${fs(W, 15)}"><button type="button" data-mcp="0" aria-label="Original mutations">‹</button><span></span><button type="button" data-mcp="1" aria-label="More mutations">›</button></div>
-   <div class="uiTxt uiXMNote" style="${p(884, 767, 1215, 789)};${fs(W, 13.5)}">Buy mutations here, or find them in packs.</div>
+   <div class="uiTxt uiXMNote" style="${p(884, 767, 1215, 789)};${fs(W, 13.5)}">Bloom, Tide, Crystal, Solar, Void and Prism come only from packs.</div>
    ${text(p(204, 872, 420, 896), W, 15.5, 'uiXMCount', `${fmt(st.owned.length)} Mythlings`)}
    <div class="uiXMPager" style="${p(204, 905, 430, 940)};${fs(W, 15)}"></div>
    ${MUT_TILES.map((b, i) => `<div class="uiXMTile" data-mtile="${i}" style="${p(...b)};${fs(W, 17)}"></div>`).join('')}`);
@@ -354,7 +354,7 @@ function mutationExact() {
   }
   // Buy button, status line and replacement confirmation.
   const buy = $('#mutate'), status = $('#mutationStatus'), confirmBox = $('#mutationConfirm');
-  if (buy) { buy.className = 'uiXMBtn'; buy.textContent = c.mutation === m.id ? 'ALREADY ACTIVE' : `APPLY ${m.name.toUpperCase()}`; $('.uiXMBuy', wrap).append(buy); }
+  if (buy) { buy.className = 'uiXMBtn'; buy.textContent = c.mutation === m.id ? 'ALREADY ACTIVE' : m.packOnly ? 'FOUND IN PACKS ONLY' : `APPLY ${m.name.toUpperCase()}`; $('.uiXMBuy', wrap).append(buy); }
   if (status) { $('.uiXMNeed', wrap).append(status); status.textContent = status.textContent.replace(/^([\d,]+) more coins needed$/, 'Need $1 more coins'); }
   if (confirmBox) { $('.uiXMConfirm', wrap).append(confirmBox); new MutationObserver(() => wrap.querySelector('.uiXMConfirm').classList.toggle('on', !!confirmBox.children.length)).observe(confirmBox, { childList: true }); }
   // Chooser: five tiles per page from the game's creature buttons (the game itself pages by 24).

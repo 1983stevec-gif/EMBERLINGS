@@ -1365,3 +1365,6 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .tradeMutFilter{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;font-size:14px;color:#c8d1ec}
 .tradeMutFilter select{padding:7px 10px;border-radius:8px;border:1px solid #c9a35a99;background:#0d1534;color:#f6ecd6;font:inherit}
 .tradeChoices .creature.mini .mythlingArt{position:relative;width:100%;height:100%}
+.uiXMLPrice.packs{font-family:"Cormorant Garamond",Georgia,serif;color:#f3d48a;font-size:1.15em}
+.uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
+.uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
