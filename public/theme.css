@@ -1146,3 +1146,43 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{font-size:.62em!important;height:auto!important;max-height:1.8em;overflow:hidden}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts>*{flex:none}
 .attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts svg{width:1.4em;height:1.4em}
+
+/* ---------- Friends, portrait tablet (mockup 1045 × 1506): sizes in mockup pixels via --u ---------- */
+.uiXFriendsTab{--u:calc(100cqw / 1045)}
+.uiXFTAva{position:absolute;overflow:hidden;border-radius:calc(6*var(--u))}
+.uiXFTAva .mythlingArt,.uiXFTRowAva .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXFTAva .mythlingArt img,.uiXFTRowAva .mythlingArt img{object-fit:cover!important}
+.uiXFTName{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#fff4e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.uiXFTCount{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#f6ecd6;line-height:1.2}
+.uiXFTList{position:absolute;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#c9a35a66 transparent;font-size:calc(16*var(--u))}
+.uiXFTList #friendLists{display:block}
+.uiXFTList .panel{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+.uiXFTList section:not(.uiXFTFriends){padding:calc(10*var(--u)) calc(16*var(--u))!important;border-bottom:1px solid #2d3a5f!important}
+.uiXFTList section:not(.uiXFTFriends) h2{margin:0 0 .4em;font-family:'Cormorant Garamond',Georgia,serif;font-size:calc(24*var(--u));color:#f2c45f}
+.uiXFTList section:not(.uiXFTFriends) .friendRow{display:flex;align-items:center;justify-content:space-between;gap:1em;padding:.4em 0;font-size:calc(19*var(--u))}
+.uiXFTList .uiXFTFriends>p.muted{margin:0;padding:calc(110*var(--u)) calc(40*var(--u));text-align:center;font-size:calc(21*var(--u));color:#c8d1ec}
+.uiXFTRow{position:relative;display:block!important;height:calc(147*var(--u));border-bottom:1px solid #2d3a5f;padding:0!important;margin:0!important;background:linear-gradient(180deg,#0e173300,#0e17334d)}
+.uiXFTRow:last-child{border-bottom:0}
+.uiXFTRowAva{position:absolute;left:calc(14*var(--u));top:calc(12*var(--u));width:calc(131*var(--u));height:calc(121*var(--u));overflow:hidden;border:calc(2*var(--u)) solid #c9a35a;border-radius:calc(6*var(--u));box-shadow:0 0 0 calc(1*var(--u)) #3a2a10,0 calc(3*var(--u)) calc(8*var(--u)) #000a}
+.uiXFTRowWho{position:absolute;left:calc(168*var(--u));top:calc(30*var(--u));width:calc(150*var(--u));display:flex;flex-direction:column;gap:calc(14*var(--u))}
+.uiXFTRowWho strong{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(30*var(--u));color:#fff4e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
+.uiXFTRowWho small{display:flex;align-items:center;gap:calc(12*var(--u));font-family:'EB Garamond',Georgia,serif;font-size:calc(20*var(--u));color:#c8d1ec}
+.uiXFTRowWho small i{width:calc(18*var(--u));height:calc(18*var(--u));border-radius:50%;background:#8a90a2;box-shadow:inset 0 calc(-2*var(--u)) calc(3*var(--u)) #0006}
+.uiXFTRowWho small.on i{background:#5fe08a;box-shadow:0 0 calc(8*var(--u)) #5fe08a}
+.uiXFTRowLine{position:absolute;left:calc(331*var(--u));top:calc(30*var(--u));height:calc(88*var(--u));width:1px;background:linear-gradient(180deg,transparent,#c9a35a88,transparent)}
+.uiXFTBtns{position:absolute;left:calc(350*var(--u));top:calc(29*var(--u));display:flex;gap:calc(14*var(--u))}
+.uiXFTBtn{height:calc(87*var(--u));padding:0;margin:0;border:0;border-radius:calc(6*var(--u));background:center/100% 100% no-repeat;cursor:pointer;font-size:0;box-shadow:none;transition:filter .15s,transform .1s}
+.uiXFTBtn-trade{width:calc(171*var(--u));background-image:url(/art/ui/friends-btn-trade.webp)}
+.uiXFTBtn-duel{width:calc(192*var(--u));background-image:url(/art/ui/friends-btn-duel.webp)}
+.uiXFTBtn-coop{width:calc(190*var(--u));background-image:url(/art/ui/friends-btn-coop.webp)}
+.uiXFTBtn:hover:not(:disabled){filter:brightness(1.12)}.uiXFTBtn:active:not(:disabled){transform:scale(.97)}
+.uiXFTBtn:disabled{filter:grayscale(.6) brightness(.7);cursor:default}
+.uiXFTBtn:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiXFTAdd{position:absolute;z-index:5;padding:1em 1.2em 1.1em;border:2px solid #c9a35a;border-radius:10px;background:linear-gradient(180deg,#141d3ef7,#0b1028fa);box-shadow:0 12px 30px #000c,0 0 24px #f2b44a44;color:#f6ecd6}
+.uiXFTAdd h2{margin:0 0 .6em;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4em}
+.uiXFTForm{display:flex;gap:.6em}
+.uiXFTInput{flex:1;min-width:0;font-size:1em!important;padding:.6em .8em!important;border:1px solid #c9a35a99!important;border-radius:8px!important;background:#0a1028!important;color:#fff!important}
+.uiXFTFind{flex:none;padding:.6em 1.2em;border:1px solid #ffe7a3;border-radius:8px;background:linear-gradient(180deg,#f7cc6a,#dc9a33);color:#2a1405;font-weight:700;font-size:1em;cursor:pointer}
+.uiXFTStatus:not(:empty){margin-top:.7em;font-size:.85em;color:#dfe5f6}
+.uiXFTStatus .button{font-size:.9em}
+.uiXFTName,.uiXFTCount,.uiXFTRowWho strong{font-variant-numeric:lining-nums}

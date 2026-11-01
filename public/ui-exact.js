@@ -25,7 +25,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 }
 // Portrait tablets: the painted map fills the width and the quest panel sits beneath it in two halves.
 const mapSplit = () => innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -506,6 +506,55 @@ function friendsExact(data) {
 }
 
 
+/* ---------------------------------------------------------------- Friends, portrait tablet (mockup 1045 × 1506) */
+const tabPortrait = () => innerWidth >= 700 && innerWidth < 1200 && innerHeight > innerWidth;
+function friendsTab(data) {
+  const app = $('#app'), form = $('#addFriendForm'), lists = $('#friendLists'); if (!lists || !data?.me || (!form && !$('.uiXFTPage'))) return;
+  const W = 1045, H = 1506, p = box(W, H), st = B.state, me = (B.active?.() || st.owned?.[0]);
+  let wrap = $('.uiXFTPage');
+  if (!wrap) {
+    wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXFTPage';
+    wrap.innerHTML = canvas(W, H, '/art/ui/friends-tab.webp', 'uiXFriendsTab', `
+     <h1 class="uiSr">Friends</h1>
+     <div class="uiXFTAva" style="${p(70, 302, 232, 442)}">${me ? B.art(me) : ''}</div>
+     ${text(p(265, 340, 700, 394), W, 36, 'uiXFTName', esc(data.me.username))}
+     <button class="uiHot" data-copy-name style="${p(262, 310, 700, 394)}" aria-label="Copy username"></button>
+     <button class="uiHot" id="uiXFTAddBtn" style="${p(720, 333, 985, 412)}" aria-expanded="false" aria-controls="uiXFTAdd" aria-label="Add Player"></button>
+     <button class="uiHot" id="uiXRecToggle" style="${p(36, 478, 1010, 548)}" aria-expanded="false" aria-controls="uiXRecovery" aria-label="Player recovery code"></button>
+     <div class="uiTxt uiXFTCount" style="${p(338, 598, 400, 644)};${fs(W, 36)}"></div>
+     <div class="uiXFTList" style="${p(52, 652, 996, 945)}"></div>
+     <div class="uiXFTAdd" id="uiXFTAdd" hidden style="left:${36 / W * 100}%;top:${(420 / H * 100).toFixed(3)}%;width:${974 / W * 100}%;${fs(W, 20)}"><h2>Add a player</h2><form class="uiXFTForm"></form><div class="uiXFTStatus"></div></div>`);
+    app.insertBefore(wrap, app.firstChild.nextSibling);
+    const input = $('#friendName'), send = $('#sendFriend'), f = $('.uiXFTForm', wrap), add = $('#uiXFTAdd', wrap), addBtn = $('#uiXFTAddBtn', wrap);
+    input.className = 'uiXFTInput'; input.placeholder = "Friend's username"; input.setAttribute('aria-label', "Player's username");
+    send.className = 'uiXFTFind'; send.textContent = 'Find Player';
+    f.append(input, send); f.onsubmit = form.onsubmit; form.remove();
+    const err = $('#friendsError'); $('.uiXFTStatus', wrap).append(err);
+    const open = v => { add.hidden = !v; addBtn.setAttribute('aria-expanded', String(v)); if (v) input.focus(); };
+    addBtn.onclick = () => open(add.hidden);
+    new MutationObserver(() => { if (err.textContent.trim()) open(true); }).observe(err, { childList: true, characterData: true, subtree: true });
+    $$('[data-copy-name]', wrap).forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(data.me.username); B.toast('Username copied: ' + data.me.username); } catch { B.toast('Your username is ' + data.me.username); } });
+    const rec = $$('#app > details.panel').find(d => /recovery code/i.test(d.textContent));
+    if (rec) { rec.id = 'uiXRecovery'; rec.classList.add('uiXRecovery'); $('summary', rec)?.remove(); wrap.after(rec); const t = $('#uiXRecToggle', wrap); t.onclick = () => { rec.open = !rec.open; t.setAttribute('aria-expanded', String(rec.open)); if (rec.open) rec.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }; }
+    $('.uiXFTList', wrap).append(lists);
+    for (const el of [...app.children]) if (el !== wrap && el !== rec && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  }
+  // Every refresh: the count, and each friend as a row like the design (the game's own buttons keep working).
+  $('.uiXFTCount', wrap).textContent = data.friends.length;
+  for (const h of $$('h2', lists)) if (/^Your Friends/.test(h.textContent)) { h.classList.add('uiSr'); h.closest('section')?.classList.add('uiXFTFriends'); }
+  for (const row of $$('.uiXFTFriends .friendRow', lists)) {
+    if (row.classList.contains('uiXFTRow')) continue;
+    const name = $('strong', row)?.textContent || '', fr = data.friends.find(x => x.username === name); if (!fr) continue;
+    const trade = $('[data-trade-invite]', row), duel = $('[data-mode="duel"]', row), coop = $('[data-mode="coop"]', row);
+    const btns = document.createElement('div'); btns.className = 'uiXFTBtns';
+    for (const [b, k, label] of [[trade, 'trade', 'Trade'], [duel, 'duel', 'Battle Against'], [coop, 'coop', 'Battle Together']]) if (b) { b.className = 'uiXFTBtn uiXFTBtn-' + k; b.textContent = ''; b.setAttribute('aria-label', `${label} with ${name}`); btns.append(b); }
+    row.className = 'friendRow uiXFTRow';
+    row.replaceChildren();
+    row.insertAdjacentHTML('afterbegin', `<span class="uiXFTRowAva">${B.art(fr.pet)}</span><span class="uiXFTRowWho"><strong>${esc(name)}</strong><small class="${fr.online ? 'on' : ''}"><i></i>${fr.online ? 'Online' : 'Offline'}</small></span><span class="uiXFTRowLine" aria-hidden="true"></span>`);
+    row.append(btns);
+  }
+}
+
 /* ---------------------------------------------------------------- Card battle (mockup 1672 × 941) */
 // The painted arena and frames are the background; the game's own battle elements (fields, centre panel,
 // hand, piles, log, buttons) are moved into the painted spots. Runs on every battle render.
@@ -543,11 +592,11 @@ if (B && UI) {
   Object.assign(UI, { baseHome: UI.home, baseMap: UI.map, baseAfterMap: UI.afterMap, baseSelect: UI.selectLevel, exactWide: wide });
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
-  window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
+  window.addEventListener('ember:friends', e => { if (B.view !== 'friends') return; if (wide()) { document.body.classList.add('uiExact'); friendsExact(e.detail); } else if (tabPortrait()) { document.body.classList.add('uiExact'); friendsTab(e.detail); } });
   window.addEventListener('ember:fusion', e => fusionResult(e.detail.creature));
   let wasWide = wide();
   let wasSplit = mapSplit();
-  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
+  addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } if (B.view === 'friends' && (now !== wasWide || split !== wasSplit)) { wasSplit = split; wasWide = now; return B.go('friends'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
   if (B.view === 'username') onFrame();
   if (['home', 'map', 'vault'].includes(B.view)) B.go(B.view);
 }
