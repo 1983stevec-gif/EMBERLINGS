@@ -23,15 +23,38 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 function logoHTML(cls = '') {
   return `<span class="uiLogo ${cls}" role="img" aria-label="EMBERLINGS"><span class="uiFlameBox" aria-hidden="true"><i class="uiFlameGlow"></i><img class="uiFlame" src="/branding/logo-flame.png" alt="" width="76" height="96"><img class="uiFlame uiFlameHot" src="/branding/logo-flame.png" alt="" width="76" height="96"><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span><img class="uiWord" src="/branding/logo-word.png" alt="" width="317" height="44"></span>`;
 }
+
+/* Painted header bars, in source-image pixels (each bar is 2000 px wide). */
+const BAR_NEW = { top: 246, h: 176, logo: [180, 262, 560, 356], flame: [190, 266, 262, 350], sound: [1445, 291, 1602, 343], coins: [1617, 291, 1738, 343], user: [1752, 291, 1937, 343] };
+const HEADER_BARS = {
+  home: { ...BAR_NEW, img: '/art/ui/header-home.webp', tabs: { home: [553, 250, 765, 408], packs: [770, 262, 890, 398], inventory: [905, 262, 1030, 398], map: [1060, 262, 1228, 398], friends: [1257, 262, 1395, 398] } },
+  packs: { ...BAR_NEW, img: '/art/ui/header-packs.webp', tabs: { home: [583, 262, 712, 398], packs: [715, 250, 900, 410], inventory: [905, 262, 1030, 398], map: [1060, 262, 1228, 398], friends: [1255, 262, 1395, 398] } },
+  inventory: { ...BAR_NEW, img: '/art/ui/header-inventory.webp', tabs: { home: [583, 262, 710, 398], packs: [732, 262, 860, 398], inventory: [865, 250, 1062, 410], map: [1070, 262, 1235, 398], friends: [1255, 262, 1395, 398] } },
+  friends: { ...BAR_NEW, img: '/art/ui/header-friends.webp', tabs: { home: [585, 262, 712, 398], packs: [735, 262, 862, 398], inventory: [890, 262, 1028, 398], map: [1052, 262, 1215, 398], friends: [1222, 250, 1415, 410] } },
+  none: { top: 276, h: 141, live: true, img: '/art/ui/header-bar.webp', logo: [205, 286, 556, 372], flame: [210, 288, 276, 370], sound: [1460, 312, 1600, 360], coins: [1613, 312, 1722, 360], user: [1739, 312, 1907, 362], tabs: { home: [646, 290, 755, 397], packs: [768, 290, 874, 397], inventory: [888, 290, 995, 397], map: [1015, 279, 1200, 406], friends: [1217, 290, 1322, 397] } }
+};
+HEADER_BARS.map = HEADER_BARS.none;
+for (const v of ['home', 'packs', 'inventory', 'friends']) { const i = new Image(); i.src = HEADER_BARS[v].img; }
 /* ---------------------------------------------------------------- Header */
 function head() {
-  // One header everywhere: logo, the five main destinations, coins and a menu with every other screen and setting.
-  const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0];
-  const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
-  return `<header class="top uiTop"><div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
+  // One header everywhere. Computers get the painted bar (art from the supplied design); phones get the compact bar.
+  const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0], name = esc(st.playerUsername || 'Explorer'), muted = !!ext().muted;
+  const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  // Each main tab has its own painted "selected" bar; Adventure HQ uses the original bar (its HQ tab is already the centrepiece).
+  const V = HEADER_BARS[navView] || HEADER_BARS.none;
+  const P = (x0, y0, x1, y1) => `left:${x0 / 20}%;top:${(y0 - V.top) / V.h * 100}%;width:${(x1 - x0) / 20}%;height:${(y1 - y0) / V.h * 100}%`;
+  const painted = `<div class="uiPBar ${V.live ? 'uiPLive' : ''}"><div class="uiPBarIn" style="aspect-ratio:2000/${V.h};background-image:url(${V.img})">
+   <button class="uiPHot uiPLogo" data-go="home" style="${P(...V.logo)}" aria-label="EMBERLINGS home"></button>
+   <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
+   <nav class="uiPNav" aria-label="Main">${NAV.map(([g, t]) => `<button class="uiPHot uiPTab ${g === 'map' ? 'uiPHQ' : ''} ${navView === g ? 'active' : ''}" data-go="${g}" style="${P(...V.tabs[g])}" ${navView === g ? 'aria-current="page"' : ''} aria-label="${t}"></button>`).join('')}</nav>
+   <button class="uiPHot uiPSound" id="uiPSound" style="${P(...V.sound)}" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
+   <div class="uiPCoins coins" style="${P(...V.coins)}" aria-label="Coins"><b>${fmt(st.coins)}</b></div>
+   <button class="uiPHot uiPUser uiUserBtn" style="${P(...V.user)}" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiPAva">${active ? B.art(active) : ''}</span><span class="uiPName">${name}</span></button>
+  </div></div>`;
+  return `<header class="top uiTop">${painted}<div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
-  <button class="uiUser" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${esc(st.playerUsername || 'Explorer')}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${esc(st.playerUsername || 'Explorer')}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
+  <button class="uiUser uiUserBtn" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${name}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
 }
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
@@ -403,7 +426,8 @@ function onFrame() {
   document.body.classList.toggle('uiWide', !SLIM_VIEWS.includes(B.view));
   document.body.classList.toggle('uiDark', ['home', 'map'].includes(B.view));
   document.body.classList.toggle('uiFull', FULL_VIEWS.includes(B.view));
-  const u = $('#uiUser'); if (u) u.onclick = () => userMenu(u);
+  for (const u of $$('.uiUserBtn')) u.onclick = () => userMenu(u);
+  const snd = $('#uiPSound'); if (snd) snd.onclick = () => { const e = ext(); e.muted = !e.muted; B.save(); const m = e.muted; snd.setAttribute('aria-pressed', String(!m)); snd.setAttribute('aria-label', 'Sound ' + (m ? 'off' : 'on')); snd.querySelector('span').textContent = 'Sound: ' + (m ? 'Off' : 'On'); };
   if (B.view === 'home') afterHome();
   if (B.view === 'vault') vaultLayout();
 }
