@@ -27,7 +27,7 @@ function piece(W, H, bg, cls, [x0, y0, x1, y1], inner, extra = '') {
 // Tablet layouts are for touch screens only, so a narrow desktop or laptop window keeps the desktop designs.
 const touchTablet = () => matchMedia('(pointer:coarse)').matches;
 const mapSplit = () => touchTablet() && innerWidth < 1200 && innerHeight > innerWidth;
-const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505] };
+const CROP = { uiXHome: [78, 552], uiXMap: [66, 992], uiXVault: [80, 942], uiXWelcome: [87, 941], uiXPacks: [69, 1024], uiXMutation: [55, 991], uiXFusion: [52, 992], uiXFriends: [66, 992], uiXBattle: [62, 941], uiXFriendsTab: [130, 1320], uiXBattleTab: [140, 1505], uiXTrading: [0, 905], uiXTradeRoom: [0, 1024] };
 const box = (W, H) => (x0, y0, x1, y1) => `left:${(x0 / W * 100).toFixed(3)}%;top:${(y0 / H * 100).toFixed(3)}%;width:${((x1 - x0) / W * 100).toFixed(3)}%;height:${((y1 - y0) / H * 100).toFixed(3)}%`;
 const fs = (W, px) => `font-size:calc(${px} / ${W} * 100cqw)`;
 // Coin totals shrink to stay inside the painted coin pill.
@@ -601,6 +601,79 @@ function battleTab() {
 }
 const battleTabRO = new ResizeObserver(entries => { for (const e of entries) e.target.style.setProperty('--z', (e.target.clientWidth / 1045).toFixed(4)); });
 
+/* ---------------------------------------------------------------- Friend Trading and Trade Room (mockups 1536 × 1024) */
+let tradePets = {}, tradePick = null;
+async function loadTradePets() { try { const r = await fetch('/api/social/me', { credentials: 'same-origin', cache: 'no-store' }); const d = await r.json(); for (const f of d.friends || []) tradePets[f.username] = f.pet; if (d.me) tradePets[d.me.username] = d.me.pet; } catch { } }
+const tradeAva = name => { const pet = tradePets[name]; return pet ? B.art(pet) : `<span class="uiXTInit">${esc((name || '?')[0].toUpperCase())}</span>`; };
+function tradingExact() {
+  const app = $('#app'), list = $('#tradeFriendList'); if (!list || $('.uiXTrading')) return;
+  const W = 1536, H = 1024, p = box(W, H);
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXTradingPage';
+  wrap.innerHTML = canvas(W, H, '/art/ui/trading.webp', 'uiXTrading', `
+   <h1 class="uiSr">Friend Trading</h1>${hot(p(300, 14, 400, 46), 'data-go="home"', 'Home')}
+   <div class="uiTxt uiXTCount" style="${p(88, 368, 400, 396)};${fs(W, 18)}"></div>
+   <div class="uiXTList" style="${p(66, 413, 584, 552)};${fs(W, 16)}" role="listbox" aria-label="Your friends"></div>
+   <button class="uiHot" id="uiXTSend" style="${p(66, 575, 584, 642)}" aria-label="Send trade invitation"></button>
+   ${hot(p(68, 735, 580, 790), 'data-go="friends"', 'Add Player')}
+   <div class="uiXTTable" style="${p(640, 700, 1470, 790)};${fs(W, 17)}"></div>`);
+  const hidden = document.createElement('div'); hidden.hidden = true; hidden.append(list); const st = $('#tradeListStatus'); if (st) hidden.append(st); wrap.append(hidden);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  const paint = () => {
+    const friends = $$('[data-trade-invite]', list).map(b => ({ name: b.dataset.tradeInvite, online: /online/i.test($('small', b)?.textContent || ''), btn: b }));
+    if (!friends.some(f => f.name === tradePick)) tradePick = friends[0]?.name || null;
+    $('.uiXTCount', wrap).textContent = friends.length ? `${friends.length} friend${friends.length > 1 ? 's' : ''}` : 'No friends yet';
+    $('.uiXTList', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="uiXTFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="uiXTAva">${tradeAva(f.name)}</span><span class="uiXTWho"><b>${esc(f.name)}</b><small class="${f.online ? 'on' : ''}"><i></i>${f.online ? 'Online' : 'Offline'}</small></span><span class="uiXTCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="uiXTEmpty">Add a friend with Add Player below, then come back here to trade.</p>';
+    $$('[data-tpick]', wrap).forEach(b => b.onclick = () => { tradePick = b.dataset.tpick; paint(); });
+    const inv = $('.tradeNotifications', list), table = $('.uiXTTable', wrap);
+    if (inv) { table.innerHTML = '<p class="uiXTInvHead">Trade invitations</p>'; $$('.friendRow', inv).forEach(r => table.append(r)); }
+    else table.innerHTML = `<p class="uiXTCap">Your next trade starts with an invitation.</p><p class="uiXTSub">${tradePick ? `Send one to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
+    $('#uiXTSend', wrap).disabled = !tradePick;
+  };
+  $('#uiXTSend', wrap).onclick = () => { const b = $(`[data-trade-invite="${CSS.escape(tradePick || '')}"]`, list); if (b) b.click(); };
+  new MutationObserver(paint).observe(list, { childList: true, subtree: true });
+  paint(); loadTradePets().then(paint);
+}
+function tradeRoomExact() {
+  const app = $('#app'), offers = $$('#app .tradeOffers > .tradeOffer'); if (offers.length !== 2 || $('.uiXTradeRoom')) return;
+  const W = 1536, H = 1024, p = box(W, H);
+  const side = sec => ({ name: ($('h2', sec)?.textContent || '').replace(/ · You$/, ''), items: $$('.tradeItem', sec), accepted: /Accepted/.test($('.pill', sec)?.textContent || '') });
+  const me = side(offers[0]), them = side(offers[1]);
+  const step = me.accepted || them.accepted ? 3 : me.items.length && them.items.length ? 2 : 1;
+  const accept = $('#tradeAccept'), decline = $('#tradeDecline'), add = $('#tradeAdd'), clear = $('#tradeRemove'), err = $('#tradeError'), picker = $('#tradePicker');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXTradeRoomPage';
+  const slot = (x0, n) => `<div class="uiXTRRow ${n ? 'full' : ''}" style="${p(x0, 348, x0 + 540, 648)}" data-n="${n}"></div>`;
+  const cap = (x, s) => s.items.length ? `${s.items.length} Mythling${s.items.length > 1 ? 's' : ''} offered` : 'No card selected.';
+  wrap.innerHTML = canvas(W, H, '/art/ui/trade-room.webp', 'uiXTradeRoom', `
+   <h1 class="uiSr">Trade Room</h1>${hot(p(290, 18, 470, 50), 'data-go="trading"', 'Back to Friends for Trading')}
+   ${text(p(552, 112, 990, 142), W, 19, 'uiXTRSub', 'Choose up to 5 Mythlings each, then review your trade.')}
+   <div class="uiXTRSteps" style="${p(452, 168, 1070, 220)};${fs(W, 17)}">${['Choose cards', 'Review offers', 'Both accept'].map((t, i) => `<span class="${i + 1 === step ? 'on' : i + 1 < step ? 'done' : ''}"><b>${i + 1 < step ? '✓' : i + 1}</b>${t}</span>`).join('<i></i>')}</div>
+   <div class="uiXTRAva" style="${p(256, 248, 360, 352)}">${tradeAva(me.name)}</div><div class="uiXTRAva" style="${p(896, 248, 1000, 352)}">${tradeAva(them.name)}</div>
+   ${text(p(378, 264, 640, 302), W, 30, 'uiXTRName', `${esc(me.name)} <span>· You</span>`)}${text(p(1015, 264, 1300, 302), W, 30, 'uiXTRName', esc(them.name))}
+   ${slot(200, me.items.length)}${slot(790, them.items.length)}
+   ${text(p(330, 650, 625, 678), W, 17, 'uiXTRCap', cap(0, me))}${text(p(920, 650, 1215, 678), W, 17, 'uiXTRCap', cap(1, them))}
+   <button class="uiHot" id="uiXTRAdd" style="${p(305, 686, 648, 742)}" aria-label="Add a Mythling to your offer" ${add ? '' : 'disabled'}></button>
+   ${clear ? `<button type="button" class="uiXTRClear" style="${p(410, 744, 545, 762)};${fs(W, 13)}">Clear my offer</button>` : ''}
+   <div class="uiXTRWait ${them.accepted ? 'ok' : them.items.length ? 'has' : ''}" style="${p(885, 686, 1243, 742)};${fs(W, 19)}">${them.accepted ? `✓ ${esc(them.name)} accepted` : them.items.length ? `${esc(them.name)} is reviewing` : `🕒 Waiting for ${esc(them.name)}`}</div>
+   <div class="uiXTRAccept" style="${p(487, 824, 784, 880)};${fs(W, 20)}"></div>
+   <button class="uiHot" id="uiXTRDecline" style="${p(802, 826, 1048, 878)}" aria-label="Decline trade"></button>
+   <div class="uiXTRErr" style="${p(200, 756, 1340, 780)};${fs(W, 15)}"></div>`);
+  app.insertBefore(wrap, app.firstChild.nextSibling);
+  const rows = $$('.uiXTRRow', wrap);
+  [me, them].forEach((s, k) => s.items.forEach((it, i) => { if (i) rows[k].insertAdjacentHTML('beforeend', '<span class="uiXTRPlus" aria-hidden="true">＋</span>'); rows[k].append(it); }));
+  if (accept) { accept.className = 'uiXTRAcceptBtn'; accept.innerHTML = accept.disabled && me.accepted ? '✓ You accepted' : '✓ Accept Trade'; $('.uiXTRAccept', wrap).append(accept); }
+  $('#uiXTRAdd', wrap).onclick = () => add?.click();
+  $('.uiXTRClear', wrap)?.addEventListener('click', () => clear?.click());
+  $('#uiXTRDecline', wrap).onclick = () => decline?.click();
+  if (err) $('.uiXTRErr', wrap).append(err);
+  if (picker) { picker.classList.add('uiXTRPicker'); wrap.append(picker); }
+  const hold = document.createElement('div'); hold.hidden = true; for (const b of [add, clear, decline]) if (b) hold.append(b); wrap.append(hold);
+  for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  const size = () => { const host = $('.uiX', wrap); if (!host) return; const u = host.clientWidth / W; rows.forEach(r => { const n = +r.dataset.n || 1, cw = n === 1 ? 193 : Math.min(193, (530 - (n - 1) * 30) / n); r.style.setProperty('--kz', (cw * u / 230).toFixed(4)); r.style.setProperty('--cw', (cw * u).toFixed(1) + 'px'); }); };
+  size(); new ResizeObserver(size).observe($('.uiX', wrap));
+  if (!tradePets[them.name]) loadTradePets().then(() => { $$('.uiXTRAva', wrap)[1].innerHTML = tradeAva(them.name); $$('.uiXTRAva', wrap)[0].innerHTML = tradeAva(me.name); });
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
@@ -610,6 +683,8 @@ function onFrame() {
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
   if (['fusion', 'fuse'].includes(B.view) && !exact && $('.fusionPreview')) fusionNarrow();
   if (B.view === 'cardBattle' && exact) battleExact();
+  if (B.view === 'trading' && wide() && $('#tradeFriendList')) { document.body.classList.add('uiExact'); tradingExact(); }
+  if (B.view === 'trade' && wide() && $('#app .tradeOffers')) { document.body.classList.add('uiExact'); tradeRoomExact(); }
   if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.

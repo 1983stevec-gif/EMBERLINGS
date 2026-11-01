@@ -1383,3 +1383,67 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .tradeAddSlot{width:132px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed #c9a35a;border-radius:12px;background:#0d1534;color:#f3dcae;font:inherit;font-weight:700;cursor:pointer}
 .tradeAddSlot span{font-size:46px;line-height:1;color:#ffd27a}
 .tradeAddSlot:hover{background:#15204a;border-style:solid}
+
+/* ---------- Friend Trading (design) ---------- */
+.uiXTrading>*,.uiXTradeRoom>*{position:absolute}
+.uiXTCount{color:#cdd5ea;font-family:'EB Garamond',Georgia,serif!important}
+.uiXTList{z-index:2;overflow-y:auto;border:2px solid #c9a35a;border-radius:10px;background:linear-gradient(180deg,#121b3e,#0b1230);box-shadow:0 0 0 1px #000,inset 0 0 24px #0008;scrollbar-width:thin;scrollbar-color:#c9a35a88 transparent}
+.uiXTFriend{display:flex;align-items:center;gap:1em;width:100%;min-height:100%;padding:.6em 1.2em;margin:0;border:0;border-bottom:1px solid #2d3a5f;background:transparent;color:#f6ecd6;font:inherit;text-align:left;cursor:pointer}
+.uiXTList:has(.uiXTFriend+.uiXTFriend) .uiXTFriend{min-height:0;padding:.5em 1em}
+.uiXTFriend:hover{background:#ffffff08}.uiXTFriend.on{background:linear-gradient(90deg,#2a2410,#121b3e)}
+.uiXTAva{position:relative;flex:none;width:5.6em;height:5.6em;border-radius:50%;overflow:hidden;border:3px solid #c9a35a;box-shadow:0 0 0 2px #3a2a10,0 0 14px #f2b44a44;background:#1a2550}
+.uiXTList:has(.uiXTFriend+.uiXTFriend) .uiXTAva{width:3.6em;height:3.6em}
+.uiXTAva .mythlingArt,.uiXTRAva .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.uiXTAva .mythlingArt img,.uiXTRAva .mythlingArt img{object-fit:cover!important}
+.uiXTInit{display:grid;place-items:center;width:100%;height:100%;font-family:'Cormorant Garamond',Georgia,serif;font-size:2em;font-weight:700;color:#f3d48a}
+.uiXTWho{flex:1;display:flex;flex-direction:column;gap:.2em;min-width:0}
+.uiXTWho b{font-family:'Cormorant Garamond',Georgia,serif;font-size:2em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uiXTWho small{display:flex;align-items:center;gap:.5em;font-size:1.1em;color:#c8d1ec}.uiXTWho small i{width:.8em;height:.8em;border-radius:50%;background:#8a90a2}.uiXTWho small.on i{background:#5fe08a;box-shadow:0 0 8px #5fe08a}
+.uiXTCheck{flex:none;width:2.2em;height:2.2em;display:grid;place-items:center;border-radius:50%;border:2px solid #4a5a8a;color:transparent;font-weight:900;font-size:1.1em}
+.uiXTFriend.on .uiXTCheck{background:radial-gradient(circle at 35% 30%,#ffe39a,#f0b347);border-color:#fff0c4;color:#2a1405}
+.uiXTEmpty{margin:0;padding:1.6em;text-align:center;color:#c8d1ec}
+#uiXTSend:disabled{cursor:not-allowed;background:#0008}
+.uiXTTable{z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3em;text-align:center;color:#e6e9f4;overflow:auto}
+.uiXTCap{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.55em;font-weight:700;color:#f3d48a}
+.uiXTSub{margin:0;font-family:'EB Garamond',Georgia,serif;font-size:1.15em}.uiXTSub b{color:#ffd27a}
+.uiXTInvHead{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4em;color:#f3d48a}
+.uiXTTable .friendRow{display:flex;align-items:center;gap:1em;justify-content:center}.uiXTTable .friendRow p{margin:0;font-size:.9em;color:#c8d1ec}
+/* ---------- Trade Room (design) ---------- */
+.uiXTRSub{justify-content:center;color:#fbf3e2;font-family:'EB Garamond',Georgia,serif!important}
+.uiXTRSteps{z-index:2;display:flex;align-items:center;justify-content:center;gap:.6em;padding:0 1em;background:#0b1330;border-radius:8px;color:#9fa9c8;font-family:'EB Garamond',Georgia,serif}
+.uiXTRSteps span{display:flex;align-items:center;gap:.5em;white-space:nowrap;padding-bottom:.15em;border-bottom:2px solid transparent}
+.uiXTRSteps b{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;border:1px solid #5a6a9a;background:#1a2550;color:#c8d1ec;font-family:'Cormorant Garamond',Georgia,serif;font-variant-numeric:lining-nums}
+.uiXTRSteps span.on{color:#ffd27a;border-bottom-color:#f2c45f}.uiXTRSteps span.on b{background:radial-gradient(circle at 35% 30%,#ffe39a,#f0b347);color:#2a1405;border-color:#fff0c4}
+.uiXTRSteps span.done{color:#9fe3a3}.uiXTRSteps span.done b{background:#1d4a32;border-color:#7dffb0;color:#b9ffd2}
+.uiXTRSteps i{flex:1;max-width:3.5em;height:1px;background:#5a6a9a}
+.uiXTRAva{z-index:2;overflow:hidden;border-radius:50%;border:3px solid #c9a35a;box-shadow:0 0 0 2px #3a2a10,0 0 14px #f2b44a44;background:#1a2550}
+.uiXTRName{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;color:#fff4e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.uiXTRName span{margin-left:.3em}
+.uiXTRCap{justify-content:center;color:#e6e9f4;font-family:'EB Garamond',Georgia,serif!important}
+.uiXTRRow{z-index:2;display:flex;align-items:center;justify-content:center;gap:4px}
+.uiXTRRow.full::before{content:"";position:absolute;left:29.6%;width:41.5%;top:0;bottom:0;background:#0e1736;border-radius:8px;z-index:-1}
+.uiXTRRow .tradeItem{width:var(--cw);gap:0}
+.uiXTRRow .tradeItem>:not(.tradeCardPrint):not(.tradeX){display:none}
+.uiXTRRow .tradeCardPrint{width:230px;zoom:var(--kz);margin:0}
+.uiXTRRow .tradeX{top:-10px;right:-10px}
+.uiXTRPlus{flex:none;font-size:clamp(18px,2vw,30px);font-weight:800;color:#ffd27a;text-shadow:0 0 10px #f2b44a88}
+#uiXTRAdd:disabled{cursor:not-allowed;background:#0009}
+.uiXTRClear{z-index:3;border:0;background:none;color:#f3dcae;text-decoration:underline;cursor:pointer;font-family:'EB Garamond',Georgia,serif}
+.uiXTRWait{z-index:2;display:flex;align-items:center;justify-content:center;border-radius:8px;border:2px solid #4a5a8a;background:linear-gradient(180deg,#26345e,#1b2648);color:#aeb8d6;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700}
+.uiXTRWait.has{color:#e6ecff;border-color:#8fb8ef}.uiXTRWait.ok{color:#b9ffd2;border-color:#7dffb0;background:linear-gradient(180deg,#1d4a32,#123422)}
+.uiXTRAccept{z-index:2;display:flex}
+.uiXTRAcceptBtn{flex:1;border-radius:8px;border:2px solid #fff0c4;background:linear-gradient(180deg,#ffe39a,#f0b347 50%,#c8741a);color:#2a1405;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1em;cursor:pointer;box-shadow:inset 0 2px 0 #fffb,0 4px 10px #000a}
+.uiXTRAcceptBtn:disabled{background:linear-gradient(180deg,#8a7350,#6b5638);border-color:#a8895a;color:#e8dcc0;cursor:default;box-shadow:none}
+.uiXTRErr{z-index:2;display:flex;align-items:center;justify-content:center;color:#ffb0a0;font-family:'EB Garamond',Georgia,serif;pointer-events:none}
+.uiXTRErr #tradeError{margin:0}
+.uiXTRPicker:not(:empty){position:fixed;z-index:120;left:50%;top:50%;transform:translate(-50%,-50%);width:min(980px,94vw);max-height:84vh;overflow:auto;border-radius:14px;box-shadow:0 0 0 100vmax #05081acc,0 20px 50px #000}
+.uiXTRPicker>section{margin:0!important;border:2px solid #c9a35a!important;background:linear-gradient(180deg,#121b3e,#0b1230)!important}
+/* Trade picker: real cards grouped by species */
+.tradeGroups{display:flex;flex-direction:column;gap:14px;margin:8px 0 14px}
+.tradeGroup h3{margin:0 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;color:#f3d48a}.tradeGroup h3 small{font-size:.7em;color:#c8d1ec}
+.tradeGroupCards{display:flex;flex-wrap:wrap;gap:12px}
+.tradePick{position:relative;width:150px;padding:6px 6px 8px;border:2px solid #33467e;border-radius:12px;background:#0d1534;color:#f6ecd6;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit}
+.tradePick:hover{border-color:#8a74c8}.tradePick.chosen{border-color:#f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 16px #f2b44a77;background:#1a1d36}
+.tradePickCard{display:block;width:230px;zoom:.6}.tradePickCard .mythCard{width:230px;max-width:none;margin:0}
+.tradePickAdd{font-weight:700;color:#ffd27a;font-size:14px}.tradePick .pill{font-size:11px}
+.tradeGroups{flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:16px 22px}
+.tradeGroup{padding:8px 10px 10px;border:1px solid #2d3a5f;border-radius:12px;background:#ffffff06}
