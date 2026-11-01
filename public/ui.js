@@ -59,7 +59,7 @@ function head() {
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
-  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles'], ['account', '☁', 'Account & cloud save']]]
+  ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
 ];
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
@@ -69,14 +69,15 @@ function userMenu(anchor) {
   m.innerHTML = `${e.title ? `<p class="uiMenuTitle">🏷 ${esc(e.title)}</p>` : ''}
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
-   <hr><button role="menuitem" id="uiBackupGo"><span aria-hidden="true">💾</span> Save Backup</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
+   <hr>${B.state.playerUsername ? `<p class="uiMenuTitle">Logged in as ${esc(B.state.playerUsername)}</p><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Account &amp; password</button><button role="menuitem" id="uiLogoutGo"><span aria-hidden="true">🚪</span> Log out</button>` : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button>'}<button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
    <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
     if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
-    if (b.id === 'uiBackupGo') { m.remove(); B.go('home'); setTimeout(() => $('#uiBackupBtn')?.click(), 60); return; }
+    if (b.id === 'uiLogoutGo') { m.remove(); window.EmberCloud?.logout(); return; }
+    if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
   setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
@@ -84,10 +85,10 @@ function userMenu(anchor) {
 
 
 /* Home feature cards: cut from the supplied artwork; each card is a button to its screen. */
-const HOME_CARDS = [['decks', 'Battle Deck'], ['rules', 'Battle Rules'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['index', 'Index'], ['training', 'Training Field'], ['fusion', 'Fusion Lab'], ['vault', 'Vault'], ['mutation', 'Mutation Vault'], ['trading', 'Friend Trading'], ['backup', 'Save Backup']];
+const HOME_CARDS = [['decks', 'Battle Deck'], ['rules', 'Battle Rules'], ['packs', 'Packs'], ['inventory', 'Inventory'], ['index', 'Index'], ['training', 'Training Field'], ['fusion', 'Fusion Lab'], ['vault', 'Vault'], ['mutation', 'Mutation Vault'], ['trading', 'Friend Trading'], ['account', 'Login & Password']];
 function homeCards() {
   return `<section class="uiHomeCards" aria-labelledby="uiHomeCardsTitle"><h2 id="uiHomeCardsTitle"><img src="/art/ui/home-cards-title.webp" alt="Your adventure starts here." width="1130" height="76"></h2>
-   <div class="uiHomeCardGrid">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" ${go === 'backup' ? 'id="uiCardBackup"' : `data-go="${go}"`} aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
+   <div class="uiHomeCardGrid features">${HOME_CARDS.map(([go, label]) => `<button class="uiHomeCard" data-go="${go}" aria-label="${label}"><img src="/art/ui/home-card-${go}.webp" alt="" width="368" height="${go === 'index' || go === 'training' || go === 'fusion' || go === 'vault' ? 278 : go === 'decks' || go === 'rules' || go === 'packs' || go === 'inventory' ? 272 : 278}" loading="lazy"></button>`).join('')}</div></section>`;
 }
 
 /* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown 700–1199 px wide. */
@@ -107,25 +108,14 @@ function deckTop(n = 3) {
   return pool.slice(0, n);
 }
 function home() {
-  const st = B.state, cleared = (st.cleared || []).length, species = (st.discovered || []).length, fan = deckTop(3);
+  const st = B.state, fan = deckTop(3);
   const order = fan.length === 3 ? [fan[1], fan[0], fan[2]] : fan;
-  const tile = (go, art, icon, title, sub, inner) => `<button class="uiTile" data-go="${go}"><span class="uiTileArt" data-ui-art="${art}">${inner}</span><span class="uiTileBar"><span class="uiTileIcon" aria-hidden="true">${icon}</span><span><strong>${title}</strong><small>${sub}</small></span><span class="uiChevron" aria-hidden="true">›</span></span></button>`;
   return `<section class="uiHome">
   <div class="uiHero" data-ui-art="hero"><div class="uiHeroScene" aria-hidden="true">${heroScene()}</div>
     <div class="uiHeroText"><p class="uiKicker">Your next adventure</p><h1>Awaken the ember.</h1><p>Collect Mythlings. Master your deck. Explore the islands.</p>
     ${st.cardBattle ? '<button class="uiCta" id="uiResume">Resume card battle <span>›</span></button>' : '<button class="uiCta" data-go="map">Explore islands <span>›</span></button>'}</div></div>
   <aside class="uiDeckPanel uiFrame"><h2><span aria-hidden="true">🂠</span> Your battle deck</h2><div class="uiFan">${order.map((c, i) => card(c, order.length === 3 && i === 1 ? 'uiFanMain' : '')).join('')}</div>
     <button class="uiBtnGold" data-go="decks">🂠 Edit deck</button><button class="uiBtnLine" data-go="training">⚔ Training field</button></aside>
-  <div class="uiTiles features">
-    ${tile('inventory', 'collection', '📖', 'Mythling Collection', `${fmt(st.owned.length)} cards • ${species} / ${B.species.length} species`, `<span class="uiTrio">${[0, 4, 2, 7].map(k => `<span>${B.art({ kind: k })}</span>`).join('')}</span>`)}
-    ${tile('packs', 'packs', '🂡', 'Open Packs', 'Five Mythlings in every pack', '<span class="uiPack"><img src="/branding/emberlings-icon-192.png" alt=""></span>')}
-    ${tile('fusion', 'fusion', '🔮', 'Fusion Lab', 'Combine spare Mythlings', '<span class="uiFuse"><i></i><i></i></span>')}
-    ${tile('trading', 'trading', '🤝', 'Friend Trading', 'Trade with your friends', `<span class="uiTrade"><span>${B.art({ kind: 1 })}</span><b>⇄</b><span>${B.art({ kind: 7 })}</span></span>`)}
-  </div>
-  <button class="uiJourney uiFrame" data-go="map"><span class="uiCompass" aria-hidden="true">✦</span><span class="uiJourneyText"><strong>Your adventure</strong><span>${cleared} / 100 quests</span></span>
-    <span class="uiTrack" data-ui-art="journey" aria-hidden="true">${islandsStrip()}<i class="uiTrackFill" style="width:${cleared}%"></i>${[0, 20, 40, 60, 80, 100].map(p => `<b style="left:${p}%" class="${cleared >= p ? 'on' : ''}"></b>`).join('')}</span>
-    <span class="uiJourneyEnd"><span aria-hidden="true">⛰</span> All islands available <span class="uiChevron">›</span></span></button>
-  <nav class="uiUtility" aria-label="More"><button data-go="index">📖 Index</button><button data-go="rules">⚔ Battle Rules</button><button data-go="vault">🏛 Vault</button><button data-go="mutation">✧ Mutation Vault</button><span class="uiSpacer"></span><button id="uiBackupBtn">💾 Save Backup</button><button id="uiGear" aria-label="Settings">⚙</button></nav>
   ${homeCards()}<div id="uiDrawer"></div></section>`;
 }
 function heroScene() {
@@ -145,13 +135,9 @@ function heroScene() {
    <path d="M0 0 H1100 V70 C900 40 700 90 520 60 C330 30 160 80 0 50Z" fill="#1f2b1c" opacity=".7"/></svg>
    <span class="uiHeroFox">${B.art({ kind: 0 })}</span>`;
 }
-function islandsStrip() {
-  return `<svg viewBox="0 0 800 60" preserveAspectRatio="none" class="uiIslands">${[[40, 26], [170, 34], [300, 24], [430, 30], [560, 22], [690, 30]].map(([x, h], i) => `<path d="M${x} 50 Q${x + 20} ${50 - h} ${x + 45} ${50 - h - 4} Q${x + 70} ${50 - h} ${x + 95} 50Z" fill="${['#3b5a3a', '#2f5a5a', '#52606e', '#5a5530', '#4a3a5e', '#3a5a40'][i]}"/>`).join('')}</svg>`;
-}
 function afterHome() {
   $('#uiResume')?.addEventListener('click', () => B.resumeBattle());
   $('#uiBackupBtn')?.addEventListener('click', () => drawer('backup'));
-  $('#uiCardBackup')?.addEventListener('click', () => drawer('backup'));
   $('#uiGear')?.addEventListener('click', () => drawer('settings'));
   applyArt();
 }
@@ -169,12 +155,13 @@ function drawer(kind) {
    <p><label><input type="checkbox" id="reducedMotion" ${st.reducedMotion ? 'checked' : ''}> Reduce motion (turns off 3D reveals and effects)</label></p>
    <p><label><input type="checkbox" id="uiMute" ${ext().muted ? 'checked' : ''}> Mute sound</label></p>
    ${(st.cosmetics?.owned || []).includes('collectible-founder') ? '<p class="collectibleEmblem">☀ First Light · Collection Emblem</p>' : ''}
-   <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button></p>
+   <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button> <button class="button alt" id="uiSetBackup">💾 Save Backup</button></p>
    <details><summary>Test save tools</summary><p class="small">One-time reset for this browser only. Your current save is backed up first.</p><button class="button alt" id="resetTest" ${reset ? 'disabled' : ''}>Reset My Test Progress Once</button></details></section>`;
   B.bind();
   $('#reducedMotion').onchange = e => { st.reducedMotion = e.target.checked; B.save(); B.go('home'); };
   $('#uiMute').onchange = e => { ext().muted = e.target.checked; B.save(); };
   $('#resetTest').onclick = () => B.resetTest();
+  $('#uiSetBackup').onclick = () => { d.dataset.kind = ''; drawer('backup'); };
 }
 
 /* ---------------------------------------------------------------- Adventure HQ */

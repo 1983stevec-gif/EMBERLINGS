@@ -131,14 +131,17 @@ async function renderAccount() {
       catch (err) { msg.textContent = err.message; }
     };
     $('#uiSaveNow').onclick = async () => { if (!signedIn()) setMeta({ user: account.me.username, enabled: true, revision: m.revision || 0, hash: '' }); await upload(false, true); paintStatus(); if (!document.querySelector('.uiCloudDlg')) B.toast('Saved to the cloud.'); };
-    $('#uiLogout').onclick = async () => {
-      if (!confirm('Log out on this device? Your progress stays in the cloud and on this device.')) return;
-      await upload(); try { await post('/logout', {}); } catch { }
-      setMeta({}); delete B.state.playerUsername; B.save(); location.reload();
-    };
+    $('#uiLogout').onclick = logout;
   }
   B.bind();
 }
+
+async function logout() {
+  if (!confirm('Log out on this device? Your progress stays in the cloud and on this device.')) return;
+  await upload(); try { await post('/logout', {}); } catch { }
+  setMeta({}); delete B.state.playerUsername; B.save(); location.reload();
+}
+window.EmberCloud = { logout };
 
 /* ---------------------------------------------------------------- Wiring */
 function linkFromWelcome() {

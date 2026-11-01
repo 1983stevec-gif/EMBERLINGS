@@ -430,7 +430,7 @@ body.uiExact:has(.uiXVault) #app{background:#0e1636}
 .uiXChip{z-index:3;display:flex;align-items:center;justify-content:center;gap:.5em;background:#0b0f15e6;border:1px solid #9a7a42;border-radius:8px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
 .uiXChip b{color:#ffd27a;font-weight:500}.uiXChip.on{border-color:#ffd27a;box-shadow:0 0 10px #ffb04a88}
 .uiXCurrent{z-index:3;background:linear-gradient(180deg,#16233a,#0f1828);border:1px solid #5a6a8a;border-radius:6px;color:#efe6d2;font-family:'EB Garamond',Georgia,serif;cursor:pointer}
-#uiQuest{position:absolute;inset:0;pointer-events:none}#uiQuest>*{pointer-events:auto}#uiQuest .uiTxt{pointer-events:none}
+#uiQuest,#uiQuest2{position:absolute;inset:0;pointer-events:none}#uiQuest>*,#uiQuest2>*{pointer-events:auto}#uiQuest .uiTxt,#uiQuest2 .uiTxt{pointer-events:none}
 .uiXRegion{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.04em;color:#f3e3c2}
 .uiXLevel{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:600;font-variant:small-caps;letter-spacing:.08em;color:#ddd2bb}
 .uiXArt{position:absolute;overflow:hidden;border-radius:4px;border:2px solid #d9b77a;z-index:2}
@@ -707,16 +707,11 @@ body.uiExact:has(.uiXFusion){background:#0a0f22!important}
 .uiXFCard:hover:not(.off){border-color:#c9a35a}.uiXFCard:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
 .uiXFCard.sel{border:2px solid #f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 26px #f2b44a88}
 .uiXFCard.off{cursor:not-allowed;opacity:1}
-.uiXFArt{position:relative;width:100%;aspect-ratio:1.12;border-radius:6px;overflow:hidden;border:2px solid #c9a35a66;margin-bottom:.3em}
-.uiXFArt .mythlingArt{position:absolute!important;left:0!important;right:0!important;top:50%!important;width:100%!important;height:auto!important;aspect-ratio:1;transform:translateY(-50%)}
-.uiXFCard strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.32em;font-weight:700}
-.uiXFCard small{font-family:system-ui,'Segoe UI',sans-serif;font-size:.84em;color:#c8d1ec}.uiXFCard small b{color:#ffd24a}
 .uiXFChoose{margin-top:.5em;width:84%;padding:.55em 0;border:2px solid #e9b75a;border-radius:6px;font-family:system-ui,'Segoe UI',sans-serif;font-weight:600;color:#f6ecd6;text-align:center}
 .uiXFCard.sel .uiXFChoose{background:linear-gradient(180deg,#f7cc6a,#dc9a33);color:#2a1405}
 .uiXFProt{margin-top:.4em;padding:.3em 1em;border:1px solid #6a7ac0;border-radius:99px;background:#1b2550;font-family:system-ui,'Segoe UI',sans-serif;font-size:.84em;color:#dfe5f6}
-.uiXFCard em{font-style:normal;font-family:system-ui,'Segoe UI',sans-serif;font-size:.82em;color:#9aa6c8}
 .uiXFFoot{justify-content:center;color:#e2e6f4;font-family:system-ui,'Segoe UI',sans-serif!important}
-.uiXFCount,.uiXFFuse,.uiXFSlot>span:last-child,.uiXFCard strong{font-variant-numeric:lining-nums}.uiXFFuse:disabled{color:#d9bd86}
+.uiXFCount,.uiXFFuse,.uiXFSlot>span:last-child{font-variant-numeric:lining-nums}.uiXFFuse:disabled{color:#d9bd86}
 
 /* ---------- Friends (exact) ---------- */
 body.uiExact:has(.uiXFriends){background:#0b1433!important}
@@ -1049,22 +1044,105 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 /* ---------- Tablet menu (700–1199 px) ---------- */
 .uiTabMenu{display:none}
 @media(min-width:700px) and (max-width:1199px){
- :root{--tabm:min(126px,calc((100vw - 60px) / 5 * .92))}
- .uiTabMenu{display:flex;justify-content:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:45;padding:8px 12px max(8px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b1230f0,#070b1af7);border-top:1px solid #9a7638;box-shadow:0 -8px 24px #000a}
+ :root{--tabw:min(168px,calc((100vw - 72px) / 5));--tabH:calc(var(--tabw) * .3 + 22px + 20px)}
+ .uiTabMenu{display:flex;justify-content:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:45;padding:7px 12px max(7px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b1230f0,#070b1af7);border-top:1px solid #9a7638;box-shadow:0 -8px 24px #000a}
  body.uiTheme .nav,body.uiTheme .uiTop .uiNav{display:none!important}
  body.uiTheme .uiTop .uiPBar{display:none!important}
  body.uiTheme .uiTop .uiTopIn{display:flex!important;height:60px}
- body.uiTheme #app{padding-bottom:calc(var(--tabm) * 1.22 + 30px)!important}
- body.uiExact #app{padding-bottom:calc(var(--tabm) * 1.22 + 22px)!important}
- .uiXCrop{width:min(100%,calc((100dvh - 60px - var(--tabm) * 1.22 - 22px) * var(--ratio)))!important}
+ body.uiTheme #app{padding-bottom:calc(var(--tabH) + 18px)!important}
+ body.uiExact #app{padding-bottom:calc(var(--tabH) + 8px)!important}
+ .uiXCrop{width:min(100%,calc((100dvh - 60px - var(--tabH) - 8px) * var(--ratio)))!important}
  body:has(.cardArena) .uiTabMenu{display:none}
 }
-.uiTabTile{position:relative;flex:0 0 var(--tabm);width:var(--tabm);padding:0;margin:0;border:2px solid #9a7a46;border-radius:10px;background:#0b1230;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 4px 12px #0009;transition:transform .15s,box-shadow .15s;touch-action:manipulation}
-.uiTabTile img{display:block;width:100%;height:auto;aspect-ratio:360/307}
-.uiTabTile span{display:grid;place-items:center;height:calc(var(--tabm) * .2);background:url(/art/ui/tab-bar.webp) center/100% 100% no-repeat;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:calc(var(--tabm) * .14);color:#f6efdc;white-space:nowrap;letter-spacing:.01em}
-.uiTabTile.on{border:3px solid #ffcf6a;box-shadow:0 0 0 1px #6a4a10,0 0 18px #ffb04acc,0 0 34px #ff9a2a66;transform:translateY(-4px)}
+.uiTabTile{position:relative;flex:0 0 var(--tabw);width:var(--tabw);padding:0;margin:0;border:2px solid #9a7a46;border-radius:9px;background:#0b1230;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 3px 10px #0009;transition:transform .15s,box-shadow .15s;touch-action:manipulation}
+.uiTabTile img{display:block;width:100%;height:calc(var(--tabw) * .3);object-fit:cover;object-position:50% 38%}
+.uiTabTile span{display:grid;place-items:center;height:22px;background:url(/art/ui/tab-bar.webp) center/100% 100% no-repeat;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:15px;color:#f6efdc;white-space:nowrap;letter-spacing:.01em}
+.uiTabTile.on{border-color:#ffcf6a;box-shadow:0 0 0 1px #6a4a10,0 0 14px #ffb04acc,0 0 26px #ff9a2a66;transform:translateY(-2px)}
 .uiTabTile.on span{background:linear-gradient(180deg,#7a4a14,#4a2a08);color:#fff3d6;border-top:1px solid #ffcf6a}
-.uiTabTile.on::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;transform:rotate(45deg);background:#ffcf6a;box-shadow:0 0 8px #ffb04a}
+.uiTabTile.on::after{content:"";position:absolute;left:50%;bottom:-5px;width:9px;height:9px;margin-left:-4.5px;transform:rotate(45deg);background:#ffcf6a;box-shadow:0 0 8px #ffb04a}
 .uiTabTile:focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media(hover:hover){.uiTabTile:not(.on):hover{transform:translateY(-2px);border-color:#d9b77a}}
-@media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{justify-content:flex-start!important}body.uiExact:has(.uiXMap) #app>.uiExactPage{margin-block:auto!important}}
+@media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{justify-content:flex-start!important}body.uiExact:has(.uiXMap) #app>.uiExactPage{margin-block:auto!important;margin-inline:auto!important}}
+
+/* Home: the game's own extra tiles are not shown inside the picture-card grid */
+.uiHomeCardGrid>.tile{display:none}
+/* Adventure HQ on portrait tablets: map on top, quest panel halves beneath, journey bar at the bottom */
+.uiXPiece{overflow:hidden;min-width:0}
+.uiXPiece>.uiX{max-width:none}
+.uiExactPage.uiXMapSplit{width:min(100%,calc((100dvh - 60px - var(--tabH,0px) - 8px) / 1.2545))!important;margin:0 auto!important;display:block}
+.uiXPanelRow{display:flex}
+
+/* ---------- Fusion: printed cards instead of portraits ---------- */
+.uiCardFit{display:block;position:relative;width:100%;aspect-ratio:.66;overflow:visible;flex:none}
+.uiCardFitIn{position:absolute;left:0;top:0;width:230px;transform:scale(var(--s,1));transform-origin:0 0;pointer-events:none}
+.uiCardFitIn .mythCard{width:230px;max-width:none;margin:0}
+.uiXFCard{justify-content:space-between;padding:5% 6% 5%}
+.uiXFCard .uiCardFit{width:74%}
+.uiXFCard .uiXFChoose{margin-top:.4em}
+.uiXFSlotCard{border:2px dashed #c9a35acc!important;border-radius:10px!important;background:#0d1534!important;box-shadow:0 0 18px #f2b44a44!important;padding:3px;overflow:visible!important;align-items:center;justify-content:center}
+.uiXFSlotCard .uiCardFit{height:100%;width:auto;aspect-ratio:.66;filter:drop-shadow(0 0 14px #f2b44a88)}
+.uiFCardPick .uiCardFit{width:min(100%,150px);margin:0 auto 10px}
+.uiFPairCard .uiCardFit{width:min(26vw,130px);margin:auto}
+.uiFResult{width:min(64vw,260px);margin:18px auto}
+.uiFResult.uiFHidden{visibility:hidden}
+.uiFResult.uiFReveal{animation:uiFFlip .8s cubic-bezier(.2,.8,.3,1.2) both}
+@keyframes uiFFlip{from{transform:perspective(900px) rotateY(-180deg) scale(.6);opacity:0}60%{opacity:1}to{transform:none}}
+.uiFAbility{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--glow) 30%,transparent),#05081acc 60%);animation:uiFIn .35s ease-out both}
+.uiFAbility.out{animation:uiFOut .35s ease-in forwards}
+@keyframes uiFIn{from{opacity:0}}@keyframes uiFOut{to{opacity:0}}
+.uiFAbBox{width:min(440px,100%);text-align:center;padding:26px 24px 22px;border:2px solid var(--glow);border-radius:16px;background:linear-gradient(180deg,#141d3ef2,#0b1028f7);box-shadow:0 0 0 1px #000,0 0 40px color-mix(in srgb,var(--glow) 60%,transparent);color:#f6ecd6;animation:uiFPop .55s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes uiFPop{from{transform:scale(.6);opacity:0}}
+.uiFAbKick{margin:0;font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:13px;color:var(--glow)}
+.uiFAbTags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+.uiFAbTags span{padding:3px 10px;border:1px solid var(--glow);border-radius:99px;font-size:12px;font-weight:700;color:var(--glow)}
+.uiFAbBox h2{margin:6px 0 2px;font-family:'Cormorant Garamond',Georgia,serif;font-size:32px}
+.uiFAbLabel{margin:10px 0 6px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8d1ec}
+.uiFAbMove{display:flex;align-items:center;gap:10px;justify-content:center;padding:12px 14px;border:1px solid #c9a35a88;border-radius:10px;background:#0d1534}
+.uiFAbMove strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px}
+.uiFAbMove b{margin-left:auto;font-size:30px;color:#ffd27a;font-variant-numeric:lining-nums;animation:uiFPop .6s .35s cubic-bezier(.2,.9,.3,1.4) both}
+.uiFAbMove .energyCost{display:flex;gap:2px}
+.uiFAbility em{font-style:normal;font-size:.55em;color:#7dffb0;vertical-align:middle}
+.uiFAbStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:14px 0 18px}
+.uiFAbStats div{padding:8px;border-radius:8px;background:#ffffff0d}
+.uiFAbStats dt{font-size:11px;color:#c8d1ec}.uiFAbStats dd{margin:2px 0 0;font-size:20px;font-weight:700;font-variant-numeric:lining-nums}
+@media(prefers-reduced-motion:reduce){.uiFResult.uiFReveal,.uiFAbility,.uiFAbBox,.uiFAbMove b{animation:none}}
+.hero.center:has(.uiFResult){display:flex;flex-direction:column;align-items:center;text-align:center}
+
+/* ---------- Level path: extra moves and special abilities on printed cards ---------- */
+.printedMoves.manyMoves{gap:3px}
+.printedMoves.manyMoves .printedMove{font-size:8px}
+.printedMoves.manyMoves .printedMove>strong{font-size:12px}
+.printedMoves.moves5 .printedMove,.printedMoves.moves6 .printedMove{font-size:7px;line-height:1.1}
+.printedMoves.moves5 .printedMove>strong,.printedMoves.moves6 .printedMove>strong{font-size:10.5px}
+.printCard:has(.moves3,.moves4) .cardArt{aspect-ratio:1.75!important;min-height:0!important}
+.printCard:has(.moves5,.moves6) .cardArt{aspect-ratio:2.3!important;min-height:0!important}
+.printCard:has(.manyMoves) .printedMoves{flex:1 1 auto;justify-content:space-evenly}
+.printCard:has(.manyMoves) .cardSpecies{margin-bottom:2px}
+.cardSpecial{margin:2px 0 3px;padding:2px 6px;border-radius:99px;font-size:7.5px;font-weight:800;letter-spacing:.03em;text-align:center;color:#06263a;background:linear-gradient(90deg,#9be7ff,#d7f6ff)}
+.cardSpecial.veryRare{color:#3a0638;background:linear-gradient(90deg,#ff9bf0,#ffd6fa,#ffe28a);box-shadow:0 0 6px #ff8af0aa}
+/* Level-up popup (shares the fusion popup frame) */
+.uiLvNum{display:inline-block;margin-left:6px;padding:2px 10px;border-radius:99px;background:var(--glow);color:#1a1205;font-family:system-ui,'Segoe UI',sans-serif;font-size:14px;font-weight:800;vertical-align:middle}
+.uiLvList{list-style:none;margin:14px 0 10px;padding:0;display:grid;gap:8px;text-align:left}
+.uiLvList li{padding:9px 12px;border-radius:10px;background:#ffffff0d;border:1px solid #ffffff1a}
+.uiLvList li strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px}
+.uiLvList li span{font-size:12.5px;color:#c8d1ec}
+.uiLvList li.move{border-color:#ffcf6a88}.uiLvList li.ability{border-color:#9fe3a388}
+.uiLvList li.rare{border-color:#7fd8ff;box-shadow:0 0 14px #7fd8ff55}.uiLvList li.veryRare{border-color:#ff8af0;box-shadow:0 0 18px #ff8af077}
+.uiLvList li.rare strong{color:#9be7ff}.uiLvList li.veryRare strong{color:#ffb3f5}
+.uiLvCard{width:150px;height:216px;margin:6px auto 14px;position:relative}
+.uiLvCardIn{position:absolute;left:0;top:0;width:230px;transform:scale(.652);transform-origin:0 0}
+.uiLvCardIn .mythCard{width:230px;max-width:none;margin:0}
+.uiLvUp .uiFAbBox{width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto}
+.uiLvList:has(li:nth-child(4)){grid-template-columns:1fr 1fr}
+.uiLvList:has(li:nth-child(4)) li strong{font-size:17px}
+/* Battle: Mythlings with level moves get a compact two-column attack list */
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune{display:inline-grid!important;width:calc(50% - 4px)!important;margin:2px!important;padding:.35em .5em!important;min-height:0!important;height:auto!important;vertical-align:top;grid-template-columns:1fr auto!important;grid-template-rows:auto auto!important;grid-template-areas:"name name" "cost power"!important;gap:.1em .3em!important;align-items:center;text-align:left}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveGlyph{display:none!important}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveName{grid-area:name;font-size:.92em!important;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveName .keycap{display:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .movePower{grid-area:power;font-size:1.35em!important;line-height:1}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{grid-area:cost;display:flex;gap:1px}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune small,.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune>span:not([class]){display:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts{font-size:.62em!important;height:auto!important;max-height:1.8em;overflow:hidden}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts>*{flex:none}
+.attackPanel:has(.attackRune~.attackRune~.attackRune) .attackRune .moveCosts svg{width:1.4em;height:1.4em}
