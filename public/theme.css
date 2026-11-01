@@ -1369,6 +1369,20 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiXMPacks{background:#121a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#f3d48a}
 .uiXMBtn:disabled{filter:grayscale(.6) brightness(.72)!important;opacity:.85;cursor:not-allowed}
 
+/* ---------- Trades: several Mythlings per side with + between ---------- */
+.tradeOffers{align-items:start}
+.tradeCount{margin:0 0 8px;color:#c8d1ec}
+.tradeItems{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:6px 0 10px}
+.tradeItem{position:relative;width:132px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.tradeItem .tradeCardPrint{width:230px;zoom:.56;margin:0 0 6px}
+.tradeItem strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px}
+.tradeItem small{font-size:12px;color:#c8d1ec;line-height:1.25}
+.tradeItem .tradeMutStats{margin:0;font-weight:700}
+.tradeJoin{font-size:30px;font-weight:700;color:#ffd27a;text-shadow:0 0 10px #f2b44a88}
+.tradeX{position:absolute;top:-8px;right:-6px;width:30px;height:30px;border-radius:50%;border:2px solid #fff;background:#b2453a;color:#fff;font-size:18px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 6px #000a}
+.tradeAddSlot{width:132px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed #c9a35a;border-radius:12px;background:#0d1534;color:#f3dcae;font:inherit;font-weight:700;cursor:pointer}
+.tradeAddSlot span{font-size:46px;line-height:1;color:#ffd27a}
+.tradeAddSlot:hover{background:#15204a;border-style:solid}
 /* ---------- Defeat screen ---------- */
 .uiDefeat{max-width:900px;margin:16px auto;padding:28px 28px 30px!important;border:2px solid #b2453a!important;border-radius:16px!important;background:radial-gradient(ellipse at 50% 0,#4a1c24,#1a1530 55%,#0e1430)!important;box-shadow:0 0 40px #b2453a44,0 18px 40px #000a!important;text-align:center;color:#f2e9d6}
 .uiDefKick{margin:0;font-family:Cinzel,Georgia,serif;letter-spacing:.24em;text-transform:uppercase;font-size:14px;color:#e8a99e}
