@@ -1381,3 +1381,11 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .uiPortraitArtRow{display:grid;gap:10px;align-items:start;margin-bottom:10px}
 .uiPortraitArtRow .uiXPiece{width:100%}
 .uiPortraitPainting .uiX{width:auto;max-width:none}
+
+/* Keep the surrounding room as well as the live panels on portrait tablets. */
+.uiPortraitPainting{--portrait-gutter:clamp(52px,9vw,105px);--portrait-room-height:calc(100dvh - 74px - var(--tabH,96px));position:relative;isolation:isolate;padding-inline:var(--portrait-gutter);background:radial-gradient(ellipse at 70% 10%,#35304d66,transparent 55%),linear-gradient(#10192b,#080f1b)}
+.uiPortraitPainting::before,.uiPortraitPainting::after{content:"";position:fixed;top:74px;bottom:var(--tabH,96px);width:var(--portrait-gutter);z-index:0;pointer-events:none;background-image:var(--portrait-art);background-size:calc(var(--portrait-room-height) * var(--portrait-ratio)) var(--portrait-room-height);background-repeat:no-repeat}
+.uiPortraitPainting::before{left:0;background-position:2% top;mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.uiPortraitPainting::after{right:0;background-position:95.5% top;mask-image:linear-gradient(270deg,#000 85%,transparent)}
+.uiPortraitArtRow{position:relative;z-index:1}
+.uiPortraitPainting>.uiPortraitArtRow:first-of-type{margin-inline:calc(-1 * var(--portrait-gutter));margin-top:0}

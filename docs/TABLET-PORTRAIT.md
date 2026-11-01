@@ -16,3 +16,7 @@ The latest GitHub tablet artwork and UI changes were merged before implementatio
 - `npm test` stops at the existing `tests/dragon-pack.cjs` assertion requiring the dragon to outperform every other species. Current rules have multiple equally strong species; that older requirement was left unchanged.
 
 Browser checks used Chromium with touch emulation and disposable localhost profiles, not physical iPad Safari. No production player records were used for tests.
+
+## Full room scenery follow-up
+
+Portrait Mutation Vault, Vault and Packs now retain the original room scenery beside the reflowed panels. Fixed side scenery preserves the painting's proportions and remains visible during page scrolling; panel gutters keep the bookshelves, candles, vines and moonlit arch exposed. Landscape composition is unchanged. The 35 rotation/artwork checks and mutation, pack and Vault control checks passed again after this update.

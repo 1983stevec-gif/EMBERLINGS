@@ -27,6 +27,8 @@ function portraitPainting(wrap, cls, W, H, bg, rows) {
   const old = $('.' + cls, wrap); if (!old) return;
   const nodes = [...old.children], bounds = rows.flat(), hosts = [];
   const stage = document.createElement('div'); stage.className = 'uiPortraitPainting';
+  stage.style.setProperty('--portrait-art', 'url(' + bg + ')');
+  stage.style.setProperty('--portrait-ratio', String(W / H));
   for (const rects of rows) {
     const row = document.createElement('div'); row.className = 'uiPortraitArtRow';
     row.style.gridTemplateColumns = 'repeat(' + rects.length + ', minmax(0,1fr))';
