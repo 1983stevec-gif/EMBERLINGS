@@ -37,6 +37,16 @@ const text = (pos, W, px, cls, html, extra = '') => `<div class="uiTxt ${cls}" s
 const fitCard = (pos, c, rot = 0) => `<div class="uiFit" style="${pos};transform:rotate(${rot}deg)"><div class="uiFitInner">${B.cardHTML(c)}</div></div>`;
 function fitCards() { for (const f of $$('.uiFit')) { const inner = f.firstElementChild; if (!inner) continue; const s = f.clientWidth / 230; inner.style.transform = `scale(${s})`; f.style.height = f.style.height || ''; } }
 const ro = new ResizeObserver(() => fitCards());
+// A printed card that scales to the width of its box (used by the Fusion Lab).
+const cardFitRO = new ResizeObserver(es => {
+  for (const e of es) {
+    const f = e.target, k = f.clientWidth / 230, inner = f.firstElementChild; f.style.setProperty('--s', k.toFixed(4));
+    // Boxes sized by width take the printed card's real height; slot boxes are sized by height instead.
+    if (inner && !f.closest('.uiXFSlotCard')) { const h = Math.round(inner.offsetHeight * k); if (h && f.style.height !== h + 'px') f.style.height = h + 'px'; }
+  }
+});
+const cardFit = c => `<span class="uiCardFit"><span class="uiCardFitIn">${B.cardHTML(c)}</span></span>`;
+function observeCardFits(root = document) { for (const f of $$('.uiCardFit', root)) if (!f.dataset.fit) { f.dataset.fit = '1'; cardFitRO.observe(f); } }
 
 function deckTop(n = 3) {
   const seen = new Set(), out = [];
@@ -366,7 +376,7 @@ function fusionExact() {
   const W = 1586, H = 992, p = box(W, H), st = B.state;
   const chosen = picks.filter(b => b.classList.contains('picked')).map(b => st.owned.find(c => c.id === b.dataset.fusionId)).filter(Boolean);
   const avail = picks.filter(b => !b.disabled).length;
-  const slot = (c, b) => `<div class="uiXFSlot" style="${p(...b)};${fs(W, 15)}">${B.art(c)}<span>${esc(B.species[c.kind]?.name || '')}<small>Level ${c.level || 1}${c.shiny ? ' · ★ Shiny' : ''}</small></span></div>`;
+  const slot = (c, b) => `<div class="uiXFSlot uiXFSlotCard" style="${p(...b)}">${cardFit(c)}</div>`;
   const ready = !fuse.disabled, hint = chosen.length === 2 ? (ready ? 'Ready to fuse.' : st.coins < 200 ? `Need ${fmt(200 - st.coins)} more coins.` : 'Collect at least three Mythlings to fuse.') : chosen.length === 1 ? 'Choose one more Mythling.' : 'Select two Mythlings to continue.';
   const wrap = document.createElement('section'); wrap.className = 'uiExactPage';
   wrap.innerHTML = canvas(W, H, '/art/ui/fusion.webp', 'uiXFusion', `
@@ -385,7 +395,8 @@ function fusionExact() {
     const c = st.owned.find(x => x.id === b.dataset.fusionId), sp = B.species[c?.kind] || {}, picked = b.classList.contains('picked');
     const reason = (b.querySelector('.pill')?.textContent || '').replace(/^[^A-Za-z✓]+/, '');
     b.className = 'uiXFCard' + (picked ? ' sel' : '') + (b.disabled ? ' off' : '');
-    b.innerHTML = `<span class="uiXFArt">${c ? B.art(c) : ''}</span><strong>${esc(sp.name || '')}</strong><small>Level ${c?.level || 1} · ${esc(sp.element || '')}${c?.shiny ? ' · <b>★</b> Shiny' : ''}${c?.secret ? ' · Secret' : ''}</small>${b.disabled ? `<span class="uiXFProt">🛡 ${esc(reason.replace(/ · .*$/, ''))} · ${esc(/Vault/.test(reason) ? 'Take out first' : /Trade/.test(reason) ? 'In trade' : 'Protected')}</span><em>Cannot be fused</em>` : `<span class="uiXFChoose">${picked ? '✓ Selected' : 'Choose for Fusion'}</span>`}`;
+    b.setAttribute('aria-label', `${b.disabled ? 'Protected' : picked ? 'Deselect' : 'Select'} ${sp.name || ''}, level ${c?.level || 1}`);
+    b.innerHTML = `${c ? cardFit(c) : ''}${b.disabled ? `<span class="uiXFProt">🛡 ${esc(reason.replace(/ · .*$/, ''))} · ${esc(/Vault/.test(reason) ? 'Take out first' : /Trade/.test(reason) ? 'In trade' : 'Protected')}</span>` : `<span class="uiXFChoose">${picked ? '✓ Selected' : 'Choose for Fusion'}</span>`}`;
   });
   const pages = Math.max(1, Math.ceil(picks.length / 5));
   const firstPicked = picks.findIndex(b => b.classList.contains('sel')); if (fusePage >= pages) fusePage = pages - 1;
@@ -397,6 +408,54 @@ function fusionExact() {
   };
   paint();
   for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove();
+  observeCardFits(wrap);
+}
+// Narrow screens: the game's own Fusion page, with printed cards in place of the portraits.
+function fusionNarrow() {
+  const st = B.state;
+  for (const b of $$('[data-fusion-id]')) {
+    const c = st.owned.find(x => x.id === b.dataset.fusionId), pic = $('.creature', b); if (!c || !pic) continue;
+    $$(':scope > strong, :scope > p', b).forEach(e => e.remove()); pic.outerHTML = cardFit(c); b.classList.add('uiFCardPick');
+  }
+  const pair = $('.fusionPair'), chosen = $$('[data-fusion-id].picked').map(b => st.owned.find(c => c.id === b.dataset.fusionId));
+  if (pair) $$(':scope > div', pair).forEach(d => { const pic = $('.creature', d); if (!pic) return; const name = $('strong', d)?.textContent, c = chosen.find(x => B.species[x.kind]?.name === name) || chosen.shift(); if (!c) return; d.classList.add('uiFPairCard'); d.innerHTML = cardFit(c); });
+  observeCardFits();
+}
+
+/* Fusion result: the printed card; special results first show their special ability and stat boosts. */
+const isSpecial = c => !!(c && (c.shiny || c.secret || B.rarityRank(c) >= 4));
+function cardStats(c) {
+  const t = document.createElement('div'); t.innerHTML = B.cardHTML(c);
+  return { hp: parseInt($('.cardTop span', t)?.textContent, 10) || 0, moves: $$('.printedMove', t).map(m => ({ name: $('.printedMoveName', m)?.textContent || '', dmg: parseInt($('strong', m)?.textContent, 10) || 0, cost: $('.energyCost', m)?.innerHTML || '' })) };
+}
+function fusionResult(c) {
+  const hero = $('#app .hero.center'), pic = hero && $('.creature', hero); if (!c || !pic) return;
+  const holder = document.createElement('div'); holder.className = 'uiFResult'; holder.innerHTML = cardFit(c);
+  pic.replaceWith(holder); $$('h2, h2 + p', hero).forEach(e => e.remove()); observeCardFits(holder);
+  if (!isSpecial(c)) { holder.classList.add('uiFReveal'); return; }
+  holder.classList.add('uiFHidden');
+  const now = cardStats(c), base = cardStats({ ...c, shiny: false, secret: false, rarity: 'Common', bonus: 0 });
+  const plus = (a, b) => a > b ? ` <em>+${a - b}</em>` : '';
+  const sp = now.moves.reduce((m, x) => x.dmg > m.dmg ? x : m, now.moves[0] || { name: '', dmg: 0, cost: '' }), spBase = base.moves.find(m => m.name === sp.name)?.dmg || sp.dmg;
+  const tags = [c.secret && 'Secret', B.rarityRank(c) >= 4 && B.rarityLabel(c), c.shiny && '✦ Shiny'].filter(Boolean);
+  const show = () => {
+    const o = document.createElement('div'); o.className = 'uiFAbility'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Special ability');
+    o.style.setProperty('--glow', B.revealColor(c));
+    o.innerHTML = `<div class="uiFAbBox"><p class="uiFAbKick">Special fusion!</p><p class="uiFAbTags">${tags.map(x => `<span>${esc(x)}</span>`).join('')}</p>
+     <h2>${esc(B.species[c.kind]?.name || '')}</h2><p class="uiFAbLabel">Special ability</p>
+     <div class="uiFAbMove"><span class="energyCost">${sp.cost}</span><strong>${esc(sp.name)}</strong><b>${sp.dmg}${plus(sp.dmg, spBase)}</b></div>
+     <dl class="uiFAbStats"><div><dt>HP</dt><dd>${now.hp}${plus(now.hp, base.hp)}</dd></div>${now.moves.map((m, i) => `<div><dt>${esc(m.name)}</dt><dd>${m.dmg}${plus(m.dmg, base.moves[i]?.dmg || m.dmg)}</dd></div>`).join('')}</dl>
+     <button class="button gold" type="button">See your card ›</button></div>`;
+    document.body.appendChild(o);
+    let gone = false;
+    const done = () => { if (gone) return; gone = true; o.classList.add('out'); setTimeout(() => o.remove(), 350); holder.classList.remove('uiFHidden'); holder.classList.add('uiFReveal'); };
+    $('button', o).onclick = done; o.addEventListener('click', e => { if (e.target === o) done(); });
+    addEventListener('keydown', function k(e) { if (e.key === 'Escape' || e.key === 'Enter') { removeEventListener('keydown', k); done(); } });
+    $('button', o).focus();
+  };
+  // Wait for the fusion animation to finish first.
+  const t0 = Date.now(), wait = () => { if (!document.body.contains(holder)) return; if ($('.fxStage') && Date.now() - t0 < 8000) return setTimeout(wait, 120); show(); };
+  setTimeout(wait, 150);
 }
 
 
@@ -472,6 +531,7 @@ function onFrame() {
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
+  if (['fusion', 'fuse'].includes(B.view) && !exact && $('.fusionPreview')) fusionNarrow();
   if (B.view === 'cardBattle' && exact) battleExact();
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
@@ -484,6 +544,7 @@ if (B && UI) {
   Object.assign(UI, { home, map, afterMap, selectLevel });
   window.addEventListener('ember:frame', onFrame);
   window.addEventListener('ember:friends', e => { if (wide() && B.view === 'friends') { document.body.classList.add('uiExact'); friendsExact(e.detail); } });
+  window.addEventListener('ember:fusion', e => fusionResult(e.detail.creature));
   let wasWide = wide();
   let wasSplit = mapSplit();
   addEventListener('resize', () => { const now = wide(), split = mapSplit(); if (B.view === 'map' && split !== wasSplit) { wasSplit = split; wasWide = now; return B.go('map'); } wasSplit = split; if (now !== wasWide) { wasWide = now; if (['home', 'map', 'vault', 'packs', 'mutation', 'fusion'].includes(B.view)) B.go(B.view); } });
