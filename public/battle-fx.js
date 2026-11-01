@@ -115,12 +115,6 @@ function callouts(match, side) {
   }
 }
 
-/* 7. Hand fan: tilt by position (CSS does the rest) */
-function fan() {
-  const cards = $$('.handRow > .handCard'), n = cards.length, mid = (n - 1) / 2;
-  cards.forEach((c, i) => { c.style.setProperty('--fan', ((i - mid) * 2.2).toFixed(2) + 'deg'); c.style.setProperty('--lift', (Math.abs(i - mid) * 3).toFixed(1) + 'px'); });
-}
-
 /* 8. Victory / defeat scene */
 function resultScene(r) {
   const hero = $('.victoryCard'); if (!hero || hero.classList.contains('bxScene')) return;
@@ -135,7 +129,7 @@ if (B) {
     if (sig !== lastSig) { lastSig = sig; prev = null; seenEvents = new Set((match.events || []).map(x => x.id)); }
     const turnKey = turnSignal(match, side);
     const snap = combatFx(match, side);
-    callouts(match, side); enableDrag(); attackPreview(match, side); fan();
+    callouts(match, side); enableDrag(); attackPreview(match, side);
     prev = { turnKey, snap };
   });
   addEventListener('ember:cardResult', e => { prev = null; lastSig = ''; $('#bxLayer')?.replaceChildren(); requestAnimationFrame(() => resultScene(e.detail)); });

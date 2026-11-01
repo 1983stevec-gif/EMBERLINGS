@@ -966,10 +966,11 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 .bxCallout::before{content:"⚔ Opponent · ";color:#ff9a7a;font-weight:700}
 .bxCallout.out{opacity:0;transform:translate(-50%,-10px)}
 @keyframes bxIn{from{opacity:0;transform:translate(-50%,-14px)}}
-/* 7 hand fan */
-.handRow>.handCard{transform:rotate(var(--fan,0deg)) translateY(var(--lift,0px));transform-origin:50% 120%;transition:transform .18s ease,filter .18s;position:relative}
-.handRow>.handCard:hover,.handRow>.handCard:focus-within{transform:translateY(-14px) scale(1.04);z-index:5;filter:drop-shadow(0 10px 18px #000c)}
-.uiXBattle .handRow{overflow-y:visible;padding-top:calc(16*var(--u))!important}
+/* Straight battle hand: keep every card upright in one sideways-scrolling row. */
+.handRow{display:flex;flex-wrap:nowrap;align-items:flex-start;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;gap:14px;min-width:0;max-width:100%;padding:12px 4px 18px;touch-action:pan-x pan-y;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.handRow>.handCard{flex:0 0 auto;transform:none;position:relative}
+.handRow>.handCard:hover,.handRow>.handCard:focus-within{transform:none}
+.uiXBattle .handRow{overflow-y:hidden;padding-top:calc(8*var(--u))!important}
 /* 8 result scene */
 .victoryCard.bxScene{position:relative;overflow:hidden;min-height:min(70vh,640px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#0b1022bb,#0b1022ee),url(/art/ui/battle.webp) center/cover!important;border:2px solid #c9a35a!important;border-radius:14px;max-width:1100px;margin:20px auto!important}
 .bxScene>*{position:relative;z-index:1}
@@ -1037,7 +1038,7 @@ body.uiExact .cardArena{padding:0!important;margin:0!important;background:none!i
 @media(max-width:1250px) and (min-width:700px){.uiCVGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .uiDeckBuilder,.uiVaultCol{min-width:0}
 /* touch devices: no hover-only lifts that stick after a tap */
-@media(hover:none){.handRow>.handCard:hover{transform:rotate(var(--fan,0deg)) translateY(var(--lift,0px));filter:none}.uiTile:hover,.uiHomeCard:hover{transform:none}}
+@media(hover:none){.handRow>.handCard:hover{transform:none;filter:none}.uiTile:hover,.uiHomeCard:hover{transform:none}}
 .uiMer{position:relative;overflow:hidden}.uiMer input{left:0;top:0;width:1px;height:1px}
 @media(orientation:portrait) and (max-width:1100px){body.uiExact:has(.uiXMap) #app{min-height:calc(100dvh - 60px);display:flex;flex-direction:column;justify-content:center}}
 
