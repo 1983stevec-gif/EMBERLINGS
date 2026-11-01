@@ -26,13 +26,22 @@ export function moveProfile(kind){return MOVE_PROFILES[kind]||MOVE_PROFILES[0]}
 export function skillShots(p,kind,base,dx,dy){const m=moveProfile(kind);if(!m.count)return [];const angle=Math.atan2(dy,dx);return Array.from({length:m.count},(_,i)=>{const a=angle+(i-(m.count-1)/2)*m.spread;return {x:p.x+dx*22,y:p.y+dy*22,vx:Math.cos(a)*m.speed,vy:Math.sin(a)*m.speed,r:m.radius,life:1.8,damage:Math.round(base*m.power),color:m.color,pierce:m.mode==='pierce'?2:0,bounces:m.mode==='bounce'?1:0,hitIds:[]}})}
 
 export const MUTATIONS=[
+ {id:'bloom',name:'Bloom',damage:.05,coins:.5,cost:1000,color:'#9be38a',icon:'❀'},
  {id:'spark',name:'Spark',damage:.10,coins:1,cost:2500,color:'#ffe47e',icon:'✧'},
+ {id:'tide',name:'Tide',damage:.15,coins:2,cost:5000,color:'#6fc7ff',icon:'≈'},
  {id:'flame',name:'Flame',damage:.20,coins:4,cost:10000,color:'#ff9a63',icon:'🔥'},
  {id:'frost',name:'Frost',damage:.25,coins:9,cost:25000,color:'#9cecff',icon:'❄'},
+ {id:'crystal',name:'Crystal',damage:.30,coins:15,cost:45000,color:'#b9f5e6',icon:'◆'},
  {id:'storm',name:'Storm',damage:.35,coins:24,cost:75000,color:'#b3a2ff',icon:'ϟ'},
+ {id:'solar',name:'Solar',damage:.42,coins:45,cost:120000,color:'#ffd34d',icon:'☀'},
  {id:'shadow',name:'Shadow',damage:.50,coins:99,cost:200000,color:'#e3a1fb',icon:'☾'},
- {id:'cosmic',name:'Cosmic',damage:.75,coins:99,cost:500000,color:'#ffadd8',icon:'✦'}
+ {id:'void',name:'Void',damage:.60,coins:99,cost:300000,color:'#8f84ff',icon:'◉'},
+ {id:'cosmic',name:'Cosmic',damage:.75,coins:99,cost:500000,color:'#ffadd8',icon:'✦'},
+ {id:'prism',name:'Prism',damage:.90,coins:99,cost:1000000,color:'#b6ffea',icon:'✺'}
 ];
+// Packs can roll a mutation. Better packs roll more often and can reach stronger mutations; weaker ones are likelier.
+export const PACK_MUTATION=[{chance:.03,top:3},{chance:.05,top:4},{chance:.07,top:5},{chance:.10,top:6},{chance:.14,top:8},{chance:.20,top:10},{chance:.30,top:11}];
+export function rollPackMutation(tier,rng=Math.random){const t=PACK_MUTATION[Math.max(0,Math.min(PACK_MUTATION.length-1,tier|0))];if(rng()>=t.chance)return null;const w=MUTATIONS.slice(0,t.top+1).map((m,i)=>1/Math.pow(i+1,1.3)),total=w.reduce((a,b)=>a+b,0);let r=rng()*total;for(let i=0;i<w.length;i++){r-=w[i];if(r<0)return MUTATIONS[i].id}return MUTATIONS[0].id}
 export function mutationTrait(c){return MUTATIONS.find(m=>m.id===c?.mutation)||null}
 export function mutationDamage(c,base){return Math.round(base*(1+(mutationTrait(c)?.damage||0)))}
 export function mutationCoins(c){return 1+(mutationTrait(c)?.coins||0)}

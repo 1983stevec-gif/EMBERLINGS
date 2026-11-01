@@ -306,6 +306,9 @@ function packsNarrow() {
 
 /* ---------------------------------------------------------------- Mutation Vault (mockup 1587 × 991) */
 // Rearranges the game's own Mutation Vault (same buttons, purchase and confirmation) onto the mockup.
+// Page 2 of the mutation cards: the newer mutations, drawn live in the same six painted card frames.
+const MUT_NEW = ['bloom', 'tide', 'crystal', 'solar', 'void', 'prism'];
+let mutCardPage = 0, mutCardSel = null;
 const MUT_CARDS = { spark: [687, 214, 920, 457], flame: [932, 214, 1165, 457], frost: [1177, 214, 1407, 457], storm: [687, 473, 920, 721], shadow: [933, 473, 1165, 721], cosmic: [1178, 473, 1407, 721] };
 const MUT_TILES = [[460, 840, 642, 960], [655, 840, 836, 960], [849, 840, 1030, 960], [1043, 840, 1225, 960], [1238, 840, 1420, 960]];
 let mutPage = 0, mutLastSel = null;
@@ -331,18 +334,23 @@ function mutationExact() {
    <div class="uiXMBuy" style="${p(250, 722, 596, 765)};${fs(W, 19)}"></div>
    <div class="uiTxt uiXMNeed" style="${p(250, 768, 596, 792)};${fs(W, 15)}"></div>
    <div class="uiXMConfirm" style="${p(196, 556, 650, 806)};${fs(W, 15)}"></div>
-   ${Object.entries(MUT_CARDS).map(([id, b]) => `<div class="uiXMCard ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...b)};${fs(W, 14.5)}"></div>`).join('')}
+   ${(() => { if (m.id !== mutCardSel) { mutCardSel = m.id; mutCardPage = MUT_NEW.includes(m.id) ? 1 : 0; } const slots = Object.values(MUT_CARDS);
+     return [Object.keys(MUT_CARDS), MUT_NEW].map((ids, pg) => ids.map((id, i) => { const x = B.MUTATIONS.find(q => q.id === id); return `<div class="uiXMCard uiXMP${pg} ${pg ? 'uiXMLive' : ''} ${id === m.id ? 'sel' : ''} ${c.mutation === id ? 'active' : ''}" data-mcard="${id}" style="${p(...slots[i])};${fs(W, 14.5)};--mut:${x?.color}">${pg && x ? `<span class="uiXMLArt">${B.art({ ...c, mutation: id })}</span><span class="uiXMLName"><i>${x.icon}</i>${esc(x.name)}</span><span class="uiXMLPrice"><b></b>${fmt(x.cost)}</span>` : ''}</div>`; }).join('')).join(''); })()}
+   <div class="uiXMCardPager" style="${p(1268, 170, 1410, 204)};${fs(W, 15)}"><button type="button" data-mcp="0" aria-label="Original mutations">‹</button><span></span><button type="button" data-mcp="1" aria-label="More mutations">›</button></div>
+   <div class="uiTxt uiXMNote" style="${p(884, 767, 1215, 789)};${fs(W, 13.5)}">Buy mutations here, or find them in packs.</div>
    ${text(p(204, 872, 420, 896), W, 15.5, 'uiXMCount', `${fmt(st.owned.length)} Mythlings`)}
    <div class="uiXMPager" style="${p(204, 905, 430, 940)};${fs(W, 15)}"></div>
    ${MUT_TILES.map((b, i) => `<div class="uiXMTile" data-mtile="${i}" style="${p(...b)};${fs(W, 17)}"></div>`).join('')}`);
   app.insertBefore(wrap, app.firstChild.nextSibling);
+  const showCards = () => { wrap.classList.toggle('uiXMPage1', mutCardPage === 1); $('.uiXMCardPager span', wrap).textContent = `${mutCardPage + 1} / 2`; $$('[data-mcp]', wrap).forEach(b => b.disabled = +b.dataset.mcp === mutCardPage); };
+  $$('[data-mcp]', wrap).forEach(b => b.onclick = () => { mutCardPage = +b.dataset.mcp; showCards(); }); showCards();
   // Mutation cards: the game's option buttons become the card hotspots; the live damage/vault line is drawn in place.
   for (const b of opts) {
     const host = $(`[data-mcard="${b.dataset.mutation}"]`, wrap); if (!host) continue;
-    const line = b.querySelectorAll(':scope > span')[1]?.textContent || '', row1 = MUT_CARDS[b.dataset.mutation][1] < 400;
+    const line = b.querySelectorAll(':scope > span')[1]?.textContent || '';
     b.className = 'uiXMOpt'; b.setAttribute('aria-label', `${b.dataset.mutation} mutation. ${line}`); b.innerHTML = '';
     host.append(b);
-    host.insertAdjacentHTML('beforeend', `<span class="uiXMLine" style="top:${row1 ? 75.4 : 75.4}%">${esc(line)}</span>${host.classList.contains('sel') ? '<span class="uiXMBadge">SELECTED</span>' : ''}${host.classList.contains('active') ? '<span class="uiXMBadge act">ACTIVE</span>' : ''}`);
+    host.insertAdjacentHTML('beforeend', `<span class="uiXMLine" style="top:75.4%">${esc(line)}</span>${host.classList.contains('sel') ? '<span class="uiXMBadge">SELECTED</span>' : ''}${host.classList.contains('active') ? '<span class="uiXMBadge act">ACTIVE</span>' : ''}`);
   }
   // Buy button, status line and replacement confirmation.
   const buy = $('#mutate'), status = $('#mutationStatus'), confirmBox = $('#mutationConfirm');

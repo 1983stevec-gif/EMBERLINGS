@@ -39,7 +39,7 @@ for (const v of ['home', 'packs', 'inventory', 'friends']) { const i = new Image
 function head() {
   // One header everywhere. Computers get the painted bar (art from the supplied design); phones get the compact bar.
   const st = B.state, v = B.view, active = B.active?.() || st.owned?.[0], name = esc(st.playerUsername || 'Explorer'), muted = !!ext().muted;
-  const navView = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  const navView = ['index', 'decks', 'album', 'mutationBook'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
   // Each main tab has its own painted "selected" bar; Adventure HQ uses the original bar (its HQ tab is already the centrepiece).
   const V = HEADER_BARS[navView] || HEADER_BARS.none;
   const P = (x0, y0, x1, y1) => `left:${x0 / 20}%;top:${(y0 - V.top) / V.h * 100}%;width:${(x1 - x0) / 20}%;height:${(y1 - y0) / V.h * 100}%`;
@@ -58,7 +58,7 @@ function head() {
 }
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
-  ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault']]],
+  ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault'], ['mutationBook', '🧬', 'Mutation Collection']]],
   ['Friends', [['trading', '🤝', 'Friend Trading'], ['achievements', '🏆', 'Achievements & titles']]]
 ];
 function userMenu(anchor) {
@@ -94,7 +94,7 @@ function homeCards() {
 /* Tablet menu (from the supplied tile design): five picture tiles, selected one in gold. Shown 700–1199 px wide. */
 function tabletMenu() {
   if ($('.uiTabMenu')) $('.uiTabMenu').remove();
-  const v = B.view, nv = ['index', 'decks', 'album'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
+  const v = B.view, nv = ['index', 'decks', 'album', 'mutationBook'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
   const nav = document.createElement('nav'); nav.className = 'uiTabMenu'; nav.setAttribute('aria-label', 'Main');
   nav.innerHTML = NAV.map(([g, t]) => `<button class="uiTabTile ${nv === g ? 'on' : ''}" data-go="${g}" ${nv === g ? 'aria-current="page"' : ''}><img src="/art/ui/tab-${g}.webp" alt="" width="360" height="307"><span>${g === 'inventory' ? 'My Binder' : t}</span></button>`).join('');
   document.body.appendChild(nav); B.bind();
