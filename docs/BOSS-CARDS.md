@@ -12,3 +12,9 @@ Validation:
 - Existing adventure stages, mutations, Equip Best, 22 Pocket rules, phone Binder and visual/progression checks pass.
 - Local Chromium at 360×800, 889×1100 and 1440×1000: five card illustrations and crop coordinates, boss map art, actual boss opening card, victory → Binder reward, reload and once-only claims. No page overflow or JavaScript errors. Disposable local saves only.
 - Production build passes.
+
+## Boss edition frame — November 2
+
+Boss cards have a dark enamel face, double gold trim, illustrated corner details, crown seal, element accents, and a foil sweep confined to the artwork. The normal collection's rainbow overlay is suppressed on this edition to preserve readable stats and original illustration colors. Boss/Shiny labels and the Boss Edition footer remain visible. Reduced-motion settings stop the foil animation. Preview canvases use matching gold borders and crown details. The printed card renderer applies this treatment consistently in Binder, battle, deck and inspection views; card values, rewards and saves are unchanged.
+
+Existing boss/reward and visual checks and production build pass. Local browser checks cover all five frames, normal-card comparison, artwork crops, reduced-motion behavior, boss battle presentation and reward/reload flow at phone, tablet and desktop sizes.

@@ -1566,3 +1566,28 @@ body.uiPhone .uiWorldControls #uiXCurrent{font-size:12px;padding:6px 2px}
 
 /* Island Guardian cards use the same printed card frame as the original collection. */
 .mythlingArt>.mythlingSheet.mythlingBossSheet{width:300%!important;height:200%!important;left:calc(var(--art-col)*-100%)!important;top:calc(var(--art-row)*-100%)!important}
+
+/* Boss edition: an enamel and gold frame distinct from the parchment collection. */
+.mythCard.printCard.bossPrintCard{isolation:isolate;border-color:#cba35a;background:radial-gradient(ellipse at top right,color-mix(in srgb,var(--element-color),transparent 65%),transparent 58%),linear-gradient(150deg,#1c2b43,#0b1425 60%,#18263d);color:#f2ead3;box-shadow:inset 0 0 0 1px #ffe1a0,0 0 0 1px #513c23,0 3px 10px #0008}
+.bossPrintCard::before{content:"";position:absolute;inset:3px;border:1px solid #e5c78488;border-radius:6px;pointer-events:none;z-index:4}
+.bossPrintCard .cardStage{border-bottom-color:#d8b56666;color:#ddc793}
+.bossPrintCard .cardStage>span{color:#ffe5a5;font-weight:900;letter-spacing:.12em}
+.bossPrintCard .cardTop>strong{color:#fff0c1;text-shadow:0 1px 2px #0008}
+.bossPrintCard .cardTop>span{color:#fbe4a4}
+.bossPrintCard .cardArt{border:1px solid #dbb96f;box-shadow:0 0 0 1px #0008}
+.bossPrintCard .cardArt::after{content:"";position:absolute;inset:3px;z-index:3;pointer-events:none;background:linear-gradient(#f8d58b,#f8d58b) left top/14% 1px,linear-gradient(#f8d58b,#f8d58b) left top/1px 14%,linear-gradient(#f8d58b,#f8d58b) right top/14% 1px,linear-gradient(#f8d58b,#f8d58b) right top/1px 14%,linear-gradient(#f8d58b,#f8d58b) left bottom/14% 1px,linear-gradient(#f8d58b,#f8d58b) left bottom/1px 14%,linear-gradient(#f8d58b,#f8d58b) right bottom/14% 1px,linear-gradient(#f8d58b,#f8d58b) right bottom/1px 14%;background-repeat:no-repeat}
+.bossSeal{position:absolute;right:5%;bottom:5%;width:17%;aspect-ratio:1;display:grid;place-items:center;color:#ffe9ae;background:radial-gradient(circle,color-mix(in srgb,var(--element-color),#102038 65%),#08111f);border:1px solid #f5d387;border-radius:50%;box-shadow:0 1px 4px #0009,inset 0 0 0 2px #0b1724;z-index:3;pointer-events:none}
+.bossSeal svg{width:76%;height:76%}
+.bossFoil{position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(115deg,transparent 35%,#fff8c930 47%,#b8e5ff30 50%,transparent 61%);background-size:250% 100%;background-position:150% 0;mix-blend-mode:screen;animation:bossFoil 8s ease-in-out infinite}
+.bossPrintCard .cardSpecies{color:#b8c7d6}
+.bossPrintCard .printedMoveName{color:#f6ecd5}
+.bossPrintCard .printedMove>strong{color:#ffe3a0}
+.bossPrintCard .cardTraits{color:#c8d3df;border-top-color:#c9a85b66}
+.bossPrintCard .cardMeta{color:#ead6a8}
+.bossPrintCard .cardMeta>b{color:#f8d27e}
+.bossPrintCard .cardEdition{color:#e5c580;letter-spacing:.06em;text-align:center;border-top:1px solid #d0aa5c55;padding-top:2px}
+@keyframes bossFoil{0%,65%{background-position:150% 0}95%,100%{background-position:-150% 0}}
+.reduceMotion .bossFoil{animation:none;background-position:50% 0;opacity:.35}
+@media(prefers-reduced-motion:reduce){.bossFoil{animation:none;background-position:50% 0;opacity:.35}}
+/* The dedicated art foil replaces the collection's full-card rainbow overlay. */
+.bossPrintCard>.fxHolo{display:none}

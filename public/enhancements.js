@@ -321,20 +321,26 @@ function cardCanvas(c, { w = 512, small = false } = {}, onReady) {
     g.clearRect(0, 0, w, h);
     roundRect(g, 4 * u, 4 * u, w - 8 * u, h - 8 * u, 34 * u);
     const bg = g.createLinearGradient(0, 0, w, h); bg.addColorStop(0, '#34405a'); bg.addColorStop(.6, '#172137'); bg.addColorStop(1, '#263249');
-    g.fillStyle = bg; g.fill(); g.lineWidth = 14 * u; g.strokeStyle = c.shiny ? '#ffd568' : color; g.stroke();
+    g.fillStyle = bg; g.fill(); g.lineWidth = 14 * u; g.strokeStyle = sp.boss ? '#e4be70' : c.shiny ? '#ffd568' : color; g.stroke();
     const ax = 36 * u, ay = (small ? 36 : 96) * u, as = w - 72 * u;
     g.save(); roundRect(g, ax, ay, as, as, 20 * u); g.clip();
     g.fillStyle = ELEMENT_COLORS[sp.element] || '#556'; g.fillRect(ax, ay, as, as);
     if (art) g.drawImage(art.img, art.sx, art.sy, art.sw, art.sh, ax, ay, as, as);
     g.restore();
-    g.lineWidth = 4 * u; g.strokeStyle = '#ffffff55'; roundRect(g, ax, ay, as, as, 20 * u); g.stroke();
+    g.lineWidth = 4 * u; g.strokeStyle = sp.boss ? '#dfbe78' : '#ffffff55'; roundRect(g, ax, ay, as, as, 20 * u); g.stroke();
+    if(sp.boss){
+      g.strokeStyle='#f0cf86';g.lineWidth=2*u;roundRect(g,15*u,15*u,w-30*u,h-30*u,24*u);g.stroke();
+      for(const [x,y,dx,dy] of [[ax,ay,1,1],[ax+as,ay,-1,1],[ax,ay+as,1,-1],[ax+as,ay+as,-1,-1]]){g.beginPath();g.moveTo(x+dx*44*u,y+dy*8*u);g.lineTo(x+dx*8*u,y+dy*8*u);g.lineTo(x+dx*8*u,y+dy*44*u);g.stroke()}
+      const cx=ax+as-43*u,cy=ay+as-43*u;g.beginPath();g.arc(cx,cy,28*u,0,Math.PI*2);g.fillStyle='#102037';g.fill();g.stroke();
+      g.beginPath();g.moveTo(cx-17*u,cy-10*u);for(const [x,y] of [[-8,-2],[0,-16],[8,-2],[17,-10],[13,12],[-13,12]])g.lineTo(cx+x*u,cy+y*u);g.closePath();g.fillStyle='#ffe4a0';g.fill();
+    }
     if (!small) {
-      g.fillStyle = '#eff8ff'; g.font = `900 ${44 * u}px system-ui,sans-serif`; g.textBaseline = 'middle'; g.fillText(sp.name, 40 * u, 56 * u);
+      g.fillStyle = '#eff8ff'; g.font = `900 ${44 * u}px system-ui,sans-serif`; g.textBaseline = 'middle'; g.fillText(sp.name, 40 * u, 56 * u, w - 80 * u);
       g.fillStyle = color; g.font = `800 ${30 * u}px system-ui,sans-serif`;
       g.fillText(`${B.rarityLabel(c)}${c.shiny ? ' · ✨ Shiny' : ''}`, 40 * u, ay + as + 50 * u);
       g.fillStyle = '#c9d5ee'; g.font = `600 ${26 * u}px system-ui,sans-serif`;
       g.fillText(`${sp.element} · Level ${c.level || 1}`, 40 * u, ay + as + 92 * u);
-      g.fillStyle = '#ffffff66'; g.font = `700 ${20 * u}px system-ui,sans-serif`; g.fillText('EMBERLINGS · FIRST LIGHT', 40 * u, h - 40 * u);
+      g.fillStyle = '#ffffff66'; g.font = `700 ${20 * u}px system-ui,sans-serif`; g.fillText(sp.boss?'ISLAND GUARDIANS · BOSS EDITION':'EMBERLINGS · FIRST LIGHT', 40 * u, h - 40 * u);
     } else {
       g.fillStyle = '#eff8ff'; g.font = `900 ${34 * u}px system-ui,sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(sp.name, w / 2, ay + as + 52 * u);
     }
