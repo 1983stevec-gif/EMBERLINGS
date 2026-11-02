@@ -21,7 +21,7 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 
 /* Animated EMBERLINGS logo: flame (flicker, glow, embers) + lettering. Height is set with --logo-h. */
 function logoHTML(cls = '') {
-  return `<span class="uiLogo ${cls}"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="EMBERLINGS" width="2048" height="704"></span>`;
+  return `<span class="uiLogo ${cls}"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.webp" alt="EMBERLINGS" width="840" height="299"></span>`;
 }
 
 /* Painted header bars, in source-image pixels (each bar is 2000 px wide). */
