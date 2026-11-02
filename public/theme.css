@@ -1786,3 +1786,14 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 
 .uiLogoArchArt{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .uiLogoScene .uiLogoNew{position:relative;z-index:1}
+
+.rpgStrike{position:fixed;height:60px;transform-origin:0 50%;pointer-events:none;color:var(--strike-color);filter:drop-shadow(0 0 6px var(--strike-color));animation:rpgTrail .85s ease-out both;z-index:9001}
+.rpgStrike svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.rpgStrike-crystal svg{fill:#d4a4ff55}.rpgStrike-roots svg{stroke-width:6}
+.rpgDamage{position:fixed;transform:translate(-50%,-50%);padding:5px 11px;border:1px solid #ffd58a;border-radius:8px;background:#10172ce8;color:#fff0b5;font:800 25px Georgia,serif;text-shadow:0 2px 3px #000;pointer-events:none;z-index:9002;animation:rpgDamage 1.3s ease-out both}
+.rpgAlive .pocketActive .mythlingArt{animation:rpgBreathe 4.5s ease-in-out infinite;transform-origin:50% 80%}
+@keyframes rpgTrail{0%{clip-path:inset(0 100% 0 0);opacity:0}25%{opacity:1}65%{clip-path:inset(0);opacity:1}100%{clip-path:inset(0);opacity:0}}
+@keyframes rpgDamage{0%{opacity:0;translate:0 8px}15%,65%{opacity:1}100%{opacity:0;translate:0 -30px}}
+@keyframes rpgBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1px) scale(1.012)}}
+.reduceMotion .rpgDamage{animation:none}.reduceMotion .rpgAlive .mythlingArt{animation:none}
+@media(prefers-reduced-motion:reduce){.rpgDamage,.rpgAlive .mythlingArt{animation:none}}

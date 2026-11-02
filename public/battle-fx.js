@@ -94,6 +94,36 @@ function combatFx(match, side) {
   }
   return snap;
 }
+/* RPG phase 1: signature trails and actual damage feedback; never changes match data. */
+const RPG_TRAILS={
+ wave:{color:'#74dfff',art:'<path d="M0 45Q20 0 40 30T80 30T120 30T160 15M0 55Q30 15 60 40T120 40T160 30"/>'},
+ crystal:{color:'#d4a4ff',art:'<path d="M15 30 42 7 56 30 42 53ZM65 30 96 2 115 30 96 58ZM117 30 143 12 159 30 143 48Z"/>'},
+ wind:{color:'#b5ffe7',art:'<path d="M0 18H110Q150 18 133 4M0 30H145Q167 30 150 46M10 43H100Q126 43 110 56"/>'},
+ roots:{color:'#a5e884',art:'<path d="M0 45Q40 55 65 25T160 30M45 41 35 15M80 17 95 3M115 20 125 46M140 25 150 5"/>'},
+ flame:{color:'#ffb15b',art:'<path d="M0 45Q35 15 55 35L76 3 87 29 114 10 107 38 145 22 160 40"/>'},
+ spark:{color:'#ffe77e',art:'<path d="M0 32 42 12 35 38 83 8 74 39 127 15 117 43 160 24"/>'},
+ shadow:{color:'#cb9cff',art:'<path d="M0 20Q45 60 80 20T160 20M0 40Q45 0 80 40T160 40"/>'}
+};
+function rpgFeedback(match,side){
+ const a=match.lastAttack,key=a?[a.at,a.side,a.move].join(':'):'';
+ $('.cardArena')?.classList.toggle('rpgAlive',!calm());
+ if(!a||!prev||key===prev.attackKey)return key;
+ const {mine,theirs}=fields(),field=i=>i===side?mine:theirs;
+ const source=$('.pocketActive .mythCard',field(a.side)),target=$('.pocketActive .mythCard',field(1-a.side));
+ if(!source||!target)return key;
+ const card=prev.snap?.[a.side]?.card,kind=card?.kind,element=B.species[kind]?.element;
+ const type=kind===25?'wave':kind===38?'crystal':kind===40?'wind':kind===44?'roots':({Water:'wave',Crystal:'crystal',Wind:'wind',Nature:'roots',Fire:'flame',Lightning:'spark',Ice:'crystal',Moon:'shadow',Shadow:'shadow'}[element]||'spark');
+ const t=target.getBoundingClientRect(),f=source.getBoundingClientRect(),L=layer();
+ const victim=prev.snap?.[1-a.side],damage=Math.min(Math.max(0,a.damage||0),Math.max(0,victim?.hp??a.damage??0));
+ const label=document.createElement('div');label.className='rpgDamage';label.textContent=damage?'−'+damage:'Blocked';label.setAttribute('role','status');label.style.left=(t.left+t.width/2)+'px';label.style.top=(t.top+t.height*.35)+'px';L.append(label);setTimeout(()=>label.remove(),1300);
+ if(calm())return key;
+ const sx=f.left+f.width/2,sy=f.top+f.height/2,tx=t.left+t.width/2,ty=t.top+t.height/2;
+ const trail=document.createElement('div');trail.className='rpgStrike rpgStrike-'+type;trail.dataset.creature=String(kind);trail.style.cssText=`left:${sx}px;top:${sy-30}px;width:${Math.hypot(tx-sx,ty-sy)}px;transform:rotate(${Math.atan2(ty-sy,tx-sx)}rad);--strike-color:${RPG_TRAILS[type].color}`;
+ trail.innerHTML='<svg viewBox="0 0 160 60" preserveAspectRatio="none" aria-hidden="true">'+RPG_TRAILS[type].art+'</svg>';L.append(trail);setTimeout(()=>trail.remove(),900);
+ target.animate([{filter:'brightness(1)'},{filter:'brightness(1.6)',transform:'translateX(-5px)'},{transform:'translateX(5px)'},{filter:'brightness(1)',transform:'translateX(0)'}],{duration:360});
+ return key;
+}
+
 function embers(rect, to, ours) {
   const L = layer(), cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
   for (let i = 0; i < 26; i++) {
@@ -172,14 +202,15 @@ function resultScene(r) {
 }
 
 if (B) {
-  addEventListener('ember:frame', e => { if (e.detail.view !== 'cardBattle') { $('#bxLayer')?.replaceChildren(); } });
+  addEventListener('ember:frame', e => { if (e.detail.view !== 'cardBattle') { $('#bxLayer')?.replaceChildren(); prev=null;lastSig=''; } });
   addEventListener('ember:cardBattle', e => {
     const { match, side } = e.detail, sig = match.sides.map(s => s.name).join('|');
     if (sig !== lastSig) { lastSig = sig; prev = null; seenEvents = new Set((match.events || []).map(x => x.id)); }
     const turnKey = turnSignal(match, side);
     const snap = combatFx(match, side);
+    const attackKey=rpgFeedback(match,side);
     callouts(match, side); enableDrag(); attackPreview(match, side); fan(); handArrows(); tidyPanel();
-    prev = { turnKey, snap };
+    prev = { turnKey, snap, attackKey };
   });
   addEventListener('ember:cardResult', e => { prev = null; lastSig = ''; $('#bxLayer')?.replaceChildren(); requestAnimationFrame(() => resultScene(e.detail)); });
 }
