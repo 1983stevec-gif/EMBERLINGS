@@ -21,7 +21,7 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 
 /* Animated EMBERLINGS logo: flame (flicker, glow, embers) + lettering. Height is set with --logo-h. */
 function logoHTML(cls = '') {
-  return `<span class="uiLogo ${cls}"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="EMBERLINGS" width="2048" height="704"></span>`;
+  return `<span class="uiLogo uiLogoScene ${cls}" role="img" aria-label="EMBERLINGS"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="" width="2048" height="704"><i class="uiLogoWarmth" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i></span>`;
 }
 
 /* Painted header bars, in source-image pixels (each bar is 2000 px wide). */
@@ -44,7 +44,7 @@ function head() {
   const V = HEADER_BARS[navView] || HEADER_BARS.none;
   const P = (x0, y0, x1, y1) => `left:${x0 / 20}%;top:${(y0 - V.top) / V.h * 100}%;width:${(x1 - x0) / 20}%;height:${(y1 - y0) / V.h * 100}%`;
   const painted = `<div class="uiPBar ${V.live ? 'uiPLive' : ''}"><div class="uiPBarIn" style="aspect-ratio:2000/${V.h};background-image:url(${V.img})">
-   <button class="uiPHot uiPLogo" data-go="home" style="${P(...V.logo)}" aria-label="EMBERLINGS home"></button>
+   <button class="uiPHot uiPLogo" data-go="home" style="${P(V.logo[0]-8,V.top+8,V.logo[2]+2,V.top+V.h-8)}" aria-label="EMBERLINGS home">${logoHTML()}</button>
    <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
    <nav class="uiPNav" aria-label="Main">${NAV.map(([g, t]) => `<button class="uiPHot uiPTab ${g === 'map' ? 'uiPHQ' : ''} ${navView === g ? 'active' : ''}" data-go="${g}" style="${P(...V.tabs[g])}" ${navView === g ? 'aria-current="page"' : ''} aria-label="${t}"></button>`).join('')}</nav>
    <button class="uiPHot uiPSound" id="uiPSound" style="${P(...V.sound)}" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
@@ -252,7 +252,7 @@ const WORLDS = [
 ];
 function questArt(l) {
   const r = B.regions.findIndex(x => l >= x[1] && l <= x[2]), w = WORLDS[r] || WORLDS[0], boss = !!B.bosses[l];
-  const kind = boss ? w.boss : w.pool[(l - B.regions[r][1]) % w.pool.length];
+  const kind = boss ? B.species.findIndex(c=>c.name===B.bosses[l]) : w.pool[(l - B.regions[r][1]) % w.pool.length];
   return `<span class="uiWorldArt ${boss ? 'uiWorldBoss' : ''}" style="--world:${w.color}">${B.art({ kind, rarity: boss ? 'Legendary' : 'Common' })}<span class="uiWorldTint" aria-hidden="true"></span><span class="uiWorldTag">${w.icon} ${esc(B.regions[r][0])}${boss ? ' · Boss' : ''}</span></span>`;
 }
 function questPanel(l) {
@@ -305,11 +305,12 @@ function binderLayout({ index, page }) {
   const sortSel = sel('binderSort'); if (sortSel) for (const o of sortSel.options) if (/newest/i.test(o.text)) o.text = 'Newest';
   filters.replaceWith(bar);
   let t = 0; $('#uiBinderSearch').addEventListener('input', e => { clearTimeout(t); const v = e.target.value.trim().toLowerCase(); t = setTimeout(() => { B.binderFilter('q', v); $('#uiBinderSearch')?.focus(); const i = $('#uiBinderSearch'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 250); });
+  const pageSize=innerWidth<700||(innerWidth<1000&&innerHeight<500)?4:12;
   // Book: numbered pockets, side tabs and the logo cover.
-  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * 12 + i + 1).padStart(2, '0')}</span>`));
+  $$('.binderPocket', book).forEach((p, i) => p.insertAdjacentHTML('afterbegin', `<span class="uiPocketNo">${String(page * pageSize + i + 1).padStart(2, '0')}</span>`));
   // Standard binder: always a full 12-pocket page; empty sleeves fill the rest.
   const pagesEl = $('.binderPages', book), filled = $$('.binderPocket', book).length;
-  if (pagesEl && filled < 12) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: 12 - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * 12 + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
+  if (pagesEl && filled < pageSize) pagesEl.insertAdjacentHTML('beforeend', Array.from({ length: pageSize - filled }, (_, i) => `<div class="binderPocket uiEmptyPocket" aria-hidden="true"><span class="uiPocketNo">${String(page * pageSize + filled + i + 1).padStart(2, '0')}</span><span class="uiSleeve"></span></div>`).join(''));
   if (pagesEl && !filled) $('p.panel', pagesEl)?.classList.add('uiNoMatch');
   book.insertAdjacentHTML('afterbegin', '<span class="uiSpine" aria-hidden="true"></span>');
   book.insertAdjacentHTML('beforeend', `<img class="uiVineTop" src="/art/ui/binder-vine-top.webp" alt="" aria-hidden="true"><img class="uiVineSide" src="/art/ui/binder-vine-side.webp" alt="" aria-hidden="true"><nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="background-image:url(/art/ui/binder-tab-${(el || 'all').toLowerCase()}.webp)"></button>`).join('')}</nav>`);
@@ -322,7 +323,7 @@ function binderLayout({ index, page }) {
     if (prev) prev.innerHTML = '‹ Previous'; if (next) next.innerHTML = 'Next ›';
     if (label) label.textContent = label.textContent.replace(/Page (\d+) \/ (\d+)/, 'Page $1 of $2');
     const foot = document.createElement('div'); foot.className = 'uiBinderFoot';
-    foot.innerHTML = `<span class="uiFilled">${filled} of 12 pockets filled</span><div class="uiFootMid"></div><button class="uiBrowse" data-go="packs">Browse packs <span aria-hidden="true">→</span></button>`;
+    foot.innerHTML = `<span class="uiFilled">${filled} of ${pageSize} pockets filled</span><div class="uiFootMid"></div><button class="uiBrowse" data-go="packs">Browse packs <span aria-hidden="true">→</span></button>`;
     pager.replaceWith(foot); $('.uiFootMid', foot).append(pager);
     $('.uiFootMid', foot).insertAdjacentHTML('beforeend', '<p class="uiPagerHint">Select a card to inspect · Use arrow keys to turn pages ›</p>');
     B.bind();

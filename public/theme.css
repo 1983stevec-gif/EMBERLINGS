@@ -1680,3 +1680,86 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 .uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.png) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
 .uiPFlame{display:none!important}
 @media(max-width:699px){.uiBrand .uiLogo .uiLogoNew{width:min(210px,43vw);max-height:64px}}
+
+/* Island Guardian cards use the same printed card frame as the original collection. */
+.mythlingArt>.mythlingSheet.mythlingBossSheet{width:300%!important;height:200%!important;left:calc(var(--art-col)*-100%)!important;top:calc(var(--art-row)*-100%)!important}
+
+/* Boss edition: an enamel and gold frame distinct from the parchment collection. */
+.mythCard.printCard.bossPrintCard{isolation:isolate;border-color:#cba35a;background:radial-gradient(ellipse at top right,color-mix(in srgb,var(--element-color),transparent 65%),transparent 58%),linear-gradient(150deg,#1c2b43,#0b1425 60%,#18263d);color:#f2ead3;box-shadow:inset 0 0 0 1px #ffe1a0,0 0 0 1px #513c23,0 3px 10px #0008}
+.bossPrintCard::before{content:"";position:absolute;inset:3px;border:1px solid #e5c78488;border-radius:6px;pointer-events:none;z-index:4}
+.bossPrintCard .cardStage{border-bottom-color:#d8b56666;color:#ddc793}
+.bossPrintCard .cardStage>span{color:#ffe5a5;font-weight:900;letter-spacing:.12em}
+.bossPrintCard .cardTop>strong{color:#fff0c1;text-shadow:0 1px 2px #0008}
+.bossPrintCard .cardTop>span{color:#fbe4a4}
+.bossPrintCard .cardArt{border:1px solid #dbb96f;box-shadow:0 0 0 1px #0008}
+.bossPrintCard .cardArt::after{content:"";position:absolute;inset:3px;z-index:3;pointer-events:none;background:linear-gradient(#f8d58b,#f8d58b) left top/14% 1px,linear-gradient(#f8d58b,#f8d58b) left top/1px 14%,linear-gradient(#f8d58b,#f8d58b) right top/14% 1px,linear-gradient(#f8d58b,#f8d58b) right top/1px 14%,linear-gradient(#f8d58b,#f8d58b) left bottom/14% 1px,linear-gradient(#f8d58b,#f8d58b) left bottom/1px 14%,linear-gradient(#f8d58b,#f8d58b) right bottom/14% 1px,linear-gradient(#f8d58b,#f8d58b) right bottom/1px 14%;background-repeat:no-repeat}
+.bossSeal{position:absolute;right:5%;bottom:5%;width:17%;aspect-ratio:1;display:grid;place-items:center;color:#ffe9ae;background:radial-gradient(circle,color-mix(in srgb,var(--element-color),#102038 65%),#08111f);border:1px solid #f5d387;border-radius:50%;box-shadow:0 1px 4px #0009,inset 0 0 0 2px #0b1724;z-index:3;pointer-events:none}
+.bossSeal svg{width:76%;height:76%}
+.bossFoil{position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(115deg,transparent 35%,#fff8c930 47%,#b8e5ff30 50%,transparent 61%);background-size:250% 100%;background-position:150% 0;mix-blend-mode:screen;animation:bossFoil 8s ease-in-out infinite}
+.bossPrintCard .cardSpecies{color:#b8c7d6}
+.bossPrintCard .printedMoveName{color:#f6ecd5}
+.bossPrintCard .printedMove>strong{color:#ffe3a0}
+.bossPrintCard .cardTraits{color:#c8d3df;border-top-color:#c9a85b66}
+.bossPrintCard .cardMeta{color:#ead6a8}
+.bossPrintCard .cardMeta>b{color:#f8d27e}
+.bossPrintCard .cardEdition{color:#e5c580;letter-spacing:.06em;text-align:center;border-top:1px solid #d0aa5c55;padding-top:2px}
+@keyframes bossFoil{0%,65%{background-position:150% 0}95%,100%{background-position:-150% 0}}
+.reduceMotion .bossFoil{animation:none;background-position:50% 0;opacity:.35}
+@media(prefers-reduced-motion:reduce){.bossFoil{animation:none;background-position:50% 0;opacity:.35}}
+/* The dedicated art foil replaces the collection's full-card rainbow overlay. */
+.bossPrintCard>.fxHolo{display:none}
+
+.mythlingArt>.mythlingSheet.mythlingExpansionSheet{width:500%!important;height:500%!important;left:calc(var(--art-col)*-100%)!important;top:calc(var(--art-row)*-100%)!important}
+.horizonsPrintCard .cardEdition{color:#6c5027;letter-spacing:.04em}
+.horizonsPack{display:grid;grid-template-columns:minmax(240px,1fr) minmax(260px,1fr);gap:24px;align-items:center;padding:24px;margin:14px auto 20px;max-width:1120px;background:radial-gradient(ellipse at top left,#23584c55,transparent 60%),linear-gradient(135deg,#182b42,#0c172b);border:1px solid #c9aa68;border-radius:14px;color:#f6e8c8;box-sizing:border-box}
+.horizonsPack h2{color:#ffdfa0;font-family:var(--ui-serif);margin:8px 0;font-size:30px}
+.horizonsPack p{line-height:1.5}.horizonsPack .button{max-width:100%;white-space:normal}
+.horizonsPackArt{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:center}
+.horizonsPackArt>.mythlingPortrait{height:auto;aspect-ratio:3/4;border:2px solid #c9aa68;border-radius:9px;box-shadow:0 4px 10px #0008}
+.horizonsPackArt>.mythlingPortrait:nth-child(even){margin-top:24px}
+@media(max-width:699px){.horizonsPack{grid-template-columns:minmax(0,1fr);gap:12px;padding:16px;margin:12px 0}.horizonsPack h2{font-size:26px}}
+
+/* One fitted, animated logo in both the painted and compact headers. */
+.uiPLogo{display:flex!important;align-items:center;justify-content:center;background:linear-gradient(135deg,#101a30,#102037)!important;border-radius:8px!important;overflow:visible;padding:3px!important;box-sizing:border-box}
+.uiLogoScene{display:block!important;position:relative;isolation:isolate;line-height:0;aspect-ratio:2048/704;height:auto!important;min-width:0;overflow:visible}
+.uiBrand{min-width:0;flex:0 1 auto}
+.uiBrand .uiLogoScene{width:clamp(130px,22vw,250px);max-height:64px}
+.uiBrand .uiLogoScene .uiLogoNew,.uiPLogo .uiLogoScene .uiLogoNew,.uiLogoScene .uiLogoNew{display:block;width:100%!important;height:100%!important;max-height:none!important;max-width:100%;object-fit:contain;margin:0;animation:emberLogoGlow 3s ease-in-out infinite}
+.uiPLogo .uiLogoScene{width:100%;height:100%!important;max-height:100%;aspect-ratio:auto}
+.uiPLogo .uiLogoScene .uiLogoWarmth{inset:20% auto 18% 2%;width:24%}
+.uiLogoWarmth{position:absolute;inset:12% auto 18% 2%;width:24%;background:radial-gradient(ellipse,#ffc44a44,#ff6a181a 45%,transparent 70%);mix-blend-mode:screen;pointer-events:none;animation:emberLogoFire 1.8s ease-in-out infinite}
+.uiLogoSpark{position:absolute;left:13%;bottom:32%;width:2px;height:3px;border-radius:50%;background:#ffe1a0;box-shadow:0 0 4px #ff9a3a;opacity:0;pointer-events:none;animation:emberLogoSpark 2.7s ease-out infinite}
+.uiLogoSpark:nth-last-child(2){left:9%;animation-delay:.9s}.uiLogoSpark:last-child{left:17%;animation-delay:1.8s}
+@keyframes emberLogoGlow{0%,100%{filter:drop-shadow(0 0 1px #ffb44944)}50%{filter:drop-shadow(0 0 4px #ff983a88)}}
+@keyframes emberLogoFire{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.9;transform:scale(1.04)}}
+@keyframes emberLogoSpark{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(8px,-28px)}}
+@media(max-width:899px){.uiTopIn{min-width:0;gap:6px}.uiTop .uiBrand .uiLogoScene{width:clamp(132px,43vw,205px);max-height:54px}.uiTop .uiRight{flex-shrink:0;gap:5px}}
+@media(max-width:380px){.uiTop .uiBrand .uiLogoScene{width:clamp(122px,42vw,158px);max-height:50px}.uiTopIn{padding-inline:8px}}
+.reduceMotion .uiLogoScene *{animation:none!important}.reduceMotion .uiLogoSpark{display:none}
+@media(prefers-reduced-motion:reduce){.uiLogoScene *{animation:none!important}.uiLogoSpark{display:none}}
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){.uiTop .uiBrand .uiLogoScene{max-height:52px}}
+.uiTop .uiRight{margin-left:auto}
+.uiPLogo{border:1px solid #b58d4d88!important;box-shadow:inset 0 0 12px #0005;padding:6px 8px!important}
+.horizonsPrintCard .cardTop>strong{font-size:.92em}
+@media(max-width:899px){.uiTop .uiBrand .uiLogoScene{width:min(190px,43vw,157px)}}
+@media(max-width:380px){.uiTop .uiBrand .uiLogoScene{width:min(158px,42vw,145px)}}
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){.uiTop .uiBrand .uiLogoScene{width:min(220px,calc(52px * 2048 / 704));max-height:52px}}
+
+/* Four readable card pockets on phones, with the existing Binder art retained. */
+@media(max-width:699px), (max-width:999px) and (max-height:499px){
+ html:has(.uiBinderHead){background:#0b1230}
+ body.uiTheme:has(.uiBinderHead){height:auto;min-height:100dvh;background:#0b1230!important}
+ .uiBinderHead{gap:10px;align-items:flex-start}.uiBinderHead h1{font-size:32px!important;display:block}.uiBinderHead span{font-size:14px}.uiBinderHead .uiPillBtn{padding:8px 12px;font-size:15px;min-height:44px}
+ .uiBinderBar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.uiBinderBar .uiSearch{grid-column:1/-1;width:100%;max-width:none;min-width:0;box-sizing:border-box}
+ .uiBinderBar .uiSelect,.uiBinderBar #binderSort{min-width:0!important;width:100%;font-size:14px}.uiBinderBar .uiMore{min-width:0}.uiBinderBar .uiMore summary{padding:9px;font-size:14px}
+ .uiTheme .magicalBinder{padding:8px!important;margin:12px 0!important;width:100%!important;box-sizing:border-box;--card-w:100%;--card-h:auto}
+ .uiTheme .binderPages{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:5px!important}
+ .uiTheme .binderPocket{padding:23px 3px 5px!important;margin:0;min-height:0;overflow:hidden;align-content:start}
+ .uiTheme .binderPocket .mythCard{width:100%!important;max-width:none!important;min-width:0!important;margin:0!important}
+ .uiTheme .uiEmptyPocket{min-height:180px}
+ .uiSpine,.uiBinderTabs,.binderRings,.binderHand{display:none!important}
+ .uiPocketNo{font-size:10px;top:3px;left:4px;padding:2px 7px}
+ .uiBinderFoot{margin:10px 0 0;padding:12px 6px 20px;gap:8px}.uiBinderFoot .binderPager{gap:5px;font-size:13px}.uiBinderFoot .binderPager .button{padding:8px 6px;font-size:13px;min-height:44px}
+ .uiTheme .binderPocket .printCard{padding:5px;border-width:4px;font-size:8px}.uiTheme .binderPocket .cardStage{font-size:5px}.uiTheme .binderPocket .cardTop{font-size:10px}.uiTheme .binderPocket .cardTop>span{font-size:10px}
+ .uiTheme .binderPocket .printedMove{font-size:6px}.uiTheme .binderPocket .printedMove>strong{font-size:10px}.uiTheme .binderPocket .cardSpecies,.uiTheme .binderPocket .cardEdition{font-size:4px!important}.uiTheme .binderPocket .cardTraits,.uiTheme .binderPocket .cardMeta{font-size:5px}
+}

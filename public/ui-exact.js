@@ -272,7 +272,7 @@ function welcomeExact() {
 const PACK_BTNS = { pack: [322, 390, 521, 437], star: [757, 390, 968, 437], crystal: [1204, 390, 1405, 442], mythic: [321, 711, 523, 766], legend: [757, 711, 967, 767], celestial: [1204, 711, 1405, 767], hacker: [1194, 843, 1389, 899] };
 const PACK_COST = { pack: 150, star: 350, crystal: 750, mythic: 1500, legend: 3000, celestial: 6000, hacker: 600000 };
 function packsExact() {
-  const app = $('#app'); if (!$('[data-buy]') || $('.uiXPacks')) return;
+  const app = $('#app'); if (!$('[data-buy]') || $('.uiXPacks')) return;const horizons=$('.horizonsPack');
   const W = 1536, H = 1024, p = box(W, H), st = B.state;
   const wrap = document.createElement('section'); wrap.className = 'uiExactPage uiXPacksPage';
   wrap.innerHTML = canvas(W, H, '/art/ui/packs.webp', 'uiXPacks', `
@@ -290,6 +290,7 @@ function packsExact() {
     if (need > 0) b.setAttribute('aria-label', `${name}. Need ${fmt(need)} more coins`);
     slot.append(b);
   }
+  if(horizons)wrap.prepend(horizons);
   // Free quest-reward packs and an unfinished reveal sit in the footer line.
   const notice = $('.uiXPackNotice', wrap), resume = $('#resumePack'), rewards = $$('[data-quest-pack]');
   if (resume || rewards.length) {

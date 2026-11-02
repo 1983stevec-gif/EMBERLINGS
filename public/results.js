@@ -25,6 +25,7 @@ function victory(r) {
     each ? `<li class="xp"><span class="uiVIco">✦</span><b>+${each} EXP</b><small>for each card that battled</small></li>` : '',
     w.pack ? `<li class="pack"><span class="uiVIco">🎁</span><b>${esc(PACK_NAMES[w.pack] || 'Quest Pack')}</b><small>free pack · open it on the Packs screen</small></li>` : '',
     w.item ? `<li class="pass"><span class="uiVIco">🎟</span><b>Academy Pass</b><small>one extra rewarded training session</small></li>` : '',
+    w.bossQuest ? `<li class="trophy"><span class="uiVIco">👑</span><b>${esc(B.bosses[w.bossQuest])} card</b><small>Legendary boss card · added to My Binder</small></li>` : '',
     w.collectible ? `<li class="trophy"><span class="uiVIco">🏆</span><b>${esc(w.collectible)}</b><small>collectible trophy</small></li>` : '',
     w.island ? `<li class="island"><span class="uiVIco">🗺</span><b>New island unlocked!</b><small>${esc(w.island)}</small></li>` : ''].join('');
   hero.className = 'hero center uiVictory';
