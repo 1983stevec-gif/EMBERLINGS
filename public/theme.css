@@ -1674,3 +1674,9 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 @media(max-width:600px){.tourItem h2{font-size:22px!important}.tourBubble p{font-size:16px!important}}
 /* Desktop: Packs and Friends painted pages fit the screen height exactly */
 @media(min-width:900px) and (pointer:fine){.uiXCrop:has(>.uiXPacks),.uiXCrop:has(>.uiXFriends){width:min(100%,calc((100dvh - min(8.8vw,176px) - 16px) * var(--ratio)))!important}}
+
+/* Transparent logo supplied November 1, 2026. */
+.uiBrand .uiLogo .uiLogoNew,.uiLogo .uiLogoNew{display:block;width:min(280px,40vw);height:auto;max-height:84px;object-fit:contain}
+.uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.png) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
+.uiPFlame{display:none!important}
+@media(max-width:699px){.uiBrand .uiLogo .uiLogoNew{width:min(210px,43vw);max-height:64px}}
