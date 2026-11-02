@@ -1763,3 +1763,19 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
  .uiTheme .binderPocket .printCard{padding:5px;border-width:4px;font-size:8px}.uiTheme .binderPocket .cardStage{font-size:5px}.uiTheme .binderPocket .cardTop{font-size:10px}.uiTheme .binderPocket .cardTop>span{font-size:10px}
  .uiTheme .binderPocket .printedMove{font-size:6px}.uiTheme .binderPocket .printedMove>strong{font-size:10px}.uiTheme .binderPocket .cardSpecies,.uiTheme .binderPocket .cardEdition{font-size:4px!important}.uiTheme .binderPocket .cardTraits,.uiTheme .binderPocket .cardMeta{font-size:5px}
 }
+
+/* Header balances and Sound share a real row rather than overlapping painted slots. */
+.uiHeaderActions{left:72%;right:2%;transform:translateY(-50%);display:flex;align-items:center;gap:6px;padding:5px;background:#101a30;border-radius:20px;box-sizing:border-box;z-index:5;min-width:0}
+.uiHeaderActions .uiPSound,.uiHeaderActions .uiPCoins,.uiHeaderActions .uiPUser{position:relative!important;inset:auto!important;height:34px!important;min-height:34px;padding:4px 8px!important;border:1px solid #bd9652!important;border-radius:18px!important;background:#0b142a!important;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;color:#f7e9cc}
+.uiHeaderActions .uiPSound{flex:0 0 76px;white-space:nowrap}
+.uiHeaderActions .uiPSound span{position:static;inset:auto;font:600 12px Georgia,serif;display:block;color:inherit}
+.uiHeaderActions .uiPCoins{flex:0 1 126px;min-width:100px;white-space:nowrap;margin:0!important}
+.uiHeaderActions .uiPCoins b{position:static;inset:auto;display:block;font-family:Georgia,serif;font-size:clamp(9px,calc(90px / var(--coin-chars)),14px)!important;line-height:1.2}
+.uiHeaderActions .uiCoin{flex:none;width:18px;height:18px;margin:0}
+.uiHeaderActions .uiPUser{flex:1 1 100px;min-width:38px;padding:3px 6px!important}
+.uiHeaderActions .uiPAva{position:relative;inset:auto;flex:none;width:25px;height:25px}
+.uiHeaderActions .uiPName{position:static;inset:auto;font-size:13px;display:block;min-width:0;text-overflow:ellipsis}
+@media(max-width:1100px){.uiHeaderActions{gap:4px;padding:3px;right:1%}.uiHeaderActions .uiPSound{flex-basis:70px}.uiHeaderActions .uiPName,.uiHeaderActions .uiPUser>span:last-child{display:none}.uiHeaderActions .uiPUser{flex:1 1 38px}.uiHeaderActions .uiPCoins{min-width:94px;padding:4px 5px!important}}
+@media(max-width:699px){.uiTop .uiRight .coins{min-width:0;gap:4px;padding-inline:5px!important}.uiTop .uiRight .coins b{font-size:12px}.uiTop .uiRight{gap:4px}.uiTop .uiRight .uiUser{padding:2px 5px!important}.uiTop .uiBrand{flex-shrink:1}.uiTop .uiBrand .uiLogoScene{max-width:38vw}}
+.uiHeaderActions .uiPCoins b{font-size:clamp(11px,calc(140px / var(--coin-chars)),14px)!important}
+@media(max-width:1100px){.uiHeaderActions .uiPCoins b{font-size:clamp(9px,calc(110px / var(--coin-chars)),12px)!important}}

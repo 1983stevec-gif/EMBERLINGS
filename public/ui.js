@@ -47,9 +47,10 @@ function head() {
    <button class="uiPHot uiPLogo" data-go="home" style="${P(V.logo[0]-8,V.top+8,V.logo[2]+2,V.top+V.h-8)}" aria-label="EMBERLINGS home">${logoHTML()}</button>
    <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
    <nav class="uiPNav" aria-label="Main">${NAV.map(([g, t]) => `<button class="uiPHot uiPTab ${g === 'map' ? 'uiPHQ' : ''} ${navView === g ? 'active' : ''}" data-go="${g}" style="${P(...V.tabs[g])}" ${navView === g ? 'aria-current="page"' : ''} aria-label="${t}"></button>`).join('')}</nav>
-   <button class="uiPHot uiPSound" id="uiPSound" style="${P(...V.sound)}" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
-   <div class="uiPCoins coins" style="${P(...V.coins)}" aria-label="Coins"><b style="font-size:calc(${(fmt(st.coins).length > 5 ? 29 * 5.2 / fmt(st.coins).length : 29).toFixed(1)} / 2000 * 100cqw)">${fmt(st.coins)}</b></div>
-   <button class="uiPHot uiPUser uiUserBtn" style="${P(...V.user)}" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiPAva">${active ? B.art(active) : ''}</span><span class="uiPName">${name}</span></button>
+   <div class="uiHeaderActions" style="top:${((V.sound[1]+V.sound[3])/2-V.top)/V.h*100}%">
+   <button class="uiPHot uiPSound" id="uiPSound" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
+   <div class="uiPCoins coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b style="--coin-chars:${fmt(st.coins).length}">${fmt(st.coins)}</b></div>
+   <button class="uiPHot uiPUser uiUserBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiPAva">${active ? B.art(active) : ''}</span><span class="uiPName">${name}</span><span aria-hidden="true">▾</span></button></div>
   </div></div>`;
   return `<header class="top uiTop">${painted}<div class="uiTopIn"><button class="uiBrand" data-go="home" aria-label="EMBERLINGS home">${logoHTML()}</button>
   <nav class="uiNav" aria-label="Main">${NAV.map(([g, t]) => `<button data-go="${g}" class="${navView === g ? 'active' : ''}" ${navView === g ? 'aria-current="page"' : ''}>${t}</button>`).join('')}</nav>
