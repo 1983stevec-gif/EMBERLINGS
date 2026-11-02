@@ -35,7 +35,7 @@ function onInvites({ from }) {
 }
 
 /* ---------- Trade complete */
-const mini = c => `<figure class="tcCard"><div class="tcArt">${B.art(c)}</div><figcaption><b>${esc(name(c))}</b><small>Lv ${c.level || 1}${c.mutation ? ' · ' + esc(B.MUTATIONS?.[c.mutation]?.name || c.mutation) : ''}</small></figcaption></figure>`;
+const mini = c => `<figure class="tcCard"><div class="tcArt">${B.art(c)}</div><figcaption><b>${esc(name(c))}</b><small>Lv ${c.level || 1}${c.mutation ? ' · ' + esc((B.MUTATIONS || []).find(m => m.id === c.mutation)?.name || c.mutation) : ''}</small></figcaption></figure>`;
 function onComplete(h) {
   if (!h) return;
   $('#tradeDone')?.remove();
