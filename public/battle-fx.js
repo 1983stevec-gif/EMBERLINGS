@@ -1,3 +1,4 @@
+import {attacks} from '/card-engine.js';
 // EMBERLINGS battle enhancements (presentation only; the rules are untouched):
 // 1 turn signal · 2 drag cards to play · 3 attack damage preview · 4 attack lunge · 5 knockout embers and
 // point to the score · 6 opponent move callouts · 7 hand fan (CSS) · 8 victory / defeat scene.
@@ -111,16 +112,19 @@ function rpgFeedback(match,side){
  const {mine,theirs}=fields(),field=i=>i===side?mine:theirs;
  const source=$('.pocketActive .mythCard',field(a.side)),target=$('.pocketActive .mythCard',field(1-a.side));
  if(!source||!target)return key;
- const card=prev.snap?.[a.side]?.card,kind=card?.kind,element=B.species[kind]?.element;
+ const card=prev.snap?.[a.side]?.card||match.sides[a.side].cards.find(c=>c.id===match.sides[a.side].active),kind=card?.kind,element=B.species[kind]?.element;
  const type=kind===25?'wave':kind===38?'crystal':kind===40?'wind':kind===44?'roots':({Water:'wave',Crystal:'crystal',Wind:'wind',Nature:'roots',Fire:'flame',Lightning:'spark',Ice:'crystal',Moon:'shadow',Shadow:'shadow'}[element]||'spark');
  const t=target.getBoundingClientRect(),f=source.getBoundingClientRect(),L=layer();
  const victim=prev.snap?.[1-a.side],damage=Math.min(Math.max(0,a.damage||0),Math.max(0,victim?.hp??a.damage??0));
- const label=document.createElement('div');label.className='rpgDamage';label.textContent=damage?'−'+damage:'Blocked';label.setAttribute('role','status');label.style.left=(t.left+t.width/2)+'px';label.style.top=(t.top+t.height*.35)+'px';L.append(label);setTimeout(()=>label.remove(),1300);
+ const label=document.createElement('div');label.className='rpgDamage';label.textContent=damage?'−'+damage:'Blocked';label.setAttribute('role','status');label.style.left=(t.left+t.width/2)+'px';label.style.top=(t.top+t.height*.35)+'px';L.append(label);setTimeout(()=>label.remove(),1850);
  if(calm())return key;
+ const windup=140+((kind||0)%4)*45;const move=card?attacks(card).find(m=>m.id===a.move):null;const title=document.createElement('div');title.className='rpgMoveName';title.textContent=move?.name||B.species[kind]?.name||'Attack';title.style.left=(f.left+f.width/2)+'px';title.style.top=(f.top+f.height*.65)+'px';title.style.setProperty('--strike-color',RPG_TRAILS[type].color);L.append(title);setTimeout(()=>title.remove(),1100);
+ label.style.animationDelay=(windup+240)+'ms';setTimeout(()=>label.remove(),windup+1550);
  const sx=f.left+f.width/2,sy=f.top+f.height/2,tx=t.left+t.width/2,ty=t.top+t.height/2;
  const trail=document.createElement('div');trail.className='rpgStrike rpgStrike-'+type;trail.dataset.creature=String(kind);trail.style.cssText=`left:${sx}px;top:${sy-30}px;width:${Math.hypot(tx-sx,ty-sy)}px;transform:rotate(${Math.atan2(ty-sy,tx-sx)}rad);--strike-color:${RPG_TRAILS[type].color}`;
- trail.innerHTML='<svg viewBox="0 0 160 60" preserveAspectRatio="none" aria-hidden="true">'+RPG_TRAILS[type].art+'</svg>';L.append(trail);setTimeout(()=>trail.remove(),900);
- target.animate([{filter:'brightness(1)'},{filter:'brightness(1.6)',transform:'translateX(-5px)'},{transform:'translateX(5px)'},{filter:'brightness(1)',transform:'translateX(0)'}],{duration:360});
+ trail.innerHTML='<svg viewBox="0 0 160 60" preserveAspectRatio="none" aria-hidden="true">'+RPG_TRAILS[type].art+'</svg>';trail.style.animationDelay=windup+'ms';trail.dataset.signature=B.species[kind]?.name||'';L.append(trail);setTimeout(()=>trail.remove(),windup+950);
+ if((victim?.card?.guard||0)+(victim?.card?.perkGuard||0)>0){const shield=document.createElement('div');shield.className='rpgShieldImpact';shield.style.left=(t.left+t.width/2)+'px';shield.style.top=(t.top+t.height*.4)+'px';shield.style.animationDelay=(windup+220)+'ms';shield.innerHTML='<svg viewBox="0 0 70 80" aria-hidden="true"><path d="M8 10 35 2 62 10V42Q59 65 35 77 11 65 8 42Z"/><path d="M38 7 27 28 43 36 25 57 37 72"/></svg>';L.append(shield);setTimeout(()=>shield.remove(),windup+1100)}
+ target.animate([{filter:'brightness(1)'},{filter:'brightness(1.6)',transform:'translateX(-5px)'},{transform:'translateX(5px)'},{filter:'brightness(1)',transform:'translateX(0)'}],{duration:360,delay:windup+240});
  return key;
 }
 

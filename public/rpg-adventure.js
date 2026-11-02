@@ -1,0 +1,50 @@
+// Adventure encounters and authored presentation layers. Campaign IDs remain separate.
+const B=window.EmberBridge,$=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const calm=()=>!!B.state.reducedMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
+let region=0,intro=null,introTimer=0,lastRegion=null;
+function encounters(){
+ const catalog=B.adventureCatalog(),rows=catalog.filter(s=>s.region===region);
+ B.render(`<section class="rpgEncounters"><button class="button alt" data-go="map">‹ Adventure HQ</button><h1>Island encounters</h1><p>Optional adventures. Campaign progress stays unchanged. Rewards are earned once per encounter.</p><nav class="rpgRegionTabs" aria-label="Choose island">${B.regions.map((r,i)=>`<button class="button ${i===region?'gold':'alt'}" data-rpg-region="${i}" ${catalog.find(s=>s.region===i).unlocked?'':'disabled'}>${esc(r[0])}</button>`).join('')}</nav><div class="rpgQuestGrid">${rows.map(s=>{const kind=s.mode==='miniboss'?16+s.region:[2,5,6,3,7][s.region];return `<article class="panel rpgQuestCard"><div class="rpgQuestArt">${B.art({kind,rarity:'Rare'})}</div><h2>${esc(s.name)}</h2><p>${esc(s.goal)}</p>${s.mode==='element'?`<p>Enemy type: <strong>${s.element}</strong></p>`:''}<p>${s.claimed?'✓ Rewards collected · replay for practice':`🪙 ${s.coins} coins · ${s.xp} EXP${s.mode==='treasure'?' · Cache emblem':''}`}</p><button class="button gold" data-encounter="${s.id}" ${s.unlocked?'':'disabled'}>${s.claimed?'Replay encounter':'Begin encounter'}</button></article>`}).join('')}</div></section>`);
+ $$('[data-rpg-region]').forEach(b=>b.onclick=()=>{region=+b.dataset.rpgRegion;encounters()});$$('[data-encounter]').forEach(b=>b.onclick=()=>B.startAdventure(b.dataset.encounter));
+}
+B.registerView('adventures',encounters);
+function dismissIntro(){clearTimeout(introTimer);if(!intro)return;intro.close?.();intro.remove();intro=null;$('.cardArena button')?.focus({preventScroll:true})}
+function bossEntrance(match){
+ const saved=B.state.cardBattle;if(!saved||saved.match!==match||!saved.entrancePending||intro)return;
+ if(!B.transact(()=>{saved.entrancePending=false;if(match.phase==='setup')match.setupDeadline+=3200}))return;
+ const foe=match.sides[1],card=foe.cards.find(c=>B.species[c.kind]?.boss)||foe.cards.find(c=>c.cardType==='mythling'),name=foe.name;
+ intro=document.createElement('dialog');intro.className='rpgBossEntry';intro.setAttribute('aria-labelledby','rpgBossTitle');
+ intro.innerHTML=`<div class="rpgBossPortrait">${B.art(card)}</div><p class="rpgBossKicker">${saved.adventureId?'Optional elite guardian':'Island boss'}</p><h1 id="rpgBossTitle">${esc(name)}</h1><p>${saved.adventureId?'An elite guardian challenges your deck.':'Defeat this guardian to continue your journey.'}</p><button class="button gold">Enter battle · Skip intro</button>`;
+ document.body.append(intro);intro.querySelector('button').onclick=dismissIntro;intro.addEventListener('cancel',e=>{e.preventDefault();dismissIntro()});if(intro.showModal)intro.showModal();else intro.setAttribute('open','');introTimer=setTimeout(dismissIntro,calm()?1500:2800);
+}
+const STATUS={Burned:['🔥','Takes damage between turns.'],Poisoned:['☠','Takes poison damage between turns.'],Asleep:['☾','Cannot attack or retreat while asleep.'],Paralyzed:['ϟ','Cannot attack or retreat while paralyzed.'],Confused:['?','Attacking can fail and cause self-damage.']};
+function statuses(match,side){
+ $$('.rpgStatusTray').forEach(n=>n.remove());const fields=$$('.pocketBoard > .pocketField');
+ for(let i=0;i<2;i++){const p=match.sides[i],c=p.cards.find(c=>c.id===p.active),host=$('.pocketActive',fields[i===side?0:1]);if(!c||!host)continue;const guard=(c.guard||0)+(c.perkGuard||0),parts=(c.conditions||[]).map(s=>`<span title="${esc(STATUS[s]?.[1]||s)}"><b aria-hidden="true">${STATUS[s]?.[0]||'•'}</b> ${esc(s)}</span>`);if(guard)parts.push(`<span title="Reduces incoming attack damage"><b aria-hidden="true">⬡</b> Shield ${guard}</span>`);if(parts.length){const bar=document.createElement('div');bar.className='rpgStatusTray';bar.setAttribute('role','status');bar.setAttribute('aria-label',p.name+' status');bar.innerHTML=parts.join('');host.append(bar)}}
+}
+// Hand-authored face positions and part masks in normalized artwork coordinates.
+const EYES=[[.70,.39],[.53,.36],[.70,.54],[.60,.48],[.69,.39],[.57,.52],[.51,.35],[.48,.45],[.49,.39],[.73,.35],[.60,.48],[.59,.36],[.63,.47],[.72,.65],[.61,.49],[.70,.44],[.52,.42],[.58,.35],[.66,.36],[.64,.39],[.72,.54],[.50,.40],[.65,.49],[.56,.40],[.60,.54]];
+const COLORS={Fire:'#8c4f29',Moon:'#c6bfd8',Nature:'#5c6634',Lightning:'#8b6a38',Water:'#245d7c',Crystal:'#594476',Ice:'#d4e8ec',Shadow:'#362744',Wind:'#b5d5d2'};
+const lifeObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('rpgOffscreen',!e.isIntersecting))):null;
+function creatureLife(match,side){
+ lifeObserver?.disconnect();const fields=$$('.pocketBoard > .pocketField');
+ for(let i=0;i<2;i++){const c=match.sides[i].cards.find(c=>c.id===match.sides[i].active),art=fields[i===side?0:1]&&$('.pocketActive .mythlingArt',fields[i===side?0:1]);if(!c||!art)continue;if($('.rpgCreatureLife',art)){lifeObserver?.observe(art);continue;}const sp=B.species[c.kind],eye=EYES[c.kind-21]||[.58,.34],x=eye[0]*100,y=eye[1]*100;
+ art.style.setProperty('--idle-time',(4+c.kind%4)+'s');const overlay=document.createElement('span');overlay.className='rpgCreatureLife';overlay.setAttribute('aria-hidden','true');overlay.style.setProperty('--life-delay',-(c.kind%7)+'s');overlay.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none"><ellipse class="rpgLid" cx="${x}" cy="${y}" rx="1.6" ry=".6" fill="${COLORS[sp.element]}"/><circle class="rpgEyeGlint" cx="${x+.2}" cy="${y-.2}" r=".35" fill="#fff5c7"/></svg><i class="rpgElementAura" style="--aura:${COLORS[sp.element]}"></i>`;art.append(overlay);
+ const animal=sp.animal||sp.name,wing=/Moth|Owl|Manta|Bat|Rooster|Hummingbird|Gryphon|Butterfly|Raven/.test(animal),tail=/Fox|Dragon|Cat|Rabbit|Salamander|Otter|Panda|Pangolin|Narwhal|Lynx|Cobra|Crocodile|Panther/.test(animal);
+ if(!calm()&&(wing||tail)){const part=document.createElement('span');part.className='rpgArtPart '+(wing?'rpgWingPart':'rpgTailPart');part.setAttribute('aria-hidden','true');const image=$('img.mythlingSheet',art)?.cloneNode();if(image){const cols=sp.artCols||(c.kind>=10?1:5),rows=sp.artRows||(c.kind>=10?1:2),col=sp.artCol??(c.kind>=10?0:c.kind%5),row=sp.artRow??(c.kind>=10?0:c.kind<5?0:1);image.removeAttribute('class');image.style.cssText=`position:absolute;width:${cols*100}%;height:${rows*100}%;max-width:none;left:${-col*100}%;top:${-row*100}%;filter:${getComputedStyle($('img.mythlingSheet',art)).filter}`;part.append(image);art.append(part)}}lifeObserver?.observe(art);
+ }
+}
+let lastWeather=null;
+const weatherObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('rpgWeatherPaused',!e.isIntersecting))):null;
+function mapLife(){
+ if(B.view!=='map')return;const host=$('.uiXMap')||$('.uiMap');if(!host)return;
+ if(!$('.rpgMapWeather',host)){const w=document.createElement('div');w.className='rpgMapWeather';w.setAttribute('aria-hidden','true');w.innerHTML='<i class="rpgCloud c1"></i><i class="rpgCloud c2"></i><i class="rpgCloud c3"></i><i class="rpgFalls f1"></i><i class="rpgFalls f2"></i><i class="rpgFalls f3"></i><svg class="rpgLightning" viewBox="0 0 100 100"><path d="M70 5 57 34 68 33 47 73 53 47 43 49Z"/></svg>';host.append(w);weatherObserver?.disconnect();weatherObserver?.observe(w);lastWeather=w}
+ const selected=$('[data-level].uiSel')||$('[data-level]:not(.locked):not(.done)'),level=+(selected?.dataset.level||B.limit()),r=B.regions.findIndex(x=>level>=x[1]&&level<=x[2]);if(lastWeather)lastWeather.dataset.region=String(r);
+ if(lastRegion!==null&&r!==lastRegion){$('.rpgArrival')?.remove();const a=document.createElement('div');a.className='rpgArrival';a.setAttribute('role','status');a.textContent='Arriving in '+B.regions[r][0];document.body.append(a);setTimeout(()=>a.remove(),2200)}lastRegion=r;
+ if(!$('.rpgQuestEntry')){const entry=document.createElement('section');entry.className='panel rpgQuestEntry';entry.innerHTML='<div><h2>More adventures await</h2><p>Survival, elemental trials, treasure guards and elite guardians.</p></div><button class="button gold" data-go="adventures">Island encounters</button>';$('#app').append(entry);B.bind()}
+}
+addEventListener('ember:frame',e=>{if(e.detail.view!=='cardBattle'){dismissIntro();lifeObserver?.disconnect();$('.rpgEncounterGoal')?.remove()}if(e.detail.view!=='map'){weatherObserver?.disconnect();lastWeather=null;lastRegion=null;$('.rpgArrival')?.remove()}requestAnimationFrame(mapLife)});
+addEventListener('ember:cardBattle',e=>{statuses(e.detail.match,e.detail.side);creatureLife(e.detail.match,e.detail.side);bossEntrance(e.detail.match);const saved=B.state.cardBattle;if(saved?.match===e.detail.match&&saved.adventureId){let info=$('.rpgEncounterGoal');if(!info){info=document.createElement('p');info.className='rpgEncounterGoal';info.setAttribute('role','status');document.body.append(info)}const spec=B.adventureCatalog().find(s=>s.id===saved.adventureId);if(spec){info.title=spec.goal;const turns=e.detail.match.sides[0].turns||0;info.textContent=saved.adventureMode==='survival'?`Last Stand · ${Math.min(6,Math.max(0,turns-1))}/6 turns survived`:saved.adventureMode==='treasure'?`Treasure Guard · Win by turn 8 · Turn ${Math.max(1,turns)}/8`:saved.adventureMode==='element'?`${spec.element} Trial · Defeat the enemy squad`:'Elite Guardian · Defeat the sentinel'}}});
+document.addEventListener('click',e=>{if(e.target.closest('[data-level],[data-region]'))requestAnimationFrame(mapLife)});
+document.addEventListener('visibilitychange',()=>{$$('.rpgMapWeather,.rpgCreatureLife,.rpgArtPart,.pocketActive .mythlingArt').forEach(x=>x.classList.toggle('rpgHidden',document.hidden))});

@@ -1797,3 +1797,42 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 @keyframes rpgBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1px) scale(1.012)}}
 .reduceMotion .rpgDamage{animation:none}.reduceMotion .rpgAlive .mythlingArt{animation:none}
 @media(prefers-reduced-motion:reduce){.rpgDamage,.rpgAlive .mythlingArt{animation:none}}
+/* Finished RPG encounters, creature rigs and island ambience. */
+.rpgEncounters{max-width:1180px;margin:0 auto;padding:20px 12px 100px;color:#eee4c9}.rpgEncounters h1{font-family:var(--ui-serif);font-size:38px;color:#ffe2a0}.rpgRegionTabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.rpgRegionTabs button{min-height:44px}
+.rpgQuestGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.rpgQuestCard{min-width:0;display:flex;flex-direction:column;align-items:start;padding:18px}.rpgQuestCard h2{color:#ffe2a0}.rpgQuestCard p{line-height:1.5}.rpgQuestCard>.button{margin-top:auto;min-height:44px}.rpgQuestArt{width:100%;height:160px;border-radius:8px;overflow:hidden;position:relative}.rpgQuestArt>.mythlingArt{position:absolute!important;inset:0;width:100%!important;height:100%!important}.rpgQuestEntry{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:18px auto 100px;max-width:1100px}.rpgQuestEntry h2{margin:0;color:#f6da9a}
+.rpgBossEntry{padding:26px;max-width:min(88vw,460px);max-height:85dvh;overflow:auto;text-align:center;background:radial-gradient(ellipse at top,#303158,#0c1427 65%);color:#fff0d0;border:2px solid #eac476;border-radius:18px;box-shadow:0 0 55px #f1b44b44;animation:rpgBossReveal .6s ease-out}.rpgBossEntry::backdrop{background:#02050bd9}.rpgBossEntry h1{font-family:var(--ui-serif);color:#ffe4a7;font-size:32px;margin:8px 0}.rpgBossKicker{text-transform:uppercase;letter-spacing:.18em;font-size:12px}.rpgBossPortrait{width:min(240px,58vw);aspect-ratio:1;position:relative;margin:auto;overflow:hidden;border:1px solid #dcb468;border-radius:50%;box-shadow:0 0 25px #c59b5655}.rpgBossPortrait>.mythlingArt{position:absolute!important;inset:0;width:100%!important;height:100%!important}.rpgBossEntry button{min-height:44px;margin-top:10px}
+@keyframes rpgBossReveal{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
+.rpgStatusTray{position:absolute;left:4px;right:4px;bottom:4px;display:flex;justify-content:center;gap:3px;flex-wrap:wrap;z-index:9;pointer-events:none}.rpgStatusTray>span{display:inline-flex;align-items:center;gap:3px;background:#0a1630f5;border:1px solid #b5c8ec;border-radius:5px;color:#fff1ce;font:600 10px Georgia,serif;padding:3px 5px;line-height:1.2}.rpgStatusTray b{color:#ffd88c}
+.rpgEncounterGoal{background:#0c182be8;color:#ffe8a7!important;border:1px solid #a3844c;padding:5px!important;border-radius:5px;font-size:12px!important;line-height:1.3!important}
+.rpgMoveName{position:fixed;z-index:9003;pointer-events:none;transform:translate(-50%,-50%);border:1px solid var(--strike-color);background:#0b172bf2;color:#fff0c8;padding:6px 12px;border-radius:9px;font:700 16px Georgia,serif;animation:rpgMoveName 1.1s ease-out both;max-width:230px;text-align:center}
+@keyframes rpgMoveName{0%{opacity:0;scale:.8}20%,65%{opacity:1;scale:1}100%{opacity:0;scale:1.05}}
+.rpgShieldImpact{position:fixed;width:64px;height:74px;translate:-50% -50%;z-index:9003;pointer-events:none;animation:rpgShieldBreak .8s ease-out both}.rpgShieldImpact svg{width:100%;height:100%;stroke:#b7edff;stroke-width:3;fill:#5ac8ff44}.rpgShieldImpact path+path{stroke:#fff7ce;fill:none;stroke-width:4}
+@keyframes rpgShieldBreak{0%{opacity:0;scale:.6}20%{opacity:1;scale:1}100%{opacity:0;scale:1.5;rotate:8deg}}
+.rpgCreatureLife,.rpgCreatureLife svg,.rpgArtPart{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.rpgCreatureLife{z-index:3}.rpgCreatureLife svg{overflow:hidden}.rpgLid{opacity:0;animation:rpgBlink 6.7s linear infinite;animation-delay:var(--life-delay)}.rpgEyeGlint{opacity:.25;animation:rpgEyeGlint 4.3s ease-in-out infinite;animation-delay:var(--life-delay)}
+@keyframes rpgBlink{0%,92%,96%,100%{opacity:0}93%,95%{opacity:.9}}
+@keyframes rpgEyeGlint{0%,100%{opacity:.1}50%{opacity:.7}}
+.rpgElementAura{position:absolute;inset:4%;border-radius:45%;box-shadow:inset 0 0 12px var(--aura),0 0 5px var(--aura);opacity:.12;animation:rpgAura 5s ease-in-out infinite;animation-delay:var(--life-delay)}
+@keyframes rpgAura{0%,100%{opacity:.08}50%{opacity:.25}}
+.rpgArtPart{overflow:hidden;z-index:2}.rpgWingPart{clip-path:polygon(55% 0,100% 0,100% 62%,77% 51%,63% 32%);transform-origin:65% 48%;animation:rpgWingBeat 3.8s ease-in-out infinite}.rpgTailPart{clip-path:polygon(0 28%,28% 33%,37% 63%,22% 87%,0 100%);transform-origin:30% 70%;animation:rpgTailSway 4.1s ease-in-out infinite}
+@keyframes rpgWingBeat{0%,100%{transform:rotate(0)}50%{transform:rotate(-1.6deg) translateY(-1px)}}
+@keyframes rpgTailSway{0%,100%{transform:rotate(-.5deg)}50%{transform:rotate(1.2deg)}}
+.rpgAlive .pocketActive .mythlingArt{animation-duration:var(--idle-time,4.5s)}
+.rpgOffscreen *,.rpgWeatherPaused,.rpgWeatherPaused *{animation-play-state:paused!important}
+.rpgMapWeather{position:absolute;left:0;top:6.6%;width:74%;height:76%;overflow:hidden;z-index:1;pointer-events:none!important;isolation:isolate}.uiMap>.rpgMapWeather{top:0;width:100%;height:100%}.rpgCloud{position:absolute;left:-25%;width:25%;height:13%;opacity:.2;border-radius:50%;background:radial-gradient(ellipse,#d8e6f2aa,transparent 70%);filter:blur(4px);animation:rpgCloudDrift 48s linear infinite}.rpgCloud.c1{top:10%;animation-delay:-8s}.rpgCloud.c2{top:42%;animation-duration:61s;animation-delay:-32s}.rpgCloud.c3{top:72%;animation-duration:55s;animation-delay:-44s}
+@keyframes rpgCloudDrift{to{left:110%}}
+.rpgFalls{position:absolute;width:.6%;height:7%;border-radius:0 0 45% 45%;opacity:.32;background:repeating-linear-gradient(180deg,#e5ffff77 0 4px,#73d4ee11 4px 8px);background-size:100% 18px;animation:rpgWaterfall .9s linear infinite;filter:blur(.5px)}.rpgFalls.f1{left:43%;top:64%}.rpgFalls.f2{left:64%;top:33%}.rpgFalls.f3{left:83%;top:66%}
+@keyframes rpgWaterfall{to{background-position:0 18px}}
+.rpgLightning{position:absolute;top:0;right:5%;width:20%;height:50%;fill:#d8eaff;filter:drop-shadow(0 0 5px #a4dfff);opacity:0;display:none;animation:rpgThunder 9s linear infinite}.rpgMapWeather[data-region="3"] .rpgLightning{display:block}
+@keyframes rpgThunder{0%,92%,96%,100%{opacity:0}94%{opacity:.6}}
+.uiXNode:not(.locked):not(.done),.uiNode:not(.locked):not(.done){animation:rpgReady 3s ease-in-out infinite}
+@keyframes rpgReady{50%{box-shadow:0 0 12px #8ccbff}}
+.rpgArrival{position:fixed;left:50%;top:100px;translate:-50% 0;background:#0c1c30f5;color:#ffe4a4;border:1px solid #b59657;border-radius:9px;padding:12px 22px;z-index:75;pointer-events:none;max-width:85vw;text-align:center;font:600 21px var(--ui-serif);animation:rpgMoveName 2.2s ease-out both}
+@media(max-width:699px){.rpgQuestGrid{grid-template-columns:minmax(0,1fr)}.rpgQuestEntry{flex-direction:column;align-items:start;margin-bottom:100px}.rpgBossEntry{padding:18px}.rpgStatusTray>span{font-size:9px}.rpgMoveName{font-size:13px;max-width:170px}.rpgArrival{top:70px;font-size:18px}}
+.reduceMotion .rpgCreatureLife *,.reduceMotion .rpgArtPart,.reduceMotion .rpgMapWeather *,.reduceMotion .rpgArrival,.reduceMotion .rpgBossEntry,.reduceMotion .uiXNode,.reduceMotion .uiNode{animation:none!important}.reduceMotion .rpgLid,.reduceMotion .rpgArtPart,.reduceMotion .rpgLightning{display:none!important}
+@media(prefers-reduced-motion:reduce){.rpgCreatureLife *,.rpgArtPart,.rpgMapWeather *,.rpgArrival,.rpgBossEntry,.uiXNode,.uiNode{animation:none!important}.rpgLid,.rpgArtPart,.rpgLightning{display:none!important}}
+.rpgOffscreen,.rpgHidden,.rpgHidden *{animation-play-state:paused!important}
+.rpgQuestArt{width:min(100%,220px);height:auto;aspect-ratio:1;align-self:center}
+.rpgEncounterGoal{position:fixed;bottom:max(8px,env(safe-area-inset-bottom));left:50%;translate:-50% 0;z-index:80;max-width:85vw;padding:7px 12px!important;margin:0!important;pointer-events:none;text-align:center;font:600 13px Georgia,serif!important;box-shadow:0 2px 8px #0008}
+/* Keep the encounter canvas continuous when a phone scrolls beyond one viewport. */
+body:has(.rpgEncounters){background:#0b1330!important;min-height:100dvh}
+body:has(.rpgEncounters) #app{background:#0b1330!important;min-height:calc(100dvh - 60px)}

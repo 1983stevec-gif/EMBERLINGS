@@ -29,11 +29,11 @@ function victory(r) {
     w.collectible ? `<li class="trophy"><span class="uiVIco">🏆</span><b>${esc(w.collectible)}</b><small>collectible trophy</small></li>` : '',
     w.island ? `<li class="island"><span class="uiVIco">🗺</span><b>New island unlocked!</b><small>${esc(w.island)}</small></li>` : ''].join('');
   hero.className = 'hero center uiVictory';
-  hero.innerHTML = `<div class="uiVRays" aria-hidden="true"></div><p class="uiDefKick">${q ? `Quest ${q}${boss ? ' · Boss defeated' : ''}` : 'Friendly battle'}</p>
+  hero.innerHTML = `<div class="uiVRays" aria-hidden="true"></div><p class="uiDefKick">${r.adventureId ? esc(r.adventureName||'Adventure encounter') : q ? `Quest ${q}${boss ? ' · Boss defeated' : ''}` : 'Friendly battle'}</p>
    <h1 class="uiVTitle">Victory!</h1>${q && UI?.questName ? `<p class="uiVQuest">${esc(UI.questName(q))} complete</p>` : ''}
    ${tiles ? `<h2 class="uiVHead">You won</h2><ul class="uiVLoot">${tiles}</ul>` : '<p class="uiVQuest">Well played!</p>'}
    ${each && team.length ? `<h2 class="uiVHead">Your Mythlings</h2><ul class="uiVTeam">${team.map(c => `<li class="${ups.has(c.id) ? 'up' : ''}"><span class="uiVPic">${B.art(c)}</span><b>${esc(B.species[c.kind]?.name || '')}</b><small>${ups.has(c.id) ? `Level up! Lv ${ups.get(c.id)}` : `Lv ${c.level || 1} · +${each} EXP`}</small></li>`).join('')}</ul>` : ''}
-   <div class="uiDefActions">${q && q < 100 && !r.online ? `<button class="button gold" data-res="${q + 1}">Next quest ›</button>` : ''}${w.pack ? '<button class="button gold" data-go="packs">Open my pack</button>' : ''}${q && !r.online ? `<button class="button" data-res="${q}">↺ Replay</button>` : ''}<button class="button" data-go="${r.online ? 'friends' : 'map'}">${r.online ? 'Friends' : 'World Map'}</button></div>`;
+   <div class="uiDefActions">${q && q < 100 && !r.online ? `<button class="button gold" data-res="${q + 1}">Next quest ›</button>` : ''}${w.pack ? '<button class="button gold" data-go="packs">Open my pack</button>' : ''}${q && !r.online ? `<button class="button" data-res="${q}">↺ Replay</button>` : ''}<button class="button" data-go="${r.online ? 'friends' : r.adventureId ? 'adventures' : 'map'}">${r.online ? 'Friends' : r.adventureId ? 'More encounters' : 'World Map'}</button></div>`;
   hero.querySelectorAll('[data-res]').forEach(b => b.onclick = () => B.beginBattle(+b.dataset.res));
   B.bind();
 }
@@ -54,11 +54,11 @@ function render(r) {
   tips.push({ icon: '💧', title: 'Attach Merfling every turn', text: 'Your second attack is stronger but needs 2 Merfling. Attach one each turn to your Active Mythling before you attack.' });
   tips.push({ icon: '🎁', title: 'Get stronger cards', text: `Spend coins on packs. Better packs give higher-level, rarer Mythlings. You have <b>${Math.floor(B.state.coins || 0).toLocaleString()}</b> coins.`, btn: ['packs', 'Open packs'] });
   hero.className = 'hero center uiDefeat';
-  hero.innerHTML = `<p class="uiDefKick">${quest ? `Quest ${quest}${boss ? ' · Boss' : ''}` : 'Friendly battle'}</p>
+  hero.innerHTML = `<p class="uiDefKick">${r.adventureId ? esc(r.adventureName||'Adventure encounter') : quest ? `Quest ${quest}${boss ? ' · Boss' : ''}` : 'Friendly battle'}</p>
    <h1 class="uiDefTitle">Defeated!</h1>
    <p class="uiDefWhy">${esc(why(r.reason))}</p>
    <p class="uiDefSafe">Don't worry: you keep all your cards. Nothing is lost when you lose.</p>
-   <div class="uiDefActions">${quest ? `<button class="button gold" data-def="replay:${quest}">↺ Try again</button>` : ''}<button class="button" data-go="${r.online ? 'friends' : 'map'}">${r.online ? 'Friends' : 'World Map'}</button></div>
+   <div class="uiDefActions">${quest ? `<button class="button gold" data-def="replay:${quest}">↺ Try again</button>` : ''}<button class="button" data-go="${r.online ? 'friends' : r.adventureId ? 'adventures' : 'map'}">${r.online ? 'Friends' : r.adventureId ? 'More encounters' : 'World Map'}</button></div>
    ${r.online ? '' : `<h2 class="uiDefTipsHead">How to win next time</h2>
    <ol class="uiDefTips">${tips.slice(0, 4).map(t => `<li><span class="uiDefIco" aria-hidden="true">${t.icon}</span><div><b>${t.title}</b><p>${t.text}</p></div>${t.btn ? `<button class="button alt" ${t.btn[0].startsWith('replay:') ? `data-def="${t.btn[0]}"` : `data-go="${t.btn[0]}"`}>${esc(t.btn[1])}</button>` : ''}</li>`).join('')}</ol>`}`;
   hero.querySelectorAll('[data-def]').forEach(b => b.onclick = () => B.beginBattle(+b.dataset.def.split(':')[1]));
