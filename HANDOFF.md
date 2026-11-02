@@ -1,5 +1,5 @@
 # EMBERLINGS — handoff for another computer
-Updated October 31, 2026. Current live version: 47.
+Updated November 1, 2026. Current live version: 60.
 
 ## Play
 https://mythlings-adventure.proud-book-0456.chatgpt.site/
@@ -30,8 +30,8 @@ Clone the GitHub repository on the other computer with git clone https://github.
 Continue my existing EMBERLINGS game from this project. Read this handoff and inspect the current code before changing anything. Preserve gameplay, player progress, inventory, coins, Vault upgrades, multiplayer and all artwork. Keep changes quick and use only a few relevant checks plus the required build. Use the existing Sites project for publication, not a new project.
 
 Sites project ID: appgprj_6ade72f8031081918f304ef6bf4af0fb
-Live version: 47
-Source commit: 69ab0dbba58a54a31ec5486e7f1dddb86dfa535a (PR #19 merge)
+Live version: 60
+Source commit: 6554c0c1517c0000b93f4bc8e8434e5bf866c27d (PR #28 main plus user-requested transparent logo)
 Save key: mythlings-playable-v1 — NEVER rename or clear it.
 
 Main implementation: game/index.html
@@ -97,3 +97,21 @@ Free accounts (username + password), cloud save under Account, and a level path 
 - Account screen reports a cloud save. Password setup, independent-session login and exact save retrieval via API: PASS on isolated test account QA_mvx6f788; sessions logged out. Full second-browser game-save import remains NOT VERIFIED; no existing player password changed.
 - Existing browser player tero: 400 coins before and after reload; collection remains visible with five cards. No claim of exhaustive preservation audit for all players.
 - Full visual coverage of every painted screen not performed. Tablet viewport override reset after checks.
+
+
+## Publish result - November 1, 2026 (America/Chicago)
+
+Published public version 60 to https://mythlings-adventure.proud-book-0456.chatgpt.site/ from source 6554c0c1517c0000b93f4bc8e8434e5bf866c27d. Pulled GitHub main d6aa9ab, including PR #28 merge 6f995d2. User then requested the attached new logo without its background; added a transparent PNG and wired the shared compact/painted header. No gameplay changes. Sites history reconciled while retaining the GitHub main file tree before the logo edit.
+
+- npm run install:ci: PASS. npm run build: PASS.
+- node tests/trades-server.mjs: PASS, 14 reports including multi-Mythling atomic trades.
+- node tests/equip-best.mjs: PASS, 3 reports including inventory preservation, levels and mutations. Known older failing tests were not changed.
+- Migrations 0006 and 0007 already present: players.title, players.password_hash and cloud_saves confirmed; neither rerun.
+- Live HTTP checks: root, ui.js, transparent logo, academy/rules/trading/trade-room artwork, field-guide.js and results.js return 200. All checked static assets match local SHA-256.
+- Requested check 1 (readable 12-step guide): visual/interactive check NOT VERIFIED.
+- Check 2 (Academy and Battle Rules): live artwork source match PASS; visual layouts NOT VERIFIED.
+- Check 3 (parchment Mythling Index): field-guide script source match PASS; visual layout NOT VERIFIED.
+- Check 4 (knockout banner, hand arrows, End Turn, defeat/victory): result script source match PASS; live battle flow NOT VERIFIED.
+- Check 5 (Friend Trading, Trade Room, five-card offers, grouped picker): live artwork source match and server multi-card tests PASS; browser interaction NOT VERIFIED.
+- Check 6 (existing coins/cards/levels): no live player data or save key changed; focused preservation test PASS; existing-player browser comparison NOT VERIFIED.
+- Browser checks blocked because local browser use is disabled in Work settings. No player saves, credentials, databases or dependencies included in the commit.
