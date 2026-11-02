@@ -20,8 +20,10 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 
 
 /* Animated EMBERLINGS logo: flame (flicker, glow, embers) + lettering. Height is set with --logo-h. */
+let logoArchSerial=0;
 function logoHTML(cls = '') {
-  return `<span class="uiLogo uiLogoScene ${cls}" role="img" aria-label="EMBERLINGS"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="" width="2048" height="704"><i class="uiLogoWarmth" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i></span>`;
+  const archId='emberLogoArch'+(++logoArchSerial);
+  return `<span class="uiLogo uiLogoScene ${cls}" role="img" aria-label="EMBERLINGS"><svg class="uiLogoArchArt" viewBox="0 0 2048 704" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="${archId}"><path d="M790 219 Q1024 -26 1260 219Z"/></clipPath></defs><image href="/art/ui/welcome-art.webp" x="790" y="20" width="470" height="436" clip-path="url(#${archId})"/></svg><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="" width="2048" height="704"><i class="uiLogoWarmth" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i><i class="uiLogoSpark" aria-hidden="true"></i></span>`;
 }
 
 /* Painted header bars, in source-image pixels (each bar is 2000 px wide). */
