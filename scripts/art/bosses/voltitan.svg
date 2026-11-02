@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#6a7fd8"/><stop offset=".45" stop-color="#2c2f78"/><stop offset="1" stop-color="#0b0b26"/>
+    </radialGradient>
+    <linearGradient id="scale" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe66a"/><stop offset=".5" stop-color="#f0a81c"/><stop offset="1" stop-color="#9a5a08"/>
+    </linearGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7c8"/><stop offset="1" stop-color="#e7c46a"/>
+    </linearGradient>
+    <linearGradient id="horn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#6fd8ff"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ffe94a"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#7af4ff"/><stop offset="1" stop-color="#2a8cff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- storm clouds -->
+  <g fill="#1a1c4a" opacity=".9">
+    <ellipse cx="80" cy="90" rx="110" ry="45"/><ellipse cx="420" cy="80" rx="120" ry="50"/><ellipse cx="256" cy="60" rx="110" ry="40"/>
+    <ellipse cx="60" cy="470" rx="140" ry="60"/><ellipse cx="460" cy="480" rx="140" ry="60"/>
+  </g>
+  <!-- lightning bolts -->
+  <g fill="url(#bolt)" filter="url(#glow)">
+    <path d="M70 110 L96 110 L78 170 L104 170 L54 260 L68 190 L44 190 Z"/>
+    <path d="M440 100 L466 100 L452 160 L478 160 L430 250 L442 184 L418 184 Z"/>
+  </g>
+  <!-- neck -->
+  <path d="M176 512 Q170 400 210 350 L302 350 Q342 400 336 512 Z" fill="url(#scale)" stroke="#4a2a04" stroke-width="5"/>
+  <path d="M216 512 Q214 420 236 370 L276 370 Q298 420 296 512 Z" fill="url(#belly)"/>
+  <g stroke="#c49a40" stroke-width="3"><path d="M222 400 H290"/><path d="M218 440 H294"/><path d="M216 480 H296"/></g>
+  <!-- spines along neck -->
+  <g fill="#7ae0ff" stroke="#1b5f8a" stroke-width="3" stroke-linejoin="round"><path d="M180 420 L140 404 L178 392 Z"/><path d="M178 470 L134 462 L176 446 Z"/><path d="M332 420 L372 404 L334 392 Z"/><path d="M334 470 L378 462 L336 446 Z"/></g>
+  <!-- horns -->
+  <path d="M196 200 Q150 150 128 70 Q176 130 220 176 Z" fill="url(#horn)" stroke="#1b5f8a" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M316 200 Q362 150 384 70 Q336 130 292 176 Z" fill="url(#horn)" stroke="#1b5f8a" stroke-width="4" stroke-linejoin="round"/>
+  <!-- frills -->
+  <path d="M176 250 L110 230 L150 272 L100 290 L170 296 Z" fill="#7ae0ff" stroke="#1b5f8a" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M336 250 L402 230 L362 272 L412 290 L342 296 Z" fill="#7ae0ff" stroke="#1b5f8a" stroke-width="4" stroke-linejoin="round"/>
+  <!-- head -->
+  <path d="M174 240 Q178 172 256 162 Q334 172 338 240 L330 300 Q300 360 256 364 Q212 360 182 300 Z" fill="url(#scale)" stroke="#4a2a04" stroke-width="5" stroke-linejoin="round"/>
+  <!-- forehead plate with bolt -->
+  <path d="M226 176 L256 168 L286 176 L274 214 L238 214 Z" fill="#fff0a0" stroke="#4a2a04" stroke-width="3"/>
+  <path d="M258 176 L244 198 L256 198 L250 214 L270 190 L258 190 L264 176 Z" fill="#2a8cff"/>
+  <!-- brow ridges -->
+  <path d="M190 226 L244 236 L240 250 L196 244 Z" fill="#8a4f06"/><path d="M322 226 L268 236 L272 250 L316 244 Z" fill="#8a4f06"/>
+  <!-- eyes -->
+  <ellipse cx="220" cy="254" rx="22" ry="13" fill="url(#eye)" filter="url(#glow)"/>
+  <ellipse cx="292" cy="254" rx="22" ry="13" fill="url(#eye)" filter="url(#glow)"/>
+  <path d="M206 254 Q222 244 236 256 Q220 262 206 254 Z" fill="#e8ffff"/><path d="M306 254 Q290 244 276 256 Q292 262 306 254 Z" fill="#e8ffff"/>
+  <!-- snout -->
+  <path d="M214 290 Q256 276 298 290 L292 334 Q256 352 220 334 Z" fill="url(#belly)" stroke="#4a2a04" stroke-width="4"/>
+  <ellipse cx="240" cy="296" rx="6" ry="4" fill="#4a2a04"/><ellipse cx="272" cy="296" rx="6" ry="4" fill="#4a2a04"/>
+  <path d="M222 322 Q256 336 290 322" fill="none" stroke="#4a2a04" stroke-width="4" stroke-linecap="round"/>
+  <path d="M232 324 L236 340 L242 326 M280 324 L276 340 L270 326" fill="#ffffff" stroke="#4a2a04" stroke-width="1.5"/>
+  <!-- crackling arcs -->
+  <g fill="none" stroke="#bff6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M128 70 L140 96 L126 104 L142 128"/><path d="M384 70 L372 96 L386 104 L370 128"/>
+    <path d="M110 290 L92 310 L104 318 L84 340"/><path d="M402 290 L420 310 L408 318 L428 340"/>
+  </g>
+</svg>

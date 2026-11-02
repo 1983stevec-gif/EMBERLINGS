@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="35%" r="80%">
+      <stop offset="0" stop-color="#bff5d0"/><stop offset=".3" stop-color="#3f9d78"/><stop offset=".7" stop-color="#173d33"/><stop offset="1" stop-color="#08160f"/>
+    </radialGradient>
+    <linearGradient id="bark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a6a48"/><stop offset=".5" stop-color="#5a3f28"/><stop offset="1" stop-color="#2c1d12"/>
+    </linearGradient>
+    <linearGradient id="barkDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3220"/><stop offset="1" stop-color="#1f140b"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b6f27a"/><stop offset=".5" stop-color="#4fb04a"/><stop offset="1" stop-color="#1f6a34"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f4ffd8"/><stop offset=".5" stop-color="#8dff6a"/><stop offset="1" stop-color="#2bd36a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+    <g id="lf"><path d="M0 0 Q14 -16 30 -4 Q14 10 0 0 Z" fill="url(#leaf)" stroke="#154a22" stroke-width="2"/></g>
+    <g id="thorn"><path d="M0 0 L14 -5 L0 6 Z" fill="#2a1a0e"/></g>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- background trees -->
+  <g fill="#0f2a22" opacity=".85">
+    <path d="M20 512 L40 200 L60 512 Z"/><path d="M70 512 L96 150 L122 512 Z"/><path d="M400 512 L424 170 L448 512 Z"/><path d="M455 512 L478 220 L500 512 Z"/>
+  </g>
+  <g fill="#d8ffe6" opacity=".7"><circle cx="150" cy="110" r="3"/><circle cx="360" cy="90" r="3"/><circle cx="420" cy="300" r="2.5"/><circle cx="90" cy="300" r="2.5"/><circle cx="300" cy="60" r="2"/></g>
+  <!-- antler-branch crown -->
+  <g fill="none" stroke="url(#barkDark)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M214 170 Q170 120 140 70 M168 112 Q130 106 110 120 M150 86 Q160 50 150 30" stroke-width="16"/>
+    <path d="M298 170 Q342 120 372 70 M344 112 Q382 106 402 120 M362 86 Q352 50 362 30" stroke-width="16"/>
+  </g>
+  <g>
+    <use href="#lf" transform="translate(140 70) rotate(-60)"/><use href="#lf" transform="translate(110 120) rotate(190)"/><use href="#lf" transform="translate(150 30) rotate(-100)"/>
+    <use href="#lf" transform="translate(372 70) rotate(-120) scale(1 -1)"/><use href="#lf" transform="translate(402 120) rotate(-10)"/><use href="#lf" transform="translate(362 30) rotate(-80)"/>
+    <use href="#lf" transform="translate(126 96) rotate(150)"/><use href="#lf" transform="translate(386 96) rotate(30)"/>
+  </g>
+  <!-- body / shoulders -->
+  <path d="M84 512 L104 380 Q130 316 200 300 L312 300 Q382 316 408 380 L428 512 Z" fill="url(#bark)" stroke="#1a100a" stroke-width="5"/>
+  <!-- bark grain -->
+  <g fill="none" stroke="#2c1d12" stroke-width="4" stroke-linecap="round" opacity=".8">
+    <path d="M150 340 Q140 420 150 500"/><path d="M200 320 Q190 420 206 510"/><path d="M312 320 Q322 420 306 510"/><path d="M362 340 Q372 420 362 500"/>
+  </g>
+  <!-- moss shoulders -->
+  <path d="M104 380 Q130 330 190 318 Q170 350 140 360 Q120 372 104 380 Z" fill="url(#leaf)" opacity=".9"/>
+  <path d="M408 380 Q382 330 322 318 Q342 350 372 360 Q392 372 408 380 Z" fill="url(#leaf)" opacity=".9"/>
+  <!-- head -->
+  <path d="M190 312 Q170 240 186 186 Q206 150 256 146 Q306 150 326 186 Q342 240 322 312 Q290 336 256 336 Q222 336 190 312 Z" fill="url(#bark)" stroke="#1a100a" stroke-width="5"/>
+  <g fill="none" stroke="#3b2717" stroke-width="3.5" stroke-linecap="round"><path d="M224 160 Q218 190 226 210"/><path d="M290 160 Q296 190 288 210"/><path d="M256 150 L256 180"/></g>
+  <!-- heavy brow -->
+  <path d="M196 214 Q226 196 252 214 L260 214 Q286 196 316 214 L312 232 Q286 222 260 234 L252 234 Q226 222 200 232 Z" fill="#2c1d12"/>
+  <!-- eyes -->
+  <ellipse cx="228" cy="240" rx="20" ry="13" fill="url(#eye)" filter="url(#glow)"/>
+  <ellipse cx="284" cy="240" rx="20" ry="13" fill="url(#eye)" filter="url(#glow)"/>
+  <ellipse cx="228" cy="240" rx="7" ry="5" fill="#f4ffd8"/><ellipse cx="284" cy="240" rx="7" ry="5" fill="#f4ffd8"/>
+  <!-- nose knot -->
+  <path d="M248 252 Q256 274 264 252 Q260 266 256 268 Q252 266 248 252 Z" fill="#3b2717"/>
+  <!-- mouth hollow -->
+  <path d="M222 292 Q256 280 290 292 Q276 312 256 314 Q236 312 222 292 Z" fill="#120a05"/>
+  <path d="M232 294 L238 304 L244 292 M268 292 L274 304 L280 294" fill="#c9a77a"/>
+  <!-- leafy beard -->
+  <g><use href="#lf" transform="translate(220 320) rotate(110)"/><use href="#lf" transform="translate(256 330) rotate(90)"/><use href="#lf" transform="translate(292 320) rotate(70)"/><use href="#lf" transform="translate(238 334) rotate(100) scale(.8)"/><use href="#lf" transform="translate(274 334) rotate(80) scale(.8)"/></g>
+  <!-- thorny vines -->
+  <g fill="none" stroke="#3c6b2a" stroke-width="7" stroke-linecap="round">
+    <path d="M60 470 Q120 420 104 380 Q90 340 130 330"/>
+    <path d="M452 470 Q392 420 408 380 Q422 340 382 330"/>
+    <path d="M150 512 Q200 440 256 452 Q312 440 362 512"/>
+  </g>
+  <g>
+    <use href="#thorn" transform="translate(88 440) rotate(-40)"/><use href="#thorn" transform="translate(104 400) rotate(-90)"/><use href="#thorn" transform="translate(116 340) rotate(-30)"/>
+    <use href="#thorn" transform="translate(424 440) rotate(220)"/><use href="#thorn" transform="translate(408 400) rotate(270)"/><use href="#thorn" transform="translate(396 340) rotate(210)"/>
+    <use href="#thorn" transform="translate(200 466) rotate(-70)"/><use href="#thorn" transform="translate(256 452) rotate(-90)"/><use href="#thorn" transform="translate(312 466) rotate(-110)"/>
+  </g>
+  <g fill="#ff7aa8" stroke="#7a1d3e" stroke-width="2"><circle cx="122" cy="332" r="7"/><circle cx="390" cy="332" r="7"/><circle cx="256" cy="452" r="8"/></g>
+</svg>

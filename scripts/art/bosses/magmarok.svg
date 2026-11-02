@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="75%">
+      <stop offset="0" stop-color="#ffb347"/><stop offset=".35" stop-color="#d9481c"/><stop offset=".75" stop-color="#5a1410"/><stop offset="1" stop-color="#1e0707"/>
+    </radialGradient>
+    <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b4038"/><stop offset=".55" stop-color="#2f211e"/><stop offset="1" stop-color="#170f0e"/>
+    </linearGradient>
+    <linearGradient id="rockLit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a5446"/><stop offset="1" stop-color="#2a1c19"/>
+    </linearGradient>
+    <linearGradient id="lava" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff3a0"/><stop offset=".4" stop-color="#ffb21e"/><stop offset="1" stop-color="#ff4a0a"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fffbd0"/><stop offset=".5" stop-color="#ffcc33"/><stop offset="1" stop-color="#ff5a00" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff6b0"/><stop offset=".45" stop-color="#ff9a1a"/><stop offset="1" stop-color="#ff3b00" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- distant volcano -->
+  <path d="M40 330 L170 190 L205 205 L240 180 L272 200 L360 330 Z" fill="#3a120c" opacity=".75"/>
+  <path d="M205 205 Q222 120 238 182" fill="none" stroke="#ffcf5a" stroke-width="10" filter="url(#glow)" opacity=".8"/>
+  <ellipse cx="225" cy="150" rx="60" ry="40" fill="#ff8a2a" filter="url(#soft)" opacity=".55"/>
+  <!-- ground and lava river -->
+  <path d="M0 420 Q120 380 256 395 T512 410 L512 512 L0 512 Z" fill="#1d0b08"/>
+  <path d="M0 470 Q140 440 250 458 T512 452 L512 480 Q380 470 250 486 T0 500 Z" fill="url(#lava)" filter="url(#glow)" opacity=".9"/>
+  <!-- body -->
+  <g>
+    <!-- shoulders / torso -->
+    <path d="M96 440 L118 300 L170 238 L256 222 L342 238 L394 300 L416 440 Z" fill="url(#rock)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <!-- shoulder boulders -->
+    <path d="M70 330 L92 262 L150 232 L192 260 L178 330 L120 352 Z" fill="url(#rockLit)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M442 330 L420 262 L362 232 L320 260 L334 330 L392 352 Z" fill="url(#rockLit)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <!-- arms -->
+    <path d="M78 336 L60 420 L80 470 L132 474 L150 420 L130 346 Z" fill="url(#rock)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M434 336 L452 420 L432 470 L380 474 L362 420 L382 346 Z" fill="url(#rock)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <!-- molten chest core -->
+    <circle cx="256" cy="340" r="70" fill="url(#core)" filter="url(#soft)"/>
+    <path d="M226 312 L256 290 L286 312 L280 352 L256 372 L232 352 Z" fill="url(#lava)" stroke="#5a1a06" stroke-width="4" filter="url(#glow)"/>
+    <!-- glowing cracks -->
+    <g fill="none" stroke="url(#lava)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+      <path d="M232 352 L206 380 L214 410 L196 440"/>
+      <path d="M280 352 L304 384 L296 414 L318 440"/>
+      <path d="M226 312 L190 296 L168 306"/>
+      <path d="M286 312 L322 296 L344 306"/>
+      <path d="M112 300 L134 286 L150 296"/>
+      <path d="M400 300 L378 286 L362 296"/>
+      <path d="M96 400 L114 418 L104 446"/>
+      <path d="M416 400 L398 418 L408 446"/>
+    </g>
+    <!-- head -->
+    <path d="M196 238 L206 168 L236 140 L276 140 L306 168 L316 238 L284 262 L228 262 Z" fill="url(#rockLit)" stroke="#0e0706" stroke-width="5" stroke-linejoin="round"/>
+    <!-- horns of rock -->
+    <path d="M210 170 L176 120 L188 176 Z" fill="#3b2723" stroke="#0e0706" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M302 170 L336 120 L324 176 Z" fill="#3b2723" stroke="#0e0706" stroke-width="4" stroke-linejoin="round"/>
+    <!-- molten crown -->
+    <path d="M232 142 Q240 112 250 132 Q258 98 266 132 Q274 112 280 142 Z" fill="url(#lava)" filter="url(#glow)"/>
+    <!-- brow -->
+    <path d="M212 196 L248 206 L256 200 L264 206 L300 196 L298 210 L214 210 Z" fill="#1d1210"/>
+    <!-- eyes -->
+    <circle cx="232" cy="214" r="18" fill="url(#eye)"/>
+    <circle cx="280" cy="214" r="18" fill="url(#eye)"/>
+    <path d="M222 214 L242 210 L240 220 Z" fill="#fffbe0"/>
+    <path d="M290 214 L270 210 L272 220 Z" fill="#fffbe0"/>
+    <!-- glowing mouth -->
+    <path d="M232 242 L244 236 L256 244 L268 236 L280 242 L270 252 L242 252 Z" fill="url(#lava)" filter="url(#glow)"/>
+  </g>
+  <!-- embers -->
+  <g fill="#ffd36a" filter="url(#glow)">
+    <circle cx="80" cy="120" r="4"/><circle cx="430" cy="140" r="5"/><circle cx="380" cy="80" r="3"/><circle cx="130" cy="200" r="3"/><circle cx="470" cy="250" r="4"/><circle cx="40" cy="250" r="3"/><circle cx="340" cy="190" r="3"/><circle cx="160" cy="70" r="3"/>
+  </g>
+</svg>
