@@ -1674,3 +1674,41 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 @media(max-width:600px){.tourItem h2{font-size:22px!important}.tourBubble p{font-size:16px!important}}
 /* Desktop: Packs and Friends painted pages fit the screen height exactly */
 @media(min-width:900px) and (pointer:fine){.uiXCrop:has(>.uiXPacks),.uiXCrop:has(>.uiXFriends){width:min(100%,calc((100dvh - min(8.8vw,176px) - 16px) * var(--ratio)))!important}}
+
+/* ---------- Daily rewards: button, streak, quests, weekly challenge ---------- */
+.dailyBtn{position:fixed;z-index:44;right:20px;bottom:20px;display:flex;align-items:center;gap:8px;min-height:56px;padding:0 22px;border-radius:28px;border:2px solid #fff1c2;background:linear-gradient(180deg,#ffe29a,#e8ae45 60%,#c4801f);color:#2a1606;font:700 21px 'Cormorant Garamond',Georgia,serif;box-shadow:0 8px 22px #000a,0 0 18px #f2b44a66;cursor:pointer}
+.dailyBtn span{font-size:24px}
+.dailyDot{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#e8323c;border:2px solid #fff3c8;box-shadow:0 0 10px #ff3b3b;animation:tbPulse 1.6s ease-in-out infinite}
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){.dailyBtn{bottom:100px;right:16px}}
+@media(max-width:699px){.dailyBtn{bottom:96px;right:12px;min-height:50px;padding:0 16px;font-size:18px}}
+.dBox{position:relative;text-align:left;width:min(820px,100%)}
+.dBox h2{text-align:center}
+.dX{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:1px solid #33467e;background:#0d1534;color:#cdd5ea;font-size:26px;cursor:pointer}
+.dBox section{margin-top:18px}
+.dBox h3{margin:0 0 10px;font:700 24px 'Cormorant Garamond',Georgia,serif;color:#f6dfa4}
+.dBox h3 small{display:block;font:15px 'EB Garamond',Georgia,serif;color:#9aa6c8}
+.dStreak{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.dStreak li{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:12px;border:1.5px solid #33467e;background:#0d1534;text-align:center}
+.dStreak small{font-size:13px;color:#9aa6c8;letter-spacing:.06em;text-transform:uppercase}
+.dStreak span{font-size:26px}
+.dStreak b{font:700 14px/1.15 'EB Garamond',Georgia,serif;color:#dfe5f6}
+.dStreak li.done{border-color:#2f7a4a;background:linear-gradient(180deg,#123a26,#0d1534)}.dStreak li.done span{color:#8ee6a0}
+.dStreak li.today{border:2.5px solid #f2c45f;box-shadow:0 0 16px #f2b44a66;background:linear-gradient(180deg,#2a2a5c,#121a44)}
+.dStreak li:last-child span{filter:drop-shadow(0 0 8px #ffd77a)}
+.dBig{display:block;width:100%;margin-top:12px;min-height:56px;border-radius:12px;border:1.5px solid #fff1c2;background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;font:700 21px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.dBig:disabled{background:#123a26;border-color:#2f7a4a;color:#8ee6a0;cursor:default}
+.dQuests{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dQuests li,.dWeek,.dBonus{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;border:1px solid #33467e;background:#0d1534}
+.dQuests li>div,.dWeek>div{flex:1;min-width:0}
+.dQuests b,.dWeek b{font:700 19px 'Cormorant Garamond',Georgia,serif;color:#fff4e0}
+.dQuests small,.dWeek small{font-size:15px;color:#9aa6c8}
+.dqIcon{font-size:28px;flex:none}
+.dqBar{height:10px;margin:6px 0 4px;border-radius:5px;background:#1b2550;overflow:hidden}
+.dqBar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#e8ae45,#ffe29a)}
+.dqClaim{flex:none;min-height:46px;min-width:96px;padding:0 16px;border-radius:10px;border:1.5px solid #fff1c2;background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;font:700 18px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.dqClaim:disabled{background:#1b2550;border-color:#33467e;color:#6b7699;cursor:default}
+.dqDone{flex:none;color:#8ee6a0;font:700 17px 'Cormorant Garamond',Georgia,serif}
+.dQuests li.claimed,.dWeek.claimed,.dBonus.claimed{opacity:.7}
+.dBonus{margin-top:8px;justify-content:space-between;font-size:17px;color:#dfe5f6;background:linear-gradient(90deg,#24305e,#0d1534)}
+.dBonus b{color:#ffd77a}
+@media(max-width:600px){.dStreak{grid-template-columns:repeat(4,1fr)}}
