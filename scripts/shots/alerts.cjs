@@ -1,8 +1,9 @@
 const { chromium } = require('playwright');
+const quiet = require('./quiet.cjs');
 (async () => {
   const b = await chromium.launch(); const errs = [];
   const W = +(process.env.W || 1366), H = +(process.env.H || 900), touch = !!process.env.TOUCH;
-  const mk = async (name) => { const ctx = await b.newContext({ viewport: { width: 1366, height: 900 }, hasTouch: touch }); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('dialog', d => d.accept()); await p.goto((process.env.BASE || 'http://127.0.0.1:8848') + '/'); await p.waitForTimeout(2500); const i = await p.$('input[type=text], input:not([type])'); if (i && await i.isVisible()) { await i.fill(name); await p.keyboard.press('Enter'); await p.waitForTimeout(2500); } await p.evaluate(() => { EmberBridge.state.guidedTour = { active: false }; document.querySelectorAll('#guidedTour').forEach(e => e.remove()); EmberBridge.save(); }); return p; };
+  const mk = async (name) => { const ctx = await b.newContext({ viewport: { width: 1366, height: 900 }, hasTouch: touch }); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('dialog', d => d.accept()); await p.goto((process.env.BASE || 'http://127.0.0.1:8848') + '/'); await p.waitForTimeout(2500); const i = await p.$('input[type=text], input:not([type])'); if (i && await i.isVisible()) { await i.fill(name); await p.keyboard.press('Enter'); await p.waitForTimeout(2500); } await quiet(p); return p; };
   const s = Date.now() % 1e5, A = 'Ava' + s, Bn = 'Bo' + s;
   const pa = await mk(A), pb = await mk(Bn);
   await pa.evaluate(() => EmberBridge.go('friends')); await pa.waitForTimeout(2500);
@@ -12,7 +13,8 @@ const { chromium } = require('playwright');
   await pb.evaluate(() => EmberBridge.go('home')); await pb.waitForTimeout(500);
   await pa.evaluate(() => EmberBridge.go('home')); await pa.waitForTimeout(400); await pa.evaluate(() => EmberBridge.go('trading')); await pa.waitForTimeout(3000);
   await pa.click(W >= 1000 ? '#uiXTSend' : '#tpTSend'); await pa.waitForTimeout(1500);
-  await pb.waitForTimeout(12000);
+  // The pop-up disappears after 12 s, so wait for it instead of a fixed delay.
+  await pb.waitForSelector('#tradeAlert .tradeAlertOpen', { timeout: 25000 }); await pb.waitForTimeout(500);
   console.log('B badge:', await pb.evaluate(() => [...document.querySelectorAll('.uiTradeBadge')].map(x => x.hidden ? 'hidden' : x.textContent).join(',')), 'alert:', await pb.evaluate(() => document.querySelector('#tradeAlert')?.textContent.trim()));
   await pb.screenshot({ path: 'alert-' + W + '.png' });
   await pb.click('.tradeAlertOpen'); await pb.waitForTimeout(3500);

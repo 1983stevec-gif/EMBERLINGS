@@ -1,6 +1,7 @@
 // EMBERLINGS card effects: holographic foil with 3D tilt, a shine sweep on rare and mutated cards,
 // and smoother binder pages. Visual only: it talks to the game through window.EmberBridge, ember:* events
 // and the DOM, and never changes cards, collection, decks or saves.
+import { fxCalm, fxLight } from '/fx-level.js';
 const B = window.EmberBridge;
 const RARITY_COLORS = ['#aebce2', '#7be7b3', '#72b5ff', '#c18aff', '#ffd568', '#73f0f1', '#ff88d4'];
 // Per rarity rank: resting foil strength, shine strength and seconds between shine sweeps.
@@ -12,7 +13,8 @@ const SKIP = '.pocketBoard, .handRow, .handCard, .battleScene, #bxLayer, .rollTr
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const root = document.documentElement;
 const motionQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
-const calm = () => !!B.state?.reducedMotion || !!motionQuery?.matches;
+// Effects setting: Off = no animation; Light = foil and shine stay, but cards do not tilt in 3D.
+const calm = fxCalm, noTilt = () => fxCalm() || fxLight();
 
 /* ---------------------------------------------------------------- Decorating printed cards */
 let mutationNames = null;
@@ -105,14 +107,14 @@ function release() {
 function setupTilt() {
   document.addEventListener('pointermove', e => {
     if (e.pointerType === 'touch') return;
-    if (calm()) return release();
+    if (noTilt()) return release();
     const card = eligible(e.target);
     if (!card) return release();
     aim(card, e, false);
   }, { passive: true });
   // Touch: a gentle press tilt that lets go as soon as the finger lifts or the page starts scrolling.
   document.addEventListener('pointerdown', e => {
-    if (e.pointerType !== 'touch' || calm()) return;
+    if (e.pointerType !== 'touch' || noTilt()) return;
     const card = eligible(e.target); if (card) aim(card, e, true);
   }, { passive: true });
   for (const type of ['pointerup', 'pointercancel']) document.addEventListener(type, e => { if (e.pointerType === 'touch') release(); }, { passive: true });
@@ -196,13 +198,14 @@ html.fcCalm .binderPages.fcPaging>.binderPocket{animation:none!important}
   const style = document.createElement('style'); style.id = 'fx-cards-css'; style.textContent = css; document.head.appendChild(style);
 }
 
-function syncCalm() { root.classList.toggle('fcCalm', calm()); if (calm()) release(); }
+function syncCalm() { root.classList.toggle('fcCalm', calm()); if (noTilt()) release(); }
 
 function start() {
   injectStyles();
   root.classList.add('fcOn');
   syncCalm();
   motionQuery?.addEventListener?.('change', syncCalm);
+  addEventListener('ember:fxLevel', syncCalm);
   setupTilt();
   addEventListener('ember:frame', () => { syncCalm(); release(); scheduleDecorate(); });
   addEventListener('ember:binderReady', e => { scheduleDecorate(); onBinder(e.detail); });
