@@ -1942,3 +1942,61 @@ aside.uiQuest#uiQuest{position:static;inset:auto;pointer-events:auto}
 .uiFxHelp{margin:6px 4px 0;font-size:12.5px;line-height:1.35;color:#c9bfa8;max-width:250px}
 .uiSettings .uiFx{max-width:340px;margin:8px 0}
 .uiSettings .uiFxHelp{max-width:none}
+
+/* ---------- Screen fit polish: desktop, tablet and phone (layout and looks only; no gameplay changes) ---------- */
+/* Card details: the holographic foil was made for small binder cards. Blown up on the big card it
+   washed the art out pale pink, so it is softer and gentler here and the art keeps its colour. */
+html #cardDetails .fcFoil{mix-blend-mode:soft-light;opacity:calc(var(--fc-foil,0) * .55)}
+html #cardDetails .fcShine::before,html #cardDetails .fcShine2::after{opacity:calc(var(--fc-shine,.4) * .45)}
+html #cardDetails .cdGlare{opacity:.6}
+/* (Some rules start with html/body so they win over styles the effect modules add at run time.) */
+/* Painted desktop header: the trade-badge rule gave the Friends hot-spot position:relative, so it lost its
+   painted place and size (zero height, but still focusable). Keep it placed like the other tabs. */
+.uiPTab[data-go="friends"]{position:absolute}
+/* Achievement / reward toasts on phones and tablets: show them under the header instead of over the coin counter. */
+@media(max-width:699px),(max-width:1199px) and (pointer:coarse){body .fxBanner{top:calc(68px + env(safe-area-inset-top,0px));max-width:calc(100vw - 24px)}}
+/* Battle hand on phones: it is a sideways strip. The fanned tilt cut the first card's corner off at the
+   strip's edge, so cards stand straight here, and a soft fade shows which side has more cards. */
+@media(max-width:699px){
+  .pocketHand .handRow>.handCard{--fan:0deg!important;--lift:0px!important}
+  .pocketHand .handRow{padding-left:6px!important;padding-right:6px!important;scroll-snap-type:x proximity}
+  .pocketHand .handRow>.handCard{scroll-snap-align:center}
+  .pocketHand:has(.bxHandNav.next:not([hidden])) .handRow{-webkit-mask-image:linear-gradient(90deg,#000 80%,#0003);mask-image:linear-gradient(90deg,#000 80%,#0003)}
+  .pocketHand:has(.bxHandNav.prev:not([hidden])) .handRow{-webkit-mask-image:linear-gradient(90deg,#0003,#000 20%);mask-image:linear-gradient(90deg,#0003,#000 20%)}
+  .pocketHand:has(.bxHandNav.prev:not([hidden])):has(.bxHandNav.next:not([hidden])) .handRow{-webkit-mask-image:linear-gradient(90deg,#0003,#000 20% 80%,#0003);mask-image:linear-gradient(90deg,#0003,#000 20% 80%,#0003)}
+}
+/* Deck edit: Share deck / Import deck / Deck ideas were squeezed onto one line on phones and their words
+   were cut off. They now wrap onto a second row when there isn't room. */
+body .dsBar .dsBtn{flex:1 1 110px}
+/* Binder footer on phones with large text: "‹ Previous · Page 1 of 1 · Next ›" stayed on one line and pushed
+   the page sideways. It can now wrap, with smaller side padding. */
+@media(max-width:699px){
+  .uiFootMid{min-width:0;max-width:100%}
+  .uiFootMid .binderPager{flex-wrap:wrap;justify-content:center;gap:8px 16px}
+  .uiFootMid .binderPager .button{padding-left:18px;padding-right:18px}
+}
+/* Compact header (tablets and phones): the arch logo hangs below the header bar and its picture caught taps
+   meant for "‹ Back" links and Concede underneath. The logo button still works inside the bar itself. */
+.uiTop .uiBrand img{pointer-events:none}
+/* Floating Daily button: pages get extra room at the bottom while it is shown, so the last lines and
+   buttons can always be scrolled clear of it. On phones it is also a little smaller. */
+body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
+@media(min-width:700px) and (max-width:1199px) and (pointer:coarse){body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:calc(var(--tabH) + 84px)!important}}
+@media(max-width:699px){
+  .dailyBtn{min-height:46px;padding:0 14px;font-size:17px;gap:6px}
+  .dailyBtn span{font-size:21px}
+  body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:164px!important}
+}
+/* Touch screens: small buttons grow to at least 40-44px so they are easy to tap (painted pages keep their painted sizes). */
+@media(pointer:coarse){
+  .uiTop .uiBrand,.uiTop .uiUser{min-height:40px}
+  .uiBrowse{min-height:44px}
+  body.uiTheme:not(.uiExact) .back{display:inline-flex;align-items:center;min-height:44px;padding-right:10px}
+  body .fxSkip{min-height:44px}
+  .uiTheme .deckCounter{grid-template-columns:40px 1fr 40px}
+  .uiTheme .deckCounter .button{min-height:40px;height:40px!important}
+  .uiTheme .deckCounter strong{min-height:40px}
+  body:not(.uiExact) #app summary{min-height:40px;box-sizing:border-box;padding-top:9px;padding-bottom:9px}
+  .uiMenu button{min-height:42px}
+  body:not(.uiExact) :is(#leaveCards,#energyTarget,#attachPocketEnergy,#usePocketStadium,#readyPocket,#showPocketRules){min-height:42px}
+}
