@@ -1879,6 +1879,6 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 @media (max-width:600px){.tdSides{grid-template-columns:1fr}.tdArrow{transform:rotate(90deg)}.thSwap{grid-template-columns:1fr}.thSwap>span{display:none}}
 /* Transparent logo supplied November 1, 2026. */
 .uiBrand .uiLogo .uiLogoNew,.uiLogo .uiLogoNew{display:block;width:min(280px,40vw);height:auto;max-height:84px;object-fit:contain}
-.uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.png) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
+.uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.webp) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
 .uiPFlame{display:none!important}
 @media(max-width:699px){.uiBrand .uiLogo .uiLogoNew{width:min(210px,43vw);max-height:64px}}
