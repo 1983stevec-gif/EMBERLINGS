@@ -1882,3 +1882,25 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 .uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.webp) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
 .uiPFlame{display:none!important}
 @media(max-width:699px){.uiBrand .uiLogo .uiLogoNew{width:min(210px,43vw);max-height:64px}}
+
+/* ===== Boss introductions (public/boss-intro.js) ===== */
+.biIntro{position:fixed;inset:0;z-index:400;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:20px}
+.biDim{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#1a0d22cc,#05030cf2 70%);animation:biDim .35s ease-out both}
+.biStage{position:relative;text-align:center;max-width:min(640px,92vw);display:grid;justify-items:center;gap:6px}
+.biCrest{width:clamp(120px,22vmin,190px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#5a2e4a,#1c0f24 72%);border:3px solid #ffd36a;box-shadow:0 0 0 6px #ffd36a22,0 0 60px var(--bi-glow),inset 0 0 40px #000a;animation:biSlam .55s cubic-bezier(.2,1.4,.4,1) .3s both}
+.biCrest span{font-size:clamp(64px,12vmin,104px);filter:drop-shadow(0 6px 10px #000c);line-height:1}
+.biKicker{margin:14px 0 0;font-size:clamp(11px,1.6vmin,14px);letter-spacing:.22em;text-transform:uppercase;color:#f3d79a;animation:biRise .4s ease-out .7s both}
+.biName{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(40px,8vmin,78px);line-height:1;letter-spacing:.04em;color:#fff3d6;text-shadow:0 3px 0 #6b2a00,0 0 30px var(--bi-glow);animation:biName .5s cubic-bezier(.2,.9,.3,1) .75s both}
+.biLine{margin:8px 0 0;font-size:clamp(16px,2.6vmin,22px);line-height:1.4;color:#f6ecff;font-style:italic;animation:biRise .45s ease-out 1.15s both}
+.biMeta{margin:4px 0 0;font-size:13px;color:#c9bde6;animation:biRise .45s ease-out 1.3s both}
+.biSkip{margin-top:14px;min-height:44px;padding:10px 22px;border-radius:999px;border:1px solid #ffd36a99;background:#2a1830cc;color:#ffe9b0;font-weight:700;font-size:14px;animation:biRise .4s ease-out 1.4s both}
+.biSkip:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.biIntro.biOut{pointer-events:none;animation:biFade .24s ease-in forwards}
+.biIntro.biStill *{animation:none!important}
+@keyframes biDim{from{opacity:0}}
+@keyframes biSlam{0%{transform:scale(2.2);opacity:0}60%{transform:scale(.94);opacity:1}100%{transform:scale(1)}}
+@keyframes biName{from{transform:translateY(14px) scale(.96);opacity:0;letter-spacing:.3em}}
+@keyframes biRise{from{transform:translateY(10px);opacity:0}}
+@keyframes biFade{to{opacity:0}}
+@media(max-height:480px){.biCrest{width:96px}.biCrest span{font-size:56px}.biKicker{margin-top:6px}.biName{font-size:38px}.biLine{font-size:15px}.biSkip{margin-top:6px}}
+@media(prefers-reduced-motion:reduce){.biIntro *{animation:none!important}}
