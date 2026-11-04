@@ -17,6 +17,7 @@ await quiet(page);
 | `shot.cjs` | Screenshot one page at any size, with touch on | `node shot.cjs 768 1024 rules out.png` (`FULL=1` for a full page) |
 | `tp.cjs` | Portrait tablet pages: rules, training, trading | `FULL=1 node tp.cjs 768 1024 training tp.png` |
 | `alerts.cjs` | Two live accounts: befriend, invite (badge and pop-up), 2-for-1 trade, Trade complete, Past trades. Waits for the invite pop-up, which hides itself after 12 s | `node alerts.cjs` or `W=768 H=1024 TOUCH=1 node alerts.cjs` |
+| `cosmetics.cjs` | Gallery of every card back and avatar ring; a test player picks a back, avatar and ring, then card details flip, pack reveal, battle deck, a friend's view, tablet and phone fit. Set `OUT` for the screenshot folder | `OUT=/tmp/shots node cosmetics.cjs` |
 | `daily.cjs` | Daily rewards: the panel opening by itself, login claim, quest from a real pack, bonus, weekly, day 7 | `node daily.cjs` or `W=390 H=844 node daily.cjs` |
 | `rare.cjs` | Opens a Legend Pack with lucky rolls; rare-find banner and profile | `node rare.cjs` or `W=390 H=844 node rare.cjs` |
 | `speed.cjs` | First-visit size and time over simulated 4G, empty cache (default size 768×1024) | `W=390 H=844 node speed.cjs` or `W=1366 H=900 node speed.cjs` |
