@@ -55,7 +55,49 @@ body.arenaActive{overflow:hidden;margin:0;background:#0d2030}body.arenaActive #a
 .vaultPortrait>.mythlingPortrait{width:185px;height:185px;max-width:100%}.tradeChoices .mythlingPortrait{width:95px;height:95px;margin:auto}.mutationPortrait>.mythlingPortrait{width:100%;height:100%}
 [data-deck-preset]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}[data-deck-preset][data-holding]{filter:brightness(.85)}.savedDeckMenu{margin-top:12px;border:1px solid #c6a878}.savedDeckMenu p{font-size:12px}.savedDeckMenu #deleteSavedDeck{background:#8a3949;border-color:#df8b8b}
 .mythlingArt>.mythlingSingle{left:0!important;top:0!important;width:100%!important;height:100%!important;object-fit:fill!important}
-</style><link rel="stylesheet" href="/theme.css"></head><body><div id="app"><section class="brandSplash"><img class="splashLogo" src="/branding/emberlings-logo.webp" alt="EMBERLINGS" width="1448" height="1086"><div class="loadingEmbers" aria-hidden="true"></div><p role="status">Loading your EMBERLINGS adventure…</p></section></div><noscript>Enable JavaScript to play EMBERLINGS. Your existing progress stays in this browser.</noscript><script type="module">
+</style><link rel="stylesheet" href="/theme.css"></head><body><div id="app"><!-- Loading screen with tips. Fades in only after 0.3 s (no flash on fast loads); the first screen draw replaces it, and the script below tidies up. Tips follow POCKET-RULES.md and HANDOFF.md. -->
+<section id="emberLoad" aria-busy="true"><style>
+#emberLoad{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 16px;text-align:center;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#22306a,#0a1029 72%);opacity:0;animation:elIn .4s ease-out .3s forwards}
+@keyframes elIn{to{opacity:1}}
+#emberLoad img{width:min(460px,88vw);height:auto;filter:drop-shadow(0 0 30px #ff8a3d55)}
+#emberLoad .elBar{width:min(280px,72vw);height:8px;border-radius:9px;background:#2a1d3f;overflow:hidden;box-shadow:inset 0 0 0 1px #c9a35a55}
+#emberLoad .elBar i{display:block;width:38%;height:100%;border-radius:9px;background:linear-gradient(90deg,#e83a24,#ff9b3d,#ffe08a);box-shadow:0 0 14px #ff9b3d;animation:elRun 1.5s ease-in-out infinite alternate}
+@keyframes elRun{from{transform:translateX(-15%)}to{transform:translateX(178%)}}
+#emberLoad .elStatus{margin:0;color:#e9c188;letter-spacing:.08em;font:15px system-ui,sans-serif}
+#emberLoad .elTip{box-sizing:border-box;width:min(520px,100%);min-height:5.6em;margin:10px 0 0;padding:12px 16px;border:1px solid #c9a35a66;border-radius:14px;background:#0b1230b3;color:#eef1fb;font:17px/1.4 Georgia,serif;transition:opacity .35s}
+#emberLoad .elTip b{display:block;margin-bottom:4px;font:700 12px system-ui,sans-serif;letter-spacing:.16em;color:#ffd77a}
+#emberLoad.calm{animation-duration:0s}#emberLoad.calm .elBar i{animation:none;width:62%}#emberLoad.calm .elTip{transition:none}
+@media(prefers-reduced-motion:reduce){#emberLoad{animation-duration:0s}#emberLoad .elBar i{animation:none;width:62%}#emberLoad .elTip{transition:none}}
+</style><img src="/branding/emberlings-logo-transparent.webp" alt="EMBERLINGS" width="840" height="299" fetchpriority="high"><div class="elBar" aria-hidden="true"><i></i></div><p class="elStatus" role="status">Loading your EMBERLINGS adventure…</p><p class="elTip"><b>TIP</b><span></span></p>
+<script>(function(){var el=document.getElementById('emberLoad'),tip=el.querySelector('.elTip'),out=tip.querySelector('span'),raw=null,T=[
+'You earn one Merfling each time you end your turn, and attacking ends your turn too.',
+'Attach Merfling once per turn, to your Active Mythling or one on your Bench.',
+'Attacking ends your turn, so play your cards and attach Merfling first.',
+'First to 3 points wins. Knocking out a Radiant card gives you 2 points.',
+'Weakness adds 20 damage when you hit an Active Mythling.',
+'Retreat once per turn by discarding Merfling equal to the retreat cost. It does not end your turn.',
+'Asleep or Paralyzed Mythlings cannot attack or retreat.',
+'Evolve a Mythling by playing its next Stage on it, but not on your first turn.',
+'You can play only one Supporter card each turn.',
+'Keep Mythlings on your Bench: if you have none left in play, you lose the battle.',
+'A deck holds 1 to 20 cards and needs at least one Basic Mythling.',
+'Try Equip Best in Battle Deck to build a strong deck from your whole collection.',
+'Mythlings in the Vault earn coins while you are away. Come back to collect them.',
+'Rarer Mythlings earn more coins in the Vault.',
+'Mythlings in the Vault cannot join your deck or be traded until you take them out.',
+'Bloom, Tide, Crystal, Solar, Void and Prism mutations only come from packs.',
+'Mutations make attacks stronger and boost Vault coins. Cosmic earns 100 times the coins!',
+'Buy Spark, Flame, Frost, Storm, Shadow or Cosmic mutations in the Mutation Vault.',
+'Friends can swap up to 5 cards each in a single trade.',
+'Trades are all or nothing: if a trade cannot finish, nobody loses a card.',
+'Poison deals 10 damage between turns. Burn deals 20.',
+'A battle ends in a draw after 30 turns.',
+'Come back every day: day 7 of your login streak gives a free pack.'
+],i=Math.floor(Math.random()*T.length),calm=false,timer;try{raw=localStorage.getItem('mythlings-playable-v1')}catch(e){}window.EmberBoot={hadSave:!!raw};
+try{calm=/"reducedMotion":true/.test(raw||'')||document.documentElement.dataset.fx==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}if(calm)el.classList.add('calm');
+function show(){out.textContent=T[i++%T.length]}show();
+function done(){clearInterval(timer);removeEventListener('ember:frame',done);if(el.parentNode)el.parentNode.removeChild(el)}
+timer=setInterval(function(){if(!el.isConnected)return done();if(calm)return show();tip.style.opacity=0;setTimeout(function(){show();tip.style.opacity=1},350)},5500);addEventListener('ember:frame',done)})()</script></section></div><noscript>Enable JavaScript to play EMBERLINGS. Your existing progress stays in this browser.</noscript><script type="module">
 import {createCardMatch,cardAction,tickCardMatch,chooseAI,cardStats,battleCard,attacks,damageFor,elementFactor,ADVANTAGE,ELEMENTS,shuffled,randomUnit,RULESET,TRAINERS,deckTemplates,buildBattleDeck,canPay,abilities,equipBestDeck,levelPerks} from './card-engine.js';
 import {WHOLE_VAULT_RATES,migrateWholeVaultRates,SHOP_ITEMS,migrateCards,balancedVaultRate,vaultAccrual,islandOpen,practiceReward,purchaseShopItem} from './card-progression.js';
 import {RARITIES,VAULT_RATES,rarityRank,rarityLabel,rarityPowerBonus,MUTATIONS,mutationTrait,mutationDamage,mutationCoins,moveProfile,skillShots,rollPackMutation,PACK_MUTATION,canBuyMutation} from "./combat-rules.js";
@@ -941,5 +983,5 @@ window.EmberBridge=Object.freeze({get state(){return state},get view(){return vi
 
 vaultData();migrateWholeVaultRates(state,Date.now(),coinMultiplier());
 launchEmberlings();})();
-</script><script type="module" src="/enhancements.js"></script><script type="module" src="/ui.js"></script><script type="module" src="/ui-exact.js"></script><script type="module" src="/cloud.js"></script><script type="module" src="/battle-fx.js"></script><script type="module" src="/pack-shuffle.js"></script><script type="module" src="/levels.js"></script><script type="module" src="/mutation-book.js"></script><script type="module" src="/field-guide.js"></script><script type="module" src="/results.js"></script><script type="module" src="/boss-intro.js"></script><script type="module" src="/daily.js"></script><script type="module" src="/rare-finds.js"></script><script type="module" src="/trade-alerts.js"></script><script type="module" src="/fx-packs.js"></script><script type="module" src="/fx-cards.js"></script><script type="module" src="/fx-battle.js"></script><script type="module" src="/fx-menus.js"></script><script type="module" src="/collection.js"></script><script type="module" src="/a11y.js"></script><script type="module" src="/home-life.js"></script><script type="module" src="/card-details.js"></script><script type="module" src="/highlights.js"></script><script type="module" src="/pwa.js"></script><script type="module" src="/profile.js"></script><script type="module" src="/fx-sound.js"></script></body></html>
+</script><script type="module" src="/enhancements.js"></script><script type="module" src="/ui.js"></script><script type="module" src="/ui-exact.js"></script><script type="module" src="/cloud.js"></script><script type="module" src="/battle-fx.js"></script><script type="module" src="/pack-shuffle.js"></script><script type="module" src="/levels.js"></script><script type="module" src="/mutation-book.js"></script><script type="module" src="/field-guide.js"></script><script type="module" src="/results.js"></script><script type="module" src="/boss-intro.js"></script><script type="module" src="/daily.js"></script><script type="module" src="/rare-finds.js"></script><script type="module" src="/trade-alerts.js"></script><script type="module" src="/fx-packs.js"></script><script type="module" src="/fx-cards.js"></script><script type="module" src="/fx-battle.js"></script><script type="module" src="/fx-menus.js"></script><script type="module" src="/whats-new.js"></script><script type="module" src="/collection.js"></script><script type="module" src="/a11y.js"></script><script type="module" src="/home-life.js"></script><script type="module" src="/card-details.js"></script><script type="module" src="/highlights.js"></script><script type="module" src="/pwa.js"></script><script type="module" src="/profile.js"></script><script type="module" src="/fx-sound.js"></script></body></html>
 
