@@ -1975,6 +1975,10 @@ body .dsBar .dsBtn{flex:1 1 110px}
   .uiFootMid .binderPager{flex-wrap:wrap;justify-content:center;gap:8px 16px}
   .uiFootMid .binderPager .button{padding-left:18px;padding-right:18px}
 }
+/* Painted desktop header: "Sound: On" ran past the right edge of its painted pill; a touch smaller now. */
+.uiPSound span{font-size:calc(21 / 2000 * 100cqw)}
+/* Binder opening animation with large text: the swinging cover could make the page scroll sideways for a moment. */
+body.uiTheme:has(.binderOpening){overflow-x:clip}
 /* Compact header (tablets and phones): the arch logo hangs below the header bar and its picture caught taps
    meant for "‹ Back" links and Concede underneath. The logo button still works inside the bar itself. */
 .uiTop .uiBrand img{pointer-events:none}
@@ -1998,5 +2002,7 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
   .uiTheme .deckCounter strong{min-height:40px}
   body:not(.uiExact) #app summary{min-height:40px;box-sizing:border-box;padding-top:9px;padding-bottom:9px}
   .uiMenu button{min-height:42px}
+  .uiCVPager button{min-width:44px;min-height:44px}
+  .uiRulesLink{min-height:40px}
   body:not(.uiExact) :is(#leaveCards,#energyTarget,#attachPocketEnergy,#usePocketStadium,#readyPocket,#showPocketRules){min-height:42px}
 }
