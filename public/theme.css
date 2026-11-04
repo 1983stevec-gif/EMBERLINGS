@@ -1907,6 +1907,27 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 .biCrest{overflow:hidden}
 .biCrest img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
 
+/* ---------- Phone polish (layout only; no gameplay changes) ---------- */
+/* Pack opening: the game's own roll strip keeps running hidden under the card shuffle. It was
+   positioned against the page and kept its full width, so phones could scroll sideways ~16px. */
+.rollWindow.psHidden{left:0;top:0;width:0!important;border:0!important;margin:0!important}
+/* Adventure HQ on phones: the quest panel (aside#uiQuest) picked up the absolute "fill the box" rule
+   meant for the desktop/tablet quest overlay and covered the whole map. Keep it in the normal flow. */
+aside.uiQuest#uiQuest{position:static;inset:auto;pointer-events:auto}
+/* Battle: the hand's scroll arrows are placed relative to the hand panel, which on phones had no
+   position, so the arrow landed near the top of the page over the opponent's name. */
+.pocketHand{position:relative}
+@media(max-width:640px){
+  /* Deck edit: "Saved Decks" pushed the page sideways; let the heading wrap instead. */
+  .uiDSHead{flex-wrap:wrap;gap:8px}
+  .uiDSHead h2{white-space:normal}
+  .uiDSHead .uiPillBtn{padding:8px 14px;font-size:16px}
+  /* Deck edit: "0 in deck" spilled out of its small box; give it room for two short lines. */
+  .uiTheme .deckCounter{grid-template-columns:36px 1fr 36px;gap:4px}
+  .uiTheme .deckCounter strong{height:auto!important;min-height:36px;line-height:1.05;font-size:14px;text-align:center;padding:2px 0}
+  /* Daily rewards: keep the title clear of the close button. */
+  .dBox h2{padding:0 36px;font-size:clamp(28px,8vw,40px)}
+}
 /* ---- Effects setting (Full / Light / Off) in the user menu and Settings: see public/fx-level.js ---- */
 .uiFx{margin:4px 6px 6px;padding:8px 8px 6px;border:1px solid #e9b75a33;border-radius:8px;background:#0c1119}
 .uiFxHead{margin:0 4px 6px;font-family:var(--ui-serif);font-size:15px;color:var(--ui-text)}
