@@ -8,11 +8,11 @@ const SEEN_KEY = 'emberlings-boss-intros-seen'; // separate from the player save
 const PLAY_MS = 3400, CALM_MS = 2600;
 
 const BOSSES = {
-  10: { region: 'Ember Meadows', line: 'The meadow burns where I walk. Can your Mythlings stand the heat?' },
-  25: { region: 'Crystalwood Forest', line: 'No one passes through my forest. Turn back, or be tangled in thorns!' },
-  45: { region: 'Frozen Peaks', line: 'These peaks belong to me. Let’s see how your team handles the cold.' },
-  70: { region: 'Thunder Valley', line: 'Thunder answers only to me. Show me your spark!' },
-  100: { region: 'Shadow Realm', line: 'You came all this way… only to fade into the dark.' }
+  10: { art: 'magmarok', region: 'Ember Meadows', line: 'The meadow burns where I walk. Can your Mythlings stand the heat?' },
+  25: { art: 'thorn-guardian', region: 'Crystalwood Forest', line: 'No one passes through my forest. Turn back, or be tangled in thorns!' },
+  45: { art: 'frostfang', region: 'Frozen Peaks', line: 'These peaks belong to me. Let’s see how your team handles the cold.' },
+  70: { art: 'voltitan', region: 'Thunder Valley', line: 'Thunder answers only to me. Show me your spark!' },
+  100: { art: 'voidra', region: 'Shadow Realm', line: 'You came all this way… only to fade into the dark.' }
 };
 const GLOW = { Fire: '#ff8a3a', Nature: '#7fe08a', Ice: '#8fe6ff', Lightning: '#ffe25a', Shadow: '#c48bff' };
 
@@ -53,7 +53,7 @@ function show(saved) {
   el.style.setProperty('--bi-glow', glow);
   el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', `Boss battle: ${name}`);
   el.innerHTML = `<div class="biDim" aria-hidden="true"></div><div class="biStage">
-    <div class="biCrest" aria-hidden="true"><span>${esc(e.emoji || '👑')}</span></div>
+    <div class="biCrest" aria-hidden="true"><img src="/art/bosses/${info.art}.webp" alt="" width="512" height="512" decoding="async"><span hidden>${esc(e.emoji || '👑')}</span></div>
     <p class="biKicker">Boss battle · Level ${level} · ${esc(info.region)}</p>
     <h1 class="biName">${esc(name)}</h1>
     <p class="biLine">“${esc(info.line)}”</p>
@@ -62,6 +62,7 @@ function show(saved) {
   el.addEventListener('click', ev => { ev.preventDefault(); close(); });
   const keys = ev => { if (['Escape', 'Enter', ' ', 'Spacebar'].includes(ev.key)) { ev.preventDefault(); ev.stopPropagation(); close(); } };
   addEventListener('keydown', keys, true);
+  const img = el.querySelector('.biCrest img'); img.onerror = () => { img.remove(); el.querySelector('.biCrest span').hidden = false; };
   document.body.appendChild(el);
   el.querySelector('.biSkip').focus({ preventScroll: true });
   open = { el, keys, id: saved.id, timer: setTimeout(() => close(), still ? CALM_MS : PLAY_MS) };

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#e8fbff"/><stop offset=".3" stop-color="#7cc3e8"/><stop offset=".7" stop-color="#23497a"/><stop offset="1" stop-color="#0b1834"/>
+    </radialGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#d4ecf8"/><stop offset="1" stop-color="#8fb8d4"/>
+    </linearGradient>
+    <linearGradient id="furShade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b8d8ec"/><stop offset="1" stop-color="#5a86aa"/>
+    </linearGradient>
+    <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2feff"/><stop offset=".45" stop-color="#8fe6ff"/><stop offset="1" stop-color="#2a8fd0"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#6ff0ff"/><stop offset="1" stop-color="#00b4ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- peaks -->
+  <path d="M0 360 L90 220 L150 290 L230 170 L300 270 L370 190 L512 350 L512 512 L0 512 Z" fill="#3a5f8e" opacity=".8"/>
+  <path d="M90 220 L110 250 L96 246 L84 262 Z M230 170 L256 208 L238 204 L222 220 Z M370 190 L396 222 L378 220 L364 234 Z" fill="#eaf8ff"/>
+  <path d="M0 430 Q256 380 512 430 L512 512 L0 512 Z" fill="#dff3ff"/>
+  <!-- ice-crystal mane behind head -->
+  <g fill="url(#ice)" stroke="#1b6fa8" stroke-width="3" stroke-linejoin="round">
+    <path d="M150 300 L70 250 L140 270 Z"/><path d="M148 250 L84 170 L160 222 Z"/><path d="M176 206 L150 110 L200 186 Z"/>
+    <path d="M362 300 L442 250 L372 270 Z"/><path d="M364 250 L428 170 L352 222 Z"/><path d="M336 206 L362 110 L312 186 Z"/>
+    <path d="M150 350 L60 340 L146 320 Z"/><path d="M362 350 L452 340 L366 320 Z"/>
+  </g>
+  <!-- neck / chest fur -->
+  <path d="M140 512 L150 380 Q170 330 256 324 Q342 330 362 380 L372 512 Z" fill="url(#fur)" stroke="#4a7499" stroke-width="4"/>
+  <path d="M206 360 L222 400 L236 362 L256 410 L276 362 L290 400 L306 360" fill="none" stroke="#9cc2dc" stroke-width="5" stroke-linejoin="round"/>
+  <!-- ears -->
+  <path d="M182 196 L168 110 L232 168 Z" fill="url(#furShade)" stroke="#2c557d" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M330 196 L344 110 L280 168 Z" fill="url(#furShade)" stroke="#2c557d" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M184 178 L178 132 L214 166 Z" fill="#7aa9cc"/><path d="M328 178 L334 132 L298 166 Z" fill="#7aa9cc"/>
+  <!-- head -->
+  <path d="M166 230 Q170 172 256 160 Q342 172 346 230 L330 290 L296 330 Q256 360 216 330 L182 290 Z" fill="url(#fur)" stroke="#2c557d" stroke-width="5" stroke-linejoin="round"/>
+  <!-- cheek tufts -->
+  <path d="M182 290 L150 300 L176 270 L148 262 L178 248 Z" fill="url(#fur)" stroke="#2c557d" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M330 290 L362 300 L336 270 L364 262 L334 248 Z" fill="url(#fur)" stroke="#2c557d" stroke-width="4" stroke-linejoin="round"/>
+  <!-- face markings -->
+  <path d="M256 166 L244 214 L256 250 L268 214 Z" fill="#9cc6e2"/>
+  <path d="M196 214 Q214 206 236 222 Q214 222 200 228 Z" fill="#5a86aa"/><path d="M316 214 Q298 206 276 222 Q298 222 312 228 Z" fill="#5a86aa"/>
+  <!-- eyes -->
+  <ellipse cx="220" cy="232" rx="22" ry="14" fill="url(#eye)" filter="url(#glow)"/>
+  <ellipse cx="292" cy="232" rx="22" ry="14" fill="url(#eye)" filter="url(#glow)"/>
+  <path d="M206 232 Q220 222 236 232 Q220 240 206 232 Z" fill="#e8ffff"/><path d="M306 232 Q292 222 276 232 Q292 240 306 232 Z" fill="#e8ffff"/>
+  <ellipse cx="221" cy="232" rx="3" ry="6" fill="#06304e"/><ellipse cx="291" cy="232" rx="3" ry="6" fill="#06304e"/>
+  <!-- muzzle -->
+  <path d="M220 270 Q256 256 292 270 L284 312 Q256 330 228 312 Z" fill="#f4fbff" stroke="#6c93b4" stroke-width="3"/>
+  <path d="M240 268 Q256 260 272 268 Q266 284 256 286 Q246 284 240 268 Z" fill="#1b2c44"/>
+  <!-- snarl and ice fangs -->
+  <path d="M230 300 Q256 316 282 300 L278 316 Q256 330 234 316 Z" fill="#3a0f2a"/>
+  <path d="M236 302 L242 330 L248 306 Z M276 302 L270 330 L264 306 Z" fill="url(#ice)" stroke="#1b6fa8" stroke-width="2" filter="url(#glow)"/>
+  <!-- ice crown -->
+  <g fill="url(#ice)" stroke="#1b6fa8" stroke-width="3" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M238 166 L256 110 L274 166 Z"/><path d="M222 172 L216 132 L240 168 Z"/><path d="M290 172 L296 132 L272 168 Z"/>
+  </g>
+  <!-- snowflakes -->
+  <g fill="#ffffff" opacity=".9"><circle cx="60" cy="90" r="4"/><circle cx="450" cy="100" r="5"/><circle cx="110" cy="180" r="3"/><circle cx="400" cy="200" r="3"/><circle cx="40" cy="400" r="4"/><circle cx="480" cy="410" r="3"/><circle cx="320" cy="60" r="3"/><circle cx="180" cy="50" r="2.5"/></g>
+</svg>

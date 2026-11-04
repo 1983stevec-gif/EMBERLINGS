@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="45%" r="75%">
+      <stop offset="0" stop-color="#7b3fd0"/><stop offset=".4" stop-color="#2d1260"/><stop offset="1" stop-color="#05020f"/>
+    </radialGradient>
+    <radialGradient id="body" cx="45%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#4a2a7a"/><stop offset=".6" stop-color="#1b0c36"/><stop offset="1" stop-color="#07030f"/>
+    </radialGradient>
+    <linearGradient id="tent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a1450"/><stop offset="1" stop-color="#0a0418"/>
+    </linearGradient>
+    <radialGradient id="iris" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".2" stop-color="#ffb8ff"/><stop offset=".55" stop-color="#c04bff"/><stop offset="1" stop-color="#4a0f8a"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#e59bff" stop-opacity=".9"/><stop offset=".5" stop-color="#9b3cff" stop-opacity=".35"/><stop offset="1" stop-color="#5a1aaa" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="16"/></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <!-- swirl -->
+  <g fill="none" stroke="#b67aff" stroke-width="3" opacity=".35">
+    <path d="M256 256 m-200 0 a200 170 0 1 1 400 0"/><path d="M256 256 m-170 30 a170 140 0 1 0 340 0"/><path d="M256 256 m-230 -20 a230 200 0 0 1 460 0"/>
+  </g>
+  <!-- stars -->
+  <g fill="#f3e6ff"><circle cx="60" cy="70" r="2.5"/><circle cx="120" cy="40" r="1.8"/><circle cx="450" cy="60" r="2.5"/><circle cx="400" cy="120" r="1.8"/><circle cx="40" cy="300" r="2"/><circle cx="480" cy="330" r="2"/><circle cx="90" cy="440" r="1.8"/><circle cx="430" cy="460" r="2.2"/><circle cx="300" cy="30" r="1.6"/></g>
+  <!-- tentacles -->
+  <g fill="url(#tent)" stroke="#9b5cff" stroke-width="3" stroke-linejoin="round">
+    <path d="M190 330 Q120 400 70 380 Q30 360 50 330 Q70 360 110 350 Q150 330 170 300 Z"/>
+    <path d="M322 330 Q392 400 442 380 Q482 360 462 330 Q442 360 402 350 Q362 330 342 300 Z"/>
+    <path d="M200 360 Q170 450 120 490 Q100 500 100 480 Q140 450 160 400 Q176 360 180 340 Z"/>
+    <path d="M312 360 Q342 450 392 490 Q412 500 412 480 Q372 450 352 400 Q336 360 332 340 Z"/>
+    <path d="M236 380 Q230 460 250 512 L268 512 Q280 460 276 380 Z"/>
+    <path d="M180 200 Q110 150 80 170 Q60 190 84 200 Q100 180 130 196 Q160 214 176 236 Z"/>
+    <path d="M332 200 Q402 150 432 170 Q452 190 428 200 Q412 180 382 196 Q352 214 336 236 Z"/>
+  </g>
+  <!-- tentacle glow tips -->
+  <g fill="#e59bff" filter="url(#glow)"><circle cx="52" cy="332" r="6"/><circle cx="460" cy="332" r="6"/><circle cx="100" cy="482" r="5"/><circle cx="412" cy="482" r="5"/><circle cx="82" cy="198" r="5"/><circle cx="430" cy="198" r="5"/></g>
+  <!-- halo -->
+  <circle cx="256" cy="256" r="170" fill="url(#halo)" filter="url(#soft)"/>
+  <!-- body orb -->
+  <circle cx="256" cy="256" r="126" fill="url(#body)" stroke="#b67aff" stroke-width="4"/>
+  <!-- crown spikes -->
+  <g fill="#1b0c36" stroke="#b67aff" stroke-width="3" stroke-linejoin="round">
+    <path d="M206 142 L190 80 L230 134 Z"/><path d="M240 132 L256 64 L272 132 Z"/><path d="M306 142 L322 80 L282 134 Z"/>
+  </g>
+  <g fill="#e59bff" filter="url(#glow)"><circle cx="190" cy="82" r="5"/><circle cx="256" cy="66" r="6"/><circle cx="322" cy="82" r="5"/></g>
+  <!-- eyelid shape -->
+  <path d="M156 256 Q256 160 356 256 Q256 352 156 256 Z" fill="#0a0418" stroke="#d48bff" stroke-width="5"/>
+  <!-- iris -->
+  <circle cx="256" cy="256" r="62" fill="url(#iris)" filter="url(#glow)"/>
+  <ellipse cx="256" cy="256" rx="14" ry="44" fill="#07030f"/>
+  <circle cx="276" cy="232" r="10" fill="#ffffff" opacity=".9"/>
+  <!-- small side eyes -->
+  <g>
+    <ellipse cx="184" cy="322" rx="16" ry="9" fill="url(#iris)" filter="url(#glow)"/><ellipse cx="184" cy="322" rx="3" ry="7" fill="#07030f"/>
+    <ellipse cx="328" cy="322" rx="16" ry="9" fill="url(#iris)" filter="url(#glow)"/><ellipse cx="328" cy="322" rx="3" ry="7" fill="#07030f"/>
+  </g>
+</svg>

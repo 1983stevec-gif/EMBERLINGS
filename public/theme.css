@@ -1904,3 +1904,5 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 @keyframes biFade{to{opacity:0}}
 @media(max-height:480px){.biCrest{width:96px}.biCrest span{font-size:56px}.biKicker{margin-top:6px}.biName{font-size:38px}.biLine{font-size:15px}.biSkip{margin-top:6px}}
 @media(prefers-reduced-motion:reduce){.biIntro *{animation:none!important}}
+.biCrest{overflow:hidden}
+.biCrest img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
