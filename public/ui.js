@@ -1,5 +1,6 @@
 // EMBERLINGS interface: header, Home and Adventure HQ in the dark-and-gold card-game style.
 // Talks to the game only through window.EmberBridge. Painted artwork placed in /art/ui/ replaces the built-in compositions automatically.
+import { FX_LEVELS, FX_LABELS, fxChoice, fxSet, deviceReduced } from '/fx-level.js';
 const B = window.EmberBridge;
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -57,6 +58,24 @@ function head() {
   <div class="uiRight"><div class="coins" aria-label="Coins"><i class="uiCoin" aria-hidden="true"></i><b>${fmt(st.coins)}</b></div>
   <button class="uiUser uiUserBtn" id="uiUser" aria-haspopup="menu" aria-expanded="false" aria-label="Menu: ${name}"><span class="uiAvatar">${active ? B.art(active) : ''}</span><span class="uiUserName">${name}</span><span aria-hidden="true">▾</span></button></div></div></header>`;
 }
+/* Effects setting: Full / Light / Off (fx-level.js). A row of three buttons; the device "reduce motion" setting always counts as Off. */
+const FX_HELP = { full: 'All animations and celebrations.', light: 'Calmer: no flashes, shaking or confetti, fewer sparkles.', off: 'No animations. Numbers and pop-ups still show.' };
+const FX_DEVICE = 'Your device asks for reduced motion, so effects stay off.';
+function fxPicker(id) {
+  const cur = fxChoice(B.state);
+  return `<div class="uiFx" id="${id}" role="radiogroup" aria-label="Effects"><p class="uiFxHead"><span aria-hidden="true">✨</span> Effects</p>
+   <div class="uiFxRow">${FX_LEVELS.map(v => `<button type="button" role="radio" aria-checked="${v === cur}" data-fx-pick="${v}" class="${v === cur ? 'on' : ''}">${FX_LABELS[v]}</button>`).join('')}</div>
+   <p class="uiFxHelp">${deviceReduced() ? FX_DEVICE : FX_HELP[cur]}</p></div>`;
+}
+function paintFx() {
+  const cur = fxChoice(B.state);
+  for (const g of $$('.uiFx')) {
+    for (const b of $$('[data-fx-pick]', g)) { const on = b.dataset.fxPick === cur; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }
+    const help = $('.uiFxHelp', g); if (help) help.textContent = deviceReduced() ? FX_DEVICE : FX_HELP[cur];
+  }
+}
+function pickFx(v) { fxSet(v); paintFx(); }
+
 const MENU = [
   ['Play', [['decks', '🎴', 'Battle Deck'], ['rules', '📜', 'Battle Rules'], ['training', '⚔️', 'Training Field']]],
   ['Collection', [['index', '🔎', 'Mythling Index'], ['album', '📖', 'Collection Album'], ['fusion', '🔮', 'Fusion Lab'], ['vault', '🏛', 'Vault'], ['mutation', '✧', 'Mutation Vault'], ['mutationBook', '🧬', 'Mutation Collection']]],
@@ -71,17 +90,17 @@ function userMenu(anchor) {
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
    <hr>${B.state.playerUsername ? `<p class="uiMenuTitle">Logged in as ${esc(B.state.playerUsername)}</p><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Account &amp; password</button><button role="menuitem" id="uiLogoutGo"><span aria-hidden="true">🚪</span> Log out</button>` : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button>'}<button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
-   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button><button role="menuitem" id="uiMotion">${B.state.reducedMotion ? '✓ Reduce motion' : '◻ Reduce motion'}</button>`;
+   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button>${fxPicker('uiFxMenu')}`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
-    if (b.id === 'uiMotion') { B.state.reducedMotion = !B.state.reducedMotion; B.save(); m.remove(); B.go(B.view === 'home' ? 'home' : B.view); return; }
+    if (b.dataset.fxPick) { pickFx(b.dataset.fxPick); return; }
     if (b.id === 'uiLogoutGo') { m.remove(); window.EmberCloud?.logout(); return; }
     if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
-  setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.contains(ev.target) && ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); }), 0);
+  setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!m.isConnected) return document.removeEventListener('pointerdown', close); if (!m.contains(ev.target)) { if (ev.target !== anchor) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); } document.removeEventListener('pointerdown', close); } }), 0);
 }
 
 
@@ -153,13 +172,13 @@ function drawer(kind) {
   }
   const st = B.state, reset = localStorage.getItem(B.key + '-batch3-reset-done') || st.testResetVersion === 3;
   d.innerHTML = `<section class="panel uiSettings"><h2>Settings</h2>
-   <p><label><input type="checkbox" id="reducedMotion" ${st.reducedMotion ? 'checked' : ''}> Reduce motion (turns off 3D reveals and effects)</label></p>
+   ${fxPicker('uiFxSettings')}
    <p><label><input type="checkbox" id="uiMute" ${ext().muted ? 'checked' : ''}> Mute sound</label></p>
    ${(st.cosmetics?.owned || []).includes('collectible-founder') ? '<p class="collectibleEmblem">☀ First Light · Collection Emblem</p>' : ''}
    <p><button class="button alt" data-go="tutorial">Replay Tutorial</button> <button class="button alt" data-go="achievements">Achievements</button> <button class="button alt" data-go="album">Collection Album</button> <button class="button alt" id="uiSetBackup">💾 Save Backup</button></p>
    <details><summary>Test save tools</summary><p class="small">One-time reset for this browser only. Your current save is backed up first.</p><button class="button alt" id="resetTest" ${reset ? 'disabled' : ''}>Reset My Test Progress Once</button></details></section>`;
   B.bind();
-  $('#reducedMotion').onchange = e => { st.reducedMotion = e.target.checked; B.save(); B.go('home'); };
+  $('#uiFxSettings').addEventListener('click', ev => { const b = ev.target.closest('[data-fx-pick]'); if (b) pickFx(b.dataset.fxPick); });
   $('#uiMute').onchange = e => { ext().muted = e.target.checked; B.save(); };
   $('#resetTest').onclick = () => B.resetTest();
   $('#uiSetBackup').onclick = () => { d.dataset.kind = ''; drawer('backup'); };

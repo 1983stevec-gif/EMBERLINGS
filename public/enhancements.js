@@ -1,5 +1,6 @@
 // EMBERLINGS enhancements: sound, Collection Album, achievements and titles, save backup, and visual effects.
 // Talks to the game only through window.EmberBridge. New save data lives under state.ember; the save key is unchanged.
+import { fxCalm, fxLight, fxCount } from './fx-level.js';
 import { ACHIEVEMENTS, ALBUM_STAMPS, ALBUM_PAGE_BONUS, ALBUM_MASTER_BONUS, SPECIES_COUNT, albumStatus, albumPagesComplete } from './achievements.js';
 
 const B = window.EmberBridge;
@@ -10,7 +11,8 @@ const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
 const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
-const calm = () => !!B.state.reducedMotion || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+// Effects setting (fx-level.js): Off = reduced motion (device or game); Light = calmer (no shake, flashes, confetti or tilt; fewer particles).
+const calm = fxCalm;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 
@@ -543,13 +545,13 @@ function streak(a, b, color) {
   Object.assign(el.style, { left: x1 + 'px', top: y1 + 'px', width: len + 'px', transform: `rotate(${Math.atan2(y2 - y1, x2 - x1)}rad)`, '--fx-color': color });
   fxLayer().appendChild(el); setTimeout(() => el.remove(), 600);
 }
-function shake() { if (calm()) return; const arena = $('.cardArena') || $('#app'); arena.classList.remove('fxShake'); void arena.offsetWidth; arena.classList.add('fxShake'); }
+function shake() { if (calm() || fxLight()) return; const arena = $('.cardArena') || $('#app'); arena.classList.remove('fxShake'); void arena.offsetWidth; arena.classList.add('fxShake'); }
 function knockout(rect) {
   sfx.ko();
   const el = document.createElement('div'); el.className = 'fxKO'; el.textContent = 'KNOCKOUT!';
   el.style.left = rect.left + rect.width / 2 + 'px'; el.style.top = rect.top + rect.height / 2 + 'px';
   fxLayer().appendChild(el); setTimeout(() => el.remove(), 1600);
-  if (!calm()) { const v = document.createElement('div'); v.className = 'fxVignette'; fxLayer().appendChild(v); setTimeout(() => v.remove(), 750); }
+  if (!calm() && !fxLight()) { const v = document.createElement('div'); v.className = 'fxVignette'; fxLayer().appendChild(v); setTimeout(() => v.remove(), 750); }
 }
 function onCardResult(r) {
   battlePrev = null;
@@ -565,7 +567,7 @@ function coinRain({ amount, from, to, rect }) {
   if (calm()) return;
   const src = rect || $('#vaultCollectAll')?.getBoundingClientRect() || { left: innerWidth / 2 - 40, top: innerHeight / 2, width: 80, height: 20 };
   const dest = $('.top .coins')?.getBoundingClientRect() || { left: innerWidth - 80, top: 10, width: 60, height: 30 };
-  const n = clamp(Math.round(Math.log10(amount + 1) * 6), 6, 36), layer = fxLayer();
+  const n = fxCount(clamp(Math.round(Math.log10(amount + 1) * 6), 6, 36)), layer = fxLayer();
   for (let i = 0; i < n; i++) {
     const el = document.createElement('div'); el.className = 'fxCoin'; el.textContent = '🪙';
     const sx = src.left + src.width / 2, sy = src.top + src.height / 2, mx = sx + (Math.random() - .5) * 260, my = sy - 60 - Math.random() * 140;
@@ -588,7 +590,7 @@ function tickCounter(from, to) {
   requestAnimationFrame(step);
 }
 function burstConfetti(n) {
-  if (calm()) return;
+  if (calm() || fxLight()) return;
   const layer = fxLayer(), colors = ['#ffd568', '#76e8ff', '#bd87ff', '#ff88d4', '#7be7b3'];
   for (let i = 0; i < n; i++) {
     const el = document.createElement('div'); el.className = 'fxConfetti'; el.style.background = colors[i % colors.length];
@@ -620,7 +622,8 @@ function setupTilt() {
   let current = null;
   const reset = () => { if (!current) return; current.classList.remove('fxTilting'); current.style.removeProperty('--fx-rx'); current.style.removeProperty('--fx-ry'); current = null; };
   document.addEventListener('pointermove', e => {
-    if (calm() || e.pointerType === 'touch' && e.buttons === 0) return;
+    if (calm() || fxLight()) return reset();
+    if (e.pointerType === 'touch' && e.buttons === 0) return;
     const card = e.target.closest?.('.printCard');
     if (card !== current) reset();
     if (!card || card.closest('.pocketBoard')) return;
@@ -736,7 +739,10 @@ function injectStyles() {
 @keyframes fxMarch{to{stroke-dashoffset:-20}}
 @keyframes fxNode{0%,100%{box-shadow:0 0 18px #83d4ff}50%{box-shadow:0 0 0 10px #76e8ff33,0 0 34px #76e8ff;transform:scale(1.12)}}
 .reduceMotion .fxStage,.reduceMotion .fxClouds,.reduceMotion #fxLayer{display:none}
-@media(prefers-reduced-motion:reduce){.fxStage,.fxClouds,#fxLayer{display:none}}`;
+@media(prefers-reduced-motion:reduce){.fxStage,.fxClouds,#fxLayer{display:none}}
+html[data-fx=light] .fxFlash,html[data-fx=light] .fxVignette,html[data-fx=light] .fxConfetti{display:none}
+html[data-fx=light] .fxShake{animation:none}
+html[data-fx=light] .printCard.fxTilting{transform:none}`;
   const style = document.createElement('style'); style.id = 'emberEnhancements'; style.textContent = css; document.head.appendChild(style);
 }
 
