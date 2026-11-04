@@ -1314,7 +1314,7 @@ body.uiExact:has(.uiXBattleTab){background:#080d1c!important}
 .art-prism>.mythlingSheet{animation:prismHue 6s linear infinite}
 .art-prism .mutationArtEffect{background:linear-gradient(115deg,#ff8ad844,#ffd36a44 20%,#8affc444 40%,#7ac8ff44 60%,#c49bff44 80%,#ff8ad844);mix-blend-mode:screen;box-shadow:inset 0 0 24px #ffffff66}
 .art-prism .mutationArtMark{background:linear-gradient(135deg,#ff9ad8,#ffe08a,#9affd0,#8ac8ff);color:#1a1530;border-color:#fff}
-@keyframes prismHue{to{filter:hue-rotate(360deg)}}
+@keyframes prismHue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.art-prism>.mythlingSheet{animation:none;filter:hue-rotate(40deg)}}
 /* Mutation Vault: two pages of mutation cards (page 2 drawn live in the painted frames) */
 .uiXMP1{display:none}.uiXMPage1 .uiXMP1{display:block}.uiXMPage1 .uiXMP0{display:none}

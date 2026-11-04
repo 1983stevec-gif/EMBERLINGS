@@ -27,4 +27,4 @@ await quiet(page);
 
 All scripts were checked against `main` on 4 Nov 2026 (after PR #41).
 
-**Last speed check (4 Nov 2026, simulated 4G, empty cache):** phone 390×844: about 2.1 MB, 54 requests, page loaded in ~2.4 s (first paint ~0.3 s). Desktop 1366×900: about 3.0 MB, 59 requests, ~2.9 s (first paint ~0.4 s). Scripts are about 144 KB of that; the four `fx-*.js` effect modules are about 25 KB compressed. Images are most of the weight (the creature sheet `mythlings-atlas-v2.webp` alone is 538 KB).
+**Last speed check (4 Nov 2026, after the load-faster change, simulated 4G, empty cache, new player):** phone 390×844: about 2.0 MB, 62 requests, page loaded in ~1.9 s (first paint ~0.4 s, largest paint ~1.8 s). Desktop 1366×900: about 2.6 MB, 66 requests, ~2.1 s (first paint ~0.4 s, largest paint ~2.1 s). A returning player's Home picture shows in ~0.9 s on both. Scripts are about 235 KB of that; images are most of the weight (the creature sheet `mythlings-atlas-v2.webp` is 416 KB). The first screen's picture is preloaded per screen size in `game/index.html`; the binder cover logo is fetched after the page has loaded.

@@ -149,7 +149,9 @@ function onFrame(view) {
   if (!was || was === view || NO_FADE.has(view) || NO_FADE.has(was) || String(view).startsWith('train-') || String(was).startsWith('train-') || calm()) return;
   const app = $('#app'); if (!app) return;
   // A class (not inline styles) so pages that other modules repaint right after the draw fade in too.
-  app.classList.remove('fxmEnter'); void app.offsetWidth; app.classList.add('fxmEnter');
+  // Restart only when the class is still on from the previous screen; otherwise adding it is enough (no forced layout).
+  if (app.classList.contains('fxmEnter')) { app.classList.remove('fxmEnter'); void app.offsetWidth; }
+  app.classList.add('fxmEnter');
   clearTimeout(fadeTimer); fadeTimer = setTimeout(() => app.classList.remove('fxmEnter'), 260);
 }
 

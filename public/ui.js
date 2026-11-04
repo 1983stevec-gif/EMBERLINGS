@@ -37,6 +37,11 @@ const HEADER_BARS = {
 HEADER_BARS.map = HEADER_BARS.none;
 // Preload the painted tab bars only where the painted header is shown (screens 900 px and wider), after the page has loaded.
 if (matchMedia('(min-width:900px)').matches) addEventListener('load', () => setTimeout(() => { for (const v of ['home', 'packs', 'inventory', 'friends']) { const i = new Image(); i.src = HEADER_BARS[v].img; } }, 1500), { once: true });
+// The binder cover logo isn't on the first screen, so fetch it quietly after the page has loaded (ready before the binder opens).
+addEventListener('load', () => setTimeout(() => { const i = new Image(); i.decoding = 'async'; i.src = '/branding/emberlings-logo.webp'; }, 1200), { once: true });
+// Picture menu (touch tablets) and painted-header flame: only download their images on screens that show them.
+const TAB_MENU_Q = matchMedia('(min-width:700px) and (max-width:1199px) and (pointer:coarse)'), PAINTED_Q = matchMedia('(min-width:900px)');
+const lazyUnless = shown => shown ? '' : ' loading="lazy"';
 /* ---------------------------------------------------------------- Header */
 function head() {
   // One header everywhere. Computers get the painted bar (art from the supplied design); phones get the compact bar.
@@ -47,7 +52,7 @@ function head() {
   const P = (x0, y0, x1, y1) => `left:${x0 / 20}%;top:${(y0 - V.top) / V.h * 100}%;width:${(x1 - x0) / 20}%;height:${(y1 - y0) / V.h * 100}%`;
   const painted = `<div class="uiPBar ${V.live ? 'uiPLive' : ''}"><div class="uiPBarIn" style="aspect-ratio:2000/${V.h};background-image:url(${V.img})">
    <button class="uiPHot uiPLogo" data-go="home" style="${P(...V.logo)}" aria-label="EMBERLINGS home"></button>
-   <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
+   <span class="uiPFlame" style="${P(...V.flame)}" aria-hidden="true"><i class="uiFlameGlow"></i><img src="/art/ui/header-flame.png" alt=""${lazyUnless(PAINTED_Q.matches && !TAB_MENU_Q.matches)}><img class="uiPFlameHot" src="/art/ui/header-flame.png" alt=""${lazyUnless(PAINTED_Q.matches && !TAB_MENU_Q.matches)}><i class="uiEmber"></i><i class="uiEmber"></i><i class="uiEmber"></i></span>
    <nav class="uiPNav" aria-label="Main">${NAV.map(([g, t]) => `<button class="uiPHot uiPTab ${g === 'map' ? 'uiPHQ' : ''} ${navView === g ? 'active' : ''}" data-go="${g}" style="${P(...V.tabs[g])}" ${navView === g ? 'aria-current="page"' : ''} aria-label="${t}"></button>`).join('')}</nav>
    <button class="uiPHot uiPSound" id="uiPSound" style="${P(...V.sound)}" aria-pressed="${!muted}" aria-label="Sound ${muted ? 'off' : 'on'}"><span>Sound: ${muted ? 'Off' : 'On'}</span></button>
    <div class="uiPCoins coins" style="${P(...V.coins)}" aria-label="Coins"><b style="font-size:calc(${(fmt(st.coins).length > 5 ? 29 * 5.2 / fmt(st.coins).length : 29).toFixed(1)} / 2000 * 100cqw)">${fmt(st.coins)}</b></div>
@@ -116,7 +121,7 @@ function tabletMenu() {
   if ($('.uiTabMenu')) $('.uiTabMenu').remove();
   const v = B.view, nv = ['index', 'decks', 'album', 'mutationBook'].includes(v) ? 'inventory' : ['rules', 'cardBattle', 'cardResult', 'training'].includes(v) ? 'map' : ['trading', 'achievements', 'account', 'profile', 'friendProfile'].includes(v) ? 'friends' : ['reveal', 'packSummary', 'packOpening', 'packReview'].includes(v) ? 'packs' : v;
   const nav = document.createElement('nav'); nav.className = 'uiTabMenu'; nav.setAttribute('aria-label', 'Main');
-  nav.innerHTML = NAV.map(([g, t]) => `<button class="uiTabTile ${nv === g ? 'on' : ''}" data-go="${g}" ${nv === g ? 'aria-current="page"' : ''}><img src="/art/ui/tab-${g}.webp" alt="" width="360" height="307"><span>${g === 'inventory' ? 'My Binder' : t}</span></button>`).join('');
+  nav.innerHTML = NAV.map(([g, t]) => `<button class="uiTabTile ${nv === g ? 'on' : ''}" data-go="${g}" ${nv === g ? 'aria-current="page"' : ''}><img src="/art/ui/tab-${g}.webp" alt="" width="360" height="307"${lazyUnless(TAB_MENU_Q.matches)}><span>${g === 'inventory' ? 'My Binder' : t}</span></button>`).join('');
   document.body.appendChild(nav); B.bind();
 }
 /* ---------------------------------------------------------------- Home */
