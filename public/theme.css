@@ -1675,6 +1675,34 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 /* Desktop: Packs and Friends painted pages fit the screen height exactly */
 @media(min-width:900px) and (pointer:fine){.uiXCrop:has(>.uiXPacks),.uiXCrop:has(>.uiXFriends){width:min(100%,calc((100dvh - min(8.8vw,176px) - 16px) * var(--ratio)))!important}}
 
+/* ---------- Rare finds: pack celebration banner and profile spot ---------- */
+.rareFind{position:fixed;inset:0;z-index:160;display:grid;place-items:center;padding:16px;background:radial-gradient(circle at 50% 45%,#7fd8ff22,#05081add 60%);animation:taFade .3s ease-out}
+.rareFind.very{background:radial-gradient(circle at 50% 45%,#ff8af033,#05081ae6 62%)}
+.rfBox{position:relative;width:min(420px,100%);padding:28px 24px 22px;border-radius:22px;text-align:center;color:#eef1fb;background:radial-gradient(120% 100% at 50% 0%,#24306a,#0b1230 72%);border:3px solid #7fd8ff;box-shadow:0 0 40px #7fd8ff88,0 24px 60px #000;animation:rfPop .5s cubic-bezier(.2,1.6,.4,1)}
+.very .rfBox{border-color:transparent;background:linear-gradient(#141c48,#0b1230) padding-box,conic-gradient(from var(--rfa,0deg),#ff8af0,#ffd77a,#7fffd4,#7fd8ff,#c58aff,#ff8af0) border-box;box-shadow:0 0 60px #ff8af088,0 24px 60px #000;animation:rfPop .5s cubic-bezier(.2,1.6,.4,1),rfSpin 3s linear infinite}
+@property --rfa{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes rfSpin{to{--rfa:360deg}}
+@keyframes rfPop{from{transform:scale(.6);opacity:0}}
+.rfChip{display:inline-block;padding:6px 16px;border-radius:99px;font:800 15px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#05132a;background:linear-gradient(90deg,#9ef0ff,#7fd8ff)}
+.very .rfChip{background:linear-gradient(90deg,#ff8af0,#ffd77a,#7fffd4,#c58aff);background-size:200% 100%;animation:rfSlide 2s linear infinite}
+@keyframes rfSlide{to{background-position:200% 0}}
+.rfArt{position:relative;width:170px;height:170px;margin:18px auto 10px;border-radius:50%;overflow:hidden;border:3px solid #ffd77a;box-shadow:0 0 30px #ffd77a99}
+.rfArt .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.rfArt img{object-fit:cover!important}
+.rfBox h2{margin:4px 0 2px;font:700 38px 'Cormorant Garamond',Georgia,serif;color:#ffe3a0}
+.rfWhy{margin:0;font:700 20px 'Cormorant Garamond',Georgia,serif;color:#fff}
+.rfMore{margin:6px 0 0;font-size:16px;color:#cdd5ea}
+.rfBest{margin:12px 0 0;font:700 18px 'Cormorant Garamond',Georgia,serif;color:#ffd77a}
+.rfOk{margin-top:18px;min-height:52px;padding:0 34px;border-radius:12px;border:1.5px solid #fff1c2;background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;font:700 21px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.rfBox,.very .rfBox,.very .rfChip{animation:none}}
+.rfProfile{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.rfProfile .rfCard{flex:none;width:200px}
+.rfProfile .rfCard .mythCard{width:200px!important;max-width:none!important;margin:0!important}
+.rfProfile h2{margin:0;font:700 30px 'Cormorant Garamond',Georgia,serif;color:#ffe3a0}
+.rfProfile h3{margin:4px 0 10px;font:600 20px 'Cormorant Garamond',Georgia,serif;color:#dfe5f6}
+.rfProfile ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.rfProfile li{padding:6px 12px;border-radius:8px;background:#0d1534;border-left:4px solid #7fd8ff;font-size:17px}
+.rfProfile li.veryRare{border-left-color:#ff8af0;background:linear-gradient(90deg,#3a1b4a,#0d1534)}
 /* ---------- Portrait tablet pages: Battle Rules, Training, Friend Trading, Trade Room ---------- */
 .tpPage{max-width:860px;margin:0 auto;padding:10px 18px 28px;color:#eef1fb;font-family:'EB Garamond',Georgia,serif}
 .tpBack{background:none;border:0;color:#f2c96a;font:600 18px 'EB Garamond',Georgia,serif;padding:8px 0;cursor:pointer}
