@@ -192,7 +192,7 @@ async function picture(h) {
   rounded(ctx, 36, 36, W - 72, H - 72, 26); ctx.lineWidth = 1.5; ctx.strokeStyle = '#f2c45f66'; ctx.stroke();
   // Logo
   const logo = await loadImg('/branding/emberlings-logo-transparent.webp') || await loadImg('/branding/emberlings-logo-transparent.png');
-  if (logo) { const lw = 470, lh = lw * logo.naturalHeight / logo.naturalWidth; ctx.drawImage(logo, (W - lw) / 2, 58, lw, lh); }
+  if (logo) { const lw = 470, lh = lw * logo.naturalHeight / logo.naturalWidth; ctx.save(); ctx.shadowColor = 'rgba(6,4,18,.8)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 6; ctx.drawImage(logo, (W - lw) / 2, 58, lw, lh); ctx.restore(); }
   // Title
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
   ctx.font = `800 112px ${TITLE}`;
