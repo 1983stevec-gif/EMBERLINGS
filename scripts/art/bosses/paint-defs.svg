@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Shared "paint kit" for the boss art. render.cjs puts this on the page next to every boss SVG.
+       All filters use the full 512px canvas as their region so the noise lines up between layers. -->
+  <defs>
+    <!-- Whole-picture finish: wobbly brush edges, directional brush streaks, canvas grain, soft vignette. -->
+    <filter id="paint" filterUnits="userSpaceOnUse" x="-24" y="-24" width="560" height="560" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".028" numOctaves="3" seed="7" result="wob"/>
+      <feDisplacementMap in="SourceGraphic" in2="wob" scale="6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".02 .12" numOctaves="3" seed="2" result="st"/>
+      <feColorMatrix in="st" type="matrix" values=".38 0 0 0 .31  .38 0 0 0 .31  .38 0 0 0 .31  0 0 0 0 1" result="stg"/>
+      <feBlend in="stg" in2="d" mode="soft-light" result="d2"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="1" seed="5" result="g"/>
+      <feColorMatrix in="g" type="matrix" values=".45 0 0 0 .275  .45 0 0 0 .275  .45 0 0 0 .275  0 0 0 0 1" result="gr"/>
+      <feBlend in="gr" in2="d2" mode="soft-light"/>
+    </filter>
+
+    <!-- Surface relief textures: lit noise multiplied into the shape, kept inside its alpha. -->
+    <filter id="tex-rock" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="5" seed="4" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale="7" diffuseConstant="1.15" lighting-color="#fff" result="l"><feDistantLight azimuth="300" elevation="48"/></feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="1.25" k2="0" k3="0" k4="0" result="m"/>
+      <feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="tex-bark" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".09 .012" numOctaves="4" seed="9" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale="6" diffuseConstant="1.15" lighting-color="#fff" result="l"><feDistantLight azimuth="210" elevation="45"/></feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="1.3" k2="0" k3="0" k4="0" result="m"/>
+      <feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="tex-fur" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".3 .08" numOctaves="2" seed="12" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale=".6" diffuseConstant="1.05" lighting-color="#fff" result="l"><feDistantLight azimuth="240" elevation="58"/></feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="1.12" k2="0" k3="0" k4="0" result="m"/>
+      <feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="tex-skin" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="4" seed="21" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale="2" diffuseConstant="1.05" lighting-color="#fff" result="l"><feDistantLight azimuth="250" elevation="60"/></feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="1.12" k2="0" k3="0" k4="0" result="m"/>
+      <feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="tex-scale" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572" color-interpolation-filters="sRGB">
+      <feTurbulence type="turbulence" baseFrequency=".11" numOctaves="2" seed="3" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale="1" diffuseConstant="1.1" lighting-color="#fff" result="l"><feDistantLight azimuth="250" elevation="55"/></feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="1.18" k2="0" k3="0" k4="0" result="m"/>
+      <feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <!-- Soft cloudy / smoky masses for skies and haze. -->
+    <filter id="cloud" filterUnits="userSpaceOnUse" x="-50" y="-50" width="612" height="612">
+      <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="4" seed="8" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feGaussianBlur in="d" stdDeviation="3"/>
+    </filter>
+    <filter id="cloud2" filterUnits="userSpaceOnUse" x="-50" y="-50" width="612" height="612">
+      <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="4" seed="15" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="40" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feGaussianBlur in="d" stdDeviation="1.5"/>
+    </filter>
+    <filter id="rough" filterUnits="userSpaceOnUse" x="-20" y="-20" width="552" height="552">
+      <feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="3" seed="19" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <!-- Volume: rim light on the edge facing the light, ambient-occlusion dark on the far side.
+         Light comes from the upper right in every boss picture. -->
+    <filter id="vol-fire" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feOffset in="e" dx="-3.5" dy="3.5" result="o"/>
+      <feComposite in="e" in2="o" operator="out" result="cr"/>
+      <feGaussianBlur in="cr" stdDeviation="1.2" result="crb"/>
+      <feFlood flood-color="#ffa040" flood-opacity=".85"/><feComposite in2="crb" operator="in" result="rim"/>
+      <feOffset in="SourceAlpha" dx="16" dy="-14" result="o2"/>
+      <feComposite in="SourceAlpha" in2="o2" operator="out" result="sh"/>
+      <feGaussianBlur in="sh" stdDeviation="9" result="shb"/>
+      <feFlood flood-color="#12060a" flood-opacity=".6"/><feComposite in2="shb" operator="in"/><feComposite in2="SourceAlpha" operator="in" result="ao"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="ao"/><feMergeNode in="rim"/></feMerge>
+    </filter>
+    <filter id="vol-cool" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feOffset in="e" dx="-3.5" dy="3.5" result="o"/>
+      <feComposite in="e" in2="o" operator="out" result="cr"/>
+      <feGaussianBlur in="cr" stdDeviation="1.2" result="crb"/>
+      <feFlood flood-color="#f2fbff"/><feComposite in2="crb" operator="in" result="rim"/>
+      <feOffset in="SourceAlpha" dx="16" dy="-14" result="o2"/>
+      <feComposite in="SourceAlpha" in2="o2" operator="out" result="sh"/>
+      <feGaussianBlur in="sh" stdDeviation="9" result="shb"/>
+      <feFlood flood-color="#1a2a55" flood-opacity=".55"/><feComposite in2="shb" operator="in"/><feComposite in2="SourceAlpha" operator="in" result="ao"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="ao"/><feMergeNode in="rim"/></feMerge>
+    </filter>
+    <filter id="vol-green" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feOffset in="e" dx="-3.5" dy="3.5" result="o"/>
+      <feComposite in="e" in2="o" operator="out" result="cr"/>
+      <feGaussianBlur in="cr" stdDeviation="1.2" result="crb"/>
+      <feFlood flood-color="#ffe890" flood-opacity=".75"/><feComposite in2="crb" operator="in" result="rim"/>
+      <feOffset in="SourceAlpha" dx="16" dy="-14" result="o2"/>
+      <feComposite in="SourceAlpha" in2="o2" operator="out" result="sh"/>
+      <feGaussianBlur in="sh" stdDeviation="9" result="shb"/>
+      <feFlood flood-color="#0b1a0e" flood-opacity=".6"/><feComposite in2="shb" operator="in"/><feComposite in2="SourceAlpha" operator="in" result="ao"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="ao"/><feMergeNode in="rim"/></feMerge>
+    </filter>
+    <filter id="vol-gold" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feOffset in="e" dx="-3.5" dy="3.5" result="o"/>
+      <feComposite in="e" in2="o" operator="out" result="cr"/>
+      <feGaussianBlur in="cr" stdDeviation="1.2" result="crb"/>
+      <feFlood flood-color="#e6fbff"/><feComposite in2="crb" operator="in" result="rim"/>
+      <feOffset in="SourceAlpha" dx="16" dy="-14" result="o2"/>
+      <feComposite in="SourceAlpha" in2="o2" operator="out" result="sh"/>
+      <feGaussianBlur in="sh" stdDeviation="9" result="shb"/>
+      <feFlood flood-color="#2a1640" flood-opacity=".6"/><feComposite in2="shb" operator="in"/><feComposite in2="SourceAlpha" operator="in" result="ao"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="ao"/><feMergeNode in="rim"/></feMerge>
+    </filter>
+    <filter id="vol-violet" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feOffset in="e" dx="-3.5" dy="3.5" result="o"/>
+      <feComposite in="e" in2="o" operator="out" result="cr"/>
+      <feGaussianBlur in="cr" stdDeviation="1.2" result="crb"/>
+      <feFlood flood-color="#ff9ef5"/><feComposite in2="crb" operator="in" result="rim"/>
+      <feOffset in="SourceAlpha" dx="16" dy="-14" result="o2"/>
+      <feComposite in="SourceAlpha" in2="o2" operator="out" result="sh"/>
+      <feGaussianBlur in="sh" stdDeviation="9" result="shb"/>
+      <feFlood flood-color="#05010c" flood-opacity=".65"/><feComposite in2="shb" operator="in"/><feComposite in2="SourceAlpha" operator="in" result="ao"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="ao"/><feMergeNode in="rim"/></feMerge>
+    </filter>
+
+    <!-- Turns any group into a solid white silhouette (for masks that light/shade a whole figure). -->
+    <filter id="to-white" filterUnits="userSpaceOnUse" x="-30" y="-30" width="572" height="572"><feFlood flood-color="#fff"/><feComposite in2="SourceAlpha" operator="in"/></filter>
+
+    <!-- Glows and softening. -->
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow-big" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="blur2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="blur6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="blur14" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="blur30" filterUnits="userSpaceOnUse" x="-100" y="-100" width="712" height="712"><feGaussianBlur stdDeviation="30"/></filter>
+
+    <radialGradient id="vignette" cx="50%" cy="48%" r="72%">
+      <stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+    </radialGradient>
+  </defs>
+</svg>

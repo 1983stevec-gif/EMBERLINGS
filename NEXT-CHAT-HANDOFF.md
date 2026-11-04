@@ -30,23 +30,29 @@ The game has a painted look: desktop pages are drawn from supplied design images
 - **Pack-only mutations:** Bloom, Tide, Crystal, Solar, Void and Prism can only come from packs. They can't be bought, and nothing else may grant them.
 - Don't put AI model names in commits, PRs or code.
 
-## 3. Where things stand (2 Nov 2026)
+## 3. Where things stand (4 Nov 2026)
 
-**Live:** Codex published **version 60** from `main` (commit `de355ac`).
+**Live:** Codex published **version 60** from `main` (commit `de355ac`). Everything below is merged into `main` but **not published yet**. `PUBLISH-CODEX.md` has the publish prompt for this release.
 
-**Open PRs, not merged yet.** Merge in this order. #32 is built on #31, so #31 must go first. Most of them add CSS to the end of `public/theme.css`, so later ones may need a "keep both sides" conflict fix when merging.
+**Merged since version 60 (PRs #29 to #41):**
 
 | PR | Branch | What it does |
 |---|---|---|
-| [#29](https://github.com/1983stevec-gif/EMBERLINGS/pull/29) | `fix-tests` | All tests pass. `npm test` runs all 15 test files (103 checks, ~30 s). Retired old tests moved to `tests/retired/`. Adds a Vault step to the beginner guide. |
+| [#29](https://github.com/1983stevec-gif/EMBERLINGS/pull/29) | `fix-tests` | All tests pass. `npm test` runs the whole active suite (about 104 checks, ~30 s). Retired old tests moved to `tests/retired/`. Adds a Vault step to the beginner guide. |
 | [#30](https://github.com/1983stevec-gif/EMBERLINGS/pull/30) | `v2-plan` | `V2-PLAN.md` (item drops, training levels, login streaks, heroes and pets), this handoff, and `scripts/shots/`. |
 | [#31](https://github.com/1983stevec-gif/EMBERLINGS/pull/31) | `tablet-pages` | Portrait tablet layouts for Battle Rules, Training, Friend Trading and Trade Room. Fixes invitations vanishing from the trading table. |
-| [#32](https://github.com/1983stevec-gif/EMBERLINGS/pull/32) | `trade-history` | Friends invite badge, invitation pop-up, "Trade complete!" screen, Past trades. The server adds the partner's name to receipts. |
-| [#33](https://github.com/1983stevec-gif/EMBERLINGS/pull/33) | `rare-finds` | "Rare / Very rare find!" banner after special pack pulls; "Your rarest find" on Achievements. |
-| [#34](https://github.com/1983stevec-gif/EMBERLINGS/pull/34) | `daily-rewards` | 7-day login streak, 3 daily quests, weekly challenge, Daily button. |
+| [#32](https://github.com/1983stevec-gif/EMBERLINGS/pull/32) | `trade-history` | Trade alerts (`trade-alerts.js`): Friends invite badge, invitation pop-up, "Trade complete!" screen, Past trades. The server adds the partner's name to receipts. |
+| [#33](https://github.com/1983stevec-gif/EMBERLINGS/pull/33) | `rare-finds` | Rare finds (`rare-finds.js`): "Rare / Very rare find!" banner after special pack pulls; "Your rarest find" on Achievements. |
+| [#34](https://github.com/1983stevec-gif/EMBERLINGS/pull/34) | `daily-rewards` | Daily rewards (`daily.js`): 7-day login streak, 3 daily quests, weekly challenge, Daily button. The panel opens by itself once a day on Home. |
 | [#35](https://github.com/1983stevec-gif/EMBERLINGS/pull/35) | `load-speed` | WebP art and logos, and no hidden header downloads on tablets. First load goes from ~8.6 MB to ~2.1 MB. |
+| [#36](https://github.com/1983stevec-gif/EMBERLINGS/pull/36) | `boss-intro` | Boss introductions (`boss-intro.js`): a short entrance when a boss quest battle opens. |
+| [#37](https://github.com/1983stevec-gif/EMBERLINGS/pull/37) | `boss-art` | Painted boss portraits in `public/art/bosses/`, used by the boss intro. |
+| [#38](https://github.com/1983stevec-gif/EMBERLINGS/pull/38) | `fx-menus` | Menu and reward animations (`fx-menus.js`). |
+| [#39](https://github.com/1983stevec-gif/EMBERLINGS/pull/39) | `fx-battle` | Battle attack animations (`fx-battle.js`). |
+| [#40](https://github.com/1983stevec-gif/EMBERLINGS/pull/40) | `fx-cards` | Card shine and foil effects (`fx-cards.js`). |
+| [#41](https://github.com/1983stevec-gif/EMBERLINGS/pull/41) | `fx-packs` | Pack opening effects (`fx-packs.js`). |
 
-None of these need a database migration.
+None of these need a database migration. First load (simulated 4G, empty cache) is about 2.1 MB on a phone and 3.0 MB on desktop; the four effect modules add about 25 KB of that (compressed).
 
 **Next work:** the phases in `V2-PLAN.md` (v2.0 to v2.6). It ends with 8 decisions for the owner. Ask about the ones that matter before building.
 
@@ -81,7 +87,7 @@ All project files are in the GitHub repository **1983stevec-gif/EMBERLINGS**. An
   - `state`, `view`, `go(view)`, `save()`, `transact(fn)` (saves, or rolls back if saving fails), `toast()`
   - `cardHTML(card)` (the printed card), `art(card)`, `species`, `MUTATIONS` (a list), `packCatalog()`, `grantXP`, `online(path, body)`, `registerView(name, render)`, `render(html)`, `tradeNotices`, and more
 
-  It also sends browser events named `ember:*`: `frame` (after every screen draw), `levelUp`, `packRoll`, `packReveal`, `packSummary`, `fusion`, `coins` (Vault collect), `cardBattle`, `cardResult`, `friends`. PRs #32 and #34 add `tradeInvites` and `tradeComplete`.
+  It also sends browser events named `ember:*`: `frame` (after every screen draw), `levelUp`, `packRoll`, `packReveal`, `packSummary`, `fusion`, `coins` (Vault collect), `cardBattle`, `cardResult`, `friends`. `tradeInvites` and `tradeComplete` (used by `trade-alerts.js` and `daily.js`).
 - **Add-on modules in `public/`** listen to those events and add features without touching the core:
 
   | Module | Purpose |
@@ -97,8 +103,16 @@ All project files are in the GitHub repository **1983stevec-gif/EMBERLINGS**. An
   | `field-guide.js` | Mythling Index |
   | `results.js` | Victory and Defeated screens |
   | `achievements.js` | achievements |
+  | `trade-alerts.js` | Friends invite badge, invitation pop-up, "Trade complete!" screen, Past trades |
+  | `rare-finds.js` | "Rare / Very rare find!" banner after special pack pulls; "Your rarest find" on Achievements |
+  | `daily.js` | Daily rewards: login streak, daily quests, weekly challenge, Daily button (saved under `state.daily`) |
+  | `boss-intro.js` | short boss entrance (crest, name, challenge) when a boss quest battle opens; tap or press a key to skip |
+  | `fx-battle.js` | battle animations: element attack effects, lunge, hit shake, floating damage numbers, evolve/Active glow |
+  | `fx-packs.js` | pack effects: pack tearing open, rarity glow and light rays, build-up before special cards, fanfare for the rarest pulls |
+  | `fx-cards.js` | card effects: holographic foil with 3D tilt, shine sweep on rare and mutated cards, smoother binder pages |
+  | `fx-menus.js` | menu effects: quick screen transitions, coin showers, counting coin counter, livelier level-up, opening chest for daily rewards |
 
-  Coming in the open PRs: `trade-alerts.js`, `rare-finds.js`, `daily.js`.
+  All of these are presentation or add-on features: they talk to the game only through `EmberBridge`, `ember:*` events and the page.
 - **Painted ("exact") pages:**
   - A cleaned design image is the page background.
   - Live parts are placed in the design's own pixel positions using the helpers in `ui-exact.js`: `canvas(W,H,bg,cls,inner)`, `box`, `fs`, `hot`, `text`, `fitCard`.

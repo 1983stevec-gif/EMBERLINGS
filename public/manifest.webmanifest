@@ -2,22 +2,39 @@
   "id": "/",
   "name": "EMBERLINGS",
   "short_name": "EMBERLINGS",
-  "description": "A magical creature adventure",
+  "description": "Collect magical creature cards, open packs, build decks and battle and trade with friends.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#0a1029",
   "theme_color": "#0a1029",
+  "categories": ["games", "entertainment"],
   "icons": [
     {
-      "src": "/branding/emberlings-icon-192.png",
+      "src": "/branding/emberlings-app-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/branding/emberlings-icon-512.png",
+      "src": "/branding/emberlings-app-512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/branding/emberlings-app-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/branding/emberlings-app-180.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     }
