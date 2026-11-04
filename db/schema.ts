@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, uniqueIndex, index, primaryKey } from 'drizzle-orm/sqlite-core';
 export const players=sqliteTable('players',{
  userId:text('user_id').primaryKey(),recoveryHash:text('recovery_hash'),passwordHash:text('password_hash'),username:text('username').notNull(),usernameKey:text('username_key').notNull(),
  petMutation:text('pet_mutation'),petRarity:text('pet_rarity').notNull().default('Common'),petSecret:integer('pet_secret').notNull().default(0),petKind:integer('pet_kind').notNull().default(0),petShiny:integer('pet_shiny').notNull().default(0),title:text('title'),profile:text('profile'),seenAt:integer('seen_at').notNull(),createdAt:integer('created_at').notNull()
@@ -28,3 +28,11 @@ export const tradeReceipts=sqliteTable('trade_receipts',{
 export const cloudSaves=sqliteTable('cloud_saves',{
  userId:text('user_id').primaryKey().references(()=>players.userId),data:text('data').notNull(),revision:integer('revision').notNull().default(0),device:text('device'),updatedAt:integer('updated_at').notNull()
 });
+
+// Friend activity: small highlight events (rare pulls, boss wins, level milestones) and one cheer per friend per event.
+export const activityEvents=sqliteTable('activity_events',{
+ id:text('id').primaryKey(),playerId:text('player_id').notNull(),type:text('type').notNull(),dedupe:text('dedupe').notNull(),data:text('data').notNull(),createdAt:integer('created_at').notNull()
+},t=>[uniqueIndex('activity_events_dedupe').on(t.playerId,t.dedupe),index('activity_events_player_time').on(t.playerId,t.createdAt)]);
+export const activityCheers=sqliteTable('activity_cheers',{
+ eventId:text('event_id').notNull(),playerId:text('player_id').notNull(),createdAt:integer('created_at').notNull()
+},t=>[primaryKey({columns:[t.eventId,t.playerId]})]);
