@@ -605,6 +605,13 @@ const battleTabRO = new ResizeObserver(entries => { for (const e of entries) e.t
 let tradePets = {}, tradePick = null;
 async function loadTradePets() { try { const r = await fetch('/api/social/me', { credentials: 'same-origin', cache: 'no-store' }); const d = await r.json(); for (const f of d.friends || []) tradePets[f.username] = f.pet; if (d.me) tradePets[d.me.username] = d.me.pet; } catch { } }
 const tradeAva = name => { const pet = tradePets[name]; return pet ? B.art(pet) : `<span class="uiXTInit">${esc((name || '?')[0].toUpperCase())}</span>`; };
+// Moves invitation rows from the game's list onto the trading table. Moving them changes the list, which repaints;
+// rows already on the table stay until the game redraws its invitations.
+function moveInvites(list, table, head) {
+  const inv = $('.tradeNotifications', list); if (!inv) return false;
+  const rows = $$('.friendRow', inv); if (rows.length) { table.innerHTML = head; rows.forEach(r => table.append(r)); }
+  return true;
+}
 function tradingExact() {
   const app = $('#app'), list = $('#tradeFriendList'); if (!list || $('.uiXTrading')) return;
   const W = 1536, H = 1024, p = box(W, H);
@@ -625,9 +632,8 @@ function tradingExact() {
     $('.uiXTCount', wrap).textContent = friends.length ? `${friends.length} friend${friends.length > 1 ? 's' : ''}` : 'No friends yet';
     $('.uiXTList', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="uiXTFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="uiXTAva">${tradeAva(f.name)}</span><span class="uiXTWho"><b>${esc(f.name)}</b><small class="${f.online ? 'on' : ''}"><i></i>${f.online ? 'Online' : 'Offline'}</small></span><span class="uiXTCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="uiXTEmpty">Add a friend with Add Player below, then come back here to trade.</p>';
     $$('[data-tpick]', wrap).forEach(b => b.onclick = () => { tradePick = b.dataset.tpick; paint(); });
-    const inv = $('.tradeNotifications', list), table = $('.uiXTTable', wrap);
-    if (inv) { table.innerHTML = '<p class="uiXTInvHead">Trade invitations</p>'; $$('.friendRow', inv).forEach(r => table.append(r)); }
-    else table.innerHTML = `<p class="uiXTCap">Your next trade starts with an invitation.</p><p class="uiXTSub">${tradePick ? `Send one to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
+    const table = $('.uiXTTable', wrap);
+    if (!moveInvites(list, table, '')) table.innerHTML = `<p class="uiXTCap">Your next trade starts with an invitation.</p><p class="uiXTSub">${tradePick ? `Send one to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
     $('#uiXTSend', wrap).disabled = !tradePick;
   };
   $('#uiXTSend', wrap).onclick = () => { const b = $(`[data-trade-invite="${CSS.escape(tradePick || '')}"]`, list); if (b) b.click(); };
@@ -757,10 +763,116 @@ function academyExact() {
   requestAnimationFrame(fitCards);
 }
 
+/* ---------------------------------------------------------------- Portrait tablet pages (touch screens narrower than the desktop designs) */
+// Same navy-and-gold look as the desktop designs, laid out top to bottom with large touch targets.
+const tabletPages = () => touchTablet() && !wide();
+const tpShell = (cls, title, sub, inner, back = 'home', backLabel = 'Home') => `<div class="tpPage ${cls}"><button type="button" class="tpBack" data-go="${back}">‹ ${backLabel}</button><header class="tpHero"><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ''}</header>${inner}</div>`;
+const tpMount = wrap => { const app = $('#app'); app.insertBefore(wrap, app.firstChild.nextSibling); for (const el of [...app.children]) if (el !== wrap && !el.matches('.uiTop, .nav, #fxLayer, #toast')) el.remove(); };
+const tpCard = c => `<div class="tpCardBox">${fitCard('left:0;top:0;width:100%;height:100%', c)}</div>`;
+
+const QUICK = [['1', 'Build a deck', 'Pick 1–20 cards with at least one Basic Mythling. New? Tap <b>Equip Best</b> in Battle Deck.'], ['2', 'Choose your Active', 'Put one Basic in the Active spot and up to three on your Bench, then tap <b>Ready</b>.'], ['3', 'Take your turn', 'Draw a card, attach your <b>Merfling</b> (battle energy), play Trainers, then attack.'], ['4', 'Win the battle', 'Knock out a Mythling to score. The first player to <b>3 points</b> wins.']];
+function rulesTablet() {
+  const sections = $$('#app > section.panel'); if (!sections.length || $('.tpRules')) return;
+  const full = sections.map(sec => sec.innerHTML).join('');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage tpWrap';
+  wrap.innerHTML = tpShell('tpRules', 'Battle Rules', 'Everything you need to win, step by step.', `
+   <nav class="tpTabs" role="tablist">${[['quick', 'Quick start'], ['full', 'Full rules'], ['cond', 'Special conditions']].map(([id, t]) => `<button type="button" class="tpTab" data-rtab="${id}" role="tab">${t}</button>`).join('')}</nav>
+   <div class="tpPane" data-pane="quick"><ol class="tpSteps">${QUICK.map(([n, h, d]) => `<li><span class="tpNum">${n}</span><div><b>${h}</b><p>${d}</p></div></li>`).join('')}</ol>
+    <h2 class="tpH2">Special conditions</h2><ul class="tpConds">${CONDITIONS.map(([i, n, d]) => `<li><span>${i}</span><div><b>${n}</b><p>${d}</p></div></li>`).join('')}</ul>
+    <div class="tpActions"><button type="button" class="tpBtn gold" data-go="decks">Build Deck</button><button type="button" class="tpBtn" data-go="map">Adventure</button></div></div>
+   <div class="tpPane tpFull" data-pane="full">${full}</div>
+   <div class="tpPane" data-pane="cond"><p class="tpLead">A Mythling keeps a condition until it is cured, retreats, evolves or is knocked out.</p><ul class="tpConds">${CONDITIONS.map(([i, n, d]) => `<li><span>${i}</span><div><b>${n}</b><p>${d}</p></div></li>`).join('')}</ul><p class="tpNote">Sleep, Paralysis and Confusion replace each other. Poison and Burn can be added on top of them. A Clearwater Charm or Meadow Medic Trainer removes all conditions.</p></div>`);
+  tpMount(wrap);
+  const show = t => { rulesTab = t; $$('.tpTab', wrap).forEach(b => { b.classList.toggle('on', b.dataset.rtab === t); b.setAttribute('aria-selected', String(b.dataset.rtab === t)); }); $$('.tpPane', wrap).forEach(x => x.hidden = x.dataset.pane !== t); };
+  $$('[data-rtab]', wrap).forEach(b => b.onclick = () => show(b.dataset.rtab));
+  show(rulesTab); B.bind();
+}
+
+function academyTablet() {
+  const picks = $$('[data-practice-pet]'); if (!picks.length || $('.tpAcademy')) return;
+  const st = B.state, name = $('#app .hero h1')?.textContent.trim() || 'Attack Academy', info = CENTRES[name] || { tag: $('#app .hero h1 + p')?.textContent || '', steps: CENTRES['Attack Academy'].steps };
+  const cards = picks.map(b => st.owned.find(c => c.id === b.dataset.practicePet)).filter(Boolean);
+  if (!cards.some(c => c.id === acadSel)) acadSel = (cards.find(c => c.id === B.active()?.id) || cards[0]).id;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage tpWrap';
+  const hidden = document.createElement('div'); hidden.hidden = true; picks.forEach(b => hidden.append(b));
+  const passes = st.items?.trainingPasses || 0;
+  const paint = () => {
+    const sel = cards.find(c => c.id === acadSel), sp = B.species[sel.kind] || {};
+    wrap.innerHTML = tpShell('tpAcademy', esc(name), esc(info.tag), `
+     <section class="tpPanel tpTrainee"><div class="tpAva">${B.art(sel)}</div><div class="tpWho"><b>${esc(sp.name || '')}</b><span>Level ${sel.level || 1} · ${esc(sp.element || '')}</span>
+      <ol class="tpMini">${info.steps.map(([h, d]) => `<li><b>${esc(h)}</b> ${esc(d)}</li>`).join('')}</ol></div>
+      <button type="button" class="tpBtn gold tpStart" id="tpAStart">Start Training</button></section>
+     <p class="tpMeta">5 rewarded sessions per UTC day · ${fmt(passes)} Academy Pass${passes === 1 ? '' : 'es'}</p>
+     <h2 class="tpH2">Choose a Mythling to train</h2>
+     <div class="tpGrid">${cards.map(c => `<button type="button" class="tpPick ${c.id === acadSel ? 'sel' : ''}" data-acad="${c.id}" aria-pressed="${c.id === acadSel}" aria-label="${esc(B.species[c.kind]?.name || '')}, level ${c.level || 1}">${tpCard(c)}${c.id === acadSel ? '<span class="tpCheck" aria-hidden="true">✓</span>' : ''}</button>`).join('')}</div>
+     <div class="tpActions"><button type="button" class="tpBtn" data-go="training">Try another centre</button></div>`);
+    wrap.append(hidden);
+    $$('[data-acad]', wrap).forEach(b => b.onclick = () => { acadSel = b.dataset.acad; const y = scrollY; paint(); scrollTo(0, y); });
+    $('#tpAStart', wrap).onclick = () => hidden.querySelector(`[data-practice-pet="${acadSel}"]`)?.click();
+    B.bind(); requestAnimationFrame(fitCards);
+  };
+  paint(); tpMount(wrap); requestAnimationFrame(fitCards);
+}
+
+function tradingTablet() {
+  const list = $('#tradeFriendList'); if (!list || $('.tpTrading')) return;
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage tpWrap';
+  wrap.innerHTML = tpShell('tpTrading', 'Friend Trading', 'Choose a friend, send an invitation, then swap Mythlings together.', `
+   <section class="tpPanel"><h2 class="tpH2">Your friends <small class="tpCount"></small></h2><div class="tpFriends" role="listbox" aria-label="Your friends"></div>
+    <button type="button" class="tpBtn gold tpWide" id="tpTSend">Send trade invitation</button>
+    <button type="button" class="tpBtn tpWide" data-go="friends">＋ Add Player</button></section>
+   <section class="tpPanel tpTable"></section>`, 'home', 'Home');
+  const hidden = document.createElement('div'); hidden.hidden = true; hidden.append(list); const stx = $('#tradeListStatus'); if (stx) hidden.append(stx); wrap.append(hidden);
+  tpMount(wrap);
+  const paint = () => {
+    const friends = $$('[data-trade-invite]', list).map(b => ({ name: b.dataset.tradeInvite, online: /online/i.test($('small', b)?.textContent || '') }));
+    if (!friends.some(f => f.name === tradePick)) tradePick = friends[0]?.name || null;
+    $('.tpCount', wrap).textContent = friends.length ? `· ${friends.length}` : '';
+    $('.tpFriends', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="tpFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="tpFAva">${tradeAva(f.name)}</span><span class="tpFWho"><b>${esc(f.name)}</b><small class="${f.online ? 'on' : ''}"><i></i>${f.online ? 'Online' : 'Offline'}</small></span><span class="tpCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="tpLead">No friends yet. Tap <b>Add Player</b> below, then come back here to trade.</p>';
+    $$('[data-tpick]', wrap).forEach(b => b.onclick = () => { tradePick = b.dataset.tpick; paint(); });
+    const table = $('.tpTable', wrap);
+    if (!moveInvites(list, table, '<h2 class="tpH2">Trade invitations</h2>')) table.innerHTML = `<h2 class="tpH2">Trading table</h2><p class="tpLead">${tradePick ? `Send an invitation to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
+    $('#tpTSend', wrap).disabled = !tradePick;
+  };
+  $('#tpTSend', wrap).onclick = () => { const b = $(`[data-trade-invite="${CSS.escape(tradePick || '')}"]`, list); if (b) b.click(); };
+  new MutationObserver(paint).observe(list, { childList: true, subtree: true });
+  B.bind(); paint(); loadTradePets().then(paint);
+}
+
+function tradeRoomTablet() {
+  const offers = $$('#app .tradeOffers > .tradeOffer'); if (offers.length !== 2 || $('.tpRoom')) return;
+  const side = sec => ({ name: ($('h2', sec)?.textContent || '').replace(/ · You$/, ''), items: $$('.tradeItem', sec), accepted: /Accepted/.test($('.pill', sec)?.textContent || '') });
+  const me = side(offers[0]), them = side(offers[1]);
+  const step = me.accepted || them.accepted ? 3 : me.items.length && them.items.length ? 2 : 1;
+  const accept = $('#tradeAccept'), decline = $('#tradeDecline'), add = $('#tradeAdd'), clear = $('#tradeRemove'), err = $('#tradeError'), picker = $('#tradePicker');
+  const wrap = document.createElement('section'); wrap.className = 'uiExactPage tpWrap';
+  const panel = (s, mine) => `<section class="tpPanel tpSide ${s.accepted ? 'ok' : ''}"><header><span class="tpFAva">${tradeAva(s.name)}</span><b>${esc(s.name)}${mine ? ' <small>· You</small>' : ''}</b><em>${s.accepted ? '✓ Accepted' : s.items.length ? `${s.items.length} Mythling${s.items.length > 1 ? 's' : ''} offered` : mine ? 'No card selected' : `Waiting for ${esc(s.name)}`}</em></header><div class="tpRow" data-side="${mine ? 0 : 1}"></div>${mine ? `<div class="tpActions"><button type="button" class="tpBtn" id="tpRAdd" ${add ? '' : 'disabled'}>＋ Add Mythling</button>${clear ? '<button type="button" class="tpLink" id="tpRClear">Clear my offer</button>' : ''}</div>` : ''}</section>`;
+  wrap.innerHTML = tpShell('tpRoom', 'Trade Room', 'Choose up to 5 Mythlings each, then both accept.', `
+   <ol class="tpProgress">${['Choose cards', 'Review offers', 'Both accept'].map((t, i) => `<li class="${i + 1 === step ? 'on' : i + 1 < step ? 'done' : ''}"><b>${i + 1 < step ? '✓' : i + 1}</b>${t}</li>`).join('')}</ol>
+   ${panel(me, true)}<div class="tpSwap" aria-hidden="true">⇅</div>${panel(them, false)}
+   <div class="tpErr"></div>
+   <div class="tpActions tpFinal"><span class="tpAcceptSlot"></span><button type="button" class="tpBtn red" id="tpRDecline">Decline Trade</button></div>`, 'trading', 'Friend Trading');
+  tpMount(wrap);
+  const rows = $$('.tpRow', wrap);
+  [me, them].forEach((s, k) => { s.items.forEach((it, i) => { if (i) rows[k].insertAdjacentHTML('beforeend', '<span class="tpPlus" aria-hidden="true">＋</span>'); rows[k].append(it); }); if (!s.items.length) rows[k].innerHTML = '<p class="tpEmpty">No Mythlings yet</p>'; });
+  if (accept) { accept.className = 'tpBtn gold'; accept.innerHTML = accept.disabled && me.accepted ? '✓ You accepted' : '✓ Accept Trade'; $('.tpAcceptSlot', wrap).append(accept); }
+  $('#tpRAdd', wrap)?.addEventListener('click', () => add?.click());
+  $('#tpRClear', wrap)?.addEventListener('click', () => clear?.click());
+  $('#tpRDecline', wrap).onclick = () => decline?.click();
+  if (err) $('.tpErr', wrap).append(err);
+  if (picker) { picker.classList.add('uiXTRPicker'); wrap.append(picker); }
+  const hold = document.createElement('div'); hold.hidden = true; for (const b of [add, clear, decline]) if (b) hold.append(b); wrap.append(hold);
+  B.bind();
+  // Keep Accept/Decline just above the bottom picture menu when it is showing, otherwise at the screen edge.
+  const menu = $('.uiTabMenu'), mh = menu && menu.getClientRects().length && getComputedStyle(menu).display !== 'none' ? menu.getBoundingClientRect().height : 0;
+  const bar = $('.tpFinal', wrap); bar.style.bottom = (mh + 8) + 'px'; $('.tpPage', wrap).style.paddingBottom = (mh + bar.offsetHeight + 28) + 'px';
+  if (!tradePets[them.name]) loadTradePets().then(() => { const a = $$('.tpSide .tpFAva', wrap); if (a[0]) a[0].innerHTML = tradeAva(me.name); if (a[1]) a[1].innerHTML = tradeAva(them.name); });
+}
+
 /* ---------------------------------------------------------------- Wiring */
 function onFrame() {
   const exact = wide() && ['home', 'map', 'vault', 'username', 'packs', 'mutation', 'fusion', 'fuse', 'friends', 'cardBattle'].includes(B.view) && (B.view !== 'cardBattle' || !!document.querySelector('.cardArena')) && (B.view !== 'friends' || !!document.querySelector('#friendLists')) && (!['fusion', 'fuse'].includes(B.view) || !!document.querySelector('.fusionPreview'));
-  document.body.classList.toggle('uiExact', exact);
+  document.body.classList.toggle('uiExact', exact); document.body.classList.remove('tpOn');
   if (exact && B.view === 'vault') vaultExact();
   if (exact && B.view === 'username') welcomeExact();
   if (['fusion', 'fuse'].includes(B.view) && exact) fusionExact();
@@ -770,6 +882,12 @@ function onFrame() {
   if (B.view === 'trade' && wide() && $('#app .tradeOffers')) { document.body.classList.add('uiExact'); tradeRoomExact(); }
   if (B.view === 'rules' && wide() && $('#app > section.panel')) { document.body.classList.add('uiExact'); rulesExact(); }
   if (B.view === 'training' && wide() && $('[data-practice-pet]')) { document.body.classList.add('uiExact'); academyExact(); }
+  if (tabletPages()) {
+    if (B.view === 'trading' && $('#tradeFriendList')) { document.body.classList.add('uiExact', 'tpOn'); tradingTablet(); }
+    if (B.view === 'trade' && $('#app .tradeOffers')) { document.body.classList.add('uiExact', 'tpOn'); tradeRoomTablet(); }
+    if (B.view === 'rules' && $('#app > section.panel')) { document.body.classList.add('uiExact', 'tpOn'); rulesTablet(); }
+    if (B.view === 'training' && $('[data-practice-pet]')) { document.body.classList.add('uiExact', 'tpOn'); academyTablet(); }
+  }
   if (B.view === 'cardBattle' && !exact && tabPortrait() && $('.cardArena')) { document.body.classList.add('uiExact'); battleTab(); }
   if (B.view === 'mutation' && exact) queueMicrotask(() => { if (B.view === 'mutation') mutationExact(); });
   // packs() binds its buttons and adds reward packs after drawing, so rearrange once it has finished.
