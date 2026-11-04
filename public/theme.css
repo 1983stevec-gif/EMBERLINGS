@@ -1928,3 +1928,13 @@ aside.uiQuest#uiQuest{position:static;inset:auto;pointer-events:auto}
   /* Daily rewards: keep the title clear of the close button. */
   .dBox h2{padding:0 36px;font-size:clamp(28px,8vw,40px)}
 }
+/* ---- Effects setting (Full / Light / Off) in the user menu and Settings: see public/fx-level.js ---- */
+.uiFx{margin:4px 6px 6px;padding:8px 8px 6px;border:1px solid #e9b75a33;border-radius:8px;background:#0c1119}
+.uiFxHead{margin:0 4px 6px;font-family:var(--ui-serif);font-size:15px;color:var(--ui-text)}
+.uiFxRow{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.uiMenu .uiFxRow button,.uiFxRow button{display:block;width:100%;min-height:40px;text-align:center;padding:8px 4px;border:1px solid #e9b75a55;border-radius:6px;background:#161d29;color:var(--ui-text);font-family:var(--ui-serif);font-size:15px;cursor:pointer}
+.uiMenu .uiFxRow button.on,.uiFxRow button.on{background:linear-gradient(180deg,#f3c76a,#c68f32);border-color:#ffe2a0;color:#1b1206;font-weight:700}
+.uiFxRow button:focus-visible{outline:2px solid #ffd27a;outline-offset:2px}
+.uiFxHelp{margin:6px 4px 0;font-size:12.5px;line-height:1.35;color:#c9bfa8;max-width:250px}
+.uiSettings .uiFx{max-width:340px;margin:8px 0}
+.uiSettings .uiFxHelp{max-width:none}
