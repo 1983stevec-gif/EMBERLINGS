@@ -1,10 +1,12 @@
 // EMBERLINGS menu and reward effects: quick screen transitions, coin showers into the coin counter,
 // a counter that counts up or down, a livelier level-up moment and an opening chest for daily rewards.
 // Visual only. Talks to the game through window.EmberBridge, ember:* events and the DOM. Never changes the save.
+import { fxCalm, fxCount } from '/fx-level.js';
 const B = window.EmberBridge;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const fmt = n => Math.floor(Number(n) || 0).toLocaleString();
-const calm = () => !!B?.state?.reducedMotion || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+// Effects setting: Off = no animation (numbers and pop-ups still show); Light = plain fade between screens, a third of the coins and stars.
+const calm = fxCalm;
 const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
 const rand = (a, b) => a + Math.random() * (b - a);
 const MAX_PARTICLES = 70;
@@ -68,7 +70,7 @@ function watchCoins() {
 function shower(src, amount, { delay = 0, count } = {}) {
   if (calm() || !(amount > 0)) return 0;
   const s = center(src), d = center(counterRect());
-  const n = count || Math.max(6, Math.min(26, Math.round(Math.log10(amount + 1) * 6)));
+  const n = fxCount(count || Math.max(6, Math.min(26, Math.round(Math.log10(amount + 1) * 6))));
   let firstLand = Infinity;
   for (let i = 0; i < n; i++) {
     const el = spawn('fxmCoin'); if (!el) break;
@@ -91,7 +93,7 @@ function sourceBurst(src, delay = 0) {
 // Little sparkles where the coins land on the counter.
 function landing() {
   const d = center(counterRect());
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0, n = fxCount(5); i < n; i++) {
     const el = spawn('fxmSpark'); if (!el) return;
     const a = rand(0, Math.PI * 2), r = rand(18, 40);
     play(el, [{ transform: `translate(${d.x}px,${d.y}px) scale(1)`, opacity: 1 }, { transform: `translate(${d.x + Math.cos(a) * r}px,${d.y + Math.sin(a) * r}px) scale(.2)`, opacity: 0 }], { duration: 420, easing: 'ease-out' });
@@ -164,7 +166,7 @@ function decorateLevelUp(o) {
 }
 function starBurst(rect, color = '#ffd568', n = 14, delay = 0) {
   if (calm()) return;
-  const c = center(rect);
+  const c = center(rect); n = fxCount(n);
   for (let i = 0; i < n; i++) {
     const el = spawn('fxmStar'); if (!el) return; el.style.color = i % 3 ? color : '#fff6d8';
     const a = (i / n) * Math.PI * 2 + rand(-.2, .2), r = rand(60, 150);
@@ -263,6 +265,8 @@ function styles() {
 @keyframes fxmChIn{from{opacity:0;transform:scale(.3) translateY(30px)}}
 @keyframes fxmChOut{to{opacity:0;transform:scale(.9) translateY(-10px)}}
 .reduceMotion #fxmLayer{display:none}
+html[data-fx=light] #app.fxmEnter>:not(.top):not(.nav):not(header):not(nav){animation-name:fxmFade}
+@keyframes fxmFade{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#fxmLayer{display:none}#app.fxmEnter>*{animation:none!important}.fxmLvRays,.fxmLvNum,.fxmLvItem,.fxmShine{animation:none!important}}`;
   document.head.appendChild(s);
 }
