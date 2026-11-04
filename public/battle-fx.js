@@ -162,7 +162,12 @@ function handArrows() {
   const prev = mk(-1, 'Show earlier cards in your hand'), next = mk(1, 'Show more cards in your hand');
   const place = () => { const r = row.getBoundingClientRect(), h = host.getBoundingClientRect(); for (const b of [prev, next]) b.style.top = (r.top - h.top + r.height / 2) + 'px'; prev.style.left = (r.left - h.left + 4) + 'px'; next.style.left = (r.right - h.left - 4) + 'px'; const more = row.scrollWidth > row.clientWidth + 4; prev.hidden = !more || row.scrollLeft < 4; next.hidden = !more || row.scrollLeft > row.scrollWidth - row.clientWidth - 4; };
   row.onscroll = place; requestAnimationFrame(place); setTimeout(place, 300);
+  // Re-place when the hand changes size (boss intro closing, rotating the phone, fonts loading),
+  // so an arrow measured before the hand was laid out doesn't stay stuck at the edge of the screen.
+  handSizeWatch?.disconnect();
+  if (typeof ResizeObserver === 'function') { handSizeWatch = new ResizeObserver(() => row.isConnected ? place() : handSizeWatch?.disconnect()); handSizeWatch.observe(row); }
 }
+let handSizeWatch = null;
 
 /* 8. Victory / defeat scene */
 function resultScene(r) {
