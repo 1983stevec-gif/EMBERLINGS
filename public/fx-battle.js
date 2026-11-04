@@ -3,16 +3,18 @@
 // and a short glow when a Mythling evolves or steps into the Active spot.
 // Talks to the game only through window.EmberBridge, the ember:* events and the DOM.
 import { ADVANTAGE } from './card-engine.js';
+import { fxCalm, fxLight } from '/fx-level.js';
 
 const B = window.EmberBridge;
 const ELEMENT_COLORS = { Fire: '#e67e4e', Moon: '#a796dc', Nature: '#72b987', Lightning: '#e3c857', Water: '#64b5d6', Crystal: '#cba0d8', Ice: '#9bd5dd', Shadow: '#9276b5', Wind: '#86cbb6' };
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const calm = () => !!B?.state?.reducedMotion || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+// Effects setting: Off = numbers only; Light = no flashes or shaking, a third of the particles.
+const calm = fxCalm;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const rnd = (a, b) => a + Math.random() * (b - a);
 const SVG = 'http://www.w3.org/2000/svg';
 const MAX_PARTS = 30;
-let live = 0, prev = null, lastSig = '';
+let live = 0, prev = null, lastSig = '', tick = 0;
 
 /* ------------------------------------------------------------ Layer and particles */
 function layer() {
@@ -24,6 +26,7 @@ function layer() {
 // Particles (part=true) count toward the cap so a busy moment never floods the page.
 function spawn(cls, keyframes, opts, { part = true, html = '', style = {} } = {}) {
   if (part && live >= MAX_PARTS) return null;
+  if (fxLight() && (part ? tick++ % 3 : /^fxbFlash/.test(cls))) return null; // Light: keep one particle in three, no flashes
   const el = document.createElement('div'); el.className = 'fxb ' + cls;
   if (html) el.innerHTML = html;
   for (const k in style) { if (k.startsWith('--')) el.style.setProperty(k, style[k]); else el.style[k] = style[k]; }
@@ -127,6 +130,7 @@ function lunge(el, src, dst) {
 }
 function hitShake(el, big) {
   if (!el) return;
+  if (fxLight()) { try { el.animate([{ filter: 'none' }, { filter: 'brightness(1.6)', offset: .25 }, { filter: 'none' }], { duration: 360, easing: 'ease-out' }); } catch { /* ignore */ } return; }
   const m = big ? 10 : 6;
   try {
     el.animate([{ transform: 'none', filter: 'none' }, { transform: `translateX(${-m}px) rotate(-1.5deg)`, filter: 'brightness(2.2) saturate(.4)', offset: .15 },
