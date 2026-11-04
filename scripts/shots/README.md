@@ -21,6 +21,7 @@ await quiet(page);
 | `rare.cjs` | Opens a Legend Pack with lucky rolls; rare-find banner and profile | `node rare.cjs` or `W=390 H=844 node rare.cjs` |
 | `speed.cjs` | First-visit size and time over simulated 4G, empty cache (default size 768×1024) | `W=390 H=844 node speed.cjs` or `W=1366 H=900 node speed.cjs` |
 | `artcheck.cjs` | Finds broken images and failed downloads on the welcome screen and binder | `node artcheck.cjs` |
+| `activity.cjs` | Friend activity: two players, rare pull, boss win, level 25, cheer, sharing off; screenshots at three sizes | `BASE=http://127.0.0.1:8894 OUT=/tmp/ node activity.cjs` |
 | `quiet.cjs` | Helper, not run by itself: closes the beginner guide and the Daily rewards panel for a new test player | `await quiet(page)` |
 
 All scripts were checked against `main` on 4 Nov 2026 (after PR #41).
