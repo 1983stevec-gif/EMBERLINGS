@@ -26,7 +26,7 @@ await test('Several Mythlings can be offered for one; all move together or none 
  const [ra,rb]=await Promise.all([api('a','/trades/'+t.id+'/accept',{revision:t.revision}),api('b','/trades/'+t.id+'/accept',{revision:t.revision})]);assert.equal(ra.status,200);assert.equal(rb.status,200);
  const owners=await Promise.all([a1,a2,a3,b1].map(x=>db.prepare('SELECT owner_id o,locked_trade_id l FROM trade_assets WHERE id=?').bind(x.assetId).first()));
  assert.deepEqual(owners.map(o=>o.o),['b','b','b','a']);assert(owners.every(o=>o.l===null));
- const inbox={a:(await api('a','/trades/inbox')).data.tradeReceipts.find(x=>x.tradeId===t.id),b:(await api('b','/trades/inbox')).data.tradeReceipts.find(x=>x.tradeId===t.id)};
+ const inbox={a:(await api('a','/trades/inbox')).data.tradeReceipts.find(x=>x.tradeId===t.id),b:(await api('b','/trades/inbox')).data.tradeReceipts.find(x=>x.tradeId===t.id)};assert.ok(inbox.a.partner&&inbox.b.partner&&inbox.a.partner!==inbox.b.partner,'Receipts name the trade partner');
  assert.equal(inbox.b.creatures.length,3);assert.equal(inbox.b.outgoingAssets.length,1);assert.equal(inbox.a.creatures.length,1);assert.deepEqual(inbox.a.outgoingLocalIds.sort(),['multi-a1','multi-a2','multi-a3']);
  assert.deepEqual(inbox.b.creatures.map(c=>c.kind).sort(),[2,3,4]);await done(t)});
 console.log(checks.map(n=>'PASS '+n).join('\n'));

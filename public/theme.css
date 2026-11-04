@@ -1703,6 +1703,143 @@ body .uiX .handRow .handCard>button.button[data-bench]:not(:disabled){background
 .rfProfile ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .rfProfile li{padding:6px 12px;border-radius:8px;background:#0d1534;border-left:4px solid #7fd8ff;font-size:17px}
 .rfProfile li.veryRare{border-left-color:#ff8af0;background:linear-gradient(90deg,#3a1b4a,#0d1534)}
+/* ---------- Portrait tablet pages: Battle Rules, Training, Friend Trading, Trade Room ---------- */
+.tpPage{max-width:860px;margin:0 auto;padding:10px 18px 28px;color:#eef1fb;font-family:'EB Garamond',Georgia,serif}
+.tpBack{background:none;border:0;color:#f2c96a;font:600 18px 'EB Garamond',Georgia,serif;padding:8px 0;cursor:pointer}
+.tpHero{position:relative;margin:4px 0 16px;padding:22px 24px;border:2px solid #c9a35a;border-radius:16px;background:radial-gradient(120% 140% at 85% 0%,#2a2f6e 0%,#121a44 45%,#0a1030 100%);box-shadow:inset 0 0 0 1px #6a4a1066,0 10px 26px #0008;overflow:hidden}
+.tpHero::after{content:"✦ ☾ ✧";position:absolute;right:22px;top:16px;font-size:30px;letter-spacing:10px;color:#8fb4ff55}
+.tpHero h1{margin:0;font:700 44px/1.05 'Cormorant Garamond',Georgia,serif;background:linear-gradient(180deg,#ffe9a6 10%,#efbd55 55%,#b97a22 92%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 2px #000)}
+.tpHero p{margin:8px 0 0;font-size:20px;color:#f6efe0;max-width:30em}
+.tpPanel{margin:0 0 16px;padding:18px;border:1.5px solid #33467e;border-radius:14px;background:linear-gradient(180deg,#121b3e,#0b1230);box-shadow:0 6px 18px #0007}
+.tpH2{margin:6px 0 12px;font:700 26px 'Cormorant Garamond',Georgia,serif;color:#f6dfa4}
+.tpH2 small{font-size:18px;color:#cdd5ea;font-weight:500}
+.tpLead{font-size:19px;line-height:1.45;color:#dfe5f6;margin:4px 0 12px}
+.tpNote{font-size:17px;line-height:1.45;color:#cdd5ea;padding:12px 14px;border-left:3px solid #c9a35a;background:#0d1534;border-radius:6px}
+.tpMeta{margin:-6px 0 14px;font-size:17px;color:#cdd5ea;text-align:center}
+.tpBtn{min-height:56px;padding:0 24px;border-radius:12px;border:1.5px solid #c9a35a;background:linear-gradient(180deg,#24305e,#141c40);color:#f6e7c4;font:700 20px 'Cormorant Garamond',Georgia,serif;cursor:pointer;box-shadow:0 4px 0 #070b1e,0 6px 14px #0008;touch-action:manipulation}
+.tpBtn.gold{background:linear-gradient(180deg,#ffe29a,#efb54a 55%,#c4801f);color:#2a1606;border-color:#fff1c2}
+.tpBtn.red{background:linear-gradient(180deg,#a8343a,#6e1a22);color:#ffe9e4;border-color:#e2a49a}
+.tpBtn:disabled{filter:grayscale(.7) brightness(.7);cursor:not-allowed}
+.tpBtn:active{transform:translateY(2px);box-shadow:0 2px 0 #070b1e}
+.tpBtn.tpWide{display:block;width:100%;margin-top:12px}
+.tpLink{background:none;border:0;color:#cdd5ea;text-decoration:underline;font-size:17px;min-height:44px;cursor:pointer}
+.tpActions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:16px}
+.tpActions>.tpBtn{flex:1 1 200px}
+.tpCheck{position:absolute;top:-10px;right:-10px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4a3a1c,#1c140a);border:2px solid #f2c45f;color:#ffd77a;font-weight:800;z-index:4}
+/* Rules */
+.tpTabs{position:sticky;top:64px;z-index:5;display:flex;gap:8px;margin:0 0 16px;padding:6px;border-radius:14px;background:#0b1230ee;border:1px solid #33467e}
+.tpTab{flex:1;min-height:52px;border-radius:10px;border:1px solid transparent;background:none;color:#cdd5ea;font:700 19px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.tpTab.on{background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;border-color:#fff1c2}
+.tpSteps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.tpSteps li{display:flex;gap:16px;align-items:flex-start;padding:16px 18px;border:1.5px solid #33467e;border-radius:14px;background:linear-gradient(180deg,#152050,#0c1436)}
+.tpNum{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:700 26px 'Cormorant Garamond',Georgia,serif;color:#2a1606;background:radial-gradient(circle at 35% 30%,#fff0b8,#e8ae45 60%,#a96a18);box-shadow:0 0 0 2px #6a4a10}
+.tpSteps li>div>b,.tpConds li>div>b{display:block;font:700 23px 'Cormorant Garamond',Georgia,serif;color:#fff4e0}
+.tpSteps p,.tpConds p{margin:4px 0 0;font-size:18px;line-height:1.45;color:#dfe5f6}.tpSteps p b{color:#ffd77a}
+.tpConds{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tpConds li{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #33467e;border-radius:12px;background:#0d1534}
+.tpConds li>span{font-size:28px;line-height:1}
+.tpFull{padding:4px 18px 18px;border:1.5px solid #33467e;border-radius:14px;background:linear-gradient(180deg,#121b3e,#0b1230);font-size:18px;line-height:1.55}
+.tpFull h2{font:700 25px 'Cormorant Garamond',Georgia,serif;color:#f6dfa4;margin:18px 0 6px}
+/* Training */
+.tpTrainee{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+.tpAva{position:relative;width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid #c9a35a;box-shadow:0 0 18px #f2b44a55}
+.tpAva .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.tpAva img{object-fit:cover!important}
+.tpWho>b{display:block;font:700 32px 'Cormorant Garamond',Georgia,serif;color:#ffe3a0}
+.tpWho>span{font-size:19px;color:#dfe5f6}
+.tpMini{margin:8px 0 0;padding-left:20px;font-size:17px;line-height:1.4;color:#cdd5ea}
+.tpMini b{color:#fff4e0}
+.tpStart{grid-column:1/-1;width:100%;font-size:24px}
+.tpGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 14px}
+.tpPick{position:relative;padding:8px;border:1.5px solid #33467e;border-radius:12px;background:linear-gradient(180deg,#0f1a3d,#0a1230);cursor:pointer}
+.tpPick.sel{border:2.5px solid #f2c45f;box-shadow:0 0 0 1px #6a4a10,0 0 22px #f2b44a77}
+.tpCardBox{position:relative;width:100%;aspect-ratio:230/350;pointer-events:none}
+/* Friend Trading */
+.tpFriends{display:grid;gap:10px;max-height:46vh;overflow:auto}
+.tpFriend{position:relative;display:flex;align-items:center;gap:14px;min-height:72px;padding:8px 14px;border:1.5px solid #33467e;border-radius:12px;background:#0d1534;color:#eef1fb;text-align:left;cursor:pointer}
+.tpFriend .tpCheck{display:none;position:static;margin-left:auto}
+.tpFriend.on{border-color:#f2c45f;background:linear-gradient(180deg,#1d2a5c,#111a40);box-shadow:0 0 16px #f2b44a44}
+.tpFriend.on .tpCheck{display:grid}
+.tpFAva{position:relative;flex:none;width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid #c9a35a;background:#121a3a;display:grid;place-items:center}
+.tpFAva .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.tpFAva .uiXTInit{font:700 26px 'Cormorant Garamond',serif;color:#ffd77a}
+.tpFWho b{display:block;font:700 22px 'Cormorant Garamond',Georgia,serif}
+.tpFWho small{font-size:16px;color:#9aa6c8}.tpFWho small i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#6b7280;margin-right:6px}
+.tpFWho small.on{color:#8ee6a0}.tpFWho small.on i{background:#3fd36b;box-shadow:0 0 8px #3fd36b}
+.tpTable .friendRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:19px}
+.tpTable .friendRow button{min-height:48px;font-size:18px}
+/* Trade Room */
+.tpProgress{list-style:none;display:flex;gap:6px;margin:0 0 16px;padding:0}
+.tpProgress li{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:10px;border:1px solid #33467e;background:#0d1534;color:#9aa6c8;font:700 18px 'Cormorant Garamond',Georgia,serif}
+.tpProgress b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#1b2550;font-size:16px}
+.tpProgress .on{color:#2a1606;background:linear-gradient(180deg,#ffe29a,#e8ae45);border-color:#fff1c2}.tpProgress .on b{background:#fff3c8}
+.tpProgress .done{color:#8ee6a0;border-color:#2f7a4a}.tpProgress .done b{background:#1f5a36;color:#c9ffd8}
+.tpSide header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.tpSide header b{font:700 25px 'Cormorant Garamond',Georgia,serif;color:#fff4e0}.tpSide header small{color:#cdd5ea;font-size:17px}
+.tpSide header em{margin-left:auto;font-style:normal;font-size:17px;color:#cdd5ea}
+.tpSide.ok{border-color:#3fd36b}.tpSide.ok header em{color:#8ee6a0}
+.tpRow{display:flex;align-items:center;gap:8px;min-height:120px;overflow-x:auto;padding:12px 4px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.tpRow .tradeItem{position:relative;flex:none;width:150px;scroll-snap-align:start;gap:0}
+.tpRow .tradeItem>:not(.tradeCardPrint):not(.tradeX){display:none}
+.tpRow .tradeCardPrint{width:230px;zoom:.652;margin:0}
+.tpRow .tradeX{position:absolute;top:-8px;right:-8px;z-index:3;width:40px;height:40px;font-size:22px}
+.tpPlus{flex:none;font-size:30px;font-weight:800;color:#ffd27a;text-shadow:0 0 10px #f2b44a88}
+.tpEmpty{margin:0 auto;color:#9aa6c8;font-size:18px}
+.tpSwap{text-align:center;font-size:30px;color:#f2c96a;margin:-8px 0 8px}
+.tpErr:empty{display:none}.tpErr{color:#ffb4a8;text-align:center;font-size:18px;margin:8px 0}
+.tpFinal{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);width:min(824px,calc(100% - 36px));margin:0;z-index:30;box-shadow:0 -6px 20px #000a;padding:12px;border-radius:14px;background:#0b1230ee;border:1px solid #33467e}
+.tpAcceptSlot{display:contents}
+.tpAcceptSlot>button{flex:1 1 200px}
+@media (max-width:600px){.tpGrid{grid-template-columns:repeat(2,1fr)}.tpConds{grid-template-columns:1fr}.tpHero h1{font-size:36px}}
+.tpPage.tpRoom{padding-bottom:200px}
+/* ---------- Trade alerts: Friends badge, invitation pop-up, Trade complete, Past trades ---------- */
+.uiPTab[data-go="friends"],.uiTabTile[data-go="friends"]{position:relative}
+.uiTradeBadge{position:absolute;top:4px;right:6px;z-index:5;min-width:26px;height:26px;padding:0 7px;border-radius:13px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#ff7a6a,#d3262f 70%);border:2px solid #fff3c8;color:#fff;font:800 14px system-ui,sans-serif;box-shadow:0 0 12px #ff3b3b99;animation:tbPulse 1.6s ease-in-out infinite}
+.uiTradeBadge[hidden]{display:none}
+@keyframes tbPulse{50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.uiTradeBadge{animation:none}}
+.tradeAlert{position:fixed;z-index:140;left:50%;top:84px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;width:min(560px,calc(100vw - 24px));padding:14px 16px;border-radius:14px;border:2px solid #c9a35a;background:linear-gradient(135deg,#1d2c4f,#0f1838);color:#f4f6ff;box-shadow:0 14px 40px #000c;animation:taIn .35s ease-out}
+@keyframes taIn{from{opacity:0;transform:translate(-50%,-16px)}}
+.tradeAlertIcon{font-size:28px}
+.tradeAlert p{flex:1;margin:0;font:17px/1.35 system-ui,'Segoe UI',sans-serif}
+.tradeAlert b{color:#ffd77a}
+.tradeAlertOpen{min-height:46px;padding:0 20px;border-radius:10px;border:1.5px solid #fff1c2;background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;font:700 18px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.tradeAlertX{width:40px;height:40px;border:0;border-radius:50%;background:#ffffff14;color:#cdd5ea;font-size:24px;cursor:pointer}
+.tradeDone{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px;background:#05081acc;animation:taFade .25s ease-out}
+@keyframes taFade{from{opacity:0}}
+.tdBox{width:min(760px,100%);max-height:calc(100dvh - 32px);overflow:auto;padding:24px;border-radius:18px;border:2px solid #c9a35a;background:radial-gradient(120% 120% at 50% 0%,#24306a,#0b1230 70%);box-shadow:0 0 0 1px #6a4a1066,0 24px 60px #000;color:#eef1fb;text-align:center}
+.tdBox h2{margin:0;font:700 42px 'Cormorant Garamond',Georgia,serif;background:linear-gradient(180deg,#ffe9a6 10%,#efbd55 55%,#b97a22 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tdSub{margin:6px 0 0;font:18px 'EB Garamond',Georgia,serif;color:#dfe5f6}.tdSub b{color:#ffd77a}
+.tdSides{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:18px 0}
+.tdSides h3{margin:0 0 10px;font:700 22px 'Cormorant Garamond',Georgia,serif;color:#cdd5ea}
+.tdSides .got h3{color:#8ee6a0}
+.tdCards{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.tdArrow{font-size:38px;color:#f2c96a}
+.tcCard{margin:0;width:104px}
+.tcArt{position:relative;width:104px;height:104px;border-radius:14px;overflow:hidden;border:2px solid #c9a35a;background:#0d1534}
+.tcArt .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.tcArt img{object-fit:cover!important}
+.tcCard figcaption{margin-top:6px;line-height:1.15}.tcCard b{display:block;font:700 17px 'Cormorant Garamond',Georgia,serif}.tcCard small{font-size:13px;color:#9aa6c8}
+.got .tcArt{border-color:#3fd36b;box-shadow:0 0 16px #3fd36b66}
+.tdBtns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:8px}
+.tdBtns button{min-height:52px;padding:0 24px;border-radius:12px;border:1.5px solid #c9a35a;background:linear-gradient(180deg,#24305e,#141c40);color:#f6e7c4;font:700 19px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.tdBtns .tdBinder{background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606;border-color:#fff1c2}
+.thBox{text-align:left}.thBox h2{text-align:center}
+.thEmpty{text-align:center;font-size:18px;color:#cdd5ea;margin:18px 0}
+.thList{list-style:none;margin:16px 0;padding:0;display:grid;gap:10px}
+.thList li{padding:12px 14px;border:1px solid #33467e;border-radius:12px;background:#0d1534}
+.thList header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.thList header b{font:700 21px 'Cormorant Garamond',Georgia,serif;color:#fff4e0}.thList header small{color:#9aa6c8;font-size:15px}
+.thSwap{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.thSwap>span{font-size:24px;color:#f2c96a}
+.thSwap em{display:block;font-style:normal;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#9aa6c8;margin-bottom:4px}
+.thSwap i{font-style:normal;color:#ffd27a;margin:0 4px;font-weight:800}
+.thMon{display:inline-flex;align-items:center;gap:6px;font-size:16px;margin:2px 0}
+.thArt{position:relative;width:34px;height:34px;border-radius:50%;overflow:hidden;border:1.5px solid #c9a35a;flex:none}
+.thArt .mythlingArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.thOpen{display:block;margin:0 auto 16px;min-height:50px;padding:0 22px;border-radius:12px;border:1.5px solid #c9a35a;background:linear-gradient(180deg,#24305e,#141c40);color:#f6e7c4;font:700 19px 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.thOpen.onCanvas{position:absolute;z-index:6;right:2.4%;top:39.6%;margin:0;min-height:0;height:3.6%;font-size:clamp(13px,1.15vw,19px);padding:0 1.1em}
+@media (max-width:600px){.tdSides{grid-template-columns:1fr}.tdArrow{transform:rotate(90deg)}.thSwap{grid-template-columns:1fr}.thSwap>span{display:none}}
 /* Transparent logo supplied November 1, 2026. */
 .uiBrand .uiLogo .uiLogoNew,.uiLogo .uiLogoNew{display:block;width:min(280px,40vw);height:auto;max-height:84px;object-fit:contain}
 .uiPLogo{background:#101934 url(/branding/emberlings-logo-transparent.png) center/contain no-repeat!important;z-index:3;border:0!important;border-radius:0!important}
