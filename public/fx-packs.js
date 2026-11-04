@@ -3,11 +3,13 @@
 // rarest pulls and mutated cards. Presentation only: it never changes what a pack gives, coins or the save.
 // Talks to the game only through window.EmberBridge, ember:* events and the page.
 import { MUTATIONS } from '/combat-rules.js';
+import { fxCalm, fxLight, fxCount } from '/fx-level.js';
 
 const B = window.EmberBridge;
 const RARITY_COLORS = ['#aebce2', '#7be7b3', '#72b5ff', '#c18aff', '#ffd568', '#73f0f1', '#ff88d4'];
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const calm = () => !!B.state.reducedMotion || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+// Effects setting: Off = no decorative animation; Light = no flashes or confetti, a third of the sparkles, shorter fanfares.
+const calm = fxCalm;
 const rand = (a, b) => a + Math.random() * (b - a);
 const mutOf = c => MUTATIONS.find(m => m.id === c?.mutation) || null;
 const packOf = c => { try { return B.packCatalog().find(p => p.id === (c?.sourcePack || B.state.pendingPack?.packId)) || null; } catch { return null; } };
@@ -50,6 +52,7 @@ const centerOf = node => { const r = node?.getBoundingClientRect?.(); return r &
 const small = () => innerWidth < 700;
 
 function flash(color, strength = .45) {
+  if (fxLight()) return;
   const f = add(el('fxpFlash')); f.style.background = `radial-gradient(circle at 50% 45%,#fff,${color} 45%,transparent 80%)`;
   anim(f, [{ opacity: 0 }, { opacity: strength, offset: .18 }, { opacity: 0 }], { duration: 520, easing: 'ease-out' });
 }
@@ -58,7 +61,7 @@ function ring({ x, y }, color, size = 160, dur = 700) {
   anim(r, [{ transform: 'translate(-50%,-50%) scale(.2)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(3.2)', opacity: 0 }], { duration: dur, easing: 'cubic-bezier(.15,.7,.3,1)' });
 }
 function sparkles({ x, y }, colors, n, reach = 180) {
-  n = Math.min(n, small() ? 22 : 40);
+  n = fxCount(Math.min(n, small() ? 22 : 40));
   for (let i = 0; i < n; i++) {
     const s = add(el('fxpSpark')), a = (i / n) * Math.PI * 2 + rand(-.2, .2), d = reach * rand(.55, 1.15), c = colors[i % colors.length];
     Object.assign(s.style, { left: x + 'px', top: y + 'px', '--c': c });
@@ -69,6 +72,7 @@ function sparkles({ x, y }, colors, n, reach = 180) {
   }
 }
 function confetti({ x, y }, colors, n) {
+  if (fxLight()) return;
   n = Math.min(n, small() ? 34 : 64);
   for (let i = 0; i < n; i++) {
     const c = add(el('fxpConfetti')), w = rand(6, 11), dx = rand(-1, 1) * Math.min(innerWidth * .55, 520), up = rand(140, 320);
@@ -84,7 +88,9 @@ function fanfare(c, at, level = hype(c)) {
   if (!level || calm()) return;
   const cols = palette(c), color = cols[0];
   flash(color, level >= 2 ? .6 : .38);
-  ring(at, color, 170, 800); if (level >= 2) setTimeout(() => ring(at, cols[1] || '#fff', 140, 900), 140);
+  ring(at, color, 170, 800);
+  if (fxLight()) { sparkles(at, cols, level >= 2 ? 40 : 24, level >= 2 ? 200 : 150); return; } // Light: one ring and one small sparkle burst
+  if (level >= 2) setTimeout(() => ring(at, cols[1] || '#fff', 140, 900), 140);
   sparkles(at, cols, level >= 2 ? 40 : 24, level >= 2 ? 230 : 170);
   confetti(at, cols, level >= 2 ? 64 : 34);
   if (level >= 2) setTimeout(() => sparkles(at, cols.slice().reverse(), 22, 300), 260);
@@ -146,7 +152,7 @@ function buildUp(c) {
   const mote = () => {
     if (run !== rollRun || !st.isConnected || st.classList.contains('psDone')) return;
     const k = Math.min(1, (performance.now() - t0) / 2400), gap = level ? (level >= 2 ? 70 : 110) - k * 40 : 220;
-    if (motes < (small() ? 10 : 18)) {
+    if (motes < fxCount(small() ? 10 : 18)) {
       const m = el('fxpMote'), a = rand(0, Math.PI * 2), d = rand(150, 260) * (small() ? .75 : 1);
       m.style.setProperty('--c', Math.random() < .25 ? '#fff' : color); motes++;
       add(m, center);
@@ -169,7 +175,7 @@ function buildUp(c) {
   };
   if (level) beat();
   let vig = null;
-  if (level >= 2) { vig = add(el('fxpVignette')); vig.style.setProperty('--c', color); }
+  if (level >= 2 && !fxLight()) { vig = add(el('fxpVignette')); vig.style.setProperty('--c', color); }
   const land = () => {
     if (run !== rollRun) return;
     rays.classList.remove('fxpCharge'); rays.classList.add('fxpLanded');
@@ -327,6 +333,9 @@ function injectCSS() {
 .reduceMotion #fxpLayer{display:none}
 .reduceMotion .fxpAura *{animation:none!important}
 @media(prefers-reduced-motion:reduce){#fxpLayer{display:none}.fxpAura *{animation:none!important}}
+html[data-fx=light] .fxpFlash,html[data-fx=light] .fxpConfetti,html[data-fx=light] .fxpVignette{display:none}
+html[data-fx=light] .fxpCharging{animation-name:fxpChargeLight!important}
+@keyframes fxpChargeLight{0%{filter:brightness(.4) saturate(.2)}100%{filter:brightness(1.3)}}
 `;
   document.head.appendChild(s);
 }
