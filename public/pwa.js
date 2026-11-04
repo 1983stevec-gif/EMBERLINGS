@@ -130,6 +130,9 @@ addEventListener('beforeinstallprompt', e => {
 });
 addEventListener('appinstalled', () => { store.set('installed'); deferred = null; closeTip(false); });
 
+// For the Settings page (settings.js): same install flow as the tip and the menu item.
+window.EmberPwa = { canInstall: () => !!canInstall(), install, installed: standalone };
+
 /* "Install EMBERLINGS" in the user menu, whenever installing is possible (not a nag: only shows when the menu is opened). */
 new MutationObserver(() => {
   const menu = $('.uiMenu');
