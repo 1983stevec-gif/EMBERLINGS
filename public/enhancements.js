@@ -400,7 +400,8 @@ function cardMesh(T, c) {
   const group = new T.Group(), geo = new T.PlaneGeometry(2.2, 3.12);
   const frontTex = new T.CanvasTexture(cardCanvas(c, {}, () => { frontTex.needsUpdate = true; }));
   frontTex.colorSpace = T.SRGBColorSpace;
-  const backTex = new T.CanvasTexture(cardBackCanvas()); backTex.colorSpace = T.SRGBColorSpace;
+  // The player's chosen card back (cosmetics.js) when they picked one; otherwise the usual back.
+  const backTex = new T.CanvasTexture(window.EmberCosmetics?.backCanvas?.(() => { backTex.needsUpdate = true; }) || cardBackCanvas()); backTex.colorSpace = T.SRGBColorSpace;
   const front = new T.Mesh(geo, new T.MeshBasicMaterial({ map: frontTex, transparent: true }));
   const back = new T.Mesh(geo.clone(), new T.MeshBasicMaterial({ map: backTex, transparent: true })); back.rotation.y = Math.PI;
   group.add(front, back);
