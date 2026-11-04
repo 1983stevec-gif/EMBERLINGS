@@ -42,6 +42,21 @@ try{
   assert.equal((await api('b','/players/nobody_here/profile')).status,404);
   assert.equal((await api('b','/players/bad name!/profile')).status,400);
  });
+ await test('Card backs, avatar rings and the avatar picture are optional, validated and shown to friends',async()=>{
+  const bad=async patch=>(await api('a','/showcase',{...good,...patch})).status;
+  assert.equal(await bad({cardBack:'hacked-back'}),400);
+  assert.equal(await bad({cardBack:'<img>'}),400);
+  assert.equal(await bad({ring:'diamond'}),400);
+  assert.equal(await bad({avatar:card(16)}),400);
+  assert.equal(await bad({avatar:card(1,{rarity:'Ultra'})}),400);
+  assert.equal(await bad({avatar:'not a card'}),400);
+  const old=await api('a','/showcase',good);assert.equal(old.status,200);assert.equal(old.data.profile.cardBack,'ember','Older games get the default back');assert.equal(old.data.profile.ring,'gold');assert.equal(old.data.profile.avatar,undefined);
+  const r=await api('a','/showcase',{...good,cardBack:'starfield',ring:'prism',avatar:{...card(5),xp:9,coins:99}});assert.equal(r.status,200,JSON.stringify(r.data));
+  const seen=(await api('b','/players/ShowAlice/profile')).data.profile;
+  assert.equal(seen.cardBack,'starfield');assert.equal(seen.ring,'prism');
+  assert.deepEqual(Object.keys(seen.avatar).sort(),['kind','level','mutation','rarity','secret','shiny'],'Avatar keeps only picture fields');assert.equal(seen.avatar.kind,5);
+  assert.equal((await api('a','/showcase',{...good,cards:[1,2,3,4,5].map(k=>card(k,{id:'x'.repeat(64)})),badges:['pack-1','pack-25','pack-100','quest-1','quest-25','quest-100'],cardBack:'void',ring:'champion',avatar:card(7,{stage:2,academyAttack:5,fused:true})})).status,200,'A full profile still fits');
+ });
  await test('A friend without a saved showcase shows an empty profile, and showcasing never touches cards or trades',async()=>{
   const r=await api('a','/players/ShowBob/profile');assert.equal(r.status,200);assert.equal(r.data.profile,null);
   assert.equal((await db.prepare('SELECT COUNT(*) n FROM trade_assets').first()).n,0);

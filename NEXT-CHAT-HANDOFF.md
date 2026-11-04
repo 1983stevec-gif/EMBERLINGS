@@ -127,6 +127,7 @@ All project files are in the GitHub repository **1983stevec-gif/EMBERLINGS**. An
   | `fx-packs.js` | pack effects: pack tearing open, rarity glow and light rays, build-up before special cards, fanfare for the rarest pulls |
   | `fx-cards.js` | card effects: holographic foil with 3D tilt, shine sweep on rare and mutated cards, smoother binder pages |
   | `fx-menus.js` | menu effects: quick screen transitions, coin showers, counting coin counter, livelier level-up, opening chest for daily rewards |
+  | `cosmetics.js` | card backs and avatar rings unlocked by achievements, and an avatar Mythling of your choice (picked on My Profile, saved in `state.ember.profile.cardBack` / `.ring` / `.avatar`). Sets `<html data-cardback>` / `data-avring`; `.cosBack` draws a face-down card |
 
   All of these are presentation or add-on features: they talk to the game only through `EmberBridge`, `ember:*` events and the page.
 - **Painted ("exact") pages:**

@@ -3,7 +3,8 @@
 // Local data lives in state.ember.profile (added only when you first change something). Showcasing a card is
 // just a picture of it: the card is never moved, locked or changed.
 import { ACHIEVEMENTS, SPECIES_COUNT } from '/achievements.js';
-import { FRAMES, BACKGROUNDS, BADGES, SHOWCASE_MAX, BADGES_MAX, achievementFor } from '/profile-items.js';
+import { FRAMES, BACKGROUNDS, BADGES, CARD_BACKS, AVATAR_RINGS, SHOWCASE_MAX, BADGES_MAX, achievementFor } from '/profile-items.js';
+import { backHTML, avatarCard, apply as applyCosmetics } from '/cosmetics.js';
 
 const B = window.EmberBridge;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -13,7 +14,7 @@ const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'ob
 const DEFAULTS = { showcase: [], frame: 'simple', background: 'dusk', badges: [] };
 // Read-only view of the saved profile with defaults filled in; nothing is written until the player changes something.
 const prof = () => { const p = ext().profile; return p && typeof p === 'object' ? { ...DEFAULTS, ...p } : { ...DEFAULTS }; };
-function edit(fn) { const e = ext(); const p = { ...DEFAULTS, ...(e.profile && typeof e.profile === 'object' ? e.profile : {}) }; fn(p); e.profile = p; B.save(); schedulePublish(); }
+function edit(fn) { const e = ext(); const p = { ...DEFAULTS, ...(e.profile && typeof e.profile === 'object' ? e.profile : {}) }; fn(p); e.profile = p; B.save(); applyCosmetics(); schedulePublish(); }
 
 /* ---------------------------------------------------------------- What the player has earned */
 const earned = id => !id || !!(ext().achievements || {})[id];
@@ -56,9 +57,11 @@ function snap(c) {
 function currentLook() {
   const p = prof(), frame = FRAMES.find(f => f.id === p.frame && unlocked(f)) ? p.frame : 'simple', background = BACKGROUNDS.find(b => b.id === p.background && unlocked(b)) ? p.background : 'dusk';
   const badges = (Array.isArray(p.badges) ? p.badges : []).filter((id, i, a) => a.indexOf(id) === i && BADGES.some(b => b.id === id) && earned(id)).slice(0, BADGES_MAX);
-  return { frame, background, badges };
+  // Card back and avatar ring (cosmetics.js applies them); a missing choice means the usual look.
+  const cardBack = CARD_BACKS.find(x => x.id === p.cardBack && unlocked(x)) ? p.cardBack : 'ember', ring = AVATAR_RINGS.find(x => x.id === p.ring && unlocked(x)) ? p.ring : 'gold';
+  return { frame, background, badges, cardBack, ring };
 }
-function payload() { const s = myStats(); return { cards: showcaseCards().map(snap), ...currentLook(), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
+function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
 
 /* ---------------------------------------------------------------- Sharing with friends */
 const hash = s => { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
@@ -86,19 +89,20 @@ function badgeSVG(id, locked) {
     <text x="32" y="44" text-anchor="middle" font-size="24">${locked ? '🔒' : a.icon}</text></svg>`;
 }
 const badgeHTML = id => { const a = achievementFor(id); return a ? `<span class="pfBadge" title="${esc(a.name)}: ${esc(a.desc)}">${badgeSVG(id)}<small>${esc(a.name)}</small></span>` : ''; };
-function bannerHTML({ name, title, sub, avatar, frame, background, badges }) {
+function bannerHTML({ name, title, sub, avatar, frame, background, badges, ring = 'gold' }) {
   return `<div class="pfBanner pf-b-${esc(background)}"><i class="pfBannerArt" aria-hidden="true"></i>
-    <div class="pfFrame pf-f-${esc(frame)}"><div class="pfAva">${avatar || ''}</div>${frame === 'royal' || frame === 'voidbane' ? `<svg class="pfCrown" viewBox="0 0 60 30" aria-hidden="true"><path d="M4 28 8 6l12 12L30 2l10 16L52 6l4 22z" fill="${frame === 'royal' ? '#ffd46b' : '#b18bff'}" stroke="#0009" stroke-width="2"/></svg>` : ''}</div>
+    <div class="pfFrame pf-f-${esc(frame)}"><div class="pfAva cosRing-${esc(ring)}">${avatar || ''}</div>${frame === 'royal' || frame === 'voidbane' ? `<svg class="pfCrown" viewBox="0 0 60 30" aria-hidden="true"><path d="M4 28 8 6l12 12L30 2l10 16L52 6l4 22z" fill="${frame === 'royal' ? '#ffd46b' : '#b18bff'}" stroke="#0009" stroke-width="2"/></svg>` : ''}</div>
     <div class="pfWho"><h1>${esc(name)}</h1>${title ? `<p class="pfTitle">🏷 ${esc(title)}</p>` : ''}${sub ? `<p class="pfSub">${sub}</p>` : ''}</div>
     ${badges.length ? `<div class="pfBadges" aria-label="Badges">${badges.map(badgeHTML).join('')}</div>` : ''}</div>`;
 }
 const statTile = (icon, label, value, extra = '') => `<div class="pfStat ${extra}"><span aria-hidden="true">${icon}</span><b>${value}</b><small>${label}</small></div>`;
 const cardFor = c => `<div class="pfCard">${B.cardHTML(c)}</div>`;
+const backTile = id => `<div class="pfStat pfBackStat">${backHTML(id, 'pfBackMini')}<div><small>Card back</small><b>${esc((CARD_BACKS.find(x => x.id === id) || CARD_BACKS[0]).name)}</b></div></div>`;
 
 /* ---------------------------------------------------------------- My profile page */
 let tab = 'frames', picker = false;
 function renderMine() {
-  const st = B.state, e = ext(), s = myStats(), look = currentLook(), cards = showcaseCards(), active = B.active?.() || owned()[0];
+  const st = B.state, e = ext(), s = myStats(), look = currentLook(), cards = showcaseCards(), active = avatarCard() || B.active?.() || owned()[0];
   const best = window.EmberRare?.rarest ? window.EmberRare.rarest(owned()) : owned().slice().sort((a, b) => score(b) - score(a))[0];
   const signedIn = !!st.playerUsername;
   if (!shareMsg) shareMsg = signedIn ? (e.profile ? 'Friends can see your profile.' : 'Pick your cards and look. Friends will see it in their Friends list.') : 'Choose a username in Friends to share your profile with friends.';
@@ -109,12 +113,13 @@ function renderMine() {
     ${statTile('🃏', 'Cards owned', fmt(s.cards))}${statTile('🔎', 'Species found', `${s.species}/${SPECIES_COUNT}`)}${statTile('⚔️', 'Battles won', fmt(s.wins), 'pfStatWins')}
     ${statTile('🗺️', 'Quests won', `${fmt(s.quests)}/100`)}${statTile('👥', 'Friend wins', fmt(s.friendWins))}${statTile('⬆️', 'Top level', s.top || '–')}${statTile('🎟️', 'Academy Passes', fmt(s.passes))}${statTile('🎁', 'Packs opened', fmt(s.packs))}
     ${best ? `<div class="pfStat pfRarest"><span class="pfRarestArt" aria-hidden="true">${B.art(best)}</span><div><small>Rarest find</small><b>${esc(spName(best))}</b><small>${esc(rarity(best))}${mutOf(best) ? ' · ' + esc(mutOf(best).name) : ''}${best.shiny ? ' · Shiny' : ''} · Lv ${best.level || 1}</small></div></div>` : ''}
+    ${backTile(look.cardBack)}
    </div>
    <section class="pfSection"><div class="pfHead"><h2>Collection Showcase</h2><p>Show off up to ${SHOWCASE_MAX} of your cards. They stay in your collection as normal.</p>
     <div class="pfBtns"><button type="button" class="pfBtn gold" data-pf="auto">★ Auto-pick my best ${SHOWCASE_MAX}</button><button type="button" class="pfBtn" data-pf="pick">Choose cards</button>${cards.length ? '<button type="button" class="pfBtn ghost" data-pf="clear">Clear</button>' : ''}</div></div>
     <div class="pfShow">${owned().length ? slots : '<p class="pfNote">Open a pack to get cards you can show off.</p>'}</div></section>
-   <section class="pfSection pfCustom"><div class="pfHead"><h2>Customise</h2><p>Earn achievements to unlock new frames, backgrounds and badges.</p></div>
-    <div class="pfTabs" role="tablist">${[['frames', 'Frames'], ['backgrounds', 'Backgrounds'], ['badges', `Badges (${look.badges.length}/${BADGES_MAX})`]].map(([k, t]) => `<button type="button" role="tab" class="pfTab ${tab === k ? 'on' : ''}" aria-selected="${tab === k}" data-pf-tab="${k}">${t}</button>`).join('')}</div>
+   <section class="pfSection pfCustom"><div class="pfHead"><h2>Customise</h2><p>Earn achievements to unlock new frames, backgrounds, card backs, avatar rings and badges. They only change how things look.</p></div>
+    <div class="pfTabs" role="tablist">${[['frames', 'Frames'], ['backgrounds', 'Backgrounds'], ['backs', 'Card backs'], ['avatar', 'Avatar'], ['badges', `Badges (${look.badges.length}/${BADGES_MAX})`]].map(([k, t]) => `<button type="button" role="tab" class="pfTab ${tab === k ? 'on' : ''}" aria-selected="${tab === k}" data-pf-tab="${k}">${t}</button>`).join('')}</div>
     <div class="pfOptions">${optionsHTML(look)}</div></section>
    <p id="pfShare" class="pfShare" role="status">${esc(shareMsg)}</p>
    <p class="pfLinks"><button type="button" class="pfBtn ghost" data-go="achievements">🏆 Achievements &amp; titles</button>${signedIn ? '<button type="button" class="pfBtn ghost" data-go="friends">👥 Friends</button>' : '<button type="button" class="pfBtn ghost" data-go="friends">👥 Choose a username</button>'}</p>
@@ -123,7 +128,27 @@ function renderMine() {
   if (picker) openPicker();
   publish();
 }
+// Your avatar can be any Mythling you own: one button per look (species, mutation, shiny, secret), best first.
+function avatarChoices() {
+  const seen = new Set(), out = [];
+  for (const c of owned().slice().sort((a, b) => score(b) - score(a))) { const k = `${c.kind}|${c.mutation || ''}|${!!c.shiny}|${!!c.secret}`; if (!seen.has(k)) { seen.add(k); out.push(c); } if (out.length >= 48) break; }
+  return out;
+}
+const lockText = (x, on) => on ? '✓ In use' : unlocked(x) ? 'Tap to use' : '🔒 ' + esc(howTo(x));
+function cosmeticOptions(look) {
+  if (tab === 'backs') return `<p class="pfNote pfCosNote">Your card back shows on the back of face-down cards: the card details flip side, pack reveals and your battle deck.</p>
+   <div class="pfGrid pfBackGrid">${CARD_BACKS.map(x => { const ok = unlocked(x), on = x.id === look.cardBack;
+    return `<button type="button" class="pfOpt pfBackOpt ${ok ? '' : 'locked'} ${on ? 'on' : ''}" data-pf-back="${x.id}" aria-pressed="${on}" ${ok ? '' : 'aria-disabled="true"'}>${backHTML(x.id, 'pfBackPrev')}<b>${esc(x.name)}</b><small>${lockText(x, on)}</small></button>`; }).join('')}</div>`;
+  const cur = avatarCard(), def = B.active?.() || owned()[0];
+  const ava = (c, id, label, sub) => `<button type="button" class="pfOpt pfAvaOpt ${(cur ? cur.id === id : !id) ? 'on' : ''}" data-pf-ava="${esc(id)}" aria-pressed="${cur ? cur.id === id : !id}"><span class="cosRingSwatch cosRing-${esc(look.ring)}">${c ? B.art(c) : ''}</span><b>${esc(label)}</b><small>${sub}</small></button>`;
+  return `<h3 class="pfSubHead">Avatar Mythling</h3><p class="pfNote pfCosNote">Shown in the top bar and on your profile. Pick from Mythlings you own.</p>
+   <div class="pfGrid pfAvaGrid">${ava(def, '', 'Active Mythling', 'Follows your Active')}${avatarChoices().map(c => { const m = mutOf(c); return ava(c, c.id, spName(c), `${esc(rarity(c))}${m ? ' · ' + m.icon + ' ' + esc(m.name) : ''}${c.shiny ? ' · ✦ Shiny' : ''}`); }).join('')}</div>
+   <h3 class="pfSubHead">Avatar rings</h3>
+   <div class="pfGrid">${AVATAR_RINGS.map(x => { const ok = unlocked(x), on = x.id === look.ring;
+    return `<button type="button" class="pfOpt ${ok ? '' : 'locked'} ${on ? 'on' : ''}" data-pf-ring="${x.id}" aria-pressed="${on}" ${ok ? '' : 'aria-disabled="true"'}><span class="cosRingSwatch cosRing-${x.id}">${cur || def ? B.art(cur || def) : ''}</span><b>${esc(x.name)}</b><small>${lockText(x, on)}</small></button>`; }).join('')}</div>`;
+}
 function optionsHTML(look) {
+  if (tab === 'backs' || tab === 'avatar') return cosmeticOptions(look);
   if (tab === 'badges') return `<div class="pfGrid pfBadgeGrid">${BADGES.map(b => { const ok = earned(b.id), on = look.badges.includes(b.id), a = achievementFor(b.id);
     return `<button type="button" class="pfOpt pfBadgeOpt ${ok ? '' : 'locked'} ${on ? 'on' : ''}" data-pf-badge="${b.id}" aria-pressed="${on}" ${ok ? '' : 'aria-disabled="true"'}>${badgeSVG(b.id, !ok)}<b>${esc(a.name)}</b><small>${ok ? (on ? '✓ Pinned' : 'Tap to pin') : '🔒 ' + esc(a.desc)}</small></button>`; }).join('')}</div>`;
   const list = tab === 'frames' ? FRAMES : BACKGROUNDS, cur = tab === 'frames' ? look.frame : look.background;
@@ -143,6 +168,9 @@ function wireMine() {
     if (b.dataset.pfTab) { tab = b.dataset.pfTab; return renderMine(); }
     const item = b.dataset.pfFrame ? FRAMES.find(f => f.id === b.dataset.pfFrame) : b.dataset.pfBg ? BACKGROUNDS.find(f => f.id === b.dataset.pfBg) : null;
     if (item) { if (!unlocked(item)) return B.toast('🔒 ' + howTo(item)); edit(p => { p[b.dataset.pfFrame ? 'frame' : 'background'] = item.id; }); return renderMine(); }
+    const cos = b.dataset.pfBack ? ['cardBack', CARD_BACKS.find(x => x.id === b.dataset.pfBack)] : b.dataset.pfRing ? ['ring', AVATAR_RINGS.find(x => x.id === b.dataset.pfRing)] : null;
+    if (cos?.[1]) { if (!unlocked(cos[1])) return B.toast('🔒 ' + howTo(cos[1])); edit(p => { p[cos[0]] = cos[1].id; }); return renderMine(); }
+    if (b.dataset.pfAva !== undefined) { const id = b.dataset.pfAva; if (id && !owned().some(c => c.id === id)) return; edit(p => { if (id) p.avatar = id; else delete p.avatar; }); return renderMine(); }
     const badge = b.dataset.pfBadge;
     if (badge) {
       const a = achievementFor(badge); if (!earned(badge)) return B.toast(`🔒 Earn “${a.name}”: ${a.desc}`);
@@ -199,11 +227,13 @@ function renderFriend() {
   const d = friendData, p = d.profile || {}, s = p.stats || {}, cards = (Array.isArray(p.cards) ? p.cards : []).filter(c => Number.isInteger(c?.kind) && c.kind >= 0 && c.kind < 16).slice(0, SHOWCASE_MAX);
   const frame = FRAMES.some(f => f.id === p.frame) ? p.frame : 'simple', background = BACKGROUNDS.some(b => b.id === p.background) ? p.background : 'dusk';
   const badges = (Array.isArray(p.badges) ? p.badges : []).filter(id => BADGES.some(b => b.id === id)).slice(0, BADGES_MAX);
-  let avatar = ''; try { avatar = B.art(d.pet); } catch {}
+  const cardBack = CARD_BACKS.some(x => x.id === p.cardBack) ? p.cardBack : 'ember', ring = AVATAR_RINGS.some(x => x.id === p.ring) ? p.ring : 'gold';
+  const pa = p.avatar && Number.isInteger(p.avatar.kind) && p.avatar.kind >= 0 && p.avatar.kind < 16 ? p.avatar : null;
+  let avatar = ''; try { avatar = B.art(pa || d.pet); } catch {}
   let shown = ''; try { shown = cards.map(cardFor).join(''); } catch { shown = ''; }
   B.render(`${back}<section class="pfPage pfFriend" aria-labelledby="pfName">
-   ${bannerHTML({ name: d.username, title: d.title, sub: d.online ? '🟢 Online now' : '⚪ Offline', avatar, frame, background, badges }).replace('<h1>', '<h1 id="pfName">')}
-   ${d.profile ? `<div class="pfStats">${statTile('🃏', 'Cards owned', fmt(s.cards))}${statTile('🔎', 'Species found', `${s.species || 0}/${SPECIES_COUNT}`)}${statTile('⚔️', 'Battles won', fmt(s.wins))}${statTile('🏆', 'Achievements', `${s.achievements || 0}/${ACHIEVEMENTS.length}`)}</div>` : ''}
+   ${bannerHTML({ name: d.username, title: d.title, sub: d.online ? '🟢 Online now' : '⚪ Offline', avatar, frame, background, badges, ring }).replace('<h1>', '<h1 id="pfName">')}
+   ${d.profile ? `<div class="pfStats">${statTile('🃏', 'Cards owned', fmt(s.cards))}${statTile('🔎', 'Species found', `${s.species || 0}/${SPECIES_COUNT}`)}${statTile('⚔️', 'Battles won', fmt(s.wins))}${statTile('🏆', 'Achievements', `${s.achievements || 0}/${ACHIEVEMENTS.length}`)}${backTile(cardBack)}</div>` : ''}
    <section class="pfSection"><div class="pfHead"><h2>${esc(d.username)}'s Showcase</h2></div>
     <div class="pfShow">${shown || `<p class="pfNote">${esc(d.username)} hasn't picked any cards to show yet.</p>`}</div></section>
    <p class="pfLinks"><button type="button" class="pfBtn" data-pf-trade="${esc(d.username)}">🤝 Trade with ${esc(d.username)}</button><button type="button" class="pfBtn ghost" data-go="friends">‹ Back to Friends</button></p>
@@ -333,6 +363,17 @@ body.reducedMotion .pfFrame::before{animation:none}
 .pfOpt.locked{opacity:.75;cursor:help}
 .pfOpt.locked .pfMini,.pfOpt.locked .pfSwatch{filter:grayscale(.85) brightness(.6)}
 .pfBadgeOpt .pfBadgeSvg{margin:0 auto}
+.pfBackStat{grid-template-columns:auto 1fr;grid-template-rows:auto}
+.pfBackStat>div{display:flex;flex-direction:column;min-width:0}
+.pfBackStat b{font-size:18px}
+.pfBackMini{width:40px;grid-row:auto}
+.pfBackGrid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.pfBackPrev{width:min(100%,104px);margin:0 auto}
+.pfOpt.locked .pfBackPrev,.pfOpt.locked .cosRingSwatch{filter:grayscale(.85) brightness(.6)}
+.pfSubHead{margin:6px 0 4px;font:700 18px var(--ui-display,Georgia,serif);color:#ffe6b0}
+.pfCosNote{text-align:left;margin:0 0 10px}
+.pfAvaGrid{margin-bottom:14px}
+.pfAvaOpt small{overflow-wrap:anywhere}
 .pfBadgeOpt.locked .pfBadgeSvg{opacity:.8}
 .pfShare{margin:0 auto;padding:6px 14px;border-radius:99px;background:#0d121bcc;text-align:center;color:#e6dbc0;font-size:15px}
 .pfLinks{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0}
