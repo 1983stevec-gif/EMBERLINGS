@@ -34,7 +34,7 @@ The game has a painted look: desktop pages are drawn from supplied design images
 
 **Live:** Codex published **version 60** from `main` (commit `de355ac`). Everything below is merged into `main` but **not published yet**. `PUBLISH-CODEX.md` has the publish prompt for this release.
 
-**Merged since version 60 (PRs #29 to #41):**
+**Merged since version 60 (PRs #29 to #55):**
 
 | PR | Branch | What it does |
 |---|---|---|
@@ -51,8 +51,24 @@ The game has a painted look: desktop pages are drawn from supplied design images
 | [#39](https://github.com/1983stevec-gif/EMBERLINGS/pull/39) | `fx-battle` | Battle attack animations (`fx-battle.js`). |
 | [#40](https://github.com/1983stevec-gif/EMBERLINGS/pull/40) | `fx-cards` | Card shine and foil effects (`fx-cards.js`). |
 | [#41](https://github.com/1983stevec-gif/EMBERLINGS/pull/41) | `fx-packs` | Pack opening effects (`fx-packs.js`). |
+| [#42](https://github.com/1983stevec-gif/EMBERLINGS/pull/42) | `fx-setting` | Effects setting Full / Light / Off in the user menu and Settings (`fx-level.js`, saved in `state.ember.fx`; Off also sets `state.reducedMotion`). |
+| [#43](https://github.com/1983stevec-gif/EMBERLINGS/pull/43) | `fx-sound` | Synthesized sounds for the new effects (`fx-sound.js`), controlled by the existing Sound button. |
+| [#44](https://github.com/1983stevec-gif/EMBERLINGS/pull/44) | `boss-art-painted` | Richer boss art (sources and render script in `scripts/art/bosses/`). |
+| [#45](https://github.com/1983stevec-gif/EMBERLINGS/pull/45) | `profiles` | Profiles (`profile.js`, `profile-items.js`, `lib/profile-api.mjs`): showcase, frames, backgrounds, badges; friends can view. **Needs migration `drizzle/0008_player_profile.sql`.** |
+| [#46](https://github.com/1983stevec-gif/EMBERLINGS/pull/46) | `install-app` | Install as an app (`manifest.webmanifest`, `sw.js`, `pwa.js`, new app icons); never caches `/api/`. |
+| [#47](https://github.com/1983stevec-gif/EMBERLINGS/pull/47) | `battle-highlights` | Battle highlights on Victory/Defeated with a shareable picture (`highlights.js`). |
+| [#48](https://github.com/1983stevec-gif/EMBERLINGS/pull/48) | `phone-polish` | Phone layout fixes (map visible, no sideways scroll), `scripts/shots/quiet.cjs`, docs. |
+| [#49](https://github.com/1983stevec-gif/EMBERLINGS/pull/49) | `card-details` | Card details page with a card you can turn (`card-details.js`); records where new cards came from in `state.ember.cardOrigins`. |
+| [#50](https://github.com/1983stevec-gif/EMBERLINGS/pull/50) | `home-life` | Home life (`home-life.js`): floating Mythlings, time-of-day lighting, weather, animated logo. |
+| [#51](https://github.com/1983stevec-gif/EMBERLINGS/pull/51) | `logo-arch` | Header logo: art back inside the arch (`scripts/art/logo-arch.cjs`) and a soft drop backdrop. |
+| [#52](https://github.com/1983stevec-gif/EMBERLINGS/pull/52) | `accessibility` | Accessibility (`a11y.js`): text size, element symbols, keyboard and screen-reader support (`state.ember.a11y`). |
+| [#53](https://github.com/1983stevec-gif/EMBERLINGS/pull/53) | `collection-tracker` | Collection page (`collection.js`): completion, goals, filters. |
+| [#54](https://github.com/1983stevec-gif/EMBERLINGS/pull/54) | `whats-new` | What's New panel (`whats-new.js`, release notes list at the top) and a loading screen with tips. |
+| [#55](https://github.com/1983stevec-gif/EMBERLINGS/pull/55) | `deck-share` | Deck share codes, import and Deck ideas (`deck-share.js`). |
 
-None of these need a database migration. First load (simulated 4G, empty cache) is about 2.1 MB on a phone and 3.0 MB on desktop; the four effect modules add about 25 KB of that (compressed).
+Only #45 needs a database migration (`0008_player_profile.sql`, one new empty column); the rest need none. First load (simulated 4G, empty cache) is about 2.1 MB on a phone and 3.0 MB on desktop; the four effect modules add about 25 KB of that (compressed).
+
+**When adding a release:** add an entry to the top of `RELEASES` in `public/whats-new.js` so returning players see what's new.
 
 **Next work:** the phases in `V2-PLAN.md` (v2.0 to v2.6). It ends with 8 decisions for the owner. Ask about the ones that matter before building.
 

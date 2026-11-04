@@ -21,16 +21,18 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
-    id: '2026-11-bosses-and-daily',
-    date: '4 November 2026',
-    title: 'Daily rewards, boss entrances and lots of sparkle',
+    id: '2026-11-big-update',
+    date: 'November 2026',
+    title: 'Profiles, card details, deck codes and a lot more sparkle',
     items: [
-      { icon: '🎁', text: 'Daily rewards: collect a gift every day for 7 days in a row, finish 3 daily quests and take on a weekly challenge.', daily: true, show: 'Open Daily' },
-      { icon: '👑', text: 'Every boss now makes a grand entrance before the battle, with brand-new art for all five bosses.', go: 'map', show: 'Adventure HQ' },
-      { icon: '🤝', text: 'Trading is friendlier: a badge and a pop-up when a friend invites you, a "Trade complete!" screen and a list of your past trades.', go: 'trading', show: 'Friend Trading' },
-      { icon: '💎', text: 'Rare finds: a special banner when a pack gives you something rare, and your rarest card now shows on Achievements.', go: 'packs', show: 'Open packs' },
-      { icon: '✨', text: 'Livelier animations in battles, pack openings, cards and menus. Prefer things calm? Turn on Reduce motion in the menu.' },
-      { icon: '⚡', text: 'The game loads about four times faster, and Battle Rules, Training and trading pages now fit tablets held upright.' }
+      { icon: '👤', text: 'Your own profile: show off your best 5 cards and pick frames, backgrounds and badges you have earned. Friends can open it from their Friends list.', go: 'profile', show: 'My Profile' },
+      { icon: '🔍', text: 'Tap any card in My Binder for a big card you can spin, with every stat, where it came from and how many you own.', go: 'inventory', show: 'My Binder' },
+      { icon: '📊', text: 'A new Collection page shows how complete your collection is and which goals are closest.', go: 'collection', show: 'Collection' },
+      { icon: '🧩', text: 'Share a deck with a short code, import a friend\'s deck, or try one of the Deck ideas.', go: 'decks', show: 'Battle Deck' },
+      { icon: '🏆', text: 'Battle highlights after every win: your MVP and best moments, with a picture you can share.' },
+      { icon: '🎁', text: 'Daily rewards, boss entrances with new boss art, trade alerts and rare-find banners.', daily: true, show: 'Open Daily' },
+      { icon: '✨', text: 'New animations and sounds everywhere. Choose Effects: Full, Light or Off, and find text size and element symbols under Accessibility, both in the menu.' },
+      { icon: '📱', text: 'Install EMBERLINGS as an app, faster loading, and screens that fit phones and tablets better.' }
     ]
   }
 ];
