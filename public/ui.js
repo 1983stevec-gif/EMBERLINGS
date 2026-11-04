@@ -21,7 +21,7 @@ function applyArt() { for (const el of $$('[data-ui-art]')) { const src = artFou
 
 /* Animated EMBERLINGS logo: flame (flicker, glow, embers) + lettering. Height is set with --logo-h. */
 function logoHTML(cls = '') {
-  return `<span class="uiLogo ${cls}"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.png" alt="EMBERLINGS" width="2048" height="704"></span>`;
+  return `<span class="uiLogo ${cls}"><img class="uiLogoNew" src="/branding/emberlings-logo-transparent.webp" alt="EMBERLINGS" width="840" height="299"></span>`;
 }
 
 /* Painted header bars, in source-image pixels (each bar is 2000 px wide). */
@@ -34,7 +34,8 @@ const HEADER_BARS = {
   none: { top: 276, h: 141, live: true, img: '/art/ui/header-bar.webp', logo: [205, 286, 556, 372], flame: [210, 288, 276, 370], sound: [1460, 312, 1600, 360], coins: [1613, 312, 1722, 360], user: [1739, 312, 1907, 362], tabs: { home: [646, 290, 755, 397], packs: [768, 290, 874, 397], inventory: [888, 290, 995, 397], map: [1015, 279, 1200, 406], friends: [1217, 290, 1322, 397] } }
 };
 HEADER_BARS.map = HEADER_BARS.none;
-for (const v of ['home', 'packs', 'inventory', 'friends']) { const i = new Image(); i.src = HEADER_BARS[v].img; }
+// Preload the painted tab bars only where the painted header is shown (screens 900 px and wider), after the page has loaded.
+if (matchMedia('(min-width:900px)').matches) addEventListener('load', () => setTimeout(() => { for (const v of ['home', 'packs', 'inventory', 'friends']) { const i = new Image(); i.src = HEADER_BARS[v].img; } }, 1500), { once: true });
 /* ---------------------------------------------------------------- Header */
 function head() {
   // One header everywhere. Computers get the painted bar (art from the supplied design); phones get the compact bar.
@@ -315,7 +316,7 @@ function binderLayout({ index, page }) {
   book.insertAdjacentHTML('beforeend', `<img class="uiVineTop" src="/art/ui/binder-vine-top.webp" alt="" aria-hidden="true"><img class="uiVineSide" src="/art/ui/binder-vine-side.webp" alt="" aria-hidden="true"><nav class="uiBinderTabs" aria-label="Filter by element">${TAB_ELEMENTS.map(([el, ic]) => `<button data-tab-el="${el}" class="${(f.element || '') === el ? 'on' : ''}" aria-label="${el || 'All elements'}" style="background-image:url(/art/ui/binder-tab-${(el || 'all').toLowerCase()}.webp)"></button>`).join('')}</nav>`);
   $$('[data-tab-el]', book).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); B.binderFilter('element', b.dataset.tabEl); }));
   const cover = $('.binderCover', book);
-  if (cover) cover.innerHTML = '<span class="uiCoverFrame"><img src="/branding/emberlings-logo.png" alt="EMBERLINGS" width="1448" height="1086"></span>';
+  if (cover) cover.innerHTML = '<span class="uiCoverFrame"><img src="/branding/emberlings-logo.webp" alt="EMBERLINGS" width="1448" height="1086"></span>';
   const pager = $('.binderPager');
   if (pager) {
     const [prev, label, next] = [$('#binderPrev'), $('span', pager), $('#binderNext')];
