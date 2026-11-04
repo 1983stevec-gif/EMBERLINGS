@@ -379,6 +379,7 @@ const noteEl = () => { const p = document.createElement('p'); p.className = 'shr
 // Card details: find which owned card is showing by comparing its printed text with each copy's card.
 const cardText = el => { const k = el.cloneNode(true); k.querySelectorAll('[class^="fc"],[class*=" fc"]').forEach(x => x.remove()); return k.textContent.replace(/\s+/g, ' ').trim(); };
 function detailsCard(root) {
+  const byId = root.dataset.cardId && (B.state.owned || []).find(c => c.id === root.dataset.cardId); if (byId) return byId;
   const pc = $('.cdZoom .printCard', root); if (!pc) return null;
   const want = cardText(pc), name = $('#cdTitle', root)?.textContent.trim(), t = document.createElement('template');
   for (const c of B.state.owned || []) {
@@ -403,6 +404,7 @@ function addDetails() {
 let recent = [];
 const remember = list => { recent = [...list.filter(Boolean), ...recent].slice(0, 20); };
 function bannerCard(el) {
+  const id = el.dataset.cardId; if (id) { const c = (B.state.owned || []).find(o => o.id === id) || recent.find(o => o?.id === id); if (c) return c; }
   const name = $('h2', el)?.textContent.trim(), why = $('.rfWhy', el)?.textContent.trim();
   const pool = recent.map(c => (B.state.owned || []).find(o => o.id === c.id) || c);
   const top = c => (window.EmberRare?.rareReasons?.(c) || [])[0]?.text || '';

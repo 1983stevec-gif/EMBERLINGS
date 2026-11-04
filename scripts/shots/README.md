@@ -23,6 +23,7 @@ await quiet(page);
 | `speed.cjs` | First-visit size and time over simulated 4G, empty cache (default size 768×1024) | `W=390 H=844 node speed.cjs` or `W=1366 H=900 node speed.cjs` |
 | `artcheck.cjs` | Finds broken images and failed downloads on the welcome screen and binder | `node artcheck.cjs` |
 | `activity.cjs` | Friend activity: two players, rare pull, boss win, level 25, cheer, sharing off; screenshots at three sizes | `BASE=http://127.0.0.1:8894 OUT=/tmp/ node activity.cjs` |
+| `sweep/` | Fit sweep over every screen at six sizes (1366×900, 1536×1024, 768×1024 and 1024×768 with touch, 390×844 and 360×740 with touch): sideways scroll, things off screen or cut off, things covered by the header / tab bar / Daily button, pop-ups off screen and tap targets under 40 px (a button passes if taps 20 px from its centre still land on it). `setup.cjs` makes one test player per size (with a friend, coins and rare cards), `runall.cjs` runs `sweep.cjs` for all sizes and prints totals, `traderoom.cjs` checks the Trade Room with two live players. Data goes to `$DATA` (default `<tmp>/ember-sweep`), pictures to `$OUT` | `cd sweep; BASE=http://127.0.0.1:8848 node setup.cjs; OUT=/tmp/shots TAG=before node runall.cjs` (`SIZES=390x844 SCREENS=home,stats node sweep.cjs` for a few) |
 | `quiet.cjs` | Helper, not run by itself: closes the beginner guide and the Daily rewards panel for a new test player | `await quiet(page)` |
 
 All scripts were checked against `main` on 4 Nov 2026 (after PR #41).

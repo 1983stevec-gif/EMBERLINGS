@@ -36,7 +36,7 @@ function next() {
   const reasons = rareReasons(c), top = reasons[0], very = reasons.some(r => r.tier === 'veryRare');
   const others = (B.state.owned || []).filter(o => o.id !== c.id), best = !others.length || rareScore(c) > rareScore(rarest(others));
   $('#rareFind')?.remove();
-  const el = document.createElement('div'); el.id = 'rareFind'; el.className = 'rareFind' + (very ? ' very' : ''); el.setAttribute('role', 'status');
+  const el = document.createElement('div'); el.id = 'rareFind'; el.className = 'rareFind' + (very ? ' very' : ''); el.setAttribute('role', 'status'); el.dataset.cardId = c.id;
   el.innerHTML = `<div class="rfBox"><span class="rfChip">${very ? 'Very rare find!' : 'Rare find!'}</span><div class="rfArt">${B.art(c)}</div>
     <h2>${esc(B.species[c.kind]?.name || 'Mythling')}</h2><p class="rfWhy">${esc(top?.text || '')}</p>
     ${reasons.length > 1 ? `<p class="rfMore">${reasons.slice(1, 3).map(r => esc(r.text)).join(' · ')}</p>` : ''}
