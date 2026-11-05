@@ -94,10 +94,39 @@ Each needs the server; they're built in parallel but merged one at a time, becau
 | Migrations | Additive only (new tables or columns), listed in bold at the top of each PR and in `PUBLISH-CODEX.md`; the game keeps working if a step hasn't been applied yet |
 | A random test failure blocks the GitHub check | Tests that use random numbers must fix their seed (as done in PR #71) |
 
-## 8. Decisions needed from the owner
+## 8. Owner decisions (answered 5 November 2026)
 
-1. Publish #29–#77 now, before Round 4? (recommended: yes)
-2. Start Round 4 with all nine PRs, or a smaller set?
-3. Round 5: allow anonymous error reports; which push alerts; leaderboard numbers; public profile links (yes/no)
-4. Round 7: which languages first; whether to build Clubs at all
-5. Painted boss art: will you supply it?
+| Question | Decision |
+|---|---|
+| Publish #29–#77 before Round 4? | **Yes** — the owner pastes `PUBLISH-CODEX.md` into Codex |
+| Round 4 scope | **All nine PRs**, started 5 November 2026 |
+| Anonymous crash reports (5.1) | **Yes** |
+| Which push alerts (5.2) | **Decided by Claude:** trade invitations, friend requests, "daily reward ready" (at most once a day) and cheers on your highlights (grouped, at most once a day). Each has its own switch in Settings; all are off until the player turns notifications on. No marketing or "come back" alerts. |
+| Leaderboard numbers (5.3) | **Battle stats only:** wins, win streak, best win streak, boss clears, biggest single hit (friends only) |
+| Public profile links (5.5) | **Yes** (opt-in, off by default) |
+| Translations (7.1) | **English only for now** — 7.1 is not scheduled |
+| Clubs (7.2) | **Later, in the v2 timeframe** — not scheduled now |
+| Painted boss art (7.4) | **Owner will supply the art** — spec in Section 9 |
+
+## 9. Painted boss art: what to create
+
+Five pictures, one per boss, in the same painted style as the Mythling card art (`public/art/mythlings/*.webp`).
+
+| File name | Boss | Level | Element | Look (match the current design so the lore and intro still fit) |
+|---|---|---|---|---|
+| `magmarok.webp` | Magmarok | 10 | Fire | Rock golem with a glowing molten core and lava cracks, angry glowing eyes, obsidian horns; erupting volcano and smoky sunset behind |
+| `thorn-guardian.webp` | Thorn Guardian | 25 | Nature | Tree giant with an antler-branch crown, glowing green eyes, thorny vines with small flowers, moss and a root beard; misty forest with light rays |
+| `frostfang.webp` | Frostfang | 45 | Ice | Big white wolf with an ice-crystal mane and ice fangs, glowing eyes; snowy peaks, aurora and falling snow |
+| `voltitan.webp` | Voltitan | 70 | Lightning | Golden storm dragon with crackling horns and wings, lightning in the mouth; stormy sky with lightning-lit clouds and rain |
+| `voidra.webp` | Voidra | 100 | Shadow / Void | Floating dark orb with one giant glowing eye, small watching eyes and tentacles; purple swirling spiral background |
+
+**Format**
+- Square, **512 × 512 px minimum** (1024 × 1024 preferred; it gets resized).
+- **Full background** (not transparent), like the Mythling art.
+- The boss's **face and body centred**, with the important part inside the middle circle about 70 % of the width: the boss introduction shows it in a **round crest**, so the corners are cut off.
+- PNG, JPG or WebP; any is fine. Name each file as above, or just say which is which.
+- Original artwork only (not based on characters from other games).
+
+**Optional extras** (only if you want them): a wider 1600 × 900 version of each for a future boss splash screen.
+
+When the five are ready, send them; a small PR swaps them into `public/art/bosses/`, re-checks them in the boss introduction and on Friend activity, and nothing else changes.
