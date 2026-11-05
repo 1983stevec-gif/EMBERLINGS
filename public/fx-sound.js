@@ -206,7 +206,7 @@ function onBattle({ match }) {
   if (sig !== lastSig) { lastSig = sig; prev = null; }
   const now = snap(match), key = attackKey(match.lastAttack), before = prev;
   prev = { snap: now, key };
-  if (!before || B.view !== 'cardBattle') return;
+  if (!before || (B.view !== 'cardBattle' && B.view !== 'spectate')) return;
   const la = match.lastAttack;
   let attacked = -1;
   if (key && key !== before.key && la && (la.side === 0 || la.side === 1)) {
@@ -315,6 +315,7 @@ if (B) {
   document.addEventListener('visibilitychange', () => { if (document.hidden && ctx?.state === 'running') ctx.suspend().catch(() => {}); });
 
   addEventListener('ember:cardBattle', e => { try { onBattle(e.detail || {}); } catch (err) { console.warn('fx-sound', err); } });
+  addEventListener('ember:spectateBattle', e => { try { onBattle(e.detail || {}); } catch (err) { console.warn('fx-sound', err); } });
   addEventListener('ember:cardResult', () => { prev = null; lastSig = ''; });
   addEventListener('ember:packReveal', e => { lastRank = rankOf(e.detail?.creature); });
   addEventListener('ember:packSummary', e => { lastRank = Math.max(0, ...(e.detail?.creatures || []).map(rankOf)); });
