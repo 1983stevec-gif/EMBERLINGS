@@ -118,6 +118,11 @@ function paintButton() {
   const ready = anyReady(daily());
   b.innerHTML = `<span aria-hidden="true">🎁</span> Daily${ready ? '<i class="dailyDot" aria-hidden="true"></i>' : ''}`;
   b.setAttribute('aria-label', ready ? 'Daily rewards, a reward is ready' : 'Daily rewards');
+  // The painted Training page fills the screen and has buttons in the bottom-right corner, so dock the
+  // button over the page's top-right banner picture instead (nothing to tap there).
+  const acad = B.view === 'training' && $('.uiXAcademy');
+  if (acad) { const r = acad.getBoundingClientRect(); b.classList.add('dailyDock'); b.style.top = Math.max(8, Math.round(r.top + 14)) + 'px'; b.style.right = Math.max(8, Math.round(innerWidth - r.right + 14)) + 'px'; }
+  else if (b.classList.contains('dailyDock')) { b.classList.remove('dailyDock'); b.style.top = b.style.right = ''; }
 }
 
 /* ---------- Tracking */
@@ -136,10 +141,11 @@ if (B) {
   let autoShown = false;
   addEventListener('ember:frame', () => requestAnimationFrame(() => {
     if (!B.state.playerUsername && B.view === 'username') return;
-    watchCounters(); paintButton();
+    watchCounters(); paintButton(); if (B.view === 'training') setTimeout(paintButton, 250);
     // Once a day, the first time Home opens, show the panel so the login reward is not missed (not during the beginner guide).
     const d = daily();
     if (!autoShown && B.view === 'home' && loginReady(d) && d.autoDay !== dayKey() && !$('#guidedTour') && !B.state.guidedTour?.active) { autoShown = true; d.autoDay = dayKey(); B.save(); setTimeout(open, 600); }
   }));
+  addEventListener('resize', () => { if ($('#dailyBtn.dailyDock')) paintButton(); });
   window.EmberDaily = { open, daily, bump, claim, pickQuests };
 }

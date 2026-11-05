@@ -477,6 +477,9 @@ if (B && !window.EmberMusic) {
       const tabs = [...document.querySelectorAll('.uiTabMenu, #app > nav.nav')].find(e => { const r = e.getBoundingClientRect(); return r.height > 0 && getComputedStyle(e).position === 'fixed'; });
       if (tabs) { const r = tabs.getBoundingClientRect(); if (r.top > innerHeight / 2) h.style.bottom = Math.round(innerHeight - r.top + 10) + 'px'; }
       document.body.appendChild(h);
+      // Never cover the Daily button: if they would overlap, lift the hint above it.
+      const daily = $('#dailyBtn');
+      if (daily) { const d = daily.getBoundingClientRect(), r = h.getBoundingClientRect(); if (d.width && r.right > d.left && r.left < d.right && r.bottom > d.top && r.top < d.bottom) h.style.bottom = Math.round(innerHeight - d.top + 10) + 'px'; }
       setTimeout(hideHint, 14000);
     }, 2500);
   }

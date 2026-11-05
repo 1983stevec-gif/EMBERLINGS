@@ -2,7 +2,8 @@
 // pulls, boss quest wins, Mythling level 25/50/75/100) and friends can cheer them once. No chat and no free text.
 // The Friends page gets an "Activity" panel (friends' highlights and your own, with who cheered) and a
 // "Share my highlights with friends" switch; Friends gets a small dot when something new arrived.
-// Save data (additive): state.ember.activity = { share: true, seen: <newest friend event time seen>, told: { eventId: cheers } }.
+// Save data (additive): state.ember.activity = { share: true, seen: <newest friend event time seen>, told: { eventId: cheers },
+// posted: ['type:key', ...] (the last 200 highlights already shared, so turning sharing off and on never re-posts one) }.
 // Nothing here changes gameplay, rewards or cards. Server: lib/activity-api.mjs (needs migration 0009).
 import { RARITIES, MUTATIONS, rarityRank } from '/combat-rules.js';
 
@@ -20,6 +21,7 @@ function ext() {
   if (typeof out.share !== 'boolean') out.share = true;
   if (!Number.isFinite(out.seen)) out.seen = 0;
   if (!out.told || typeof out.told !== 'object') out.told = {};
+  if (!Array.isArray(out.posted)) out.posted = [];
   return out;
 }
 const signedIn = () => !!B.state?.playerUsername;
@@ -63,10 +65,10 @@ function afterFetch() {
 const sent = new Set();
 async function post(ev) {
   if (!signedIn() || !ext().share) return;
-  const id = ev.type + ':' + ev.key; if (!ev.key || sent.has(id)) return; sent.add(id);
+  const id = ev.type + ':' + ev.key; if (!ev.key || sent.has(id) || ext().posted.includes(id)) return; sent.add(id);
   if (!feed || Date.now() - lastFetch > 600000) await refresh(true);
   if (!feed || feed.error || feed.available === false || !hasFriends() || !ext().share) { if (!feed || feed.error) sent.delete(id); return; }
-  try { await B.online('/activity', ev); setTimeout(() => refresh(true), 1500); }
+  try { await B.online('/activity', ev); const a = ext(); a.posted = [...a.posted.filter(k => k !== id), id].slice(-200); B.save?.(); setTimeout(() => refresh(true), 1500); }
   catch (err) { if (/isn't available/i.test(err?.message || '')) feed.available = false; }
 }
 // One pack can hold several rare cards: wait until the player leaves the pack screens, then share only the best one.
