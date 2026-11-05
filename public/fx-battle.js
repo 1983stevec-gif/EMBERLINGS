@@ -68,7 +68,7 @@ function onBattle({ match, side }) {
 }
 
 function play(match, side, before, snap, key) {
-  if (B.view !== 'cardBattle') return;
+  if (B.view !== 'cardBattle' && B.view !== 'spectate') return; // spectate: a friend's duel being watched (spectate.js)
   const attacked = new Set();
   const la = match.lastAttack;
   if (key && key !== before.key && la && (la.side === 0 || la.side === 1)) {
@@ -360,6 +360,7 @@ function injectCSS() {
 if (B) {
   injectCSS();
   addEventListener('ember:cardBattle', e => { try { onBattle(e.detail); } catch (err) { console.warn('fx-battle', err); } });
+  addEventListener('ember:spectateBattle', e => { try { onBattle(e.detail); } catch (err) { console.warn('fx-battle', err); } });
   addEventListener('ember:frame', e => { if (e.detail?.view !== 'cardBattle') { document.body.classList.remove('fxbOn'); $('#fxbLayer')?.replaceChildren(); live = 0; } });
   addEventListener('ember:cardResult', () => { prev = null; lastSig = ''; });
 }
