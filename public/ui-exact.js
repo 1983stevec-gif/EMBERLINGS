@@ -560,7 +560,7 @@ function friendsTab(data) {
     for (const [b, k, label] of [[trade, 'trade', 'Trade'], [duel, 'duel', 'Battle Against'], [coop, 'coop', 'Battle Together']]) if (b) { b.className = 'uiXFTBtn uiXFTBtn-' + k; b.textContent = ''; b.setAttribute('aria-label', `${label} with ${name}`); btns.append(b); }
     row.className = 'friendRow uiXFTRow';
     row.replaceChildren();
-    row.insertAdjacentHTML('afterbegin', `<span class="uiXFTRowAva">${B.art(fr.pet)}</span><span class="uiXFTRowWho"><strong>${esc(name)}</strong><small class="${fr.online ? 'on' : ''}"><i></i>${fr.online ? 'Online' : 'Offline'}</small></span><span class="uiXFTRowLine" aria-hidden="true"></span>`);
+    row.insertAdjacentHTML('afterbegin', `<span class="uiXFTRowAva">${B.art(fr.pet)}</span><span class="uiXFTRowWho"><strong>${esc(name)}</strong><small class="${(window.EmberPresence ? window.EmberPresence.isOn(fr) : fr.online) ? 'on' : ''}"><i></i>${window.EmberPresence ? window.EmberPresence.label(fr, true) : (fr.online ? 'Online' : 'Offline')}</small></span><span class="uiXFTRowLine" aria-hidden="true"></span>`);
     row.append(btns);
   }
 }
@@ -630,7 +630,7 @@ function tradingExact() {
     const friends = $$('[data-trade-invite]', list).map(b => ({ name: b.dataset.tradeInvite, online: /online/i.test($('small', b)?.textContent || ''), btn: b }));
     if (!friends.some(f => f.name === tradePick)) tradePick = friends[0]?.name || null;
     $('.uiXTCount', wrap).textContent = friends.length ? `${friends.length} friend${friends.length > 1 ? 's' : ''}` : 'No friends yet';
-    $('.uiXTList', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="uiXTFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="uiXTAva">${tradeAva(f.name)}</span><span class="uiXTWho"><b>${esc(f.name)}</b><small class="${f.online ? 'on' : ''}"><i></i>${f.online ? 'Online' : 'Offline'}</small></span><span class="uiXTCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="uiXTEmpty">Add a friend with Add Player below, then come back here to trade.</p>';
+    $('.uiXTList', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="uiXTFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="uiXTAva">${tradeAva(f.name)}</span><span class="uiXTWho"><b>${esc(f.name)}</b><small class="${(window.EmberPresence ? window.EmberPresence.isOn(f) : f.online) ? 'on' : ''}"><i></i>${window.EmberPresence ? window.EmberPresence.label(f, true) : (f.online ? 'Online' : 'Offline')}</small></span><span class="uiXTCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="uiXTEmpty">Add a friend with Add Player below, then come back here to trade.</p>';
     $$('[data-tpick]', wrap).forEach(b => b.onclick = () => { tradePick = b.dataset.tpick; paint(); });
     const table = $('.uiXTTable', wrap);
     if (!moveInvites(list, table, '')) table.innerHTML = `<p class="uiXTCap">Your next trade starts with an invitation.</p><p class="uiXTSub">${tradePick ? `Send one to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
@@ -828,7 +828,7 @@ function tradingTablet() {
     const friends = $$('[data-trade-invite]', list).map(b => ({ name: b.dataset.tradeInvite, online: /online/i.test($('small', b)?.textContent || '') }));
     if (!friends.some(f => f.name === tradePick)) tradePick = friends[0]?.name || null;
     $('.tpCount', wrap).textContent = friends.length ? `· ${friends.length}` : '';
-    $('.tpFriends', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="tpFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="tpFAva">${tradeAva(f.name)}</span><span class="tpFWho"><b>${esc(f.name)}</b><small class="${f.online ? 'on' : ''}"><i></i>${f.online ? 'Online' : 'Offline'}</small></span><span class="tpCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="tpLead">No friends yet. Tap <b>Add Player</b> below, then come back here to trade.</p>';
+    $('.tpFriends', wrap).innerHTML = friends.length ? friends.map(f => `<button type="button" class="tpFriend ${f.name === tradePick ? 'on' : ''}" data-tpick="${esc(f.name)}" role="option" aria-selected="${f.name === tradePick}"><span class="tpFAva">${tradeAva(f.name)}</span><span class="tpFWho"><b>${esc(f.name)}</b><small class="${(window.EmberPresence ? window.EmberPresence.isOn(f) : f.online) ? 'on' : ''}"><i></i>${window.EmberPresence ? window.EmberPresence.label(f, true) : (f.online ? 'Online' : 'Offline')}</small></span><span class="tpCheck" aria-hidden="true">✓</span></button>`).join('') : '<p class="tpLead">No friends yet. Tap <b>Add Player</b> below, then come back here to trade.</p>';
     $$('[data-tpick]', wrap).forEach(b => b.onclick = () => { tradePick = b.dataset.tpick; paint(); });
     const table = $('.tpTable', wrap);
     if (!moveInvites(list, table, '<h2 class="tpH2">Trade invitations</h2>')) table.innerHTML = `<h2 class="tpH2">Trading table</h2><p class="tpLead">${tradePick ? `Send an invitation to <b>${esc(tradePick)}</b> to begin.` : 'Choose a friend to begin.'}</p>`;
