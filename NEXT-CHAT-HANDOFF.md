@@ -34,7 +34,7 @@ The game has a painted look: desktop pages are drawn from supplied design images
 
 **Live:** Codex published **version 60** from `main` (commit `de355ac`). Everything below is merged into `main` but **not published yet**. `PUBLISH-CODEX.md` has the publish prompt for this release.
 
-**Merged since version 60 (PRs #29 to #55):**
+**Merged since version 60 (PRs #29 to #76):**
 
 | PR | Branch | What it does |
 |---|---|---|
@@ -65,8 +65,28 @@ The game has a painted look: desktop pages are drawn from supplied design images
 | [#53](https://github.com/1983stevec-gif/EMBERLINGS/pull/53) | `collection-tracker` | Collection page (`collection.js`): completion, goals, filters. |
 | [#54](https://github.com/1983stevec-gif/EMBERLINGS/pull/54) | `whats-new` | What's New panel (`whats-new.js`, release notes list at the top) and a loading screen with tips. |
 | [#55](https://github.com/1983stevec-gif/EMBERLINGS/pull/55) | `deck-share` | Deck share codes, import and Deck ideas (`deck-share.js`). |
+| [#57](https://github.com/1983stevec-gif/EMBERLINGS/pull/57) | `gameplay-ideas` | `GAMEPLAY-IDEAS.md`: every gameplay idea and the owner decisions. |
+| [#58](https://github.com/1983stevec-gif/EMBERLINGS/pull/58) | `cosmetics` | Card backs and avatar rings unlocked by achievements (`cosmetics.js`, `profile-items.js`). |
+| [#59](https://github.com/1983stevec-gif/EMBERLINGS/pull/59) | `share-card` | Share a card, rare pull or pack as a picture (`share-card.js`). |
+| [#60](https://github.com/1983stevec-gif/EMBERLINGS/pull/60) | `my-stats` | My Stats page (`stats.js`, `state.ember.stats`). |
+| [#61](https://github.com/1983stevec-gif/EMBERLINGS/pull/61) | `fx-music` | Optional background music, off by default (`fx-music.js`). |
+| [#62](https://github.com/1983stevec-gif/EMBERLINGS/pull/62) | `friend-activity` | Friend activity and cheers (`activity.js`, `lib/activity-api.mjs`). **Needs migration `drizzle/0009_activity.sql`.** |
+| [#63](https://github.com/1983stevec-gif/EMBERLINGS/pull/63) | `fit-polish` | Fit and polish at six sizes. |
+| [#64](https://github.com/1983stevec-gif/EMBERLINGS/pull/64) | `load-faster` | Faster first load (preloads, smaller creature sheet, lighter binder). |
+| [#65](https://github.com/1983stevec-gif/EMBERLINGS/pull/65) | `enhancement-ideas` | `ENHANCEMENT-IDEAS.md` and release notes. |
+| [#66](https://github.com/1983stevec-gif/EMBERLINGS/pull/66) | `friend-online` | Friends' online status, last seen and In a duel (`presence.js`, `POST /api/social/presence`). |
+| [#67](https://github.com/1983stevec-gif/EMBERLINGS/pull/67) | `ci-checks` | GitHub Actions runs build and `npm test` on every PR (`.github/workflows/checks.yml`). |
+| [#68](https://github.com/1983stevec-gif/EMBERLINGS/pull/68) | `settings-hub` | Settings page (`settings.js`, `window.EmberSettings.addSection`). |
+| [#69](https://github.com/1983stevec-gif/EMBERLINGS/pull/69) | `spectate` | Watch a friend's live duel, read-only (`spectate.js`, `lib/spectate-api.mjs`). |
+| [#70](https://github.com/1983stevec-gif/EMBERLINGS/pull/70) | `inbox` | Notification bell (`inbox.js`). |
+| [#71](https://github.com/1983stevec-gif/EMBERLINGS/pull/71) | `fix-flaky-quest-test` | Quest-victory test made deterministic. |
+| [#72](https://github.com/1983stevec-gif/EMBERLINGS/pull/72) | `art-gallery` | Art gallery and lore (`gallery.js`, `lore.js`). |
+| [#73](https://github.com/1983stevec-gif/EMBERLINGS/pull/73) | `binder-tools` | Favourites, saved binder views, CSV/picture export (`binder-tools.js`). |
+| [#74](https://github.com/1983stevec-gif/EMBERLINGS/pull/74) | `first-tips` | First-time tips (`tips.js`, `window.EmberTips`). |
+| [#75](https://github.com/1983stevec-gif/EMBERLINGS/pull/75) | `polish-2` | Polish round 2 and the sweep scripts in `scripts/shots/sweep/`. |
+| [#76](https://github.com/1983stevec-gif/EMBERLINGS/pull/76) | `seasons` | Seasonal decorations (`seasons.js`, `window.EmberSeasons`). |
 
-Only #45 needs a database migration (`0008_player_profile.sql`, one new empty column); the rest need none. First load (simulated 4G, empty cache) is about 2.1 MB on a phone and 3.0 MB on desktop; the four effect modules add about 25 KB of that (compressed).
+Two need a database migration: #45 (`0008_player_profile.sql`) and #62 (`0009_activity.sql`); the rest need none. Every PR now runs the build and tests automatically on GitHub. First load (simulated 4G, empty cache) is about 2.1 MB on a phone and 3.0 MB on desktop; the four effect modules add about 25 KB of that (compressed).
 
 **When adding a release:** add an entry to the top of `RELEASES` in `public/whats-new.js` so returning players see what's new.
 

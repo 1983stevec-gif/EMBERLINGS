@@ -2,7 +2,7 @@
 
 Ideas that improve EMBERLINGS **without changing how it plays or what players earn**. Gameplay ideas are in `GAMEPLAY-IDEAS.md`.
 
-Status: **▶ Starting now** = being built in this round · ✅ = already built · blank = idea only.
+Status: ✅ = built and merged · blank = idea only.
 Effort: **S** = a day or two · **M** = about a week · **L** = several weeks. "Server" means it changes the online server; "DB" means it needs a database migration that Codex applies when publishing.
 
 ## Already built (November 2026)
@@ -13,7 +13,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| **Seasonal themes** ▶ Starting now | Automatic decorations by date: autumn leaves, winter snow and lights, spring blossoms, a summer glow; small festive touches on Home, header and packs | M | Cosmetic only; follows the Effects setting |
+| **Seasonal themes** ✅ | Automatic decorations by date: autumn leaves, winter snow and lights, spring blossoms, a summer glow; small festive touches on Home, header and packs | M | Cosmetic only; follows the Effects setting |
 | Painted art for the bosses | Boss portraits that truly match the painted Mythling cards | M | Needs art made the same way as the Mythling art |
 | Animated card art for the rarest cards | Secret and Celestial cards gently move (flames flicker, water ripples) | M | Subtle loops on the card art only |
 | Full-art card frames (cosmetic) | An alternative full-art frame you can choose for cards you own | M | Purely cosmetic; unlocked by achievements |
@@ -28,7 +28,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| **Settings hub** ▶ Starting now | One tidy Settings page for Sound, Music, Effects, Accessibility, Install, What's new, Account, Backup and privacy, instead of a long menu | M | The user menu has grown long; this tidies it |
+| **Settings hub** ✅ | One tidy Settings page for Sound, Music, Effects, Accessibility, Install, What's new, Account, Backup and privacy, instead of a long menu | M | The user menu has grown long; this tidies it |
 | Haptic feedback on phones | Small vibrations on hits, pack reveals and rewards | S | Android supports it; off by default |
 | Left-handed layout | Battle buttons mirrored for left-handed play | S | |
 | Battle speed | Faster or slower battle animations | S | Visual speed only |
@@ -39,7 +39,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| **First-time tips for new screens** ▶ Starting now | A short, friendly tip the first time you open Profile, Collection, My Stats, Card details, Deck codes, Activity and so on | S–M | Never repeats; can be reset in Settings |
+| **First-time tips for new screens** ✅ | A short, friendly tip the first time you open Profile, Collection, My Stats, Card details, Deck codes, Activity and so on | S–M | Never repeats; can be reset in Settings |
 | Searchable help page | "How do I…?" answers with links to the right screen | M | |
 | Mythling lore pages | Short story for each species in the Index | M | Writing plus art |
 | Glossary | Merfling, mutations, Vault and so on explained in one place | S | |
@@ -49,8 +49,8 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| **Spectate a friend's battle** ▶ Starting now | Watch a friend's live duel or quest, read-only | L | Server |
-| **Notification inbox** ▶ Starting now | A bell with everything new: trade invites, cheers, daily rewards ready, what's new, friend requests | M | Gathers existing alerts in one place |
+| **Spectate a friend's battle** ✅ | Watch a friend's live duel or quest, read-only | L | Server |
+| **Notification inbox** ✅ | A bell with everything new: trade invites, cheers, daily rewards ready, what's new, friend requests | M | Gathers existing alerts in one place |
 | Push notifications (installed app) | "Your daily reward is ready", "Mira invited you to trade" | M | Server + push keys set up by Codex |
 | Friend nicknames and favourites | Pin favourite friends to the top | S | |
 | Emote reactions in friend duels | A few safe preset emotes (no free text) | M | Server; preset only to avoid abuse |
@@ -62,20 +62,20 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| Card art gallery | View every Mythling's art full screen, zoom in, with lore | S–M | |
+| **Card art gallery** ✅ | View every Mythling's art full screen, zoom in, with lore | S–M | |
 | Collection milestones banner | A celebration when you complete a species or rarity set | S | Uses the Collection page's data |
 | Pack opening replays | Re-watch your last 10 pack openings | M | Uses My Stats records |
 | Battle replays | Re-watch a past battle turn by turn | L | Needs recording each battle's moves |
-| Favourite cards | Star cards to find them fast in the binder | S | |
-| Binder sort and filter presets | Save your favourite filters | S | |
-| Export collection | Download your collection as a picture sheet or spreadsheet | S | |
+| **Favourite cards** ✅ | Star cards to find them fast in the binder | S | |
+| **Binder sort and filter presets** ✅ | Save your favourite filters | S | |
+| **Export collection** ✅ | Download your collection as a picture sheet or spreadsheet | S | |
 
 ## 6. Speed, reliability and upkeep
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
-| **Polish round 2** ▶ Starting now | Fix the binder sideways scroll on desktop, the remaining 18 small layout issues, the achievement pop-up covering titles, and check Training Field and Battle Rules | M | Follows the fit-and-polish pass |
-| Automatic checks on every PR | GitHub runs the tests and browser checks before merging | S–M | Needs GitHub Actions workflow permission |
+| **Polish round 2** ✅ | Fix the binder sideways scroll on desktop, the remaining 18 small layout issues, the achievement pop-up covering titles, and check Training Field and Battle Rules | M | Follows the fit-and-polish pass |
+| **Automatic checks on every PR** ✅ | GitHub runs the tests and browser checks before merging | S–M | Needs GitHub Actions workflow permission |
 | Error reporting | The game quietly reports crashes so they can be fixed | M | Server; no personal data |
 | Save safety | Automatic local backups and an "undo last change" for accidental deletes | M | |
 | Offline solo play | Play quests and open saved packs fully offline | M | Builds on install-as-app |
@@ -91,10 +91,12 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | Weekly recap | "Your week in EMBERLINGS" picture: packs, wins, best pull | S–M | Uses My Stats |
 | Screenshot mode | Hide buttons for a clean screenshot of any screen | S | |
 
-## Suggested next round after this one
+Also built (not in the tables above): friends' online status, last seen and "In a duel" (PR #66).
+
+## Suggested next round
 
 1. Push notifications (needs Codex to set up keys)
-2. Automatic checks on every PR
-3. Card art gallery and lore
-4. Battle replays
+2. Battle replays
+3. Collection milestone banner and weekly recap picture
+4. Error reporting and save safety (auto backups, undo)
 5. Translations
