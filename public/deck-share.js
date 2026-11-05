@@ -153,6 +153,27 @@ export const DECK_IDEAS = [
     keys: [...twice(k(0)), k(0, 1), ...twice(k(4)), k(4, 1), ...twice(k(2)), k(2, 1), ...twice(t('scholar')), ...twice(t('beacon')), ...twice(t('tonic')), t('mantle'), t('boots')] }
 ].map(d => ({ ...d, code: encodeDeck(d.keys, d.energy) }));
 
+/* ---------------------------------------------------------------- Deck picture layout (pure, tested)
+   A deck picture is 1080 wide: 1080×1080 for a small deck (up to 5 different cards), 1080×1350 otherwise.
+   The cards sit in a grid between the header (logo, name, Merfling types) and the deck code block.     */
+export const PICTURE_W = 1080, GRID_TOP = 380, CODE_BLOCK = 290, TILE_RATIO = 1.36;
+export function pictureLayout(n) {
+  const h = n <= 5 ? 1080 : 1350, gap = 18, side = 70, boxW = PICTURE_W - side * 2, boxH = h - CODE_BLOCK - GRID_TOP;
+  let best = null;
+  for (let cols = 1; cols <= Math.max(1, n); cols++) {
+    const rows = Math.ceil(n / cols);
+    const w = Math.floor(Math.min(250, (boxW - gap * (cols - 1)) / cols, (boxH - gap * (rows - 1)) / rows / TILE_RATIO));
+    if (!best || w > best.w) best = { cols, rows, w };
+  }
+  const th = Math.floor(best.w * TILE_RATIO), gridH = best.rows * th + (best.rows - 1) * gap, y0 = GRID_TOP + Math.floor((boxH - gridH) / 2);
+  const tiles = Array.from({ length: n }, (_, i) => {
+    const row = Math.floor(i / best.cols), inRow = Math.min(best.cols, n - row * best.cols), col = i - row * best.cols;
+    const rowW = inRow * best.w + (inRow - 1) * gap;
+    return { x: Math.round((PICTURE_W - rowW) / 2 + col * (best.w + gap)), y: y0 + row * (th + gap), w: best.w, h: th };
+  });
+  return { w: PICTURE_W, h, cols: best.cols, rows: best.rows, tiles };
+}
+
 /* ---------------------------------------------------------------- Browser UI */
 if (typeof window !== 'undefined' && typeof document !== 'undefined') setupUI();
 
@@ -216,12 +237,13 @@ function setupUI() {
       <label class="dsField">Deck to share<select id="dsPick"><option value="">The deck you’re building</option>${presets.map((p, i) => `<option value="${i}">${esc(p.name)}</option>`).join('')}</select></label>
       <label class="dsField">Your deck code<input id="dsCode" readonly spellcheck="false" autocomplete="off"></label>
       <p class="dsMsg" id="dsShareMsg" role="status"></p>
-      <div class="dsActions"><button type="button" class="dsBtn gold" id="dsCopy">📋 Copy</button>${navigator.share ? '<button type="button" class="dsBtn" id="dsSend">↗ Share</button>' : ''}</div>`;
+      <div class="dsActions"><button type="button" class="dsBtn gold" id="dsCopy">📋 Copy</button>${navigator.share ? '<button type="button" class="dsBtn" id="dsSend">↗ Share</button>' : ''}<button type="button" class="dsBtn" id="dsPic">🖼 Share as picture</button></div>`;
     const paint = () => {
       const pick = $('#dsPick').value, p = pick === '' ? null : presets[+pick];
       const src = p ? { keys: p.keys, energy: p.energyTypes || [] } : editingDeck();
-      try { $('#dsCode').value = encodeDeck(src.keys, src.energy); msg(''); $('#dsCopy').disabled = false; if ($('#dsSend')) $('#dsSend').disabled = false; }
-      catch (e) { $('#dsCode').value = ''; msg(e.message, 'bad'); $('#dsCopy').disabled = true; if ($('#dsSend')) $('#dsSend').disabled = true; }
+      const able = on => ['#dsCopy', '#dsSend', '#dsPic'].forEach(id => { if ($(id)) $(id).disabled = !on; });
+      try { $('#dsCode').value = encodeDeck(src.keys, src.energy); msg(''); able(true); }
+      catch (e) { $('#dsCode').value = ''; msg(e.message, 'bad'); able(false); }
     };
     const msg = (text, cls = '') => { const m = $('#dsShareMsg'); m.textContent = text; m.className = 'dsMsg ' + cls; };
     $('#dsPick').onchange = paint; paint();
@@ -231,6 +253,103 @@ function setupUI() {
       try { await navigator.share({ title: 'My EMBERLINGS deck', text: `Try my EMBERLINGS deck! In Battle Deck, tap Import deck and paste: ${$('#dsCode').value}` }); }
       catch (e) { if (e?.name !== 'AbortError') msg('Sharing isn’t available here. Use Copy instead.', 'bad'); }
     };
+    $('#dsPic').onclick = () => {
+      const pick = $('#dsPick').value, p = pick === '' ? null : presets[+pick];
+      sharePicture($('#dsPic'), m => msg(m, m.startsWith('Sorry') ? 'bad' : 'ok'), { code: $('#dsCode').value, name: p?.name || 'My Battle Deck', subtitle: 'Try my Battle Deck!' });
+    };
+  }
+
+  /* ---------- Share as picture: the deck's cards in a grid with its code underneath.
+     Drawn with the share-card.js canvas helpers; same-origin images only; shared or saved, never uploaded. */
+  const ELEMENT_COLORS = { Fire: '#e67e4e', Moon: '#a796dc', Nature: '#72b987', Lightning: '#e3c857', Water: '#64b5d6', Crystal: '#cba0d8', Ice: '#9bd5dd', Shadow: '#9276b5', Wind: '#86cbb6' };
+  const MONO = "ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace";
+  const sameOrigin = src => { try { return new URL(src, location.href).origin === location.origin; } catch { return false; } };
+  // Where a species' art sits: one picture of its own, or one cell of the 5×2 atlas.
+  function artSpot(kind) {
+    const t = document.createElement('template'); t.innerHTML = B().art?.({ kind, stage: 0 }) || '';
+    const span = t.content.querySelector('.mythlingArt'), img = t.content.querySelector('img');
+    const src = img?.getAttribute('src'); if (!src || !sameOrigin(src)) return null;
+    const single = img.classList.contains('mythlingSingle');
+    return { src, single, col: +(span?.style.getPropertyValue('--art-col') || 0), row: +(span?.style.getPropertyValue('--art-row') || 0) };
+  }
+  // Rarity glow: the player's best copy of that line, or the species' own rarity.
+  function glowOf(c) {
+    const b = B();
+    if (c.cardType === 'trainer') return '#9fd9ff';
+    const copies = (b.state.owned || []).filter(o => o.kind === c.kind && (b.rarityRank(o) >= 4) === c.elite);
+    const best = copies.sort((x, y) => b.rarityRank(y) - b.rarityRank(x))[0];
+    return b.revealColor(best || { rarity: b.species[c.kind]?.rarity || (c.elite ? 'Legendary' : 'Common') });
+  }
+  function deckEntries(decoded) {
+    const sp = B().species || [];
+    return decoded.cards.map(c => c.cardType === 'trainer'
+      ? { ...c, label: c.name, sub: TRAINERS.find(x => x.id === c.trainer)?.category || 'Trainer' }
+      : { ...c, label: (sp[c.kind]?.name || 'Mythling') + (c.elite ? ' ✧' : ''), sub: STAGE_NAMES[c.stage] + (c.elite ? ' · Radiant' : '') })
+      .sort((a, b) => (a.cardType === 'trainer') - (b.cardType === 'trainer') || (a.kind ?? 99) - (b.kind ?? 99) || a.elite - b.elite || (a.stage || 0) - (b.stage || 0) || a.id - b.id);
+  }
+  async function deckPicture({ code, name, subtitle }) {
+    const S = await import('/share-card.js');
+    const decoded = decodeDeck(code), cards = deckEntries(decoded), L = pictureLayout(cards.length), W = L.w, H = L.h;
+    await S.fonts();
+    const spots = new Map(), imgs = new Map();
+    for (const c of cards) if (c.cardType === 'mythling' && !spots.has(c.kind)) spots.set(c.kind, artSpot(c.kind));
+    await Promise.all([...new Set([...spots.values()].filter(Boolean).map(s => s.src))].map(async src => imgs.set(src, await S.loadImg(src))));
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d'), accent = ELEMENT_COLORS[decoded.energyTypes[0]] || '#f2c45f';
+    S.backdrop(ctx, accent, GRID_TOP + (H - CODE_BLOCK - GRID_TOP) / 2, H);
+    await S.logo(ctx, 300, 40);
+    S.title(ctx, String(name || 'My Battle Deck'), 222, 64);
+    if (subtitle) S.line(ctx, subtitle, 272, { size: 34, color: '#f3d48a', max: W - 200 });
+    S.badges(ctx, [{ text: `${decoded.total} card${decoded.total === 1 ? '' : 's'}`, color: '#f2c45f' }, ...decoded.energyTypes.map(t => ({ text: t + ' Merfling', color: ELEMENT_COLORS[t] || '#c8d1ec' }))], 296);
+    cards.forEach((c, i) => drawTile(ctx, S, c, L.tiles[i], c.cardType === 'mythling' ? spots.get(c.kind) : null, imgs));
+    // The code, printed large, with how to use it.
+    const by = String(B().state?.playerUsername || '').trim().slice(0, 24);
+    ctx.save(); ctx.textAlign = 'center'; ctx.fillStyle = '#c8d1ec'; ctx.font = `700 26px ${S.TITLE}`; if ('letterSpacing' in ctx) ctx.letterSpacing = '4px';
+    ctx.fillText('DECK CODE', W / 2, H - 262); ctx.restore();
+    S.rounded(ctx, 80, H - 244, W - 160, 98, 22); ctx.fillStyle = 'rgba(8,10,24,.82)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = S.hexA(accent, .9); ctx.stroke();
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff4dc';
+    S.fit(ctx, code, W - 220, `700 $px ${MONO}`, 58, 24); ctx.fillText(code, W / 2, H - 194); ctx.restore();
+    S.line(ctx, 'In Battle Deck, tap Import deck and paste this code', H - 104, { size: 30, color: '#f3e6c4', weight: 600 });
+    S.line(ctx, `${by ? `Shared by ${by}  ·  ` : ''}${S.today()}  ·  Play EMBERLINGS`, H - 62, { size: 26, color: '#c8d1ec', weight: 600 });
+    return cv;
+  }
+  function drawTile(ctx, S, c, t, spot, imgs) {
+    const { x, y, w, h } = t, r = w * .08, glow = glowOf(c), pad = Math.round(w * .07), aw = w - pad * 2;
+    ctx.save(); S.rounded(ctx, x, y, w, h, r); ctx.shadowColor = S.hexA(glow, .9); ctx.shadowBlur = w * .16; ctx.fillStyle = glow; ctx.fill(); ctx.restore();
+    ctx.save(); S.rounded(ctx, x, y, w, h, r);
+    const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#222a48'); g.addColorStop(1, '#0d1124'); ctx.fillStyle = g; ctx.fill();
+    ctx.lineWidth = Math.max(3, w * .022); ctx.strokeStyle = glow; ctx.stroke(); ctx.restore();
+    // Art (or a scroll for Trainers).
+    ctx.save(); S.rounded(ctx, x + pad, y + pad, aw, aw, r * .7); ctx.clip();
+    const bg = ctx.createRadialGradient(x + w / 2, y + pad + aw / 2, 4, x + w / 2, y + pad + aw / 2, aw * .75);
+    bg.addColorStop(0, S.hexA(glow, .45)); bg.addColorStop(1, '#0a0f17'); ctx.fillStyle = bg; ctx.fillRect(x + pad, y + pad, aw, aw);
+    const im = spot && imgs.get(spot.src);
+    if (im) {
+      const sw = spot.single ? im.naturalWidth : im.naturalWidth / 5, sh = spot.single ? im.naturalHeight : im.naturalHeight / 2;
+      ctx.drawImage(im, spot.single ? 0 : spot.col * sw, spot.single ? 0 : spot.row * sh, sw, sh, x + pad, y + pad, aw, aw);
+    } else { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${Math.round(aw * .5)}px serif`; ctx.fillStyle = '#f3e6c4'; ctx.fillText(c.cardType === 'trainer' ? '📜' : '✦', x + w / 2, y + pad + aw / 2); }
+    ctx.restore();
+    // Copies badge.
+    if (c.count > 1) {
+      const bw = Math.round(w * .34), bh = Math.round(w * .2), bx = x + w - pad - bw + Math.round(pad * .5), by = y + Math.round(pad * .5);
+      ctx.save(); S.rounded(ctx, bx, by, bw, bh, bh / 2); ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 8; ctx.fillStyle = '#f2c45f'; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#2a1405'; ctx.font = `800 ${Math.round(bh * .66)}px ${S.TITLE}`; ctx.fillText('×' + c.count, bx + bw / 2, by + bh / 2 + 1); ctx.restore();
+    }
+    // Name and stage.
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = '#fff2d0';
+    S.fit(ctx, c.label, w - pad * 2, `700 $px ${S.SERIF}`, Math.round(w * .14), 14); ctx.fillText(c.label, x + w / 2, y + pad + aw + Math.round((h - pad - aw) * .48));
+    ctx.fillStyle = '#c8d1ec'; S.fit(ctx, c.sub, w - pad * 2, `600 $px ${S.SERIF}`, Math.round(w * .105), 12); ctx.fillText(c.sub, x + w / 2, y + pad + aw + Math.round((h - pad - aw) * .82));
+    ctx.restore();
+  }
+  async function sharePicture(btn, say, opts) {
+    if (btn.disabled) return;
+    btn.disabled = true; btn.setAttribute('aria-busy', 'true'); say('Making your picture…');
+    let out;
+    try {
+      const S = await import('/share-card.js'), cv = await deckPicture(opts);
+      out = await S.deliver(cv, `emberlings-deck-${S.slug(opts.name)}.png`, `Try my EMBERLINGS deck! In Battle Deck, tap Import deck and paste: ${opts.code}`);
+    } catch (e) { console.warn('deck-share picture', e); out = 'Sorry, the picture could not be made.'; }
+    btn.disabled = false; btn.removeAttribute('aria-busy'); say(out);
   }
   async function copy(input) {
     try { if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(input.value); return true; } } catch {}
@@ -288,11 +407,13 @@ function setupUI() {
   /* ---------- Deck ideas */
   function ideasTab(body) {
     const p = pool(), sn = names();
-    body.innerHTML = `<p class="dsLead">Ready-made decks to try. Import one to see which cards you already have.</p><ul class="dsIdeas">${DECK_IDEAS.map((d, i) => {
+    body.innerHTML = `<p class="dsLead">Ready-made decks to try. Import one to see which cards you already have.</p><p class="dsMsg" id="dsIdeaMsg" role="status"></p><ul class="dsIdeas">${DECK_IDEAS.map((d, i) => {
       const plan = planImport(p, decodeDeck(d.code), sn);
-      return `<li class="dsIdea"><span class="dsIcon" aria-hidden="true">${d.icon}</span><div><strong>${esc(d.name)}</strong><p>${esc(d.text)}</p><small>${plan.total} of ${plan.wanted} cards in your collection</small></div><button type="button" class="dsBtn" data-idea="${i}">Import</button></li>`;
+      return `<li class="dsIdea"><span class="dsIcon" aria-hidden="true">${d.icon}</span><div><strong>${esc(d.name)}</strong><p>${esc(d.text)}</p><small>${plan.total} of ${plan.wanted} cards in your collection</small></div><div class="dsIdeaBtns"><button type="button" class="dsBtn" data-idea="${i}">Import</button><button type="button" class="dsBtn" data-idea-pic="${i}" aria-label="Share ${esc(d.name)} as a picture">🖼 Share this idea</button></div></li>`;
     }).join('')}</ul>`;
     $$('[data-idea]', body).forEach(btn => btn.onclick = () => show('import', DECK_IDEAS[+btn.dataset.idea]));
+    const say = m => { const el = $('#dsIdeaMsg'); if (el) { el.textContent = m; el.className = 'dsMsg ' + (m.startsWith('Sorry') ? 'bad' : 'ok'); } };
+    $$('[data-idea-pic]', body).forEach(btn => btn.onclick = () => { const d = DECK_IDEAS[+btn.dataset.ideaPic]; sharePicture(btn, say, { code: d.code, name: d.name, subtitle: d.text }); });
   }
 
   function injectCSS() {
@@ -333,8 +454,9 @@ function setupUI() {
 .dsIdea{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid #7a5a2a88;border-radius:8px;background:#0a0f17}
 .dsIdea strong{font-size:17px;color:#ffd982}.dsIdea p{margin:2px 0;font-size:14px;line-height:1.4}.dsIdea small{color:var(--ui-muted,#b9ae98)}
 .dsIcon{font-size:30px}
+.dsIdeaBtns{display:flex;flex-direction:column;gap:6px}
 @media (max-width:520px){.dsBox{padding:14px}.dsHead h2{font-size:21px}.dsGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.dsCard{font-size:12px}
- .dsIdea{grid-template-columns:auto 1fr}.dsIdea .dsBtn{grid-column:1/-1}.dsActions .dsBtn{flex:1 1 100%}.dsBar .dsBtn{font-size:14px;padding:10px 6px}}`;
+ .dsIdea{grid-template-columns:auto 1fr}.dsIdeaBtns{grid-column:1/-1;flex-direction:row}.dsIdeaBtns .dsBtn{flex:1 1 0;min-width:0;white-space:normal}.dsActions .dsBtn{flex:1 1 100%}.dsBar .dsBtn{font-size:14px;padding:10px 6px}}`;
     document.head.appendChild(s);
   }
 }

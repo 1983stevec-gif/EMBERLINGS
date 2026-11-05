@@ -39,17 +39,17 @@ const hexA = (hex, a) => { const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!
 async function fonts() { try { await Promise.all(['800 100px Cinzel', '700 40px Cinzel', '700 40px "Cormorant Garamond"', '600 40px "EB Garamond"'].map(f => document.fonts?.load(f))); } catch { /* system fonts are fine */ } }
 
 // Night sky with a glow and soft rays in the card's rarity colour, embers and a frame.
-function backdrop(ctx, color, glowY) {
-  let g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1830'); g.addColorStop(.5, '#141a36'); g.addColorStop(1, '#090d22');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+function backdrop(ctx, color, glowY, h = H) {
+  let g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#1d1830'); g.addColorStop(.5, '#141a36'); g.addColorStop(1, '#090d22');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, h);
   ctx.save(); ctx.translate(W / 2, glowY); ctx.globalAlpha = .08; ctx.fillStyle = color;
   for (let i = 0; i < 20; i++) { ctx.rotate(Math.PI * 2 / 20); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-70, -1300); ctx.lineTo(70, -1300); ctx.closePath(); ctx.fill(); }
   ctx.restore();
   g = ctx.createRadialGradient(W / 2, glowY, 30, W / 2, glowY, 700); g.addColorStop(0, hexA(color, .55)); g.addColorStop(.55, hexA(color, .14)); g.addColorStop(1, hexA(color, 0));
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  for (let i = 0; i < 64; i++) { const x = (i * 197) % W, y = 60 + (i * 331) % (H - 120), r = 1.5 + (i % 4); ctx.fillStyle = i % 3 ? hexA(color, .12 + (i % 5) * .06) : `rgba(255,${160 + (i * 7) % 80},90,${.14 + (i % 5) * .05})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
-  rounded(ctx, 22, 22, W - 44, H - 44, 34); ctx.lineWidth = 5; ctx.strokeStyle = color; ctx.stroke();
-  rounded(ctx, 36, 36, W - 72, H - 72, 26); ctx.lineWidth = 1.5; ctx.strokeStyle = hexA(color, .45); ctx.stroke();
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, h);
+  for (let i = 0; i < 64; i++) { const x = (i * 197) % W, y = 60 + (i * 331) % (h - 120), r = 1.5 + (i % 4); ctx.fillStyle = i % 3 ? hexA(color, .12 + (i % 5) * .06) : `rgba(255,${160 + (i * 7) % 80},90,${.14 + (i % 5) * .05})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+  rounded(ctx, 22, 22, W - 44, h - 44, 34); ctx.lineWidth = 5; ctx.strokeStyle = color; ctx.stroke();
+  rounded(ctx, 36, 36, W - 72, h - 72, 26); ctx.lineWidth = 1.5; ctx.strokeStyle = hexA(color, .45); ctx.stroke();
 }
 async function logo(ctx, lw, y) {
   const img = await loadImg('/branding/emberlings-logo-transparent.webp') || await loadImg('/branding/emberlings-logo-transparent.png');
@@ -459,6 +459,9 @@ function injectCSS() {
 html[data-fx="off"] .shrBtn{transition:none}html[data-fx="off"] .shrBtn:hover:not(:disabled),html[data-fx="off"] .shrBtn:active:not(:disabled){transform:none}`;
   document.head.append(st);
 }
+
+/* ------------------------------------------------------------ Helpers other share pictures reuse (deck-share.js) */
+export { W, SERIF, TITLE, loadImg, rounded, fit, wrap, hexA, fonts, backdrop, logo, title, line, badges, deliver, slug, today };
 
 /* ------------------------------------------------------------ Hooks */
 if (B) {

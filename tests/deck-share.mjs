@@ -1,6 +1,6 @@
 // Deck share codes: roundtrip, bad codes, deck rules on import, missing cards, ready-made decks.
 import assert from 'node:assert/strict';
-import {encodeDeck,decodeDeck,planImport,isCodeError,DECK_IDEAS,keysToCounts,CODE_PREFIX} from '../public/deck-share.js';
+import {encodeDeck,decodeDeck,planImport,isCodeError,DECK_IDEAS,keysToCounts,CODE_PREFIX,pictureLayout,PICTURE_W,GRID_TOP,CODE_BLOCK} from '../public/deck-share.js';
 import {buildBattleDeck,equipBestDeck,cardNameKey,ELEMENTS} from '../public/card-engine.js';
 const names=['Flaminyx','Lunamo','Verdelle','Voltix','Aquabub','Crystella','Frostbit','Umbryx','Emberoo','Zephyra','Mosshell','Tidelotl','Sparquill','Cindermane','Glacipaw','Noctalon'];
 
@@ -54,3 +54,12 @@ assert(DECK_IDEAS.length>=4&&DECK_IDEAS.length<=6);console.log('PASS '+DECK_IDEA
 // A Radiant card in the code falls back to the player's normal copy of that species.
 const radiant=planImport(small,decodeDeck(encodeDeck(['m-0-true-0','m-0-true-1'])),names);assert(radiant.canBuild);assert.deepEqual(radiant.keys,['m-0-false-0','m-0-false-1']);
 console.log('PASS Radiant cards fall back to owned normal copies');
+
+// Deck pictures: small decks are square, bigger ones 1080×1350; every tile fits between the header and the code block.
+for(let n=1;n<=20;n++){
+ const L=pictureLayout(n);assert.equal(L.w,PICTURE_W);assert.equal(L.h,n<=5?1080:1350);assert.equal(L.tiles.length,n);
+ for(const t of L.tiles){assert(t.x>=60&&t.x+t.w<=PICTURE_W-60,'tile inside sides '+n);assert(t.y>=GRID_TOP&&t.y+t.h<=L.h-CODE_BLOCK,'tile between header and code '+n);assert(t.w>=110,'tiles stay readable '+n)}
+ for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const a=L.tiles[i],b=L.tiles[j];assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,'no overlap '+n)}
+}
+for(const idea of DECK_IDEAS){const n=decodeDeck(idea.code).cards.length;assert(pictureLayout(n).tiles[0].w>=150,idea.name+' tiles are big')}
+console.log('PASS deck pictures lay out 1–20 different cards without overlap, square for small decks');
