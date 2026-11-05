@@ -55,6 +55,7 @@ async function refresh(force) {
 }
 function afterFetch() {
   paintDot(); tellCheers();
+  try { dispatchEvent(new CustomEvent('ember:activity')); } catch {} // inbox.js listens
   if (B.view === 'friends') paintPanel();
 }
 
