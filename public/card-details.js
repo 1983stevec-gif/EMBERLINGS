@@ -185,6 +185,7 @@ function open(id, fromView = B.view) {
   const c = (B.state.owned || []).find(x => x.id === id); if (!c) return false;
   close(); injectCSS();
   const root = document.createElement('div'); root.id = 'cardDetails'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-labelledby', 'cdTitle');
+  root.dataset.cardId = c.id; // which copy is showing (binder-tools.js stars it)
   const touch = matchMedia('(pointer:coarse)').matches;
   root.innerHTML = `<div class="cdBar"><button type="button" class="cdBack" data-cd-close>‹ Back</button><strong>Card details</strong><button type="button" class="cdFlip" data-cd-flip>Flip card ⟲</button></div>
    <div class="cdBody"><div class="cdLeft"><div class="cdStage" tabindex="0" aria-label="${esc(speciesName(c.kind))} card. Drag or use the arrow keys to turn it."><div class="cdShadow"></div><div class="cdCard"><div class="cdFace cdFront"><div class="cdZoom">${B.cardHTML(c)}</div><span class="cdGlare"></span></div><div class="cdFace cdBackFace">${BACK}</div></div></div>

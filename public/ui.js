@@ -88,20 +88,21 @@ const MENU = [
 ];
 function userMenu(anchor) {
   const old = $('.uiMenu'); if (old) { old.remove(); anchor.setAttribute('aria-expanded', 'false'); return; }
-  const e = ext(), r = anchor.getBoundingClientRect();
+  const e = ext(), r = anchor.getBoundingClientRect(), hub = !!window.EmberSettings; // Settings hub (settings.js) holds the other options
   const m = document.createElement('div'); m.className = 'uiMenu'; m.setAttribute('role', 'menu');
   m.style.top = r.bottom + 8 + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
   m.innerHTML = `${e.title ? `<p class="uiMenuTitle">🏷 ${esc(e.title)}</p>` : ''}
    <nav class="uiMenuMain" aria-label="Main">${NAV.map(([g, t]) => `<button role="menuitem" data-go="${g}">${t}</button>`).join('')}</nav>
    ${MENU.map(([h, items]) => `<p class="uiMenuHead">${h}</p>${items.map(([g, i, t]) => `<button role="menuitem" data-go="${g}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}`).join('')}
-   <hr>${B.state.playerUsername ? `<p class="uiMenuTitle">Logged in as ${esc(B.state.playerUsername)}</p><button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Account &amp; password</button><button role="menuitem" id="uiLogoutGo"><span aria-hidden="true">🚪</span> Log out</button>` : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button>'}<button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button><button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>
-   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button>${fxPicker('uiFxMenu')}`;
+   <hr>${B.state.playerUsername ? `<p class="uiMenuTitle">Logged in as ${esc(B.state.playerUsername)}</p>${hub ? '' : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Account &amp; password</button>'}<button role="menuitem" id="uiLogoutGo"><span aria-hidden="true">🚪</span> Log out</button>` : '<button role="menuitem" data-go="account"><span aria-hidden="true">🔑</span> Login &amp; Password</button>'}<button role="menuitem" id="uiSettingsGo"><span aria-hidden="true">⚙</span> Settings</button>${hub ? '' : '<button role="menuitem" data-go="tutorial"><span aria-hidden="true">🧭</span> Replay Tutorial</button>'}
+   <button role="menuitem" id="uiSound">${e.muted ? '🔇 Sound off' : '🔊 Sound on'}</button>${hub ? '' : fxPicker('uiFxMenu')}`;
   document.body.appendChild(m); anchor.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.id === 'uiSound') { e.muted = !e.muted; B.save(); b.textContent = e.muted ? '🔇 Sound off' : '🔊 Sound on'; return; }
     if (b.dataset.fxPick) { pickFx(b.dataset.fxPick); return; }
     if (b.id === 'uiLogoutGo') { m.remove(); window.EmberCloud?.logout(); return; }
+    if (b.id === 'uiSettingsGo' && hub) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); window.EmberSettings.open(); return; }
     if (b.id === 'uiSettingsGo') { const kind = 'settings'; m.remove(); B.go('home'); setTimeout(() => { drawer(kind); $('#uiDrawer')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 80); return; }
     m.remove(); B.go(b.dataset.go);
   });
@@ -167,6 +168,7 @@ function afterHome() {
   applyArt();
 }
 function drawer(kind) {
+  if (kind === 'settings' && window.EmberSettings) { window.EmberSettings.open(); return; } // one place for settings
   const d = $('#uiDrawer'); if (!d) return;
   if (d.dataset.kind === kind) { d.innerHTML = ''; d.dataset.kind = ''; return; }
   d.dataset.kind = kind;
@@ -424,7 +426,7 @@ function deckLayout() {
 /* ---------------------------------------------------------------- Browser Back / Forward */
 // Each screen gets a history entry, so the browser and phone Back buttons move between screens.
 // Short-lived steps (pack opening, battles, results) collapse into one entry that returns to their parent screen.
-const NAVIGABLE = new Set(['home', 'map', 'packs', 'inventory', 'index', 'decks', 'rules', 'training', 'fusion', 'fuse', 'vault', 'mutation', 'trading', 'friends', 'album', 'achievements', 'profile', 'tutorial']);
+const NAVIGABLE = new Set(['home', 'map', 'packs', 'inventory', 'index', 'decks', 'rules', 'training', 'fusion', 'fuse', 'vault', 'mutation', 'trading', 'friends', 'album', 'achievements', 'profile', 'tutorial', 'settings']);
 const PARENT = { packReview: 'packs', packOpening: 'packs', reveal: 'packs', packSummary: 'packs', cardBattle: 'map', cardResult: 'map', 'fusion-result': 'fusion', username: 'home', friendProfile: 'friends' };
 let historyView = null, fromHistory = false;
 function trackHistory(v) {

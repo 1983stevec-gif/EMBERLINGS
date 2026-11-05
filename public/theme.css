@@ -2006,3 +2006,63 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
   .uiRulesLink{min-height:40px}
   body:not(.uiExact) :is(#leaveCards,#energyTarget,#attachPocketEnergy,#usePocketStadium,#readyPocket,#showPocketRules){min-height:42px}
 }
+/* ---------- Polish pass 2 (fit and tap areas) ----------
+   1. My Binder: the cover swings open in 3D and, for a moment, pokes past the right edge of the window, which made
+      the page scroll sideways. Clip only the sideways overflow of the page while the binder opens (the part that
+      is cut is outside the window anyway, so the swing looks the same). */
+#app:has(> .magicalBinder.binderOpening){overflow-x:clip}
+/* 2. Bigger invisible tap areas on touch screens. Painted pages are drawn to the painting's size, so on tablets
+      some buttons are small. A clear ::after layer grows each one to at least 44 px (the % insets are relative to
+      the button itself: (size - 44px) / 2, never positive), so the look does not change at all. */
+@media (pointer:coarse){
+  /* (only buttons that sit in normal flow get position:relative; the others are already placed absolutely) */
+  .uiX :is(.uiXPackBtn,.uiXBtn,.uiXFFuse,.uiXMBtn,.uiXAPager button,.uiXFPager button,.uiXMPager button,.uiXMCardPager button){position:relative}
+  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select]),.uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select]){position:relative}
+  .uiX :is(.uiHot,.uiXPackBtn,.uiXBtn,.uiXRTab,.uiXFFuse,.uiXMBtn,.thOpen,.uiXAPager button,.uiXFPager button,.uiXMPager button,.uiXMCardPager button,.uiXTRClear,.tradeX)::after,
+  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select])::after,
+  .uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select])::after,
+  #uiXTRDecline::after,#tradeAccept::after{content:'';position:absolute;top:min(0px,calc((100% - 44px) / 2));bottom:min(0px,calc((100% - 44px) / 2));left:min(0px,calc((100% - 44px) / 2));right:min(0px,calc((100% - 44px) / 2));border-radius:inherit;background:none}
+  /* Map stops sit close together: grow them to 40 px only (neighbours are about that far apart on tablets). */
+  .uiXNode.node::after{content:'';position:absolute;top:min(0px,calc((100% - 40px) / 2));bottom:min(0px,calc((100% - 40px) / 2));left:min(0px,calc((100% - 40px) / 2));right:min(0px,calc((100% - 40px) / 2));border-radius:50%}
+  /* Things that cannot carry a ::after layer (text boxes, lists) or sit in normal page flow: just make them taller. */
+  .uiXFInput{min-height:40px}
+  #tradeMutFilter,#energyTarget{min-height:44px}
+  .tpBack{min-height:44px}
+  body.uiTheme details.panel>summary{min-height:40px;padding-top:9px;box-sizing:border-box}
+  .uiXFList .friendActions .button{min-height:40px}
+  html #fxMusicHint button{min-height:44px}
+  html #fxMusicHint .fxMusicX{width:44px}
+}
+/* 3. Training: when the Daily button shows on a portrait tablet Training page, leave room for it under the last button.
+      (On the painted desktop Training page daily.js docks it over the top-right picture instead.) */
+@media (min-width:700px) and (max-width:1199px) and (pointer:coarse){body.uiTheme:has(#dailyBtn):has(.tpPage) #app{padding-bottom:calc(var(--tabH) + 84px)!important}}
+@media (max-width:699px){body.uiTheme:has(#dailyBtn):has(.tpPage) #app{padding-bottom:164px!important}}
+.dailyBtn.dailyDock{bottom:auto!important}
+/* 4. Achievement toasts on phones: they slid in under the header and covered the page title. Show them at the
+      bottom, just above the tab bar and beside the Daily button, where they only cover the end of the page for a moment. */
+@media (max-width:699px){
+  html body .fxBanner{top:auto;bottom:calc(96px + env(safe-area-inset-bottom,0px));left:12px;right:12px;max-width:none;transform:none;padding:8px 12px;gap:10px;animation:p2ToastUp .35s ease-out}
+  html body:has(#dailyBtn) .fxBanner{right:128px}
+  html body:has(.cardArena) .fxBanner{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  html body .fxBanner .fxBannerIcon{font-size:24px}
+  html body .fxBanner small{display:block;font-size:13px;line-height:1.25}
+  html body .fxBanner.fxOut{transform:translateY(12px)}
+  html[data-fx=off] body .fxBanner,.reduceMotion .fxBanner{animation:none}
+}
+@keyframes p2ToastUp{from{opacity:0;transform:translateY(16px)}}
+@media (prefers-reduced-motion:reduce){html body .fxBanner{animation:none}}
+/* 5. Battle Rules on small painted screens: the rule text was scaled with the painting (about 11 px on a 1024 px
+      tablet). Keep it at least 14 px; the panel scrolls. */
+.uiXRPanel{font-size:max(14px,calc(17 / 1536 * 100cqw))!important}
+/* 6. My Binder on tablets and phones: the printed card kept its desktop width and was wider than its pocket (it ran
+      into the next pocket). Cards now shrink to fit the pocket (the art is square, so it scales without stretching),
+      and on phones the spine and side padding are slimmer so the two pockets per row are as wide as possible. */
+.uiTheme .binderPocket{min-width:0}
+.uiTheme .binderPocket .mythCard{width:min(var(--card-w),100%)!important}
+@media(max-width:1100px){html body.uiTheme .binderPocket{min-height:0}}
+@media(max-width:640px){
+  html body.uiTheme .magicalBinder{padding-left:34px!important;padding-right:6px!important}
+  html body .uiSpine{width:26px}
+  html body.uiTheme .binderPocket{padding:28px 4px 6px!important}
+}
+/* ---------- end of polish pass 2 ---------- */
