@@ -8,7 +8,7 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 
 ## 1. Get the latest code
 - Repository: https://github.com/1983stevec-gif/EMBERLINGS (branch `main`).
-- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #55 from 1983stevec-gif/deck-share" or later (later polish PRs are fine). This release is everything merged since live version 60: PRs #29 to #55 and anything after them.
+- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #64 from 1983stevec-gif/load-faster" or later (later polish PRs are fine). This release is everything merged since live version 60: PRs #29 to #64 and anything after them.
 - Read `HANDOFF.md` and `.openai/hosting.json` before publishing.
 
 ## 2. Rules (from HANDOFF.md, do not break)
@@ -18,9 +18,12 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 - Do not commit credentials, browser saves, local databases or `node_modules`.
 
 ## 3. Database
-**One new migration: `drizzle/0008_player_profile.sql`** (adds one empty column: `ALTER TABLE players ADD profile text;`). Apply it **once** to the live database before publishing the Worker, using the same method as migrations 0006 and 0007, then confirm `players.profile` exists. Without it the game still works, but friends can't see each other's profiles ("Profiles are not available online yet").
+**Two new migrations.** Apply each **once**, in this order, to the live database **before** publishing the Worker (same method as 0006 and 0007):
 
-Migrations 0006 and 0007 should already be applied; if either is missing, apply it once. Multi-card trades reuse the existing `host_offer` / `guest_offer` columns.
+1. `drizzle/0008_player_profile.sql`: adds one empty column (`ALTER TABLE players ADD profile text;`). Confirm `players.profile` exists. Without it, friends can't see each other's profiles ("Profiles are not available online yet").
+2. `drizzle/0009_activity.sql`: adds two new tables (`activity_events`, `activity_cheers`) and their indexes for Friend activity; it changes no existing table. Confirm both tables exist. Without it, the Activity panel says "Activity isn't available yet".
+
+The rest of the game works either way. Migrations 0006 and 0007 should already be applied; if either is missing, apply it once. Multi-card trades reuse the existing `host_offer` / `guest_offer` columns.
 
 ## 4. Build and check
 ```
@@ -28,7 +31,7 @@ npm run install:ci
 npm run build
 npm test
 ```
-The build must pass. `npm test` now runs the whole active test suite (about 115 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
+The build must pass. `npm test` now runs the whole active test suite (about 124 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
 
 ## 5. Publish
 Follow the "Publishing" section of `HANDOFF.md`: use the Sites source helper to prepare, push and package the exact source and build output, then `save_site_version` and `deploy_site_version`.
@@ -50,7 +53,10 @@ Open the public link and check each item. Use a phone (or a narrow window), a po
 13. **Menu:** Effects (Full / Light / Off), Accessibility (text size, element symbols), What's new and Install are in the user menu. Returning players see "What's new" once (not at the same time as Daily rewards).
 14. **Sound:** with Sound on, attacks, pack openings, coins and level-ups make sounds; with Sound off, nothing plays.
 15. **Logo and Home:** the header logo shows art inside its arch; Home has a few floating Mythlings and time-of-day lighting.
-16. **Install as an app:** `https://<live site>/sw.js` loads (JavaScript) and `/manifest.webmanifest` loads (JSON). Open the site twice in Chrome: DevTools → Application shows an activated service worker and `emberlings-*` caches, and the second visit is fast. Online features (friends, trades, cloud save) still work — `/api/` calls must never come from the cache.
+16. **Friend activity (two accounts):** A opens a pack with a rare pull; B sees it under Friends → Activity and presses 🎉 Cheer; A gets "… cheered your …". Turning "Share my highlights" off stops new posts.
+17. **Cosmetics and stats:** My Profile has Card backs and Avatar tabs (locked items say how to unlock); "📈 My Stats" in the menu shows packs, luck meter and battle record; card details has "📤 Share card".
+18. **Music:** off by default; turning "Music" on in the menu plays a calm theme on Home and a livelier one in battle; Sound off silences it.
+19. **Install as an app:** `https://<live site>/sw.js` loads (JavaScript) and `/manifest.webmanifest` loads (JSON). Open the site twice in Chrome: DevTools → Application shows an activated service worker and `emberlings-*` caches, and the second visit is fast. Online features (friends, trades, cloud save) still work — `/api/` calls must never come from the cache.
 
 ## 7. Update the handoff
 Add the new publish date and result to `HANDOFF.md`. Commit and push that change to GitHub.

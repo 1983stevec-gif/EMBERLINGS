@@ -232,7 +232,7 @@ function renderFriend() {
   let avatar = ''; try { avatar = B.art(pa || d.pet); } catch {}
   let shown = ''; try { shown = cards.map(cardFor).join(''); } catch { shown = ''; }
   B.render(`${back}<section class="pfPage pfFriend" aria-labelledby="pfName">
-   ${bannerHTML({ name: d.username, title: d.title, sub: d.online ? '🟢 Online now' : '⚪ Offline', avatar, frame, background, badges, ring }).replace('<h1>', '<h1 id="pfName">')}
+   ${bannerHTML({ name: d.username, title: d.title, sub: window.EmberPresence ? window.EmberPresence.label(d) : (d.online ? '🟢 Online now' : '⚪ Offline'), avatar, frame, background, badges, ring }).replace('<h1>', '<h1 id="pfName">')}
    ${d.profile ? `<div class="pfStats">${statTile('🃏', 'Cards owned', fmt(s.cards))}${statTile('🔎', 'Species found', `${s.species || 0}/${SPECIES_COUNT}`)}${statTile('⚔️', 'Battles won', fmt(s.wins))}${statTile('🏆', 'Achievements', `${s.achievements || 0}/${ACHIEVEMENTS.length}`)}${backTile(cardBack)}</div>` : ''}
    <section class="pfSection"><div class="pfHead"><h2>${esc(d.username)}'s Showcase</h2></div>
     <div class="pfShow">${shown || `<p class="pfNote">${esc(d.username)} hasn't picked any cards to show yet.</p>`}</div></section>
