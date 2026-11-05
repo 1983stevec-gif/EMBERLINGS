@@ -390,6 +390,7 @@ function init() {
   addEventListener('ember:levelUp', e => { const d = e.detail || {}; if (d.creature) announce(`${nameOf(d.creature)} reached level ${d.to}!`); });
   addEventListener('ember:fusion', e => { const c = e.detail?.creature; if (c) announce(`Fusion complete: ${nameOf(c)}.`); });
   addEventListener('ember:cardBattle', e => { try { onBattle(e.detail || {}); } catch (err) { console.warn('a11y battle', err); } });
+  addEventListener('ember:spectateBattle', e => { try { onBattle(e.detail || {}); } catch (err) { console.warn('a11y battle', err); } });
   addEventListener('ember:cardResult', e => { const r = e.detail || {}; announce(r.victory ? 'Victory! You won the battle.' : 'Battle over. Your opponent won.', true); });
   addEventListener('ember:tradeComplete', () => announce('Trade complete.'));
   new MutationObserver(muts => {

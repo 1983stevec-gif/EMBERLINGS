@@ -57,6 +57,7 @@ async function refresh(force) {
 }
 function afterFetch() {
   paintDot(); tellCheers();
+  try { dispatchEvent(new CustomEvent('ember:activity')); } catch {} // inbox.js listens
   if (B.view === 'friends') paintPanel();
 }
 
@@ -235,7 +236,7 @@ if (B) {
   setTimeout(() => refresh(true), 5000);
   setInterval(() => { if (!document.hidden) refresh(); }, 90000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
-  window.EmberActivity = { refresh: () => refresh(true), post, feed: () => feed, cheerText };
+  window.EmberActivity = { refresh: () => refresh(true), post, feed: () => feed, cheerText, share: () => ext().share, setShare: on => { if (!!on !== ext().share) return toggleShare(); } };
   injectCSS();
 }
 

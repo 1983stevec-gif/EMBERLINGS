@@ -471,7 +471,7 @@ if (B && !window.EmberMusic) {
       const cur = ext().music || {}; ext().music = { on: !!cur.on, vol: MUSIC_VOL[cur.vol] ? cur.vol : 'med', ...cur, hinted: true };
       try { B.save(); } catch { /* ignore */ }
       const h = document.createElement('div'); h.id = 'fxMusicHint'; h.setAttribute('role', 'status');
-      h.innerHTML = '<span><span aria-hidden="true">🎵</span> New: music! Turn it on in the menu.</span><button type="button" class="fxMusicTry">Turn on</button><button type="button" class="fxMusicX" aria-label="Close">×</button>';
+      h.innerHTML = '<span><span aria-hidden="true">🎵</span> New: music! Turn it on in ' + (window.EmberSettings ? 'Settings' : 'the menu') + '.</span><button type="button" class="fxMusicTry">Turn on</button><button type="button" class="fxMusicX" aria-label="Close">×</button>';
       h.addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; if (b.classList.contains('fxMusicTry')) setMusic({ on: true }); hideHint(); });
       // Sit above the bottom tab bar on touch screens so it never covers navigation.
       const tabs = [...document.querySelectorAll('.uiTabMenu, #app > nav.nav')].find(e => { const r = e.getBoundingClientRect(); return r.height > 0 && getComputedStyle(e).position === 'fixed'; });
