@@ -34,6 +34,10 @@ export const RELEASES = [
       { icon: '🃏', text: 'Earn card backs, avatar rings and avatars from your achievements, and check your luck and records on the new My Stats page.', go: 'stats', show: 'My Stats' },
       { icon: '🎁', text: 'Daily rewards, boss entrances with new boss art, trade alerts and rare-find banners.', daily: true, show: 'Open Daily' },
       { icon: '✨', text: 'New animations, sounds and optional background music (turn it on in the menu). Choose Effects: Full, Light or Off, and find text size and element symbols under Accessibility, both in the menu.' },
+      { icon: '👀', text: 'See which friends are online, when they were last seen, and watch a friend\'s live duel.', go: 'friends', show: 'Friends' },
+      { icon: '🔔', text: 'A new bell gathers trade invites, friend requests, cheers and daily rewards in one place, and a new Settings page keeps every option together.', go: 'settings', show: 'Settings' },
+      { icon: '🖼', text: 'A full-screen art gallery with a short story for every Mythling, plus ★ favourite cards, saved binder views and collection export.', go: 'index', show: 'Mythling Index' },
+      { icon: '🍂', text: 'Seasonal decorations change through the year, and short first-time tips explain each new screen.' },
       { icon: '📱', text: 'Install EMBERLINGS as an app, faster loading, and screens that fit phones and tablets better.' }
     ]
   }

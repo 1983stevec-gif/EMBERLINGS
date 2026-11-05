@@ -8,7 +8,7 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 
 ## 1. Get the latest code
 - Repository: https://github.com/1983stevec-gif/EMBERLINGS (branch `main`).
-- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #64 from 1983stevec-gif/load-faster" or later (later polish PRs are fine). This release is everything merged since live version 60: PRs #29 to #64 and anything after them.
+- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #76 from 1983stevec-gif/seasons" or later (later polish PRs are fine). This release is everything merged since live version 60: PRs #29 to #76 and anything after them.
 - Read `HANDOFF.md` and `.openai/hosting.json` before publishing.
 
 ## 2. Rules (from HANDOFF.md, do not break)
@@ -31,7 +31,7 @@ npm run install:ci
 npm run build
 npm test
 ```
-The build must pass. `npm test` now runs the whole active test suite (about 124 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
+The build must pass. `npm test` now runs the whole active test suite (about 134 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
 
 ## 5. Publish
 Follow the "Publishing" section of `HANDOFF.md`: use the Sites source helper to prepare, push and package the exact source and build output, then `save_site_version` and `deploy_site_version`.
@@ -56,7 +56,11 @@ Open the public link and check each item. Use a phone (or a narrow window), a po
 16. **Friend activity (two accounts):** A opens a pack with a rare pull; B sees it under Friends → Activity and presses 🎉 Cheer; A gets "… cheered your …". Turning "Share my highlights" off stops new posts.
 17. **Cosmetics and stats:** My Profile has Card backs and Avatar tabs (locked items say how to unlock); "📈 My Stats" in the menu shows packs, luck meter and battle record; card details has "📤 Share card".
 18. **Music:** off by default; turning "Music" on in the menu plays a calm theme on Home and a livelier one in battle; Sound off silences it.
-19. **Install as an app:** `https://<live site>/sw.js` loads (JavaScript) and `/manifest.webmanifest` loads (JSON). Open the site twice in Chrome: DevTools → Application shows an activated service worker and `emberlings-*` caches, and the second visit is fast. Online features (friends, trades, cloud save) still work — `/api/` calls must never come from the cache.
+19. **Friends online and watching:** two friends signed in see each other as "🟢 Online now" in the Friends list and on the friend's profile. Start a duel between them; a third friend sees "👁 Watch" and can watch it live without seeing either hand.
+20. **Bell, Settings, tips:** the 🔔 bell next to the coins lists friend requests, trade invites and cheers; ⚙ Settings in the menu holds Sound, Music, Effects, Accessibility, Install and Backup; opening My Profile for the first time shows a short tip.
+21. **Gallery and binder:** "🖼 Gallery" on the Mythling Index opens full-screen art with a short story; in My Binder, holding a card stars it and "★ Favourites" filters to starred cards.
+22. **Seasons:** in November (autumn) Home shows drifting leaves and an "Autumn" badge; turning "Seasonal decorations" off in Settings removes them.
+23. **Install as an app:** `https://<live site>/sw.js` loads (JavaScript) and `/manifest.webmanifest` loads (JSON). Open the site twice in Chrome: DevTools → Application shows an activated service worker and `emberlings-*` caches, and the second visit is fast. Online features (friends, trades, cloud save, watching duels) still work — `/api/` calls must never come from the cache.
 
 ## 7. Update the handoff
 Add the new publish date and result to `HANDOFF.md`. Commit and push that change to GitHub.
