@@ -135,6 +135,8 @@ function backupHTML() {
   <p><button class="button" id="fxCopy" type="button">Copy code</button> <label class="button alt fxFileLabel">Open backup file<input type="file" id="fxFile" accept=".txt,text/plain" hidden></label> <button class="button" id="fxImport" type="button">Import this code</button></p>
   <p id="fxBackupStatus" role="status" class="small"></p></details>`;
 }
+// The Settings page (settings.js) shows this same panel.
+window.EmberBackup = { html: backupHTML, bind: () => bindBackup() };
 function bindBackup() {
   const status = m => { const el = $('#fxBackupStatus'); if (el) el.textContent = m; };
   $('#fxExport').onclick = async () => { try { $('#fxCode').value = await encodeSave(); status('Backup code created. Copy it or download it as a file.'); } catch (e) { status(e.message); } };
