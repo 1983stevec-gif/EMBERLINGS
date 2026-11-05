@@ -74,6 +74,7 @@ function sparkles({ x, y }, colors, n, reach = 180) {
 function confetti({ x, y }, colors, n) {
   if (fxLight()) return;
   n = Math.min(n, small() ? 34 : 64);
+  colors = window.EmberSeasons?.confetti?.(colors) || colors; // seasonal colours mixed in (seasons.js)
   for (let i = 0; i < n; i++) {
     const c = add(el('fxpConfetti')), w = rand(6, 11), dx = rand(-1, 1) * Math.min(innerWidth * .55, 520), up = rand(140, 320);
     Object.assign(c.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: w * rand(1.3, 1.9) + 'px', background: colors[i % colors.length], borderRadius: i % 3 ? '2px' : '50%' });
