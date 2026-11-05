@@ -244,8 +244,11 @@ async function paintList() {
   const list = await idb.list();
   if (!$('#ssList')) return;
   if (!list.length) { ol.innerHTML = '<li class="ssEmpty">No automatic backups yet. One is made soon after you start playing, or press Back up now.</li>'; return; }
-  ol.innerHTML = list.map(r => `<li class="ssItem" data-ss-id="${esc(r.id)}"><div class="ssInfo"><b>${esc(when(r.at))}</b><span>${fmt(r.cards)} cards · 🪙 ${fmt(r.coins)}</span><small>${esc(REASONS[r.reason] || 'Automatic')}${r.version ? ` · ${esc(r.version)}` : ''}</small></div>
-   <button type="button" class="setBtn ssRestore" data-ss-restore="${esc(r.id)}" aria-label="Restore the backup from ${esc(when(r.at))}">↺ Restore</button><div class="ssAsk" hidden></div></li>`).join('');
+  ol.innerHTML = list.map(r => {
+    const ok = openRecord(r, nSpecies()).ok;
+    return `<li class="ssItem${ok ? '' : ' ssDamaged'}" data-ss-id="${esc(r.id)}"><div class="ssInfo"><b>${esc(when(r.at))}</b><span>${ok ? `${fmt(r.cards)} ${r.cards === 1 ? 'card' : 'cards'} · 🪙 ${fmt(r.coins)}` : 'This copy is damaged and can\'t be restored.'}</span><small>${esc(REASONS[r.reason] || 'Automatic')}${r.version ? ` · ${esc(r.version)}` : ''}</small></div>
+   ${ok ? `<button type="button" class="setBtn ssRestore" data-ss-restore="${esc(r.id)}" aria-label="Restore the backup from ${esc(when(r.at))}">↺ Restore</button>` : ''}<div class="ssAsk" hidden></div></li>`;
+  }).join('');
 }
 const status = (m, bad) => { const el = $('#ssStatus'); if (el) { el.textContent = m; el.classList.toggle('ssBad', !!bad); } };
 function currentBlock() { let busy = false; try { busy = !!B.busy(); } catch { busy = true; } return restoreBlock(B.state, { busy }); }
@@ -327,6 +330,7 @@ function css() {
 .ssItem{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px;border:1px solid #e9b75a33;border-radius:10px;background:#111824;min-width:0}
 .ssInfo{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px}
 .ssInfo b{font:700 16px system-ui,sans-serif;color:#f6ead2}.ssInfo span{font-size:15px;color:#e6dcc6}.ssInfo small{font-size:13px;color:#a99f8a}
+.ssDamaged .ssInfo span{color:#ffb4a0}
 .ssEmpty{padding:10px 0;color:#c9bfa8;font-size:14px}
 .ssAsk{flex:1 1 100%;padding:10px 12px;border-radius:8px;background:#1e1a10;border:1px solid #e9b75a77;color:#f3e6c8;font-size:15px;overflow-wrap:anywhere}
 .ssAsk p{margin:4px 0}
