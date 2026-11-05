@@ -144,7 +144,7 @@ if (B) {
     watchCounters(); paintButton(); if (B.view === 'training') setTimeout(paintButton, 250);
     // Once a day, the first time Home opens, show the panel so the login reward is not missed (not during the beginner guide).
     const d = daily();
-    if (!autoShown && B.view === 'home' && loginReady(d) && d.autoDay !== dayKey() && !$('#guidedTour') && !B.state.guidedTour?.active) { autoShown = true; d.autoDay = dayKey(); B.save(); setTimeout(open, 600); }
+    if (!autoShown && B.view === 'home' && !window.EmberComfort?.quiet?.() && loginReady(d) && d.autoDay !== dayKey() && !$('#guidedTour') && !B.state.guidedTour?.active) { autoShown = true; d.autoDay = dayKey(); B.save(); setTimeout(open, 600); }
   }));
   addEventListener('resize', () => { if ($('#dailyBtn.dailyDock')) paintButton(); });
   window.EmberDaily = { open, daily, bump, claim, pickQuests };

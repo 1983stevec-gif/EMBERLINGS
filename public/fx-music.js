@@ -360,7 +360,7 @@ if (B && !window.EmberMusic) {
   const $ = (s, r = document) => r.querySelector(s);
   const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
   const settings = () => { const m = ext().music; return { on: !!m?.on, vol: MUSIC_VOL[m?.vol] ? m.vol : 'med' }; };
-  const muted = () => !!ext().muted;
+  const muted = () => !!ext().muted || !!window.EmberComfort?.quiet?.(); // quiet hours (comfort.js) count as muted
   let ctx = null, music = null, timer = 0, suspendT = 0, restT = 0, gestured = false, playing = false, lastView = null, lastMuted = muted();
 
   const want = () => settings().on && !muted() && !document.hidden && gestured;
@@ -509,6 +509,7 @@ html[data-fx=off] #fxMusicHint{animation:none}
   const checkMute = () => setTimeout(() => { inject(); const m = muted(); if (m !== lastMuted) { lastMuted = m; apply(); paint(); } }, 0);
   document.addEventListener('click', () => { checkMute(); for (const ms of [150, 450, 1000]) setTimeout(inject, ms); }, true);
   document.addEventListener('change', checkMute, true);
+  addEventListener('ember:quiet', checkMute);
   document.addEventListener('visibilitychange', apply);
   addEventListener('pagehide', () => { if (ctx && ctx.state === 'running') ctx.suspend().catch(() => {}); });
   addEventListener('pageshow', apply);

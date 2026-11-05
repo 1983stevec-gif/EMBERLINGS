@@ -144,7 +144,7 @@ function place() {
 
 /* ---------- Deciding when to show */
 let timer = 0, polls = [];
-function blocked(ctx) { return ctx.busy || !!$(BLOCKERS); }
+function blocked(ctx) { return ctx.busy || !!$(BLOCKERS) || !!window.EmberComfort?.quiet?.(); } // no tips during quiet hours (comfort.js)
 
 function check() {
   timer = 0;

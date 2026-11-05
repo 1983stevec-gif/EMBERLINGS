@@ -11,7 +11,8 @@ import { ADVANTAGE } from './card-engine.js';
 
 const B = window.EmberBridge;
 const $ = (s, r = document) => r.querySelector(s);
-const muted = () => !!B?.state?.ember?.muted;
+// Quiet hours (comfort.js) count as muted without changing the saved Sound setting.
+const muted = () => !!B?.state?.ember?.muted || !!window.EmberComfort?.quiet?.();
 const rnd = (a, b) => a + Math.random() * (b - a);
 const vary = (k = .04) => 1 + rnd(-k, k); // tiny pitch variation so repeats never sound identical
 
@@ -312,6 +313,7 @@ if (B) {
   for (const type of ['pointerdown', 'keydown']) document.addEventListener(type, unlock, { capture: true, passive: true });
   // The Sound button lives in enhancements.js; when it turns sound off, quiet anything still ringing out.
   document.addEventListener('click', () => setTimeout(() => { if (muted() && ctx?.state === 'running') ctx.suspend().catch(() => {}); }, 0), true);
+  addEventListener('ember:quiet', () => { if (muted() && ctx?.state === 'running') ctx.suspend().catch(() => {}); });
   document.addEventListener('visibilitychange', () => { if (document.hidden && ctx?.state === 'running') ctx.suspend().catch(() => {}); });
 
   addEventListener('ember:cardBattle', e => { try { onBattle(e.detail || {}); } catch (err) { console.warn('fx-sound', err); } });

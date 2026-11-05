@@ -6,6 +6,8 @@ const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [..
 const calm = () => !!B.state.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 let prev = null, seenEvents = new Set(), lastSig = '';
+// Battle animation speed (comfort.js): 1 = normal, smaller = quicker. Visual only.
+const pace = () => { const k = window.EmberComfort?.animScale?.(); return k > 0 && k <= 1 ? k : 1; };
 
 function fields(side) { const f = $$('.pocketBoard > .pocketField'); return { mine: f[0], theirs: f[1] }; }
 function layer() { let l = $('#bxLayer'); if (!l) { l = document.createElement('div'); l.id = 'bxLayer'; l.setAttribute('aria-hidden', 'true'); document.body.appendChild(l); } return l; }
@@ -99,11 +101,11 @@ function embers(rect, to, ours) {
   for (let i = 0; i < 26; i++) {
     const e = document.createElement('i'); e.className = 'bxEmber'; L.appendChild(e);
     const a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 110;
-    e.animate([{ transform: `translate(${cx}px,${cy}px) scale(1)`, opacity: 1 }, { transform: `translate(${cx + Math.cos(a) * d}px,${cy + Math.sin(a) * d - 60}px) scale(.2)`, opacity: 0 }], { duration: 900 + Math.random() * 600, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'forwards' }).finished.then(() => e.remove(), () => e.remove());
+    e.animate([{ transform: `translate(${cx}px,${cy}px) scale(1)`, opacity: 1 }, { transform: `translate(${cx + Math.cos(a) * d}px,${cy + Math.sin(a) * d - 60}px) scale(.2)`, opacity: 0 }], { duration: (900 + Math.random() * 600) * pace(), easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'forwards' }).finished.then(() => e.remove(), () => e.remove());
   }
   if (!to) return;
   const p = document.createElement('div'); p.className = 'bxPoint' + (ours ? '' : ' theirs'); p.textContent = '+1'; L.appendChild(p);
-  p.animate([{ transform: `translate(${cx}px,${cy}px) scale(.6)`, opacity: 0 }, { transform: `translate(${cx}px,${cy - 40}px) scale(1.3)`, opacity: 1, offset: .3 }, { transform: `translate(${to.left + to.width / 2}px,${to.top + to.height / 2}px) scale(.7)`, opacity: .9 }], { duration: 1300, delay: 300, easing: 'cubic-bezier(.4,.1,.3,1)', fill: 'forwards' }).finished.then(() => { p.remove(); const s = $('.battleBar strong'); if (s) { s.classList.remove('bxScorePop'); void s.offsetWidth; s.classList.add('bxScorePop'); } }, () => p.remove());
+  p.animate([{ transform: `translate(${cx}px,${cy}px) scale(.6)`, opacity: 0 }, { transform: `translate(${cx}px,${cy - 40}px) scale(1.3)`, opacity: 1, offset: .3 }, { transform: `translate(${to.left + to.width / 2}px,${to.top + to.height / 2}px) scale(.7)`, opacity: .9 }], { duration: 1300 * pace(), delay: 300, easing: 'cubic-bezier(.4,.1,.3,1)', fill: 'forwards' }).finished.then(() => { p.remove(); const s = $('.battleBar strong'); if (s) { s.classList.remove('bxScorePop'); void s.offsetWidth; s.classList.add('bxScorePop'); } }, () => p.remove());
 }
 
 /* 5b. Knockout moment: the fallen card stays visible in the centre with who scored */
@@ -160,7 +162,10 @@ function handArrows() {
   $$('.bxHandNav', host).forEach(b => b.remove());
   const mk = (dir, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'bxHandNav ' + (dir < 0 ? 'prev' : 'next'); b.setAttribute('aria-label', label); b.textContent = dir < 0 ? '‹' : '›'; b.onclick = () => row.scrollBy({ left: dir * row.clientWidth * .8, behavior: calm() ? 'auto' : 'smooth' }); host.append(b); return b; };
   const prev = mk(-1, 'Show earlier cards in your hand'), next = mk(1, 'Show more cards in your hand');
-  const place = () => { const r = row.getBoundingClientRect(), h = host.getBoundingClientRect(); for (const b of [prev, next]) b.style.top = (r.top - h.top + r.height / 2) + 'px'; prev.style.left = (r.left - h.left + 4) + 'px'; next.style.left = (r.right - h.left - 4) + 'px'; const more = row.scrollWidth > row.clientWidth + 4; prev.hidden = !more || row.scrollLeft < 4; next.hidden = !more || row.scrollLeft > row.scrollWidth - row.clientWidth - 4; };
+  const place = () => { const r = row.getBoundingClientRect(), h = host.getBoundingClientRect(); for (const b of [prev, next]) b.style.top = (r.top - h.top + r.height / 2) + 'px'; prev.style.left = (r.left - h.left + 4) + 'px'; next.style.left = (r.right - h.left - 4) + 'px'; const more = row.scrollWidth > row.clientWidth + 4; prev.hidden = !more || row.scrollLeft < 4; next.hidden = !more || row.scrollLeft > row.scrollWidth - row.clientWidth - 4;
+    // Left-handed layout (comfort.js): both arrows sit together at the left end of the hand.
+    if (document.documentElement.dataset.lefty === 'on') { const x = r.left - h.left + 4; prev.style.left = x + 'px'; next.style.left = (x + (prev.hidden ? 0 : prev.offsetWidth + 8)) + 'px'; }
+  };
   row.onscroll = place; requestAnimationFrame(place); setTimeout(place, 300);
   // Re-place when the hand changes size (boss intro closing, rotating the phone, fonts loading),
   // so an arrow measured before the hand was laid out doesn't stay stuck at the edge of the screen.
