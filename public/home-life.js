@@ -32,6 +32,8 @@ function phase(now = new Date()) {
 // Light weather comes and goes: the same pick for each two-hour spell of the day, chosen to suit the season.
 function weather(now = new Date()) {
   if (force.weather !== undefined) return force.weather;
+  const seasonal = window.EmberSeasons?.homeWeather?.(now); // seasons.js draws its own snow, leaves or petals
+  if (seasonal) return seasonal;
   const spell = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${Math.floor(now.getHours() / 2)}`;
   let h = 2166136261; for (const ch of spell) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
   const r = (h >>> 0) % 100, m = now.getMonth();
