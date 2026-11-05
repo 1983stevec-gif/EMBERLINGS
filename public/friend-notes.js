@@ -83,6 +83,9 @@ function moreBtn(name, cls = '') {
   b.onclick = e => { e.preventDefault(); e.stopPropagation(); openPanel(name, b); };
   return b;
 }
+// Sets markup only when it changed. Compared with what we last wrote (innerHTML reads back quotes unescaped,
+// which would never match and keep the list observers busy).
+function setHTML(el, html) { if (el.dataset.fnHtml === html) return; el.dataset.fnHtml = html; el.innerHTML = html; }
 // Re-orders sibling elements in place, only moving anything when the order is different (no repaint loops).
 function reorder(els) {
   const parent = els[0]?.parentElement; if (!parent || els.some(el => el.parentElement !== parent)) return false;
@@ -109,7 +112,7 @@ function paintFriends(data) {
     let tag = $('.fnTag', row);
     if (!tag) { tag = document.createElement('span'); tag.className = 'fnTag'; strong.before(tag); }
     const html = (fav ? STAR : '') + (nick ? `<span class="fnNick">${esc(nick)}</span>` : '');
-    if (tag.innerHTML !== html) tag.innerHTML = html;
+    setHTML(tag, html);
     tag.hidden = !html; strong.classList.toggle('fnParen', !!nick);
     if (!$('.fnMore', row)) strong.after(moreBtn(name, 'fnRowMore'));
     else $('.fnMore', row).setAttribute('aria-label', `Nickname and favourite for ${nameText(n, name)}`);
@@ -132,7 +135,7 @@ function paintTradeList(list) {
       if (tn) { const u = document.createElement('span'); u.className = 'fnName'; u.textContent = tn.textContent.trim(); tn.replaceWith(u, ' '); }
     }
     const nm = $('.fnName', btn), html = (isFav(n, name) ? STAR : '') + nameHTML(n, name);
-    if (nm && nm.innerHTML !== html) nm.innerHTML = html;
+    if (nm) setHTML(nm, html);
     wrap.classList.toggle('fnFav', isFav(n, name));
     items.push({ name, online: /online/i.test($('small', btn)?.textContent || ''), el: wrap, i: +wrap.dataset.fnI || 0 });
   }
@@ -147,7 +150,7 @@ function paintPicker(box) {
     let wrap = btn.parentElement;
     if (!wrap.classList.contains('fnPick')) { wrap = document.createElement('div'); wrap.className = 'fnPick'; btn.before(wrap); wrap.append(btn, moreBtn(name)); }
     const b = $('.uiXTWho b, .tpFWho b', btn), html = (isFav(n, name) ? STAR : '') + nameHTML(n, name);
-    if (b && b.innerHTML !== html) b.innerHTML = html;
+    if (b) setHTML(b, html);
     wrap.classList.toggle('fnFav', isFav(n, name)); wrap.classList.toggle('on', btn.classList.contains('on'));
   }
 }
@@ -164,7 +167,7 @@ function paintProfile() {
   if (B.view !== 'friendProfile') return;
   const h1 = $('#pfName'), name = $('[data-pf-trade]')?.dataset.pfTrade; if (!h1 || !validName(name)) return;
   const n = notes(), html = (isFav(n, name) ? STAR : '') + nameHTML(n, name);
-  if (h1.innerHTML !== html) h1.innerHTML = html;
+  setHTML(h1, html);
   const who = h1.parentElement;
   if (!$('.fnPfEdit', who)) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'fnPfEdit'; b.dataset.fnUser = name;
