@@ -156,7 +156,7 @@ export const DECK_IDEAS = [
 /* ---------------------------------------------------------------- Deck picture layout (pure, tested)
    A deck picture is 1080 wide: 1080×1080 for a small deck (up to 5 different cards), 1080×1350 otherwise.
    The cards sit in a grid between the header (logo, name, Merfling types) and the deck code block.     */
-export const PICTURE_W = 1080, GRID_TOP = 380, CODE_BLOCK = 290, TILE_RATIO = 1.36;
+export const PICTURE_W = 1080, GRID_TOP = 374, CODE_BLOCK = 306, TILE_RATIO = 1.36;
 export function pictureLayout(n) {
   const h = n <= 5 ? 1080 : 1350, gap = 18, side = 70, boxW = PICTURE_W - side * 2, boxH = h - CODE_BLOCK - GRID_TOP;
   let best = null;
