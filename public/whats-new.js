@@ -29,9 +29,11 @@ export const RELEASES = [
       { icon: '🔍', text: 'Tap any card in My Binder for a big card you can spin, with every stat, where it came from and how many you own.', go: 'inventory', show: 'My Binder' },
       { icon: '📊', text: 'A new Collection page shows how complete your collection is and which goals are closest.', go: 'collection', show: 'Collection' },
       { icon: '🧩', text: 'Share a deck with a short code, import a friend\'s deck, or try one of the Deck ideas.', go: 'decks', show: 'Battle Deck' },
-      { icon: '🏆', text: 'Battle highlights after every win: your MVP and best moments, with a picture you can share.' },
+      { icon: '🏆', text: 'Battle highlights after every win, and share any card or lucky pack as a picture.' },
+      { icon: '🎉', text: 'Friend activity: see your friends\' rare pulls, boss wins and big level-ups, and cheer them on.', go: 'friends', show: 'Friends' },
+      { icon: '🃏', text: 'Earn card backs, avatar rings and avatars from your achievements, and check your luck and records on the new My Stats page.', go: 'stats', show: 'My Stats' },
       { icon: '🎁', text: 'Daily rewards, boss entrances with new boss art, trade alerts and rare-find banners.', daily: true, show: 'Open Daily' },
-      { icon: '✨', text: 'New animations and sounds everywhere. Choose Effects: Full, Light or Off, and find text size and element symbols under Accessibility, both in the menu.' },
+      { icon: '✨', text: 'New animations, sounds and optional background music (turn it on in the menu). Choose Effects: Full, Light or Off, and find text size and element symbols under Accessibility, both in the menu.' },
       { icon: '📱', text: 'Install EMBERLINGS as an app, faster loading, and screens that fit phones and tablets better.' }
     ]
   }
