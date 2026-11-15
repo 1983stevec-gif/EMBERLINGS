@@ -360,7 +360,7 @@ if (B && !window.EmberMusic) {
   const $ = (s, r = document) => r.querySelector(s);
   const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'object') st.ember = {}; return st.ember; };
   const settings = () => { const m = ext().music; return { on: !!m?.on, vol: MUSIC_VOL[m?.vol] ? m.vol : 'med' }; };
-  const muted = () => !!ext().muted;
+  const muted = () => !!ext().muted || !!window.EmberComfort?.quiet?.(); // quiet hours (comfort.js) count as muted
   let ctx = null, music = null, timer = 0, suspendT = 0, restT = 0, gestured = false, playing = false, lastView = null, lastMuted = muted();
 
   const want = () => settings().on && !muted() && !document.hidden && gestured;
@@ -493,6 +493,7 @@ if (B && !window.EmberMusic) {
 .fxMusicBox.off .fxMusicVol{opacity:.6}
 .fxMusicNote{margin:6px 4px 0;font-size:12.5px;line-height:1.35;color:#c9bfa8;max-width:250px}
 .fxMusicSettings{max-width:340px;margin:8px 0 12px}
+body:has([aria-modal="true"]) #fxMusicHint{display:none}
 #fxMusicHint{position:fixed;left:16px;bottom:16px;z-index:9500;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);box-sizing:border-box;padding:8px 8px 8px 14px;border:1px solid var(--ui-gold,#e9b75a);border-radius:999px;background:#121822ee;color:var(--ui-text,#f3e6c8);font:14px/1.3 var(--ui-serif,serif);box-shadow:0 10px 26px #0009;animation:fxMusicIn .35s ease-out}
 #fxMusicHint button{flex:none;min-height:34px;border-radius:999px;border:1px solid #e9b75a88;background:#161d29;color:inherit;font:inherit;padding:4px 12px;cursor:pointer}
 #fxMusicHint .fxMusicTry{background:linear-gradient(180deg,#f3c76a,#c68f32);color:#1b1206;font-weight:700;border-color:#ffe2a0}
@@ -509,6 +510,7 @@ html[data-fx=off] #fxMusicHint{animation:none}
   const checkMute = () => setTimeout(() => { inject(); const m = muted(); if (m !== lastMuted) { lastMuted = m; apply(); paint(); } }, 0);
   document.addEventListener('click', () => { checkMute(); for (const ms of [150, 450, 1000]) setTimeout(inject, ms); }, true);
   document.addEventListener('change', checkMute, true);
+  addEventListener('ember:quiet', checkMute);
   document.addEventListener('visibilitychange', apply);
   addEventListener('pagehide', () => { if (ctx && ctx.state === 'running') ctx.suspend().catch(() => {}); });
   addEventListener('pageshow', apply);
