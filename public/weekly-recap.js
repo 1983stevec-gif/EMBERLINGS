@@ -385,7 +385,7 @@ html[data-fx=light] #weeklyRecap .wrBox{animation:wrFade .25s ease-out both}@key
 .wrDates{margin:8px 0 12px;font:17px 'EB Garamond',Georgia,serif;color:#9aa6c8}
 .wrTiles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .wrTile{display:grid;justify-items:center;align-content:start;gap:2px;min-width:0;padding:10px 8px;border-radius:12px;border:1.5px solid #33467e;background:#0d1534cc}
-.wrTile>span{font-size:22px;line-height:1}.wrTile b{font:700 26px 'Cormorant Garamond',Georgia,serif;color:#ffe2a0;line-height:1.15}
+.wrTile>span{font-size:22px;line-height:1}.wrTile b{font:700 30px 'Cormorant Garamond',Georgia,serif;color:#ffe2a0;line-height:1.15;font-variant-numeric:lining-nums tabular-nums}
 .wrTile small{font:14px/1.2 system-ui,'Segoe UI',sans-serif;color:#dfe5f6}.wrTile em{font:normal 12px/1.25 system-ui,'Segoe UI',sans-serif;color:#9aa6c8;overflow-wrap:anywhere}
 .wrFeats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .wrFeat{display:flex;gap:12px;align-items:center;min-width:0;padding:12px;border-radius:14px;border:1.5px solid #c9a35a;background:linear-gradient(135deg,#5a4214cc,#1f1a36cc);text-align:left}
@@ -407,7 +407,7 @@ html[data-fx=light] #weeklyRecap .wrBox{animation:wrFade .25s ease-out both}@key
 .wrStats p{margin:0;min-width:0;font-size:16px}.wrStats b{color:#ffe2a0}.wrStats small{display:block;color:var(--ui-muted,#b9ae98);font-size:13px}
 .wrStats div{display:flex;gap:8px;flex-wrap:wrap}.wrStats .button{min-height:44px}
 @media(max-width:600px){#weeklyRecap .wrBox{padding:20px 14px 14px}.wrTiles{grid-template-columns:repeat(2,minmax(0,1fr))}.wrFeats{grid-template-columns:minmax(0,1fr)}
- .wrTile b{font-size:23px}.wrSeg button{min-width:0;padding:0 14px}.wrPic.big{width:68px;height:68px}.wrStats{padding:12px}.wrStats div{width:100%}.wrStats .button{flex:1}}
+ .wrTile b{font-size:27px}.wrSeg button{min-width:0;padding:0 14px}.wrPic.big{width:68px;height:68px}.wrStats{padding:12px}.wrStats div{width:100%}.wrStats .button{flex:1}}
 `;
   document.head.append(s);
 }
