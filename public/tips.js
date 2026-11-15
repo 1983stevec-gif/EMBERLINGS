@@ -26,6 +26,7 @@ const TIPS = [
   { id: 'fusionPick', on: 'fusion', target: '[data-fusion-id]:not(.picked)', title: 'How fusion works', text: 'Pick two Mythlings, then press Fuse. Both are used up to make a surprise new one. Your Active Mythling is kept safe.' },
   { id: 'mutationBookPages', on: 'mutationBook', target: '.uiMBPager', title: 'Mutation pages', text: 'Each page shows one Mythling and its 12 mutations. Pick a name here to turn to its page.' },
   { id: 'menuEffects', on: 'menu', target: '.uiMenu #uiFxMenu', title: 'Effects and music', text: 'Choose Full, Light or Off for animations here. You can switch the music on or off in this menu too.' },
+  { id: 'helpSearch', on: 'help', target: '.hpSearch', title: 'Ask a question', text: 'Type what you want to do, like "trade" or "Vault". Each answer has a Take me there button.' },
 ];
 TIPS.forEach(t => { if (t.on === 'fusion') t.views = ['fusion', 'fuse']; });
 
