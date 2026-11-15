@@ -18,6 +18,7 @@ const TIPS = [
   { id: 'cardShare', on: 'cardDetails', target: '#cardDetails .shrBtn', title: 'Share a card', text: 'Share card makes a picture of this card that you can save or send to friends.' },
   { id: 'collectionGoals', on: 'collection', target: '.colGoals > h2', title: 'Your closest goals', text: 'These are the sets you are closest to finishing, with hints on where each missing piece comes from.' },
   { id: 'collectionFilters', on: 'collection', target: '.colBar', title: 'Filters', text: 'Narrow the list by element or rarity, or tick "Show missing only" to see what you still need.' },
+  { id: 'collectionMilestones', on: 'collection', target: '#msPanel .msHeadRow', title: 'Milestones', text: 'Finish a species, a rarity set or a mutation set to earn a milestone. Here are the ones you have and the next three closest.' },
   { id: 'statsLuck', on: 'stats', target: '.stLuck .stLuckTop', title: 'Luck meter', text: 'This compares your special pulls (shiny, secret, mutation) with the packs\' real odds. Further right means luckier.' },
   { id: 'deckCodes', on: 'decks', target: '.dsBar', title: 'Deck codes', text: 'Share your deck as a code, import a friend\'s code, or try a ready-made deck from Deck ideas.' },
   { id: 'friendsSharing', on: 'friends', target: '#actPanel .actSwitch', title: 'Sharing switch', text: 'When this is on, friends see your big moments, like rare pulls and boss wins. Turn it off any time.' },
@@ -32,7 +33,7 @@ TIPS.forEach(t => { if (t.on === 'fusion') t.views = ['fusion', 'fuse']; });
 // Never shown on these screens (battles, pack openings, first-time setup).
 const BUSY_VIEW = v => !v || ['cardBattle', 'battle', 'boss', 'tutorial', 'username', 'packs', 'hollow', 'arena'].includes(v) || /^train/.test(v);
 // Pop-ups a tip must never stack with; the tip waits until they close.
-const BLOCKERS = '#guidedTour, #dailyPanel, #whatsNewPanel, .tradeDone, #tradeAlert, #rareFind, .biIntro, .uiLvUp, .lvlUp, .levelUpModal, #fxMusicHint, .fxStage, .psStage, #pfPicker, .dsOverlay, .uiFAbility:not(.uiLvUp)';
+const BLOCKERS = '#guidedTour, #dailyPanel, #whatsNewPanel, .tradeDone, #tradeAlert, #rareFind, #msBanner, .biIntro, .uiLvUp, .lvlUp, .levelUpModal, #fxMusicHint, .fxStage, .psStage, #pfPicker, .dsOverlay, .uiFAbility:not(.uiLvUp)';
 
 /* ---------- Save data */
 function data() {

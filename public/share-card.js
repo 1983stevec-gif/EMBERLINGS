@@ -360,6 +360,8 @@ const jobs = {
   pull: (c, very) => pullPicture(c, very).then(cv => deliver(cv, `emberlings-${slug(nameOf(c))}-find.png`, `${very ? 'Very rare' : 'Rare'} find in EMBERLINGS: ${nameOf(c)}!`)),
   pack: cards => packPicture(cards).then(cv => deliver(cv, `emberlings-${slug(packNameOf(cards[0]) || 'pack')}.png`, `What I pulled in EMBERLINGS!`)),
 };
+// The same drawing and share helpers, for other share pictures (milestones.js).
+export const ShareKit = Object.freeze({ W, H, SERIF, TITLE, canvas, fonts, backdrop, logo, title, line, footer, badges, wrap, fit, rounded, hexA, drawCard, snapshot, deliver, slug, owner, today, accentOf, score });
 // Wire a button: busy state, then a short friendly message in the note next to it.
 function wire(btn, note, run) {
   btn.addEventListener('click', async e => {

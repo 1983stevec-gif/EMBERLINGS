@@ -2066,3 +2066,19 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
   html body.uiTheme .binderPocket{padding:28px 4px 6px!important}
 }
 /* ---------- end of polish pass 2 ---------- */
+
+/* ---------- Phones (420 px and narrower): header fits large coin totals next to the bell and the player button ---------- */
+@media (max-width:420px){
+ body .uiTop .uiTopIn{gap:6px}
+ body .uiBrand .uiLogo .uiLogoNew{width:min(150px,37vw)!important;max-height:56px}
+ body .uiTop .uiRight{gap:6px;min-width:0}
+ body .uiTop .uiRight .coins{font-size:15px!important;padding:3px 9px 3px 4px!important;gap:5px;min-width:0}
+ body .uiTop .uiRight .coins b{font-size:15px!important;letter-spacing:-.01em}
+ body .uiTop .uiRight .coins>:not(b){flex:none}
+ body .uiTop .uiRight>*{flex:none}
+}
+@media (max-width:380px){
+ body .uiBrand .uiLogo .uiLogoNew{width:min(124px,34vw)!important}
+ body .uiTop .uiUserBtn>span[aria-hidden="true"]{display:none}
+ body .uiTop .uiUserBtn{padding-left:3px!important;padding-right:3px!important;min-width:44px;justify-content:center}
+}
