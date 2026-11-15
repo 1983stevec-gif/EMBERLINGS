@@ -15,6 +15,9 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const SVG = 'http://www.w3.org/2000/svg';
 const MAX_PARTS = 30;
 let live = 0, prev = null, lastSig = '', tick = 0;
+// Battle animation speed (comfort.js): 1 = normal, smaller = quicker. Visual only: the game never waits on these.
+const pace = () => { const k = window.EmberComfort?.animScale?.(); return k > 0 && k <= 1 ? k : 1; };
+const later = (fn, ms) => setTimeout(fn, ms * pace());
 
 /* ------------------------------------------------------------ Layer and particles */
 function layer() {
@@ -26,6 +29,7 @@ function layer() {
 // Particles (part=true) count toward the cap so a busy moment never floods the page.
 function spawn(cls, keyframes, opts, { part = true, html = '', style = {} } = {}) {
   if (part && live >= MAX_PARTS) return null;
+  const sp = pace(); if (sp !== 1) opts = { ...opts, duration: (opts.duration || 800) * sp, delay: (opts.delay || 0) * sp };
   if (fxLight() && (part ? tick++ % 3 : /^fxbFlash/.test(cls))) return null; // Light: keep one particle in three, no flashes
   const el = document.createElement('div'); el.className = 'fxb ' + cls;
   if (html) el.innerHTML = html;
@@ -90,7 +94,7 @@ function play(match, side, before, snap, key) {
     // Evolution (Active or Bench) and a new Mythling in the Active spot
     if (now.active && now.active !== was.active) {
       const evolved = now.under.includes(was.active);
-      setTimeout(() => entrance(activeHost(i, side), now.el, evolved), attacked.has(i) ? 450 : 0);
+      later(() => entrance(activeHost(i, side), now.el, evolved), attacked.has(i) ? 450 : 0);
     }
     now.bench.forEach((id, k) => {
       if (was.bench[k] && was.bench[k] !== id && now.benchUnder[k].includes(was.bench[k])) {
@@ -111,7 +115,7 @@ function attack({ a, d, side, el, dmg, weak, huge, ko }) {
   lunge(activeBody(a, side), src, dst);
   const travel = from ? 240 : 0;
   (FX[el] || FX.Fire)(src, dst, to, k, color, travel);
-  setTimeout(() => {
+  later(() => {
     if (!ko) hitShake(activeBody(d, side), weak || huge);
     impactRing(dst, k, color, weak || huge || ko);
     number(to, -dmg, { weak, huge, color });
@@ -125,17 +129,17 @@ function lunge(el, src, dst) {
   try {
     el.animate([{ transform: 'none' }, { transform: `translate(${-x * .15}px,${-y * .15}px) scale(.97)`, offset: .25 },
       { transform: `translate(${x}px,${y}px) rotate(${tilt}deg) scale(1.06)`, offset: .55 }, { transform: 'none' }],
-    { duration: 480, easing: 'cubic-bezier(.3,.7,.4,1)', composite: 'add' });
+    { duration: 480 * pace(), easing: 'cubic-bezier(.3,.7,.4,1)', composite: 'add' });
   } catch { /* older browsers: no lunge */ }
 }
 function hitShake(el, big) {
   if (!el) return;
-  if (fxLight()) { try { el.animate([{ filter: 'none' }, { filter: 'brightness(1.6)', offset: .25 }, { filter: 'none' }], { duration: 360, easing: 'ease-out' }); } catch { /* ignore */ } return; }
+  if (fxLight()) { try { el.animate([{ filter: 'none' }, { filter: 'brightness(1.6)', offset: .25 }, { filter: 'none' }], { duration: 360 * pace(), easing: 'ease-out' }); } catch { /* ignore */ } return; }
   const m = big ? 10 : 6;
   try {
     el.animate([{ transform: 'none', filter: 'none' }, { transform: `translateX(${-m}px) rotate(-1.5deg)`, filter: 'brightness(2.2) saturate(.4)', offset: .15 },
       { transform: `translateX(${m}px) rotate(1.2deg)`, offset: .35 }, { transform: `translateX(${-m * .6}px)`, filter: 'brightness(1.3)', offset: .55 },
-      { transform: `translateX(${m * .3}px)`, offset: .75 }, { transform: 'none', filter: 'none' }], { duration: big ? 520 : 420, easing: 'ease-out' });
+      { transform: `translateX(${m * .3}px)`, offset: .75 }, { transform: 'none', filter: 'none' }], { duration: (big ? 520 : 420) * pace(), easing: 'ease-out' });
   } catch { /* ignore */ }
 }
 function impactRing(p, k, color, big) {
@@ -187,7 +191,7 @@ function svg(w, h, inner) { return `<svg xmlns="${SVG}" viewBox="0 0 ${w} ${h}" 
 const FX = {
   Fire(src, dst, r, k, c, travel) {
     projectile('fxbOrb fire', src, dst, k, travel, { width: 46 * k + 'px', height: 30 * k + 'px' });
-    setTimeout(() => {
+    later(() => {
       burst(dst, 16, k, { cls: 'fxbEmber', dist: [30, 120], up: 50, dur: [600, 1000], size: [5, 11] });
       spawn('fxbBlast fire', [{ transform: at(dst.x, dst.y, 'scale(.3)'), opacity: 1 }, { transform: at(dst.x, dst.y - 10 * k, 'scale(1.25)'), opacity: 0 }], { duration: 560 }, { part: false, style: { width: 170 * k + 'px', height: 170 * k + 'px' } });
     }, travel);
@@ -205,14 +209,14 @@ const FX = {
     spawn('fxbBolt', [{ opacity: 0 }, { opacity: 1, offset: .1 }, { opacity: .3, offset: .3 }, { opacity: 1, offset: .45 }, { opacity: .5, offset: .7 }, { opacity: 0 }],
       { duration: 420 + travel * .5, easing: 'linear' }, { part: false, style: { left: left + 'px', top: top + 'px', width: w + 'px', height: h + 'px' },
         html: svg(w, h, `<polyline points="${path}" class="glow"/><polyline points="${path}" class="core"/>`) });
-    setTimeout(() => {
+    later(() => {
       burst(dst, 12, k, { cls: 'fxbSpark', dist: [25, 95], dur: [260, 520], size: [3, 5], spin: 0, style: () => ({ '--r': rnd(0, 360) + 'deg' }) });
       spawn('fxbFlash white', [{ transform: at(dst.x, dst.y, 'scale(.6)'), opacity: .95 }, { transform: at(dst.x, dst.y, 'scale(1.6)'), opacity: 0 }], { duration: 260 }, { part: false, style: { width: 160 * k + 'px', height: 160 * k + 'px' } });
     }, Math.min(travel, 120));
   },
   Water(src, dst, r, k, c, travel) {
     projectile('fxbOrb water', src, dst, k, travel, { width: 40 * k + 'px', height: 32 * k + 'px' });
-    setTimeout(() => {
+    later(() => {
       burst(dst, 16, k, { cls: 'fxbDrop', dist: [40, 110], up: 30, dur: [650, 950], size: [6, 11], gravity: 90 });
       spawn('fxbRipple', [{ transform: at(dst.x, dst.y + r.height * .2, 'scale(.2,.08)'), opacity: 1 }, { transform: at(dst.x, dst.y + r.height * .2, 'scale(1.4,.45)'), opacity: 0 }], { duration: 700 }, { part: false, style: { width: 180 * k + 'px', height: 180 * k + 'px' } });
     }, travel);
@@ -226,7 +230,7 @@ const FX = {
         { transform: at(dst.x + rnd(-60, 60) * k, dst.y + rnd(-60, 60) * k, `rotate(${rot}deg) scale(.8)`), opacity: 0 }],
       { duration: travel + 560, delay: i * 30, easing: 'cubic-bezier(.4,.1,.5,1)' }, { style: { width: s + 'px', height: s * .6 + 'px', '--h': rnd(-15, 20) + 'deg' } });
     }
-    setTimeout(() => {
+    later(() => {
       const w = r.width * 1.1, h = r.height * .9;
       spawn('fxbVines', [{ opacity: 0, transform: at(dst.x, dst.y) }, { opacity: 1, offset: .15, transform: at(dst.x, dst.y) }, { opacity: 1, offset: .7, transform: at(dst.x, dst.y) }, { opacity: 0, transform: at(dst.x, dst.y, 'scale(1.05)') }],
         { duration: 900 }, { part: false, style: { width: w + 'px', height: h + 'px' },
@@ -240,7 +244,7 @@ const FX = {
         { transform: at(dst.x + ox, dst.y + oy, `rotate(${ang}deg)`), opacity: 1, offset: .55 }, { transform: at(dst.x + ox, dst.y + oy, `rotate(${ang}deg) scale(.9)`), opacity: 0 }],
       { duration: travel / .55 + 380, delay: i * 25, easing: 'cubic-bezier(.5,0,.7,1)' }, { style: { width: 34 * k + 'px', height: 9 * k + 'px' } });
     }
-    setTimeout(() => {
+    later(() => {
       spawn('fxbFrost', [{ transform: at(dst.x, dst.y, 'scale(.7)'), opacity: 0 }, { transform: at(dst.x, dst.y, 'scale(1)'), opacity: 1, offset: .2 }, { transform: at(dst.x, dst.y, 'scale(1.05)'), opacity: 0 }],
         { duration: 1000 }, { part: false, style: { width: r.width * 1.05 + 'px', height: r.height * .95 + 'px' } });
       burst(dst, 8, k, { cls: 'fxbGlint', dist: [20, 80], dur: [500, 800], size: [8, 14], spin: 90 });
@@ -250,7 +254,7 @@ const FX = {
   Moon(src, dst, r, k, c, travel) { smoke(src, dst, r, k, travel, true); },
   Crystal(src, dst, r, k, c, travel) {
     projectile('fxbOrb crystal', src, dst, k, travel, { width: 30 * k + 'px', height: 30 * k + 'px' });
-    setTimeout(() => {
+    later(() => {
       const hues = ['#cba0d8', '#9fd8ff', '#ffd1f0', '#b6a8ff', '#ffffff'];
       burst(dst, 14, k, { cls: 'fxbFacet', dist: [40, 120], dur: [600, 950], size: [9, 18], spin: 220, style: i => ({ '--c': hues[i % hues.length] }) });
       burst(dst, 5, k, { cls: 'fxbGlint', dist: [10, 60], dur: [500, 800], size: [10, 16], spin: 90, delay: 80 });
@@ -265,7 +269,7 @@ const FX = {
       { duration: travel + 520, delay: i * 70, easing: 'cubic-bezier(.3,.2,.4,1)' }, { part: false, style: { width: w * .7 + 'px', height: h * .35 + 'px' },
         html: svg(100, 30, '<path pathLength="100" d="M2 20 C 30 20, 50 4, 72 8 S 96 22, 84 26 S 70 18, 76 14"/>') });
     }
-    setTimeout(() => burst(dst, 10, k, { cls: 'fxbMote', dist: [40, 120], dur: [500, 800], size: [4, 7], style: () => ({}) }), travel);
+    later(() => burst(dst, 10, k, { cls: 'fxbMote', dist: [40, 120], dur: [500, 800], size: [4, 7], style: () => ({}) }), travel);
   }
 };
 function smoke(src, dst, r, k, travel, moon) {
@@ -278,7 +282,7 @@ function smoke(src, dst, r, k, travel, moon) {
       { part: false, style: { width: s + 'px', height: s + 'px' }, html: svg(100, 100, '<path d="M70 8 A 46 46 0 1 0 70 92 A 36 36 0 1 1 70 8 Z"/>') });
     }
   } else projectile('fxbOrb shadow', src, dst, k, travel, { width: 40 * k + 'px', height: 40 * k + 'px' });
-  setTimeout(() => {
+  later(() => {
     for (let i = 0; i < 9; i++) {
       const a = rnd(0, Math.PI * 2), d = rnd(10, 70) * k, s = rnd(50, 90) * k;
       spawn('fxbSmoke' + (moon ? ' moon' : ''), [{ transform: at(dst.x + Math.cos(a) * d * .3, dst.y + Math.sin(a) * d * .3, 'scale(.3)'), opacity: 0 },
@@ -300,10 +304,10 @@ function entrance(host, el, evolved) {
     burst(p, 12, k, { cls: 'fxbGlint', dist: [40, 120], up: 40, dur: [700, 1000], size: [10, 16], spin: 120, delay: 150 });
     spawn('fxbTag', [{ transform: at(p.x, r.top + 8, 'scale(.6)'), opacity: 0 }, { transform: at(p.x, r.top - 4, 'scale(1.05)'), opacity: 1, offset: .2 }, { transform: at(p.x, r.top - 4, 'scale(1)'), opacity: 1, offset: .8 }, { transform: at(p.x, r.top - 16, 'scale(.95)'), opacity: 0 }],
       { duration: 1500 }, { part: false, html: 'Evolved!', style: { '--c': color, fontSize: clamp(20 * k, 13, 22) + 'px' } });
-    try { body?.animate([{ filter: 'brightness(2.4) saturate(.3)' }, { filter: 'brightness(1)' }], { duration: 700, easing: 'ease-out' }); } catch { /* ignore */ }
+    try { body?.animate([{ filter: 'brightness(2.4) saturate(.3)' }, { filter: 'brightness(1)' }], { duration: 700 * pace(), easing: 'ease-out' }); } catch { /* ignore */ }
   } else {
     impactRing(p, k, color, false);
-    try { body?.animate([{ transform: 'translateY(14px) scale(.9)', opacity: .4 }, { transform: 'translateY(-4px) scale(1.03)', opacity: 1, offset: .6 }, { transform: 'none', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.3,1.3,.5,1)', composite: 'add' }); } catch { /* ignore */ }
+    try { body?.animate([{ transform: 'translateY(14px) scale(.9)', opacity: .4 }, { transform: 'translateY(-4px) scale(1.03)', opacity: 1, offset: .6 }, { transform: 'none', opacity: 1 }], { duration: 420 * pace(), easing: 'cubic-bezier(.3,1.3,.5,1)', composite: 'add' }); } catch { /* ignore */ }
   }
 }
 
