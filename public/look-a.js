@@ -205,7 +205,7 @@ html[data-fx=off] .hlMvp.lkPose,html[data-fx=off] .hlMvp.lkPose .hlPic{animation
 .lookReadBtn[aria-checked=true] b{background:linear-gradient(180deg,#ffe29a,#e8ae45);color:#2a1606}
 .lookReadBtn:focus-visible{outline:3px solid #ffd77a;outline-offset:2px}
 .lookReadRow{display:flex;justify-content:flex-end;margin:0 0 12px}
-.lookReadEx{position:absolute;z-index:6;min-height:0;padding:0 .6em}
+.lookReadEx{position:absolute;z-index:6;min-height:40px;padding:0 .8em;width:auto!important;left:auto!important;right:2.5%;white-space:nowrap;font-size:clamp(14px,1.05vw,16px)!important}
 .uiXRulesPage[data-tab=quick] .lookReadEx{display:none}
 .lookReadFg{margin:10px 0 0 8px;background:#f7edd2;color:#3b2a16;border-color:#8a6534}
 .lookReadFg b{background:#d9c39a;color:#3b2a16}
