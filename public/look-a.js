@@ -25,7 +25,7 @@ const reading = () => ext().look?.reading === 'parchment' ? 'parchment' : 'dark'
 function applyReading() {
   const v = reading(), root = document.documentElement;
   if ((root.dataset.reading || 'dark') !== v) { if (v === 'parchment') root.dataset.reading = v; else delete root.dataset.reading; }
-  for (const b of $$('.lookReadBtn, #setLookRead')) { const on = v === 'parchment'; b.setAttribute('aria-checked', String(on)); const s = $('.lookReadState, span', b); if (s) s.textContent = on ? 'On' : 'Off'; }
+  for (const b of $$('.lookReadBtn, #setLookRead')) { const on = v === 'parchment'; b.setAttribute('aria-checked', String(on)); const s = $('.lookReadState', b) || $('.setSwitch span, span:last-child', b); if (s) s.textContent = on ? 'On' : 'Off'; }
 }
 function setReading(v) {
   if (!B?.state) return 'dark';
