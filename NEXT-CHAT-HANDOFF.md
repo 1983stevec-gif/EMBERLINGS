@@ -30,7 +30,7 @@ The game has a painted look: desktop pages are drawn from supplied design images
 - **Pack-only mutations:** Bloom, Tide, Crystal, Solar, Void and Prism can only come from packs. They can't be bought, and nothing else may grant them.
 - Don't put AI model names in commits, PRs or code.
 
-## 3. Where things stand (4 Nov 2026)
+## 3. Where things stand (15 Nov 2026)
 
 **Live:** Codex published **version 60** from `main` (commit `de355ac`). Everything below is merged into `main` but **not published yet**. `PUBLISH-CODEX.md` has the publish prompt for this release.
 
@@ -90,7 +90,30 @@ Two need a database migration: #45 (`0008_player_profile.sql`) and #62 (`0009_ac
 
 **When adding a release:** add an entry to the top of `RELEASES` in `public/whats-new.js` so returning players see what's new.
 
-**Next work:** the phases in `V2-PLAN.md` (v2.0 to v2.6). It ends with 8 decisions for the owner. Ask about the ones that matter before building.
+**Round 4 (from `NEXT-ENHANCEMENTS-PLAN.md`, PRs #79 to #89).** Open until the owner says "merge". Merge in this order; each one after the first will conflict only where two PRs add a line at the same spot (the script tags at the end of `game/index.html`, the test list in `tests/run-card-edition.mjs`, `public/fx-music.js` for #81 and #82). Fix those with `python3 scripts/merge-resolve.py <files>`, rebuild and run `npm test` before each merge. All ten were checked merged together: build and 140 tests pass, and the six-size fit sweep went from 80 sideways-scrolling phone screens to 0.
+
+| PR | Branch | What it does |
+|---|---|---|
+| [#78](https://github.com/1983stevec-gif/EMBERLINGS/pull/78) | `enhancement-plan` | `NEXT-ENHANCEMENTS-PLAN.md`: Rounds 4 to 7 and the owner's answers (docs only). |
+| [#79](https://github.com/1983stevec-gif/EMBERLINGS/pull/79) | `phone-header-fit` | Phone header fits big coin totals (every phone screen scrolled sideways before). CSS only. |
+| [#80](https://github.com/1983stevec-gif/EMBERLINGS/pull/80) | `r4-milestones` | Collection milestones banner and list (`milestones.js`, `state.ember.milestones`). |
+| [#81](https://github.com/1983stevec-gif/EMBERLINGS/pull/81) | `r4-weekly-recap` | Weekly recap panel and picture (`weekly-recap.js`, `state.ember.recap`); music tip hides under pop-ups. |
+| [#85](https://github.com/1983stevec-gif/EMBERLINGS/pull/85) | `r4-deck-pictures` | Deck pictures (`deck-share.js`, helpers exported from `share-card.js`). |
+| [#88](https://github.com/1983stevec-gif/EMBERLINGS/pull/88) | `r4-help` | Help centre (`help.js`, `help-data.js`, view `help`, `window.EmberHelp`); `tests/help-data.mjs` fails if a "Take me there" target stops existing. |
+| [#82](https://github.com/1983stevec-gif/EMBERLINGS/pull/82) | `r4-comfort` | Comfort settings (`comfort.js`, `state.ember.comfort`, `window.EmberComfort`). |
+| [#83](https://github.com/1983stevec-gif/EMBERLINGS/pull/83) | `r4-look-a` | Map clouds and shimmer, victory pose, Parchment light reading mode (`look-a.js`, `state.ember.look`). |
+| [#86](https://github.com/1983stevec-gif/EMBERLINGS/pull/86) | `r4-save-safety` | Automatic local backups in IndexedDB and a restore screen (`save-safety.js`). |
+| [#84](https://github.com/1983stevec-gif/EMBERLINGS/pull/84) | `r4-screenshot-mode` | Screenshot mode (`screenshot-mode.js`, Shift+S). |
+| [#87](https://github.com/1983stevec-gif/EMBERLINGS/pull/87) | `r4-friend-notes` | Friend nicknames and favourites, local only (`friend-notes.js`, `state.ember.friendNotes`). |
+| #89 | `r4-wrapup` | What's New entry, Round 4 publish checks, this handoff, ✅ marks in `ENHANCEMENT-IDEAS.md`, `scripts/merge-resolve.py`. Merge last. |
+
+None of Round 4 needs a database change. The old `wip/r4-*` branches can be deleted once these are merged.
+
+**Not yet checked by eye:** the victory pose (#83) needs a real battle win to see.
+
+**Known and left alone:** the player menu now has about 23 items and scrolls on a portrait tablet; worth grouping later. The battle buttons are smaller than 40 px at tablet sizes (already so on `main`).
+
+**Next work:** publish (paste `PUBLISH-CODEX.md` into Codex), then Round 5 in `NEXT-ENHANCEMENTS-PLAN.md` (online features: crash reports, push alerts, friend leaderboards, duel emotes, profile links; the owner's answers are in its section 8). After that, the phases in `V2-PLAN.md` (v2.0 to v2.6), which end with 8 decisions for the owner.
 
 ## 4. Where files are saved
 

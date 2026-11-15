@@ -19,30 +19,30 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | Full-art card frames (cosmetic) | An alternative full-art frame you can choose for cards you own | M | Purely cosmetic; unlocked by achievements |
 | Binder covers and page themes | Choose your binder's cover and page colour | S–M | Fits with card backs |
 | Dynamic battle backgrounds | Battle board changes with the island and time of day | M | |
-| Victory poses | Your MVP Mythling does a short celebration on the Victory screen | S | |
+| **Victory poses** ✅ | Your MVP Mythling does a short celebration on the Victory screen | S | |
 | More pack designs | Animated pack wrappers per pack type | S–M | |
-| Dark/light reading mode for text pages | A parchment-light option for Rules and Index | S | |
-| Weather on the Adventure HQ map | Clouds drift over islands, sea shimmer | S | |
+| **Dark/light reading mode for text pages** ✅ | A parchment-light option for Rules and Index | S | |
+| **Weather on the Adventure HQ map** ✅ | Clouds drift over islands, sea shimmer | S | |
 
 ## 2. Settings and comfort
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
 | **Settings hub** ✅ | One tidy Settings page for Sound, Music, Effects, Accessibility, Install, What's new, Account, Backup and privacy, instead of a long menu | M | The user menu has grown long; this tidies it |
-| Haptic feedback on phones | Small vibrations on hits, pack reveals and rewards | S | Android supports it; off by default |
-| Left-handed layout | Battle buttons mirrored for left-handed play | S | |
-| Battle speed | Faster or slower battle animations | S | Visual speed only |
-| Confirm before spending | Optional "Are you sure?" for big coin spends | S | |
-| Quiet hours | No sounds or pop-ups between chosen hours | S | |
+| **Haptic feedback on phones** ✅ | Small vibrations on hits, pack reveals and rewards | S | Android supports it; off by default |
+| **Left-handed layout** ✅ | Battle buttons mirrored for left-handed play | S | |
+| **Battle speed** ✅ | Faster or slower battle animations | S | Visual speed only |
+| **Confirm before spending** ✅ | Optional "Are you sure?" for big coin spends | S | |
+| **Quiet hours** ✅ | No sounds or pop-ups between chosen hours | S | |
 
 ## 3. Help and learning
 
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
 | **First-time tips for new screens** ✅ | A short, friendly tip the first time you open Profile, Collection, My Stats, Card details, Deck codes, Activity and so on | S–M | Never repeats; can be reset in Settings |
-| Searchable help page | "How do I…?" answers with links to the right screen | M | |
+| **Searchable help page** ✅ | "How do I…?" answers with links to the right screen | M | |
 | Mythling lore pages | Short story for each species in the Index | M | Writing plus art |
-| Glossary | Merfling, mutations, Vault and so on explained in one place | S | |
+| **Glossary** ✅ | Merfling, mutations, Vault and so on explained in one place | S | |
 | Interactive rules demo | Try a sample turn with guided arrows | M | Uses the real battle engine, no rewards |
 
 ## 4. Social (no gameplay changes)
@@ -52,7 +52,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | **Spectate a friend's battle** ✅ | Watch a friend's live duel or quest, read-only | L | Server |
 | **Notification inbox** ✅ | A bell with everything new: trade invites, cheers, daily rewards ready, what's new, friend requests | M | Gathers existing alerts in one place |
 | Push notifications (installed app) | "Your daily reward is ready", "Mira invited you to trade" | M | Server + push keys set up by Codex |
-| Friend nicknames and favourites | Pin favourite friends to the top | S | |
+| **Friend nicknames and favourites** ✅ | Pin favourite friends to the top | S | |
 | Emote reactions in friend duels | A few safe preset emotes (no free text) | M | Server; preset only to avoid abuse |
 | Friend leaderboards | Compare collection %, win streaks and level with friends | M | Server |
 | Gift a cosmetic | Send a friend a card back you've unlocked a copy of | M | Cosmetic only |
@@ -63,7 +63,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
 | **Card art gallery** ✅ | View every Mythling's art full screen, zoom in, with lore | S–M | |
-| Collection milestones banner | A celebration when you complete a species or rarity set | S | Uses the Collection page's data |
+| **Collection milestones banner** ✅ | A celebration when you complete a species or rarity set | S | Uses the Collection page's data |
 | Pack opening replays | Re-watch your last 10 pack openings | M | Uses My Stats records |
 | Battle replays | Re-watch a past battle turn by turn | L | Needs recording each battle's moves |
 | **Favourite cards** ✅ | Star cards to find them fast in the binder | S | |
@@ -77,7 +77,7 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | **Polish round 2** ✅ | Fix the binder sideways scroll on desktop, the remaining 18 small layout issues, the achievement pop-up covering titles, and check Training Field and Battle Rules | M | Follows the fit-and-polish pass |
 | **Automatic checks on every PR** ✅ | GitHub runs the tests and browser checks before merging | S–M | Needs GitHub Actions workflow permission |
 | Error reporting | The game quietly reports crashes so they can be fixed | M | Server; no personal data |
-| Save safety | Automatic local backups and an "undo last change" for accidental deletes | M | |
+| **Save safety** ✅ | Automatic local backups and an "undo last change" for accidental deletes | M | |
 | Offline solo play | Play quests and open saved packs fully offline | M | Builds on install-as-app |
 | Smaller art for slow phones | Lower-resolution art on very slow connections | S–M | |
 | Translations | Make the game translatable, then add languages | L | Touches every screen |
@@ -87,9 +87,9 @@ Animations for battles, packs, cards and menus · Effects Full/Light/Off · soun
 | Idea | What players get | Effort | Notes |
 |---|---|---|---|
 | Profile share link | A link that shows your profile card to anyone | M | Server; opt-in |
-| Deck pictures | Share a deck as a picture with its code | S | Builds on deck codes and share pictures |
-| Weekly recap | "Your week in EMBERLINGS" picture: packs, wins, best pull | S–M | Uses My Stats |
-| Screenshot mode | Hide buttons for a clean screenshot of any screen | S | |
+| **Deck pictures** ✅ | Share a deck as a picture with its code | S | Builds on deck codes and share pictures |
+| **Weekly recap** ✅ | "Your week in EMBERLINGS" picture: packs, wins, best pull | S–M | Uses My Stats |
+| **Screenshot mode** ✅ | Hide buttons for a clean screenshot of any screen | S | |
 
 Also built (not in the tables above): friends' online status, last seen and "In a duel" (PR #66).
 
