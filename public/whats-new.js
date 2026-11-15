@@ -21,6 +21,20 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-round4',
+    date: 'November 2026',
+    title: 'Help, milestones, weekly recaps and comfort settings',
+    items: [
+      { icon: '❓', text: 'A new Help centre: type a question like "trade" or "Vault" and jump straight to the right screen. There is a glossary of game words too.', go: 'help', show: 'Open Help' },
+      { icon: '🏅', text: 'Collection milestones: a celebration when you complete a species, a rarity set or a mutation set, listed on the Collection page.', go: 'collection', show: 'Collection' },
+      { icon: '📅', text: 'Every Monday, "Your week in EMBERLINGS" sums up your packs, wins and best pull, with a picture to share. Find it any time in My Stats.', go: 'stats', show: 'My Stats' },
+      { icon: '🛋', text: 'Comfort settings: phone vibrations, faster battle animations, "ask before spending", quiet hours and a left-handed battle layout.', go: 'settings', show: 'Settings' },
+      { icon: '💾', text: 'Your save is now backed up automatically in this browser, and you can restore an earlier copy from Settings.', go: 'settings', show: 'Settings' },
+      { icon: '🖼', text: 'Share your deck as a picture, give friends private nicknames and ★ favourites, and use Screenshot mode (in the menu) for clean pictures.', go: 'decks', show: 'Battle Deck' },
+      { icon: '🌤', text: 'Clouds and sea shimmer on the Adventure HQ map, a victory pose for your best Mythling, and a light parchment reading mode for Rules and the Index.', go: 'map', show: 'Adventure HQ' }
+    ]
+  },
+  {
     id: '2026-11-big-update',
     date: 'November 2026',
     title: 'Profiles, card details, deck codes and a lot more sparkle',

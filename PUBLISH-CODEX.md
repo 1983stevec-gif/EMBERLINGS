@@ -8,7 +8,7 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 
 ## 1. Get the latest code
 - Repository: https://github.com/1983stevec-gif/EMBERLINGS (branch `main`).
-- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be "Merge pull request #76 from 1983stevec-gif/seasons" or later (later polish PRs are fine). This release is everything merged since live version 60: PRs #29 to #76 and anything after them.
+- Pull `main` into the existing checkout (or clone it fresh). The newest commit should be the merge of the **Round 4 wrap-up** PR ("Round 4 wrap-up: What's New, publish checks, handoff") or later. This release is everything merged since live version 60: PRs #29 to #77 and Round 4 (#79 to #89). If #29–#77 were already published, this release is just Round 4, and the database steps below will already be done.
 - Read `HANDOFF.md` and `.openai/hosting.json` before publishing.
 
 ## 2. Rules (from HANDOFF.md, do not break)
@@ -25,13 +25,15 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 
 The rest of the game works either way. Migrations 0006 and 0007 should already be applied; if either is missing, apply it once. Multi-card trades reuse the existing `host_offer` / `guest_offer` columns.
 
+**Round 4 (#79–#89) needs no database change.** If 0008 and 0009 were applied in an earlier publish, skip them (don't run them twice).
+
 ## 4. Build and check
 ```
 npm run install:ci
 npm run build
 npm test
 ```
-The build must pass. `npm test` now runs the whole active test suite (about 134 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
+The build must pass. `npm test` now runs the whole active test suite (about 140 checks, around a minute) and **every test must pass** before you publish. If one fails, stop and report it instead of publishing; don't rewrite features to make it pass. (Old tests that no longer apply live in `tests/retired/` and are not run.)
 
 ## 5. Publish
 Follow the "Publishing" section of `HANDOFF.md`: use the Sites source helper to prepare, push and package the exact source and build output, then `save_site_version` and `deploy_site_version`.
@@ -61,6 +63,17 @@ Open the public link and check each item. Use a phone (or a narrow window), a po
 21. **Gallery and binder:** "🖼 Gallery" on the Mythling Index opens full-screen art with a short story; in My Binder, holding a card stars it and "★ Favourites" filters to starred cards.
 22. **Seasons:** in November (autumn) Home shows drifting leaves and an "Autumn" badge; turning "Seasonal decorations" off in Settings removes them.
 23. **Install as an app:** `https://<live site>/sw.js` loads (JavaScript) and `/manifest.webmanifest` loads (JSON). Open the site twice in Chrome: DevTools → Application shows an activated service worker and `emberlings-*` caches, and the second visit is fast. Online features (friends, trades, cloud save, watching duels) still work — `/api/` calls must never come from the cache.
+
+**Round 4 checks:**
+24. **Phone header:** on a phone (390 px wide) with a large coin total, the top bar fits and no page scrolls sideways.
+25. **Help centre:** "❓ Help" in the user menu opens the Help centre; typing "open a pack" shows "How do I open a pack?" first, and its "Take me there" opens Packs. Settings has a Help block.
+26. **Collection milestones:** giving a test player a Common card of every species shows a "Collection milestone! Common set" banner with Share; the Collection page lists it under Milestones.
+27. **Weekly recap:** My Stats has "This week" / "Last week" buttons that open "Your week in EMBERLINGS"; the numbers are readable and Share makes a picture.
+28. **Comfort settings:** Settings has a Comfort block. With "Ask before spending: 1,000", buying a Mythic Pack (1,500) first asks "Spend 1,500 coins?"; Cancel spends nothing.
+29. **Save safety:** Settings → "Restore a backup" lists backups; "Back up now" adds one; restoring an older one brings back its coins and cards and keeps the player signed in; during a battle it refuses.
+30. **Deck pictures and friend notes:** Battle Deck → Share deck → "Share as picture" saves a picture with the deck code; in Friends, the ⋯ next to a friend sets a nickname and ★ Favourite, which moves them to the top.
+31. **Look pack A and screenshot mode:** the Adventure HQ map has drifting cloud shadows; Battle Rules and the Mythling Index have a "Parchment light" switch; "📷 Screenshot mode" in the menu hides the buttons and a tap brings them back.
+32. **What's New:** a returning player sees the Round 4 "What's new" once.
 
 ## 7. Update the handoff
 Add the new publish date and result to `HANDOFF.md`. Commit and push that change to GitHub.
