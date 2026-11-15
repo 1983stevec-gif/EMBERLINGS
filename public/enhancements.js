@@ -40,7 +40,7 @@ function start() {
 /* ---------------------------------------------------------------- Sound */
 const sfx = (() => {
   let ctx = null, master = null;
-  const muted = () => !!ext().muted;
+  const muted = () => !!ext().muted || !!window.EmberComfort?.quiet?.(); // quiet hours (comfort.js) count as muted
   function ac() {
     if (muted()) return null;
     try {

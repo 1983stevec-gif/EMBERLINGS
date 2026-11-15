@@ -145,7 +145,7 @@ function addMenuItem(menu) {
 /* ---------- Showing it once after an update */
 let waiting = false;
 function blocked() {
-  return B.view !== 'home' || $('#dailyPanel') || $('#guidedTour') || B.state.guidedTour?.active || $('.tradeDone:not(#whatsNewPanel)') || $('.biIntro') || $('.lvlUp,.levelUpModal');
+  return B.view !== 'home' || window.EmberComfort?.quiet?.() || $('#dailyPanel') || $('#guidedTour') || B.state.guidedTour?.active || $('.tradeDone:not(#whatsNewPanel)') || $('.biIntro') || $('.lvlUp,.levelUpModal');
 }
 function maybeShow() {
   if (waiting || !LATEST || $('#whatsNewPanel')) return;
