@@ -125,6 +125,8 @@ const HIDE = [
 
 const CSS = `
 ${HIDE}{visibility:hidden!important;pointer-events:none!important}
+/* The header leaves no empty band (and no picture inside it can show through): take it out of the layout. */
+html.${ON} #app > header,html.${ON} #app .uiTop{display:none!important}
 html.${ON} *:focus,html.${ON} *:focus-visible{outline:none!important}
 #shotLayer{position:fixed;inset:0;z-index:2147483646;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;user-select:none;-webkit-user-select:none}
 #shotLayer .shotHint{position:absolute;left:50%;bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));transform:translateX(-50%);margin:0;max-width:calc(100% - 32px);padding:8px 16px;border-radius:999px;background:#0b0f18a6;border:1px solid #ffffff33;color:#fff6e0;font:600 14px/1.3 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;opacity:1;transition:opacity .6s ease}
