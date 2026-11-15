@@ -1,0 +1,222 @@
+// EMBERLINGS Help centre content: "How do I…?" answers and the Glossary. Plain data only, used by help.js.
+// Every fact here comes from the game itself (game/index.html, card-engine.js, combat-rules.js,
+// card-progression.js and the feature modules). If a rule or number changes in the game, change it here too.
+//
+// Each answer: { id, cat, q, a, to, k }
+//   q   the question, a  the answer (1–3 short sentences, plain friendly words)
+//   to  where "Take me there" goes:
+//         a view name for EmberBridge.go(view)      e.g. 'packs', 'decks', 'vault'
+//         'settings:<section id>'                     EmberSettings.open(id)
+//         'daily' | 'whatsnew' | 'inbox' | 'keys'    EmberDaily.open() / EmberWhatsNew.open() / EmberInbox.open() / EmberA11y.open()
+//   k   extra search words (optional)
+// Each glossary term: { term, def, k, to } (to is optional, same format).
+// tests/help-data.mjs checks that every "to" points at a screen or panel that exists.
+
+export const CATEGORIES = [
+  { id: 'start', icon: '🌱', name: 'Getting started' },
+  { id: 'packs', icon: '🎁', name: 'Packs & cards' },
+  { id: 'battles', icon: '⚔️', name: 'Decks & battles' },
+  { id: 'vault', icon: '🏦', name: 'Vault & coins' },
+  { id: 'mutations', icon: '🧬', name: 'Mutations & fusion' },
+  { id: 'training', icon: '🎯', name: 'Training' },
+  { id: 'friends', icon: '👥', name: 'Friends, trading & watching' },
+  { id: 'profile', icon: '👤', name: 'Profile & cosmetics' },
+  { id: 'settings', icon: '⚙', name: 'Settings & app' },
+  { id: 'saves', icon: '💾', name: 'Saves & accounts' }
+];
+
+export const ANSWERS = [
+  /* ---------------------------------------------------------------- Getting started */
+  { id: 'start-first', cat: 'start', q: 'Where do I start?', to: 'map', k: 'begin new player first steps',
+    a: 'Open a pack on the Packs screen, build a deck in Battle Deck, then play your first quest on the Adventure HQ map. The beginner guide shows you each step.' },
+  { id: 'start-guide', cat: 'start', q: 'How do I play the beginner guide again?', to: 'tutorial', k: 'tutorial replay tour help tips reset',
+    a: 'Tap Take me there to replay the guide, or find it any time in Settings under App. You can also reset the little first-time tips there.' },
+  { id: 'start-coins', cat: 'start', q: 'How do I earn coins?', to: 'map', k: 'money gold earn',
+    a: 'Battles and quests are the main way to earn coins. Fused Mythlings in the Vault earn coins every second, and Daily rewards and Collection Album stamps give coins too.' },
+  { id: 'start-daily', cat: 'start', q: 'What are Daily rewards?', to: 'daily', k: 'login streak daily quests weekly challenge calendar',
+    a: 'Log in each day for a 7-day streak: 100, 150, an Academy Pass, 250, 300 and 400 coins, then a free Star Pack on day 7. Missing a day starts the streak again. There are also three daily quests (finish all three for a bonus Academy Pass) and a weekly challenge: win 10 battles for a free Crystal Pack.' },
+
+  /* ---------------------------------------------------------------- Packs & cards */
+  { id: 'packs-open', cat: 'packs', q: 'How do I open a pack?', to: 'packs', k: 'buy pack reveal',
+    a: 'Go to Packs, choose a pack and tap Open. Every pack gives you 5 Mythlings, and you can reveal them one by one or all at once.' },
+  { id: 'packs-which', cat: 'packs', q: 'Which pack should I buy?', to: 'packs', k: 'odds chances shiny secret price cost wonder star crystal mythic legend celestial hacker',
+    a: 'There are seven packs, from the Wonder Pack (150 coins) up to the Hacker Pack (600,000 coins). Better packs start at a higher level and have better shiny, secret and mutation chances; each pack shows its own odds.' },
+  { id: 'packs-free', cat: 'packs', q: 'Where do my free packs go?', to: 'packs', k: 'reward pack quest pack gift free',
+    a: 'Free packs from Daily rewards and from beating a boss for the first time wait on the Packs screen. Open them there for free whenever you like.' },
+  { id: 'packs-binder', cat: 'packs', q: 'How do I see all my cards?', to: 'inventory', k: 'binder inventory collection search filter sort',
+    a: 'Open My Binder to see every card you own. You can search, filter by element, rarity or mutation, and sort the pages.' },
+  { id: 'packs-details', cat: 'packs', q: 'How do I look at a card up close?', to: 'inventory', k: 'card details inspect turn flip share picture stats',
+    a: 'Tap a card in My Binder to open its Card details. You can turn the card, see every stat and where it came from, and use Share card to make a picture of it.' },
+  { id: 'packs-fav', cat: 'packs', q: 'How do I mark a favourite card?', to: 'inventory', k: 'favourite favorite star saved view export csv picture',
+    a: 'Tap the star on Card details, or hold (right-click on a computer) a card in My Binder. Favourites are only a label and never lock a card. The binder can also save up to 6 views and export your collection as a spreadsheet or picture.' },
+  { id: 'packs-index', cat: 'packs', q: 'What is the Mythling Index?', to: 'index', k: 'field guide species encyclopedia gallery art lore',
+    a: 'The Index is a field guide to all 16 Mythling species. Species you have not found yet are shown as silhouettes, and the Gallery shows the painted art and stories.' },
+  { id: 'packs-collection', cat: 'packs', q: 'How do I see what I am still missing?', to: 'collection', k: 'collection tracker missing goals completion progress',
+    a: 'The Collection page shows how complete your collection is, the goals you are closest to finishing and hints on where each missing piece comes from. Tick "Show missing only" to see just the gaps.' },
+  { id: 'packs-album', cat: 'packs', q: 'What is the Collection Album?', to: 'album', k: 'album stamps rewards page bonus',
+    a: 'Each species has three stamps: Collected (1,000 coins), Shiny (5,000) and Mutated (10,000). A full page adds a 25,000 coin bonus, and the whole album pays 250,000.' },
+  { id: 'packs-levels', cat: 'packs', q: 'What do levels do?', to: 'inventory', k: 'level up exp xp hp move ability special max 100',
+    a: 'Mythlings level up to 100. They gain 5 HP every 5 levels, a new move every 25 levels (keeping the two newest), and abilities at levels 10, 30, 60 and 90. Every 10 levels there is also a small chance of a rare or very rare special ability.' },
+
+  /* ---------------------------------------------------------------- Decks & battles */
+  { id: 'battle-deck', cat: 'battles', q: 'How do I build a deck?', to: 'decks', k: 'battle deck build equip best auto copies basic',
+    a: 'In Battle Deck, choose 1 to 20 cards with at least one Basic Mythling. You can add up to two copies of a card (as many as you own), and Trainers are limited to two per name. New? Tap Equip Best to build one for you, or Save Deck to keep your own as a preset.' },
+  { id: 'battle-share', cat: 'battles', q: 'How do I share or import a deck?', to: 'decks', k: 'deck code share import emb1 deck ideas',
+    a: 'Battle Deck can turn your deck into a code (it starts with EMB1-) to send to friends. Importing a code builds the deck from cards you already own; it never gives you new cards. Deck ideas has ready-made decks to try.' },
+  { id: 'battle-delete', cat: 'battles', q: 'How do I delete a saved deck?', to: 'decks', k: 'saved decks remove delete',
+    a: 'Saved decks are the buttons at the top of Battle Deck. Hold (or right-click) a deck name and choose Delete. Your cards are never deleted.' },
+  { id: 'battle-turn', cat: 'battles', q: 'What do I do on my turn?', to: 'rules', k: 'turn draw attach attack end turn trainer',
+    a: 'Draw a card, attach your Merfling to one of your Mythlings, and play Basics and Trainers. Then attack with your Active Mythling (which ends your turn) or tap End Turn.' },
+  { id: 'battle-win', cat: 'battles', q: 'How do I win a battle?', to: 'rules', k: 'win points knockout radiant draw 30 turns clock',
+    a: 'Knock out your opponent\'s Mythlings: a normal card gives 1 point and a Radiant card gives 2. The first player to 3 points wins, and a player with no Mythlings left in play loses. Your owned cards always come back after the match.' },
+  { id: 'battle-merfling', cat: 'battles', q: 'How does Merfling work?', to: 'rules', k: 'merfling energy attach types',
+    a: 'Both players start with no Merfling. Ending your turn (attacking counts) earns one Merfling for your next turn, which you can attach once per turn. Unused Merfling is replaced, not saved up, and it stays attached after you attack.' },
+  { id: 'battle-evolve', cat: 'battles', q: 'How do I evolve a Mythling?', to: 'rules', k: 'evolve evolution stage basic ascended apex',
+    a: 'Play the next Stage (Basic, then Ascended, then Apex) from your hand onto the matching Mythling. You cannot evolve on your first turn, or on the turn that Mythling came into play or already evolved. It keeps its damage, Merfling and Tools.' },
+  { id: 'battle-retreat', cat: 'battles', q: 'How do I retreat?', to: 'rules', k: 'retreat switch swap bench cost',
+    a: 'Once per turn, discard the retreat cost in attached Merfling and swap your Active with a Benched Mythling. Retreating does not end your turn and clears Special Conditions. An Asleep or Paralyzed Mythling cannot retreat.' },
+  { id: 'battle-conditions', cat: 'battles', q: 'What are Special Conditions?', to: 'rules', k: 'poison burn sleep asleep paralysis paralyzed confusion confused status',
+    a: 'Poison deals 10 damage between turns and Burn deals 20, then a coin may cure it. Sleep and Paralysis stop attacking and retreating, and Confusion flips a coin before attacking (tails: 30 damage to the attacker). Retreating or evolving clears them.' },
+  { id: 'battle-quests', cat: 'battles', q: 'How do quests and islands work?', to: 'map', k: 'adventure hq map quest island level unlock',
+    a: 'The Adventure HQ map has 100 quests on five islands: Ember Meadows (1–10), Crystalwood Forest (11–25), Frozen Peaks (26–45), Thunder Valley (46–70) and Shadow Realm (71–100). Finish earlier quests to open later ones.' },
+  { id: 'battle-boss', cat: 'battles', q: 'What do bosses give?', to: 'map', k: 'boss magmarok thorn guardian frostfang voltitan voidra reward',
+    a: 'Bosses wait at quests 10, 25, 45, 70 and 100. Your first win against each gives a Quest Pack and an Academy Pass (quest 100 also gives the Rift Champion collectible); replaying a boss pays fewer coins.' },
+  { id: 'battle-cant', cat: 'battles', q: 'Why can\'t I start a quest?', to: 'map', k: 'cannot start locked five cards vault trade',
+    a: 'You need five cards that are free to battle, so take Mythlings out of the Vault or finish their trades. Later quests also open only after you finish the earlier ones.' },
+  { id: 'battle-time', cat: 'battles', q: 'Is there a time limit in battles?', to: 'rules', k: 'clock timer time limit timeout turns draw',
+    a: 'Each player has a 20-minute battle clock and 90 seconds per turn. A turn that runs out ends by itself, a player whose battle clock reaches zero loses, and a game that reaches 30 turns is a draw.' },
+
+  /* ---------------------------------------------------------------- Vault & coins */
+  { id: 'vault-how', cat: 'vault', q: 'How does the Vault work?', to: 'vault', k: 'vault earn coins per second collect slot fused',
+    a: 'Put a fused Mythling in a Vault slot and it earns coins every second. Tap Collect or Collect All to add the coins to your wallet. Only fused Mythlings can work there, and never your Active partner.' },
+  { id: 'vault-slots', cat: 'vault', q: 'How do I unlock more Vault slots?', to: 'vault', k: 'slot unlock buy cost',
+    a: 'The Vault has 5 slots. The first is free, and the others cost 2,500, 10,000, 35,000 and 100,000 coins, unlocked in order. Unlocked slots stay yours for good.' },
+  { id: 'vault-stop', cat: 'vault', q: 'Why did my Vault stop earning?', to: 'vault', k: 'offline cap two hours 2 hours stopped',
+    a: 'Offline earnings stop after 2 hours, so pop in and collect often. Earnings never disappear: what was earned stays in the slot until you collect it.' },
+  { id: 'vault-more', cat: 'vault', q: 'What makes a Vault Mythling earn more?', to: 'vault', k: 'rate rarity level shiny mutation cosmic multiplier',
+    a: 'Rarer and higher-level Mythlings earn more, and shiny ones earn 10% extra. Mutations multiply the rate on top, up to 100× for Shadow, Void, Cosmic and Prism. A Mythling in the Vault can\'t be traded or fused; Take Out collects its coins and frees it.' },
+
+  /* ---------------------------------------------------------------- Mutations & fusion */
+  { id: 'mut-what', cat: 'mutations', q: 'What are mutations?', to: 'mutationBook', k: 'mutation trait damage vault',
+    a: 'Mutations are 12 permanent traits that add battle damage and multiply Vault earnings, from Bloom (+5% damage) up to Prism (+90%). A Mythling has one active mutation at a time.' },
+  { id: 'mut-buy', cat: 'mutations', q: 'How do I buy a mutation?', to: 'mutation', k: 'mutation vault buy mutate spark flame frost storm shadow cosmic price',
+    a: 'In the Mutation Vault, pick a Mythling and a mutation to see the change, then tap Mutate. Spark, Flame, Frost, Storm, Shadow and Cosmic can be bought, for 2,500 up to 500,000 coins.' },
+  { id: 'mut-pack', cat: 'mutations', q: 'Which mutations only come from packs?', to: 'packs', k: 'pack only bloom tide crystal solar void prism cannot buy',
+    a: 'Bloom, Tide, Crystal, Solar, Void and Prism can only come from packs: they can never be bought. Better packs roll mutations more often, from 3% in the Wonder Pack up to 30% in the Hacker Pack.' },
+  { id: 'mut-book', cat: 'mutations', q: 'How do I see which mutations I have found?', to: 'mutationBook', k: 'mutation collection book pages found',
+    a: 'The Mutation Collection has one page per Mythling with a slot for each of the 12 mutations. Found ones show your best copy; missing ones are dark silhouettes.' },
+  { id: 'mut-fuse', cat: 'mutations', q: 'How does fusion work?', to: 'fuse', k: 'fusion lab fuse combine two 200 coins',
+    a: 'In the Fusion Lab, pick two spare Mythlings and pay 200 coins: both are used up to make a surprise new Mythling at level 1. It keeps the higher rarity of the two, has a 15% shiny chance and can work in the Vault. You need at least three Mythlings, and your Active partner is kept safe.' },
+
+  /* ---------------------------------------------------------------- Training */
+  { id: 'train-how', cat: 'training', q: 'How does training work?', to: 'training', k: 'training field academy centre center challenge exp',
+    a: 'The Training Field picks a centre for you, such as Attack Academy or Element Challenge. Choose a Mythling and answer five challenges; a score of 3 or more earns 24 to 30 EXP.' },
+  { id: 'train-limit', cat: 'training', q: 'How many training rewards can I get a day?', to: 'training', k: 'limit cap per day five sessions attack bonus',
+    a: 'You get five rewarded sessions per day (the day changes at midnight UTC). Each rewarded session can also add +1 attack, up to +5 for each Mythling.' },
+  { id: 'train-pass', cat: 'training', q: 'What is an Academy Pass and how do I get one?', to: 'daily', k: 'academy pass ticket extra training',
+    a: 'An Academy Pass gives one extra rewarded training session after the daily five. You get them from day 3 of the login streak, the daily quests bonus and your first win against each boss.' },
+
+  /* ---------------------------------------------------------------- Friends, trading & watching */
+  { id: 'fr-add', cat: 'friends', q: 'How do I add a friend?', to: 'friends', k: 'add player friend request username accept',
+    a: 'On Friends, tap Add Player and type their username. They need to accept your request before you become friends.' },
+  { id: 'fr-battle', cat: 'friends', q: 'How do I battle a friend?', to: 'friends', k: 'duel battle against together co-op coop rift guardian online',
+    a: 'On Friends, tap Battle Against for a duel, or Battle Together to team up against the Rift Guardian. Friendly battles don\'t spend coins or change your quest progress.' },
+  { id: 'fr-trade', cat: 'friends', q: 'How do I trade Mythlings?', to: 'trading', k: 'trade swap offer accept friend trading history past trades',
+    a: 'Open Friend Trading and pick a friend to invite. Each of you can offer up to 5 Mythlings, and the swap only happens when both accept. Your Active partner and Vault workers stay protected, and Past trades shows what you gave and got.' },
+  { id: 'fr-watch', cat: 'friends', q: 'How do I watch a friend\'s duel?', to: 'friends', k: 'watch spectate live duel',
+    a: 'When a friend is in a duel, a Watch button appears in the Live duels panel on Friends. You see the board but never their hand or deck, and you can turn "Let friends watch my duels" off there.' },
+  { id: 'fr-activity', cat: 'friends', q: 'What are Activity and cheers?', to: 'friends', k: 'activity cheer highlights share rare pull boss',
+    a: 'Friends share highlights like rare pack pulls, boss wins and Mythlings reaching level 25, 50, 75 and 100, and you can cheer each one once. You can stop sharing yours in Settings.' },
+  { id: 'fr-inbox', cat: 'friends', q: 'What does the bell do?', to: 'inbox', k: 'bell inbox notifications alerts unread',
+    a: 'The bell is your inbox: trade invitations, finished trades, friend requests, highlights, cheers, Daily rewards ready to claim and What\'s new, all in one place.' },
+
+  /* ---------------------------------------------------------------- Profile & cosmetics */
+  { id: 'pr-profile', cat: 'profile', q: 'How do I change my profile?', to: 'profile', k: 'profile showcase frame background badges',
+    a: 'On My Profile, show off up to 5 cards in your Showcase and pick a frame, background and up to 6 badges. Achievements unlock more, and friends can view your profile.' },
+  { id: 'pr-back', cat: 'profile', q: 'How do I change my card back or avatar?', to: 'profile', k: 'card back avatar ring cosmetic',
+    a: 'My Profile also lets you choose a card back, an avatar Mythling and an avatar ring. They are unlocked by achievements and only change how things look.' },
+  { id: 'pr-title', cat: 'profile', q: 'How do I pick a title?', to: 'achievements', k: 'title achievements badge name tag',
+    a: 'Each achievement unlocks a title. Choose one on the Achievements page and it shows on Home and on your Friends profile.' },
+  { id: 'pr-stats', cat: 'profile', q: 'Where can I see my stats?', to: 'stats', k: 'stats history luck packs battles numbers',
+    a: 'My Stats shows your pack, battle and coin history, plus a luck meter that compares your special pulls with the packs\' real odds.' },
+
+  /* ---------------------------------------------------------------- Settings & app */
+  { id: 'set-sound', cat: 'settings', q: 'How do I turn sound or music on or off?', to: 'settings:sound', k: 'sound mute music volume audio quiet',
+    a: 'Settings has a Sound switch and a Music switch with a volume choice. Music is off until you turn it on, and it stays quiet while Sound is off.' },
+  { id: 'set-effects', cat: 'settings', q: 'How do I make animations calmer?', to: 'settings:effects', k: 'effects animation motion reduce light off flashing',
+    a: 'Choose Full, Light or Off under Effects in Settings. Light removes flashes, shaking and confetti; Off stops animations. If your device asks for reduced motion, effects stay off.' },
+  { id: 'set-text', cat: 'settings', q: 'How do I make the text bigger?', to: 'settings:access', k: 'text size large accessibility symbols colour color blind',
+    a: 'Under Accessibility in Settings, choose Normal, Large or Extra large text. Element symbols give each element its own badge shape, which helps if some colours look alike.' },
+  { id: 'set-keys', cat: 'settings', q: 'Can I play with a keyboard?', to: 'keys', k: 'keyboard shortcuts keys screen reader',
+    a: 'Yes. In battle, press 1 or 2 to attack, E to attach Merfling to your Active and Space to end your turn. The keyboard help panel lists the rest.' },
+  { id: 'set-install', cat: 'settings', q: 'How do I install EMBERLINGS as an app?', to: 'settings:app', k: 'install app home screen pwa phone tablet',
+    a: 'Settings › App has an Install button when your browser supports it (try Chrome, Edge or Safari on a phone or tablet). The app plays full screen and opens faster.' },
+  { id: 'set-seasons', cat: 'settings', q: 'How do I turn off the seasonal decorations?', to: 'settings:seasons', k: 'season snow leaves autumn winter decorations',
+    a: 'Settings has a Seasonal decorations switch. The snow, leaves, petals and lights only change how things look.' },
+  { id: 'set-news', cat: 'settings', q: 'How do I see what\'s new?', to: 'whatsnew', k: 'whats new update release notes changes',
+    a: 'What\'s new lists the latest changes to the game. It opens by itself once after an update, and you can open it again from Settings › App.' },
+
+  /* ---------------------------------------------------------------- Saves & accounts */
+  { id: 'save-where', cat: 'saves', q: 'Where is my progress saved?', to: 'account', k: 'save progress browser local cloud',
+    a: 'Your progress is saved in this browser. Log in with a username and password to keep a copy in the cloud as well, so your collection follows you.' },
+  { id: 'save-device', cat: 'saves', q: 'How do I play on another device?', to: 'account', k: 'other device phone computer login password cloud sync transfer',
+    a: 'Set a password on the Account & cloud save page, then log in on the other device with your username and password. If both devices have progress, you choose which to keep, and the other is copied in that browser first.' },
+  { id: 'save-backup', cat: 'saves', q: 'How do I make a backup?', to: 'settings:backup', k: 'backup code download file import restore',
+    a: 'Settings › Backup can create a backup code or download a backup file, and import one on another browser. Finish trades and battles before you export or import.' },
+  { id: 'save-password', cat: 'saves', q: 'I forgot my password. What can I do?', to: 'account', k: 'forgot password recovery code lost log out logout',
+    a: 'Use your recovery code from "Already have a username?" on the welcome screen. To log out, use Log out on this device on the Account page.' }
+];
+
+export const GLOSSARY = [
+  { term: 'Mythling', def: 'The creatures you collect. There are 16 species, each with its own element, art and moves.', k: 'creature species card', to: 'index' },
+  { term: 'Merfling', def: 'Battle energy. You earn one each time you end a turn and attach it once per turn; attacks need enough of it, including their matching type.', k: 'energy', to: 'rules' },
+  { term: 'Merfling types', def: 'A deck can choose up to three Merfling types. Typed attacks need their matching Merfling; neutral costs accept any type.', k: 'energy type element', to: 'decks' },
+  { term: 'Active', def: 'The Mythling in front that attacks and takes most hits. Only the Active Mythling can attack.', k: 'front attacker', to: 'rules' },
+  { term: 'Bench', def: 'Up to three Mythlings waiting behind your Active. Retreat swaps one in, and one moves up after a knockout.', k: 'benched reserve', to: 'rules' },
+  { term: 'Active partner', def: 'Your chosen battle partner Mythling (tap one in your Inventory to choose). It is protected: it can\'t be fused, traded or put in the Vault.', k: 'partner protected', to: 'inventory' },
+  { term: 'Basic', def: 'The first Stage of a Mythling. Basics can be played straight onto your Bench, and every deck needs at least one.', k: 'stage', to: 'decks' },
+  { term: 'Ascended', def: 'The second Stage. Play it from your hand onto the matching Basic to evolve.', k: 'stage evolve', to: 'rules' },
+  { term: 'Apex', def: 'The third and strongest Stage. Play it onto the matching Ascended Mythling.', k: 'stage evolve', to: 'rules' },
+  { term: 'Evolution', def: 'Playing the next Stage on a Mythling. Not on your first turn, or the turn it came into play or already evolved. It keeps damage, Merfling and Tools.', k: 'evolve stage', to: 'rules' },
+  { term: 'Radiant', def: 'Cards from your Legendary or rarer Mythlings. Knocking out a Radiant card gives 2 points instead of 1.', k: 'elite two points', to: 'rules' },
+  { term: 'Points', def: 'You score by knocking out Mythlings: 1 for a normal card, 2 for a Radiant card. First to 3 points wins.', k: 'score win', to: 'rules' },
+  { term: 'Knockout', def: 'When a Mythling\'s HP reaches zero. It goes to that match\'s discard pile (your owned card always comes back after the match).', k: 'ko defeat', to: 'rules' },
+  { term: 'Retreat', def: 'Swapping your Active with a Benched Mythling, once per turn, by discarding its retreat cost in Merfling. It doesn\'t end your turn.', k: 'switch swap retreat cost', to: 'rules' },
+  { term: 'Weakness', def: 'An attack against an Active Mythling does 20 more damage when the attacker\'s element is strong against it. Bench damage ignores Weakness, and there is no resistance.', k: 'weak bonus damage', to: 'rules' },
+  { term: 'Element advantage', def: 'Fire beats Nature, Nature beats Water, Water beats Fire, Lightning beats Wind, Wind beats Moon, Moon beats Shadow, Shadow beats Crystal, Crystal beats Ice, and Ice beats Lightning.', k: 'element type counter weakness', to: 'training' },
+  { term: 'Trainer', def: 'Helper cards that every deck can use for free: Items, Supporters (one per turn), Tools (one per Mythling) and Stadiums (one in play).', k: 'item supporter tool stadium', to: 'decks' },
+  { term: 'Special Conditions', def: 'Poison, Burn, Sleep, Paralysis and Confusion. Retreating or evolving clears them, and so do the Clearwater Charm and Meadow Medic Trainers.', k: 'status poison burn sleep paralysis confusion', to: 'rules' },
+  { term: 'Rarity', def: 'From lowest to highest: Common, Uncommon, Rare, Mythic, Legendary, Celestial and Secret. Rarer cards hit harder, have more HP and earn more in the Vault.', k: 'common uncommon rare mythic legendary celestial', to: 'collection' },
+  { term: 'Secret', def: 'The rarest rarity. Each pack has its own secret chance, shown on the Packs screen.', k: 'rarity secret rare', to: 'packs' },
+  { term: 'Shiny', def: 'A sparkling version of a card. Shiny Mythlings earn 10% more in the Vault and fill the Shiny stamp in the Collection Album.', k: 'sparkle', to: 'album' },
+  { term: 'Mutation', def: 'One of 12 permanent traits that add damage and multiply Vault earnings. A Mythling has one active mutation.', k: 'trait', to: 'mutationBook' },
+  { term: 'Pack-only mutations', def: 'Bloom, Tide, Crystal, Solar, Void and Prism. They can only come from packs and can never be bought.', k: 'pack only cannot buy', to: 'packs' },
+  { term: 'Bloom', def: 'Mutation: +5% damage, 1.5× Vault coins. Pack-only.', k: 'mutation pack only', to: 'mutationBook' },
+  { term: 'Spark', def: 'Mutation: +10% damage, 2× Vault coins. Costs 2,500 coins in the Mutation Vault.', k: 'mutation buy', to: 'mutation' },
+  { term: 'Tide', def: 'Mutation: +15% damage, 3× Vault coins. Pack-only.', k: 'mutation pack only', to: 'mutationBook' },
+  { term: 'Flame', def: 'Mutation: +20% damage, 5× Vault coins. Costs 10,000 coins in the Mutation Vault.', k: 'mutation buy fire', to: 'mutation' },
+  { term: 'Frost', def: 'Mutation: +25% damage, 10× Vault coins. Costs 25,000 coins in the Mutation Vault.', k: 'mutation buy ice', to: 'mutation' },
+  { term: 'Crystal (mutation)', def: 'Mutation: +30% damage, 16× Vault coins. Pack-only.', k: 'mutation pack only', to: 'mutationBook' },
+  { term: 'Storm', def: 'Mutation: +35% damage, 25× Vault coins. Costs 75,000 coins in the Mutation Vault.', k: 'mutation buy lightning', to: 'mutation' },
+  { term: 'Solar', def: 'Mutation: +42% damage, 46× Vault coins. Pack-only.', k: 'mutation pack only sun', to: 'mutationBook' },
+  { term: 'Shadow (mutation)', def: 'Mutation: +50% damage, 100× Vault coins. Costs 200,000 coins in the Mutation Vault.', k: 'mutation buy', to: 'mutation' },
+  { term: 'Void', def: 'Mutation: +60% damage, 100× Vault coins. Pack-only.', k: 'mutation pack only', to: 'mutationBook' },
+  { term: 'Cosmic', def: 'Mutation: +75% damage, 100× Vault coins. Costs 500,000 coins in the Mutation Vault.', k: 'mutation buy', to: 'mutation' },
+  { term: 'Prism', def: 'Mutation: +90% damage, 100× Vault coins, the strongest. Pack-only.', k: 'mutation pack only', to: 'mutationBook' },
+  { term: 'Vault', def: 'Five slots where fused Mythlings earn coins every second. Offline earnings stop after 2 hours, so collect often.', k: 'coins earn slots', to: 'vault' },
+  { term: 'Mutation Vault', def: 'Where you buy a mutation for one of your Mythlings. Only the six buyable mutations are for sale.', k: 'buy mutation shop', to: 'mutation' },
+  { term: 'Fusion', def: 'Combining two spare Mythlings and 200 coins into one surprise Mythling that keeps the higher rarity. Fused Mythlings can work in the Vault.', k: 'fuse fused fusion lab', to: 'fuse' },
+  { term: 'Academy Pass', def: 'Gives one extra rewarded training session after the daily five. Earned from Daily rewards and first boss wins.', k: 'pass ticket training', to: 'training' },
+  { term: 'Quest', def: 'One of the 100 battles on the Adventure HQ map, spread over five islands. Finish earlier quests to open later ones.', k: 'adventure level map island', to: 'map' },
+  { term: 'Boss', def: 'A tougher quest at 10, 25, 45, 70 and 100: Magmarok, Thorn Guardian, Frostfang, Voltitan and Voidra. The first win gives a Quest Pack and an Academy Pass.', k: 'magmarok thorn guardian frostfang voltitan voidra', to: 'map' },
+  { term: 'Daily quests', def: 'Three small goals each day, like opening a pack or winning battles, that pay coins. Finish all three for a bonus Academy Pass.', k: 'daily quest goal', to: 'daily' },
+  { term: 'Level and EXP', def: 'Mythlings earn EXP in battles and training and level up to 100, gaining HP, moves and abilities on the way.', k: 'xp experience level up', to: 'inventory' },
+  { term: 'Equip Best', def: 'A Battle Deck button that builds a strong deck from your whole collection. It picks your strongest cards but can\'t promise a win.', k: 'auto build deck', to: 'decks' },
+  { term: 'Deck code', def: 'A short code starting with EMB1- that lists a deck\'s cards. Importing one only uses cards you already own.', k: 'share import', to: 'decks' },
+  { term: 'Co-op', def: 'Battle Together: you and a friend share a deck and take turns against the Rift Guardian.', k: 'coop together team', to: 'friends' },
+  { term: 'Title', def: 'A name tag unlocked by an achievement, shown on Home and your Friends profile.', k: 'achievement badge', to: 'achievements' },
+  { term: 'Showcase', def: 'Up to 5 cards shown on your profile. Showcasing only shows a picture; the card is never moved or locked.', k: 'profile', to: 'profile' },
+  { term: 'Effects', def: 'How lively the game looks: Full, Light or Off. Off also counts when your device asks for reduced motion.', k: 'animation motion', to: 'settings:effects' },
+  { term: 'Cloud save', def: 'A copy of your progress kept with your account, so you can log in on another device and carry on.', k: 'account login sync', to: 'account' },
+  { term: 'Backup code', def: 'Your whole save as a code or file, to move it to another browser by hand.', k: 'backup export import', to: 'settings:backup' }
+];
