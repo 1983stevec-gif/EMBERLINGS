@@ -115,3 +115,72 @@ Published public version 60 to https://mythlings-adventure.proud-book-0456.chatg
 - Check 5 (Friend Trading, Trade Room, five-card offers, grouped picker): live artwork source match and server multi-card tests PASS; browser interaction NOT VERIFIED.
 - Check 6 (existing coins/cards/levels): no live player data or save key changed; focused preservation test PASS; existing-player browser comparison NOT VERIFIED.
 - Browser checks blocked because local browser use is disabled in Work settings. No player saves, credentials, databases or dependencies included in the commit.
+
+## Publish result - November 15, 2026 (America/Chicago)
+
+Published public version 68 to https://mythlings-adventure.proud-book-0456.chatgpt.site/.
+Deployed source: dec0c91cc6fdb124c7048e2cbd8e008fef37d5ef. GitHub main was
+39dd1eb91a34342047665b8fd9d885845805e2cc (PR #89, r4-wrapup).
+Reconciled divergent Sites history with a history-only merge retaining the exact
+GitHub PR #89 file tree (git diff between the two source trees is empty).
+No gameplay or artwork edits. Existing project and public audience preserved.
+Save key remains mythlings-playable-v1; no player save was cleared or renamed.
+
+- npm run install:ci: PASS (682 packages).
+- npm run build: PASS.
+- npm test: PASS, exit 0, all 30 active test files completed; no tests changed.
+- 0006 and 0007 already present (title, password_hash and cloud_saves).
+- 0008 and 0009 were missing before publication. Sites applied pending migrations
+  before Worker upload. After successful deployment, players.profile and both
+  activity_events/activity_cheers are confirmed present. No new migrations added.
+- Source helper push/package, save_site_version and deploy_site_version: PASS.
+- Deployment ID: appgdep_6afa5dde50fc8191912aed5b7cf67725.
+- Saved version ID: appgprj_6ade72f8031081918f304ef6bf4af0fb~appgver_5d5c9701d6b081918a812796f166f77c.
+- Archive SHA-256: 0f98219105261fe37e9e7911d00f6316b892fd6fe3044db53cfa091f4b7ec943.
+- Live root returns HTTP 200. All 57 public root JavaScript files, manifest,
+  WebP logo and creature atlas return 200 and exactly match local SHA-256.
+  Service worker has JavaScript content type; manifest has application/manifest+json.
+- Browser verification BLOCKED: in-app browser timed out attaching its webview;
+  native Edge observation failed because the window remained minimized, including
+  after an app-launch recovery attempt. No existing player's browser was changed.
+
+### PUBLISH-CODEX.md step 6: individual live checks
+
+HTTP/source checks below are partial evidence, not a browser interaction PASS.
+No phone/tablet/desktop visual or multi-account user-flow verification is claimed.
+
+1. Existing players: NOT VERIFIED on an existing player; save-preservation suite passed.
+2. Faster first load: PARTIAL - live WebP logo/atlas match; phone transfer size and timing NOT VERIFIED.
+3. Portrait tablet layouts: NOT VERIFIED.
+4. Trade alerts/past trades: PARTIAL - live script match; invitations, pop-up and completed-trade UI NOT VERIFIED.
+5. Rare finds: PARTIAL - live script match; pull/banner UI NOT VERIFIED.
+6. Daily rewards: PARTIAL - live script match; daily panel and one-time claim UI NOT VERIFIED.
+7. Boss intro/art: PARTIAL - live script match; entrance, skip and battle flow NOT VERIFIED.
+8. Animations: PARTIAL - live effect scripts match; rendered effects NOT VERIFIED.
+9. Phone overflow/map: NOT VERIFIED.
+10. Profiles: PARTIAL - players.profile confirmed and script match; showcase/frame/second-account UI NOT VERIFIED.
+11. Card details: PARTIAL - live script match; drag/flip/details UI NOT VERIFIED.
+12. Collection/deck codes/highlights: PARTIAL - live scripts match; live user flow NOT VERIFIED.
+13. Menu: PARTIAL - live scripts match; menu/options/once-only display NOT VERIFIED.
+14. Sound: NOT VERIFIED audibly.
+15. Logo/Home: PARTIAL - WebP logo and Home script match; rendered arch/lighting NOT VERIFIED.
+16. Friend activity: PARTIAL - both activity tables confirmed and script match; two-account cheer/privacy flow NOT VERIFIED.
+17. Cosmetics/stats/share card: PARTIAL - live scripts match; UI and sharing NOT VERIFIED.
+18. Music: NOT VERIFIED audibly or interactively.
+19. Online presence/spectating: PARTIAL - live scripts match; three-account flow NOT VERIFIED.
+20. Bell/Settings/tips: PARTIAL - live scripts match; interactive UI NOT VERIFIED.
+21. Gallery/favourites: PARTIAL - live scripts match; gallery/hold/filter UI NOT VERIFIED.
+22. Autumn decorations: PARTIAL - live script match; rendered season/toggle NOT VERIFIED.
+23. Install/PWA: PARTIAL - sw.js and manifest return 200, correct MIME types and exact source matches; source excludes /api/ from caching. Browser activation/caches/revisit/online flows NOT VERIFIED.
+24. Phone header/large coins: NOT VERIFIED at 390 px.
+25. Help centre: PARTIAL - live scripts match and help tests pass; live search/navigation NOT VERIFIED.
+26. Collection milestones: PARTIAL - live script match and milestone tests pass; live banner/share NOT VERIFIED.
+27. Weekly recap: PARTIAL - live script match and recap tests pass; live numbers/image sharing NOT VERIFIED.
+28. Comfort settings: PARTIAL - live script match and comfort tests pass; live purchase cancellation NOT VERIFIED.
+29. Save safety: PARTIAL - live script match and restore/preservation tests pass; existing-player live restore/sign-in NOT VERIFIED.
+30. Deck pictures/friend notes: PARTIAL - live scripts match and tests pass; live sharing/nickname/favourite UI NOT VERIFIED.
+31. Look pack A/screenshot mode: PARTIAL - live scripts match; clouds/parchment/hide-and-restore UI NOT VERIFIED.
+32. Round 4 What's New: PARTIAL - live script match; returning-player once-only display NOT VERIFIED.
+
+The release is deployed; the 32-item browser acceptance remains incomplete.
+No credentials, player saves, local databases or dependencies are committed.
