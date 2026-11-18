@@ -69,6 +69,8 @@ export const ANSWERS = [
     a: 'Draw a card, attach your Merfling to one of your Mythlings, and play Basics and Trainers. Then attack with your Active Mythling (which ends your turn) or tap End Turn.' },
   { id: 'battle-win', cat: 'battles', q: 'How do I win a battle?', to: 'rules', k: 'win points knockout radiant draw 30 turns clock',
     a: 'Knock out your opponent\'s Mythlings: a normal card gives 1 point and a Radiant card gives 2. The first player to 3 points wins, and a player with no Mythlings left in play loses. Your owned cards always come back after the match.' },
+  { id: 'battle-replays', cat: 'battles', q: 'Can I watch a battle again?', to: 'replays', k: 'replay battle again watch last battles history step pause playback',
+    a: 'Yes. After a battle, tap Watch the replay on the Victory or Defeated screen, or open Battle replays from My Stats. Your last 10 battles are kept with play, pause and step. Replays are only a picture of the battle and never give rewards.' },
   { id: 'battle-merfling', cat: 'battles', q: 'How does Merfling work?', to: 'rules', k: 'merfling energy attach types',
     a: 'Both players start with no Merfling. Ending your turn (attacking counts) earns one Merfling for your next turn, which you can attach once per turn. Unused Merfling is replaced, not saved up, and it stays attached after you attack.' },
   { id: 'battle-evolve', cat: 'battles', q: 'How do I evolve a Mythling?', to: 'rules', k: 'evolve evolution stage basic ascended apex',
