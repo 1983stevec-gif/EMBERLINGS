@@ -69,6 +69,8 @@ export const ANSWERS = [
     a: 'Draw a card, attach your Merfling to one of your Mythlings, and play Basics and Trainers. Then attack with your Active Mythling (which ends your turn) or tap End Turn.' },
   { id: 'battle-win', cat: 'battles', q: 'How do I win a battle?', to: 'rules', k: 'win points knockout radiant draw 30 turns clock',
     a: 'Knock out your opponent\'s Mythlings: a normal card gives 1 point and a Radiant card gives 2. The first player to 3 points wins, and a player with no Mythlings left in play loses. Your owned cards always come back after the match.' },
+  { id: 'battle-replays', cat: 'battles', q: 'Can I watch a battle again?', to: 'replays', k: 'replay battle again watch last battles history step pause playback',
+    a: 'Yes. After a battle, tap Watch the replay on the Victory or Defeated screen, or open Battle replays from My Stats. Your last 10 battles are kept with play, pause and step. Replays are only a picture of the battle and never give rewards.' },
   { id: 'battle-merfling', cat: 'battles', q: 'How does Merfling work?', to: 'rules', k: 'merfling energy attach types',
     a: 'Both players start with no Merfling. Ending your turn (attacking counts) earns one Merfling for your next turn, which you can attach once per turn. Unused Merfling is replaced, not saved up, and it stays attached after you attack.' },
   { id: 'battle-evolve', cat: 'battles', q: 'How do I evolve a Mythling?', to: 'rules', k: 'evolve evolution stage basic ascended apex',
@@ -85,6 +87,8 @@ export const ANSWERS = [
     a: 'You need five cards that are free to battle, so take Mythlings out of the Vault or finish their trades. Later quests also open only after you finish the earlier ones.' },
   { id: 'battle-time', cat: 'battles', q: 'Is there a time limit in battles?', to: 'rules', k: 'clock timer time limit timeout turns draw',
     a: 'Each player has a 20-minute battle clock and 90 seconds per turn. A turn that runs out ends by itself, a player whose battle clock reaches zero loses, and a game that reaches 30 turns is a draw.' },
+  { id: 'battle-practice', cat: 'battles', q: 'Can I practice a battle without playing one?', to: 'rulesDemo', k: 'practice try demo learn guided turn sample tutorial walkthrough rules',
+    a: 'Yes. Battle Rules has a Try a guided turn button. It sets up a short practice battle with a friendly challenger and walks you through one turn, one rule at a time. There are no rewards, nothing is saved, and your own cards are never at stake.' },
 
   /* ---------------------------------------------------------------- Vault & coins */
   { id: 'vault-how', cat: 'vault', q: 'How does the Vault work?', to: 'vault', k: 'vault earn coins per second collect slot fused',
