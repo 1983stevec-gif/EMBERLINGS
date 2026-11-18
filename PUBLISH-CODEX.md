@@ -18,10 +18,11 @@ Publish the latest EMBERLINGS code from GitHub to the existing live site. Do not
 - Do not commit credentials, browser saves, local databases or `node_modules`.
 
 ## 3. Database
-**Two new migrations.** Apply each **once**, in this order, to the live database **before** publishing the Worker (same method as 0006 and 0007):
+**Three new migrations.** Apply each **once**, in this order, to the live database **before** publishing the Worker (same method as 0006 and 0007):
 
 1. `drizzle/0008_player_profile.sql`: adds one empty column (`ALTER TABLE players ADD profile text;`). Confirm `players.profile` exists. Without it, friends can't see each other's profiles ("Profiles are not available online yet").
 2. `drizzle/0009_activity.sql`: adds two new tables (`activity_events`, `activity_cheers`) and their indexes for Friend activity; it changes no existing table. Confirm both tables exist. Without it, the Activity panel says "Activity isn't available yet".
+3. `drizzle/0010_client_errors.sql`: adds one new table (`client_errors`) and its indexes for anonymous crash reports; it changes no existing table and nothing player-facing depends on it. Confirm the table exists. Without it, error reports are silently skipped (the endpoint fails open on purpose). After publishing, `node scripts/errors-report.mjs` prints the top-30 and prune queries to check what players are hitting.
 
 The rest of the game works either way. Migrations 0006 and 0007 should already be applied; if either is missing, apply it once. Multi-card trades reuse the existing `host_offer` / `guest_offer` columns.
 

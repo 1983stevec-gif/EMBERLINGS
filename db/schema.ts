@@ -36,3 +36,9 @@ export const activityEvents=sqliteTable('activity_events',{
 export const activityCheers=sqliteTable('activity_cheers',{
  eventId:text('event_id').notNull(),playerId:text('player_id').notNull(),createdAt:integer('created_at').notNull()
 },t=>[primaryKey({columns:[t.eventId,t.playerId]})]);
+
+// Anonymous crash reports: one row per distinct error (message and first stack line), with how often it happened.
+// No player, account, device or save data at all. Rows are pruned after 30 days (lib/errors-api.mjs).
+export const clientErrors=sqliteTable('client_errors',{
+ id:integer('id').primaryKey({autoIncrement:true}),hash:text('hash').notNull(),message:text('message').notNull(),stack:text('stack'),view:text('view'),ua:text('ua'),count:integer('count').notNull().default(1),firstSeen:integer('first_seen').notNull(),lastSeen:integer('last_seen').notNull()
+},t=>[uniqueIndex('client_errors_hash').on(t.hash),index('client_errors_last_seen').on(t.lastSeen)]);
