@@ -120,7 +120,10 @@ const HIDE = [
   // Card details: top bar, hint and the info column (the big card stays).
   '#cardDetails .cdBar', '#cardDetails .cdHint', '#cardDetails .cdInfo',
   // Battle: Concede, End Turn, the hand, discard pile, log, hand arrows, retreat and the little call-outs.
-  '#leaveCards', '#endPocketTurn', '.pocketHand', '.cardArena > details', '.bxHandNav', '.retreatPanel', '#cardError', '.bxCallout', '.bxBanner', '.bxPreview'
+  '#leaveCards', '#endPocketTurn', '.pocketHand', '.cardArena > details', '.bxHandNav', '.retreatPanel', '#cardError', '.bxCallout', '.bxBanner', '.bxPreview',
+  // The newer pages keep clean pictures too: page-back buttons and each screen's own controls.
+  '.back', '#colSpecies', '#colElement', '#colPack', '.colSee', '.colTip', '#msPanel .msMini', '.msAll',
+  '.wrStats', '.setJump', '.hpHead', '.hpGo', '.hpTry', '.galBar', '.galArrow'
 ].map(s => `html.${ON} ${s}`).join(',\n');
 
 const CSS = `

@@ -21,6 +21,18 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-round4-1',
+    date: 'November 2026',
+    title: 'A smoother, quieter, safer update',
+    items: [
+      { icon: '🗺️', text: 'Sliding and zooming the world map is much smoother now, especially on phones and tablets.' },
+      { icon: '🌙', text: 'Quiet hours now cover every pop-up that opens by itself, not just some of them. Nights stay calm.', go: 'settings', show: 'Settings' },
+      { icon: '🛡️', text: 'Your saved game is safer: an unreadable save is kept as a backup before anything replaces it, and the game tells you if the browser stops it from saving.' },
+      { icon: '⚔️', text: 'Battle buttons are easier to tap on touch screens, and the milestone banner can no longer stay stuck on the screen.' },
+      { icon: '📷', text: 'Screenshot mode now clears the controls from the newest pages too, including Collection, Settings and Help.' }
+    ]
+  },
+  {
     id: '2026-11-round4',
     date: 'November 2026',
     title: 'Help, milestones, weekly recaps and comfort settings',

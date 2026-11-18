@@ -208,7 +208,7 @@ function onKey(e) {
 // Never stacked with Daily rewards, What's New, tips, the beginner guide or any other pop-up; only on Home.
 const BLOCKERS = '#dailyPanel, #whatsNewPanel, #emberTip, #guidedTour, .tradeDone, #tradeAlert, #rareFind, .biIntro, .uiLvUp, .lvlUp, .levelUpModal, #fxMusicHint, .fxStage, .psStage, #pfPicker, .dsOverlay, #cardDetails, .uiMenu, .uiCloudDlg, #a11yPanel';
 const newsPending = () => { const wn = window.EmberWhatsNew; return !!wn?.LATEST && B.state.ember?.seenRelease !== wn.LATEST; };
-function blocked() { const st = B.state; return B.view !== 'home' || !st.tutorialComplete || st.guidedTour?.active || !!$(BLOCKERS) || !!B.state.pendingPack; }
+function blocked() { const st = B.state; return B.view !== 'home' || !st.tutorialComplete || st.guidedTour?.active || !!$(BLOCKERS) || !!B.state.pendingPack || !!window.EmberComfort?.quiet?.(); }
 let waiting = false;
 function maybeShow() {
   if (waiting || autoOpened || $('#weeklyRecap')) return;

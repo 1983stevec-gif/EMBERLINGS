@@ -65,7 +65,8 @@ function set(patch) {
 }
 const reducedMotion = () => !!B.state.reducedMotion || document.documentElement.dataset.fx === 'off' || matchMedia('(prefers-reduced-motion: reduce)').matches;
 const quietNow = () => { const q = opts().quiet; return q.on && inQuietHours(new Date(), q.from, q.to); };
-const touchy = () => matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
+const coarseMQ = typeof matchMedia === 'function' ? matchMedia('(pointer: coarse)') : null;
+const touchy = () => (coarseMQ ? coarseMQ.matches : false) || innerWidth < 1000;
 
 /* ------------------------------------------------------------ Apply: speed, left hand, quiet state */
 let wasQuiet = null, quietTimer = 0;

@@ -282,7 +282,7 @@ function injectCSS() {
  background:linear-gradient(115deg,#ffffff00 30%,#ffffff55 45%,#ffffff00 60%),radial-gradient(circle at 50% 38%,color-mix(in srgb,var(--c) 85%,#fff),color-mix(in srgb,var(--c) 55%,#1a1030) 55%,#1a1030);border:3px solid #e8bd64;box-sizing:border-box}
 .fxpFace b{font:900 clamp(15px,4.4vw,21px)/1 system-ui,sans-serif;letter-spacing:.08em;color:#ffe9a8;text-shadow:0 2px 0 #6a3410,0 0 12px #000}
 .fxpFace small{font:800 12px/1.1 system-ui,sans-serif;text-shadow:0 1px 3px #000}
-.fxpFace em{font:800 10px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.12em;padding:3px 8px;border-radius:99px;background:#0006}
+.fxpFace em{font:800 11px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.12em;padding:3px 8px;border-radius:99px;background:#0006}
 .fxpIcon{font-size:clamp(42px,12vw,64px);line-height:1;filter:drop-shadow(0 4px 8px #0008)}
 .fxpCrimp{position:absolute;left:0;right:0;top:0;height:16px;background:repeating-linear-gradient(90deg,#e8bd64 0 6px,#a8742e 6px 12px)}
 .fxpCrimpB{top:auto;bottom:0}

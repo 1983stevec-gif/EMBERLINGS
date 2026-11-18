@@ -264,9 +264,9 @@ if (B) {
   addEventListener('storage', () => setTimeout(refresh, 50));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); loadMe(); } });
   // The header can be redrawn without a new frame (for example after the Sound toggle): keep the bell in place.
-  setInterval(() => { if ($('.uiTop') && !$('.uiTop .inbBell')) ensureBells(); }, 1500);
-  // Daily rewards progress is saved by daily.js without an event, so look again now and then.
-  setInterval(() => { if (!document.hidden) refresh(); }, 30000);
+  setInterval(() => { if (!document.hidden && $('.uiTop') && !$('.uiTop .inbBell')) ensureBells(); }, 1500);
+  // Daily rewards progress is saved by daily.js without an event, so look again now and then (never in battle).
+  setInterval(() => { if (!document.hidden && !['cardBattle', 'online'].includes(B.view)) refresh(); }, 30000);
   loadDailyDefs().then(refresh);
   setTimeout(() => { loadMe(); pollMe(); }, 4000);
   requestAnimationFrame(refresh);
