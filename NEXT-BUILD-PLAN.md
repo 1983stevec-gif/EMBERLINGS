@@ -5,13 +5,9 @@ hints are open (PR #91). This plan supersedes the "next" sections of `NEXT-ENHAN
 (its Round 4 shipped) and keeps the same rules: one feature, one PR, one module in `public/`;
 save data only under `state.ember.*`; the save key never changes; merge only on "merge".
 
-**Progress, 18 November (evening):** items 5.1, 5.3, 5.4, 5.5, 6.4 and the two Round-7 quick
-fixes are built and open as PRs #93 (leaderboards), #94 (duel emotes), #95 (quick fixes),
-#96 (profile links), #97 (crash reports — carries migration 0010) and #98 (rules demo). All
-pass GitHub CI. 5.2 (push notifications) is the only Round-5 item left, and it waits for
-publish-time keys. Suggested merge order: #91 → #93 → #94 → #95 → #97 → #98 → this plan;
-the only conflicts to expect are one line each in the include list, the test list, the What's
-New head and the social route block — keep both sides, re-run the build and tests after each.
+**Progress, 18 November (evening):** items 5.1, 5.3, 5.4, 5.5, 6.1, 6.2, 6.3, 6.4 and the two Round-7 quick fixes are built and open as PRs #93 (leaderboards), #94 (duel emotes), #95 (quick fixes), #96 (profile links), #97 (crash reports — carries migration 0010), #98 (rules demo), #99 (battle replays), #100 (pack opening replays) and #101 (offline solo play). All pass GitHub CI. 5.2 (push notifications) is the only Round-5 item left, and it waits for publish-time keys.
+
+**Verification, 18 November (night):** all ten features were merged into a local integration branch and verified live in the browser, feature by feature: leaderboard panel, profile share switch + public route + shared `#p/name` visitor page, rules demo (all six guided steps), battle hints driving a full victory, battle replay recording + player, pack opening + "Watch this opening again", duel-emote picker (hidden in local battles, eight presets, Esc close), crash-reports switch, active service worker. Live eyes caught four bugs the Node suites could not — a merge marker and a lost function in `profile.js` (fixed, pushed to #96), the shared page losing to the boot redirect (fixed, pushed to #96) and the replay button missing its painted-results anchor (fixed, pushed to #99) — plus the offline precache list drifting from the merged includes (fixed on the integration merge; **when merging #99/#100/#101 into main, update `public/sw.js` CORE_MODULES with the new module names and bump its VERSION**, as `tests/offline-solo.mjs` enforces). Suggested merge order: #91 → #93 → #94 → #95 → #97 → #98 → #99 → #100 → #101 → this plan.
 
 Effort: **S** a day or two · **M** about a week · **L** several weeks. "DB" means a migration is
 needed; Codex applies migrations when publishing.
