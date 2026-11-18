@@ -21,6 +21,36 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-duel-emotes',
+    date: 'November 2026',
+    title: 'Emotes in friend duels',
+    items: [
+      { icon: '😊', text: 'During a friend duel, tap the 😊 button to react: eight friendly presets like Good luck!, Nice! and Good game!', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Preset reactions only — nobody can type a message. Friends watching the duel see them too.' },
+      { icon: '🔇', text: 'Prefer no bubbles? Hide emotes with the switch inside the picker.' }
+    ]
+  },
+  {
+    id: '2026-11-hints',
+    date: 'November 2026',
+    title: 'Battle hints: a friendly suggested play',
+    items: [
+      { icon: '💡', text: 'During card battles, a Suggested line points at a good next move — which card to play, evolve, or attack with.', go: 'settings', show: 'Settings' },
+      { icon: '🎮', text: 'The hint never plays for you: every move is still yours to make.' },
+      { icon: '⚙️', text: 'Turn it off any time in Settings under Battle hints.' }
+    ]
+  },
+  {
+    id: '2026-11-leaderboards',
+    date: 'November 2026',
+    title: 'Friend leaderboards',
+    items: [
+      { icon: '🏆', text: 'On the Friends page, compare battle numbers with your friends: wins, win streak, best streak, bosses cleared and biggest hit.', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Only friends can see your numbers, and only battle numbers are shown — nothing else.' },
+      { icon: '↕️', text: 'Tap a column heading to sort by it; tap again to flip the order.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
