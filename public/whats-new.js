@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-battle-replays',
+    date: 'November 2026',
+    title: 'Watch your battles again',
+    items: [
+      { icon: '🎬', text: 'After any battle, tap Watch the replay to see it again turn by turn — play, pause or step through every move.', go: 'replays', show: 'Replays' },
+      { icon: '🗂️', text: 'Your last 10 battles are kept under Battle replays on My Stats, with the opponent, the level and the result.' },
+      { icon: '🔒', text: 'A replay is only a picture of the battle: no rewards, and nothing about your opponent\'s hand or deck is kept.' }
+    ]
+  },
+  {
     id: '2026-11-rules-demo',
     date: 'November 2026',
     title: 'Try a guided turn',
