@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-duel-emotes',
+    date: 'November 2026',
+    title: 'Emotes in friend duels',
+    items: [
+      { icon: '😊', text: 'During a friend duel, tap the 😊 button to react: eight friendly presets like Good luck!, Nice! and Good game!', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Preset reactions only — nobody can type a message. Friends watching the duel see them too.' },
+      { icon: '🔇', text: 'Prefer no bubbles? Hide emotes with the switch inside the picker.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
