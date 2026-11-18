@@ -345,7 +345,8 @@ if (B) {
   /* ---------------------------------------------------------------- Entries: result screen and My Stats */
   function addResultButton() {
     if (B.view !== 'cardResult' || !lastDoneId) return;
-    const root = $('#app .victoryCard') || $('.victoryCard');
+    // The results screen has two looks: the plain .victoryCard and the painted .uiVictory (public/results.js).
+    const root = $('#app .victoryCard') || $('#app .uiVictory') || $('.victoryCard') || $('#app .hlWrap');
     if (!root || root.querySelector('[data-br-watch-now]')) return;
     const battle = findBattle(lastDoneId);
     if (!battle) return;
