@@ -180,7 +180,11 @@ html.fcOn .printCard.fcRelease[data-fc="1"]{transition:transform .5s cubic-bezie
 .rarity-4 .fcShine::before,.rarity-5 .fcShine::before,.rarity-6 .fcShine::before{mix-blend-mode:overlay}
 @keyframes fcSweep{0%{transform:translateX(-140%) skewX(-16deg)}16%,100%{transform:translateX(330%) skewX(-16deg)}}
 @media (hover:none){
- html:not(.fcGyro) .printCard.fcVis[data-fc-foil="1"] .fcFoil>i{animation:fcIdle 9s ease-in-out infinite alternate;animation-delay:var(--fc-delay,0s)}
+ /* Phones: a pageful of endless shine and foil drift costs battery, so the loops run only on the card being touched. */
+ .printCard.fcVis .fcShine::before,.printCard.fcVis .fcShine2::after{animation:none}
+ .printCard.fcVis:active .fcShine::before{animation:fcSweep var(--fc-period,8s) var(--fc-delay,0s) ease-in-out infinite}
+ .printCard.fcVis:active .fcShine2::after{animation:fcSweep var(--fc-period,8s) calc(var(--fc-delay,0s) + .22s) ease-in-out infinite}
+ html:not(.fcGyro) .printCard.fcVis[data-fc-foil="1"]:active .fcFoil>i{animation:fcIdle 9s ease-in-out infinite alternate;animation-delay:var(--fc-delay,0s)}
 }
 @keyframes fcIdle{from{transform:translate3d(22%,8%,0)}to{transform:translate3d(-22%,-8%,0)}}
 .binderPages.fcPaging{animation:none!important}

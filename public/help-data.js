@@ -87,6 +87,8 @@ export const ANSWERS = [
     a: 'You need five cards that are free to battle, so take Mythlings out of the Vault or finish their trades. Later quests also open only after you finish the earlier ones.' },
   { id: 'battle-time', cat: 'battles', q: 'Is there a time limit in battles?', to: 'rules', k: 'clock timer time limit timeout turns draw',
     a: 'Each player has a 20-minute battle clock and 90 seconds per turn. A turn that runs out ends by itself, a player whose battle clock reaches zero loses, and a game that reaches 30 turns is a draw.' },
+  { id: 'battle-practice', cat: 'battles', q: 'Can I practice a battle without playing one?', to: 'rulesDemo', k: 'practice try demo learn guided turn sample tutorial walkthrough rules',
+    a: 'Yes. Battle Rules has a Try a guided turn button. It sets up a short practice battle with a friendly challenger and walks you through one turn, one rule at a time. There are no rewards, nothing is saved, and your own cards are never at stake.' },
 
   /* ---------------------------------------------------------------- Vault & coins */
   { id: 'vault-how', cat: 'vault', q: 'How does the Vault work?', to: 'vault', k: 'vault earn coins per second collect slot fused',
