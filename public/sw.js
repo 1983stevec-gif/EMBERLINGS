@@ -16,7 +16,7 @@
  *
  * Bump VERSION when this file's caching rules change; old caches are removed on activate.
  */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const PREFIX = 'emberlings-';
 const CACHES = {
   page: `${PREFIX}page-${VERSION}`,
@@ -44,12 +44,18 @@ const CORE_MODULES = [
   '/ui.js',
   '/ui-exact.js',
   '/cloud.js',
+  '/error-report.js',
+  '/offline-note.js',
   '/battle-fx.js',
+  '/battle-hints.js',
   '/pack-shuffle.js',
   '/levels.js',
   '/mutation-book.js',
   '/field-guide.js',
   '/results.js',
+  '/rules-demo.js',
+  '/battle-replays.js',
+  '/pack-replays.js',
   '/boss-intro.js',
   '/daily.js',
   '/rare-finds.js',
@@ -67,6 +73,7 @@ const CORE_MODULES = [
   '/highlights.js',
   '/pwa.js',
   '/profile.js',
+  '/leaderboards.js',
   '/fx-sound.js',
   '/activity.js',
   '/fx-music.js',
@@ -79,6 +86,7 @@ const CORE_MODULES = [
   '/gallery.js',
   '/inbox.js',
   '/spectate.js',
+  '/duel-emotes.js',
   '/settings.js',
   '/presence.js',
   '/friend-notes.js',

@@ -31,6 +31,75 @@ export const RELEASES = [
     ]
   },
   {
+    id: '2026-11-pack-replays',
+    date: 'November 2026',
+    title: 'Watch your pack openings again',
+    items: [
+      { icon: '🎁', text: 'Right after opening a pack, tap Watch this opening again to re-live the reveal card by card.', go: 'stats', show: 'My Stats' },
+      { icon: '🗂️', text: 'Your last 10 openings are kept under Pack replays on My Stats, so a great pull can be enjoyed twice.' },
+      { icon: '🔒', text: 'A replay is only a picture: it never grants cards or spends coins.' }
+    ]
+  },
+  {
+    id: '2026-11-battle-replays',
+    date: 'November 2026',
+    title: 'Watch your battles again',
+    items: [
+      { icon: '🎬', text: 'After any battle, tap Watch the replay to see it again turn by turn — play, pause or step through every move.', go: 'replays', show: 'Replays' },
+      { icon: '🗂️', text: 'Your last 10 battles are kept under Battle replays on My Stats, with the opponent, the level and the result.' },
+      { icon: '🔒', text: 'A replay is only a picture of the battle: no rewards, and nothing about your opponent\'s hand or deck is kept.' }
+    ]
+  },
+  {
+    id: '2026-11-rules-demo',
+    date: 'November 2026',
+    title: 'Try a guided turn',
+    items: [
+      { icon: '🎓', text: 'Battle Rules has a new Try a guided turn button: a short practice battle that walks you through one turn, one rule at a time.', go: 'rules', show: 'Battle Rules' },
+      { icon: '🎮', text: 'It uses the real battle rules, so every move you learn works exactly the same in real battles. No rewards, and your own cards are never at stake.' },
+      { icon: '❓', text: 'It is in the Help centre too: search "practice" to find it any time.', go: 'help', show: 'Help' }
+    ]
+  },
+  {
+    id: '2026-11-profile-links',
+    date: 'November 2026',
+    title: 'Share your profile card',
+    items: [
+      { icon: '🔗', text: 'On My Profile, turn on "Public profile link" and copy a link that shows your profile card to anyone — name, title, buddy, showcase and badges, nothing else.', go: 'profile', show: 'My Profile' },
+      { icon: '🔒', text: 'Off by default. Only the profile card is shared; your online status and everything else stay private.' }
+    ]
+  },
+  {
+    id: '2026-11-duel-emotes',
+    date: 'November 2026',
+    title: 'Emotes in friend duels',
+    items: [
+      { icon: '😊', text: 'During a friend duel, tap the 😊 button to react: eight friendly presets like Good luck!, Nice! and Good game!', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Preset reactions only — nobody can type a message. Friends watching the duel see them too.' },
+      { icon: '🔇', text: 'Prefer no bubbles? Hide emotes with the switch inside the picker.' }
+    ]
+  },
+  {
+    id: '2026-11-hints',
+    date: 'November 2026',
+    title: 'Battle hints: a friendly suggested play',
+    items: [
+      { icon: '💡', text: 'During card battles, a Suggested line points at a good next move — which card to play, evolve, or attack with.', go: 'settings', show: 'Settings' },
+      { icon: '🎮', text: 'The hint never plays for you: every move is still yours to make.' },
+      { icon: '⚙️', text: 'Turn it off any time in Settings under Battle hints.' }
+    ]
+  },
+  {
+    id: '2026-11-leaderboards',
+    date: 'November 2026',
+    title: 'Friend leaderboards',
+    items: [
+      { icon: '🏆', text: 'On the Friends page, compare battle numbers with your friends: wins, win streak, best streak, bosses cleared and biggest hit.', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Only friends can see your numbers, and only battle numbers are shown — nothing else.' },
+      { icon: '↕️', text: 'Tap a column heading to sort by it; tap again to flip the order.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
