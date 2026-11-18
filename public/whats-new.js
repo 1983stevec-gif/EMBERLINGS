@@ -21,6 +21,15 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-profile-links',
+    date: 'November 2026',
+    title: 'Share your profile card',
+    items: [
+      { icon: '🔗', text: 'On My Profile, turn on "Public profile link" and copy a link that shows your profile card to anyone — name, title, buddy, showcase and badges, nothing else.', go: 'profile', show: 'My Profile' },
+      { icon: '🔒', text: 'Off by default. Only the profile card is shared; your online status and everything else stay private.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
