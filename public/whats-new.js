@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-rules-demo',
+    date: 'November 2026',
+    title: 'Try a guided turn',
+    items: [
+      { icon: '🎓', text: 'Battle Rules has a new Try a guided turn button: a short practice battle that walks you through one turn, one rule at a time.', go: 'rules', show: 'Battle Rules' },
+      { icon: '🎮', text: 'It uses the real battle rules, so every move you learn works exactly the same in real battles. No rewards, and your own cards are never at stake.' },
+      { icon: '❓', text: 'It is in the Help centre too: search "practice" to find it any time.', go: 'help', show: 'Help' }
+    ]
+  },
+  {
     id: '2026-11-profile-links',
     date: 'November 2026',
     title: 'Share your profile card',
