@@ -367,8 +367,12 @@ function friendsButtons(data) {
 }
 function onFrame() {
   try {
-    if (B.view === 'publicProfile') { const name = linkName(); if (name && name !== pubName) openPublic(name); }
-    else if (pubShown) { pubShown = false; pubName = null; pubData = null; pubError = ''; clearLink(); }
+    const linked = linkName();
+    // While a shared link sits in the address bar, that page wins over the game's own boot and
+    // navigation (the Play button clears the link to leave). Re-assert it after the boot redirect.
+    if (linked !== null && B.view !== 'publicProfile' && !pubBusy) { pubName = null; openPublic(linked); }
+    else if (linked !== null && B.view === 'publicProfile' && linked !== pubName) openPublic(linked);
+    else if (linked === null && pubShown) { pubShown = false; pubName = null; pubData = null; pubError = ''; }
   } catch (err) { console.warn('profile-links', err); }
   if (B.view === 'achievements' && !$('.pfAchLink')) {
     const hero = $('#app .hero'); if (hero) hero.insertAdjacentHTML('beforeend', '<p class="pfAchLink"><button type="button" class="pfBtn gold" data-go="profile">👤 My Profile</button><small>Show off your cards and pick a frame, background and badges.</small></p>');
