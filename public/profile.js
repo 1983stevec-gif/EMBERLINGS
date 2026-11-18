@@ -1,5 +1,6 @@
 // EMBERLINGS player profile: your stats, a Collection Showcase of up to 5 cards, and a frame, background and
-// badges unlocked by achievements you have earned. Friends can open it read-only from the Friends list.
+// badges unlocked by achievements you have earned. Friends can open it read-only from the Friends list, and a
+// player can turn on a public link (#p/name) that shows only the profile card to anyone who has it.
 // Local data lives in state.ember.profile (added only when you first change something). Showcasing a card is
 // just a picture of it: the card is never moved, locked or changed.
 import { ACHIEVEMENTS, SPECIES_COUNT } from '/achievements.js';
@@ -14,6 +15,8 @@ const ext = () => { const st = B.state; if (!st.ember || typeof st.ember !== 'ob
 const DEFAULTS = { showcase: [], frame: 'simple', background: 'dusk', badges: [] };
 // Read-only view of the saved profile with defaults filled in; nothing is written until the player changes something.
 const prof = () => { const p = ext().profile; return p && typeof p === 'object' ? { ...DEFAULTS, ...p } : { ...DEFAULTS }; };
+// The public share link is opt-in: anything but a stored true means private.
+const shareOn = () => ext().profile?.share === true;
 function edit(fn) { const e = ext(); const p = { ...DEFAULTS, ...(e.profile && typeof e.profile === 'object' ? e.profile : {}) }; fn(p); e.profile = p; B.save(); applyCosmetics(); schedulePublish(); }
 
 /* ---------------------------------------------------------------- What the player has earned */
@@ -61,21 +64,23 @@ function currentLook() {
   const cardBack = CARD_BACKS.find(x => x.id === p.cardBack && unlocked(x)) ? p.cardBack : 'ember', ring = AVATAR_RINGS.find(x => x.id === p.ring && unlocked(x)) ? p.ring : 'gold';
   return { frame, background, badges, cardBack, ring };
 }
-function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
+function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), share: shareOn(), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
 
 /* ---------------------------------------------------------------- Sharing with friends */
 const hash = s => { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
-let pubTimer = 0, publishing = false, lastTry = 0, shareMsg = '';
+let pubTimer = 0, publishing = false, publishNext = false, lastTry = 0, shareMsg = '';
 function schedulePublish() { clearTimeout(pubTimer); pubTimer = setTimeout(() => publish(true), 700); }
 async function publish(now = false) {
-  if (!B.state.playerUsername || !ext().profile || publishing) return;
+  if (!B.state.playerUsername || !ext().profile) return;
+  // A change made while a save is in flight (turning the public link on, say) is sent again right after it.
+  if (publishing) { publishNext = true; return; }
   if (!now && Date.now() - lastTry < 60000) return;
   const body = payload(), key = hash(JSON.stringify(body));
   if (ext().profile.published === key) { setShare('Friends can see your profile.'); return; }
   publishing = true; lastTry = Date.now(); setShare('Sharing with your friends…');
   try { await B.online('/showcase', body); ext().profile.published = key; B.save(); setShare('Saved. Friends can see your profile.'); }
   catch (err) { setShare('Saved on this device. Friends will see it next time you are online.'); }
-  finally { publishing = false; }
+  finally { publishing = false; if (publishNext) { publishNext = false; setTimeout(() => publish(true), 60); } }
 }
 function setShare(t) { shareMsg = t; const el = $('#pfShare'); if (el) el.textContent = t; }
 
@@ -104,7 +109,8 @@ let tab = 'frames', picker = false;
 function renderMine() {
   const st = B.state, e = ext(), s = myStats(), look = currentLook(), cards = showcaseCards(), active = avatarCard() || B.active?.() || owned()[0];
   const best = window.EmberRare?.rarest ? window.EmberRare.rarest(owned()) : owned().slice().sort((a, b) => score(b) - score(a))[0];
-  const signedIn = !!st.playerUsername;
+  const signedIn = !!st.playerUsername, share = shareOn();
+  const shareNote = !signedIn ? 'Choose a username in Friends first, then you can share a link.' : share ? 'On: anyone with your link can see your profile card.' : 'Off: only you and your friends can see your profile.';
   if (!shareMsg) shareMsg = signedIn ? (e.profile ? 'Friends can see your profile.' : 'Pick your cards and look. Friends will see it in their Friends list.') : 'Choose a username in Friends to share your profile with friends.';
   const slots = Array.from({ length: SHOWCASE_MAX }, (_, i) => cards[i] ? cardFor(cards[i]) : `<button type="button" class="pfEmpty" data-pf="pick"><span aria-hidden="true">＋</span>Add a card</button>`).join('');
   B.render(`<button class="back" data-go="home">‹ Home</button><section class="pfPage" aria-labelledby="pfName">
@@ -118,6 +124,11 @@ function renderMine() {
    <section class="pfSection"><div class="pfHead"><h2>Collection Showcase</h2><p>Show off up to ${SHOWCASE_MAX} of your cards. They stay in your collection as normal.</p>
     <div class="pfBtns"><button type="button" class="pfBtn gold" data-pf="auto">★ Auto-pick my best ${SHOWCASE_MAX}</button><button type="button" class="pfBtn" data-pf="pick">Choose cards</button>${cards.length ? '<button type="button" class="pfBtn ghost" data-pf="clear">Clear</button>' : ''}</div></div>
     <div class="pfShow">${owned().length ? slots : '<p class="pfNote">Open a pack to get cards you can show off.</p>'}</div></section>
+   <section class="pfSection pfPublicBox"><div class="pfHead"><h2>Share my profile</h2><p>Anyone with the link can see your profile card: your name, title, buddy, showcase and badges. Nothing else.</p></div>
+    <div class="pfPublic"><span class="pfPublicLbl" id="pfPublicLbl">Public profile link</span>
+     <button type="button" class="pfSwitch" role="switch" aria-checked="${share}" aria-labelledby="pfPublicLbl" aria-describedby="pfPublicNote" data-pf-share ${signedIn ? '' : 'disabled'}><span>${share ? 'On' : 'Off'}</span></button>
+     <button type="button" class="pfBtn" data-pf-copy ${share ? '' : 'disabled'} title="${share ? 'Copy your public profile link' : 'Turn the public profile link on first'}">🔗 Copy link</button>
+     <small class="pfPublicNote" id="pfPublicNote" role="status">${esc(shareNote)}</small></div></section>
    <section class="pfSection pfCustom"><div class="pfHead"><h2>Customise</h2><p>Earn achievements to unlock new frames, backgrounds, card backs, avatar rings and badges. They only change how things look.</p></div>
     <div class="pfTabs" role="tablist">${[['frames', 'Frames'], ['backgrounds', 'Backgrounds'], ['backs', 'Card backs'], ['avatar', 'Avatar'], ['badges', `Badges (${look.badges.length}/${BADGES_MAX})`]].map(([k, t]) => `<button type="button" role="tab" class="pfTab ${tab === k ? 'on' : ''}" aria-selected="${tab === k}" data-pf-tab="${k}">${t}</button>`).join('')}</div>
     <div class="pfOptions">${optionsHTML(look)}</div></section>
@@ -165,6 +176,8 @@ function wireMine() {
     if (act === 'auto') { const ids = autoPick(); if (!ids.length) return B.toast('Open a pack first to get cards to show.'); edit(p => { p.showcase = ids; }); B.toast('Showcase filled with your best cards.'); return renderMine(); }
     if (act === 'clear') { edit(p => { p.showcase = []; }); return renderMine(); }
     if (act === 'pick') { picker = true; pickPage = 1; return openPicker(); }
+    if (b.dataset.pfShare !== undefined) { toggleShare(); return; }
+    if (b.dataset.pfCopy !== undefined) { copyPublicLink(); return; }
     if (b.dataset.pfTab) { tab = b.dataset.pfTab; return renderMine(); }
     const item = b.dataset.pfFrame ? FRAMES.find(f => f.id === b.dataset.pfFrame) : b.dataset.pfBg ? BACKGROUNDS.find(f => f.id === b.dataset.pfBg) : null;
     if (item) { if (!unlocked(item)) return B.toast('🔒 ' + howTo(item)); edit(p => { p[b.dataset.pfFrame ? 'frame' : 'background'] = item.id; }); return renderMine(); }
@@ -179,6 +192,36 @@ function wireMine() {
       edit(p => { p.badges = cur.includes(badge) ? cur.filter(x => x !== badge) : [...cur, badge]; }); return renderMine();
     }
   });
+}
+
+/* ---------------------------------------------------------------- The public link switch */
+function toggleShare() {
+  try {
+    if (!B.state.playerUsername) return B.toast('Choose a username in Friends first.');
+    const on = !shareOn();
+    edit(p => { if (on) p.share = true; else delete p.share; });
+    B.toast(on ? 'Public profile link is on.' : 'Public profile link is off.');
+    renderMine();
+  } catch (err) { console.warn('profile-links', err); }
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch (err) { console.warn('profile-links', err); }
+  // Older browsers have no clipboard helper, so fall back to selecting a hidden box.
+  try {
+    const area = document.createElement('textarea');
+    area.value = text; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.top = '-1000px';
+    document.body.append(area); area.select();
+    const copied = document.execCommand('copy'); area.remove(); return copied;
+  } catch (err) { console.warn('profile-links', err); return false; }
+}
+async function copyPublicLink() {
+  try {
+    const who = String(B.state.playerUsername || '');
+    if (!shareOn() || !who) return;
+    const link = `${location.origin}/#p/${encodeURIComponent(who)}`;
+    B.toast(await copyText(link) ? 'Link copied' : 'The link could not be copied. Try again.');
+  } catch (err) { console.warn('profile-links', err); }
 }
 
 /* ---------------------------------------------------------------- Card picker */
@@ -242,6 +285,74 @@ function renderFriend() {
 }
 function waitThen(find, then, tries = 40) { const el = find(); if (el) return then(el); if (tries > 0) setTimeout(() => waitThen(find, then, tries - 1), 150); }
 
+/* ---------------------------------------------------------------- A shared public profile (#p/name) */
+// Anyone can open a share link, so this view draws only what the server sends back: name, title, buddy, showcase
+// and badges. It never asks for online status and never reads the visitor's own save.
+let pubName = null, pubData = null, pubError = '', pubBusy = false, pubShown = false, pubSeq = 0;
+// The name in a #p/name link, lowercased. '' means the link is malformed; null means the address has no link.
+function linkName() {
+  try {
+    const raw = String(location.hash || '');
+    if (!/^#p\//i.test(raw)) return null;
+    let name = '';
+    try { name = decodeURIComponent(raw.replace(/^#p\//i, '')).trim(); } catch { return ''; }
+    return /^[A-Za-z0-9_]{3,20}$/.test(name) ? name.toLowerCase() : '';
+  } catch (err) { console.warn('profile-links', err); return null; }
+}
+function clearLink() {
+  try { if (/^#p\//i.test(location.hash || '')) history.replaceState(history.state, '', location.pathname + location.search); }
+  catch (err) { console.warn('profile-links', err); }
+}
+function openPublic(name) {
+  try {
+    if (name === pubName && (pubBusy || pubData)) return;
+    pubName = name; pubData = null; pubError = ''; pubBusy = !!name;
+    const seq = ++pubSeq;
+    if (!name) pubError = 'That link is not a profile link. Check the whole address and try again.';
+    if (B.view === 'publicProfile') renderPublic(); else B.go('publicProfile');
+    if (!name) return;
+    B.online('/p/' + encodeURIComponent(name))
+      .then(d => { if (seq === pubSeq) pubData = d; })
+      .catch(err => { if (seq === pubSeq) pubError = err?.message || 'This profile could not load right now.'; })
+      .finally(() => { if (seq !== pubSeq) return; pubBusy = false; if (B.view === 'publicProfile') renderPublic(); });
+  } catch (err) { console.warn('profile-links', err); }
+}
+function renderPublic() {
+  try {
+    pubShown = true;
+    const play = '<button type="button" class="pfBtn gold" data-pf-play>Play EMBERLINGS</button>';
+    const plain = (heading, sub) => `<div class="pfBanner pf-b-dusk"><i class="pfBannerArt" aria-hidden="true"></i><div class="pfWho"><h1 id="pfName">${esc(heading)}</h1><p class="pfSub" role="status">${sub}</p></div></div>`;
+    if (!pubData) {
+      const loading = pubBusy;
+      B.render(`<section class="pfPage pfShared" aria-labelledby="pfName">${plain(loading ? 'Shared profile' : 'Profile not available', loading ? 'Loading profile…' : esc(pubError || 'This profile is not shared.'))}
+       <p class="pfLinks">${loading ? '' : play}</p></section>`);
+      return wirePublic();
+    }
+    const d = pubData, p = d.profile || {};
+    const cards = (Array.isArray(p.cards) ? p.cards : []).filter(c => Number.isInteger(c?.kind) && c.kind >= 0 && c.kind < 16).slice(0, SHOWCASE_MAX);
+    const frame = FRAMES.some(f => f.id === p.frame) ? p.frame : 'simple', background = BACKGROUNDS.some(b => b.id === p.background) ? p.background : 'dusk';
+    const badges = (Array.isArray(p.badges) ? p.badges : []).filter(id => BADGES.some(b => b.id === id)).slice(0, BADGES_MAX);
+    const ring = AVATAR_RINGS.some(x => x.id === p.ring) ? p.ring : 'gold';
+    let avatar = ''; try { avatar = B.art(d.pet); } catch (err) { console.warn('profile-links', err); }
+    let shown = ''; try { shown = cards.map(cardFor).join(''); } catch (err) { console.warn('profile-links', err); }
+    B.render(`<section class="pfPage pfShared" aria-labelledby="pfName">
+     ${bannerHTML({ name: d.username, title: d.title, sub: 'Shared profile', avatar, frame, background, badges, ring }).replace('<h1>', '<h1 id="pfName">')}
+     <section class="pfSection"><div class="pfHead"><h2>${esc(d.username)}'s Showcase</h2><p>A shared profile shows the showcase only. Add them as a friend to see more.</p></div>
+      <div class="pfShow">${shown || '<p class="pfNote">No cards are on show yet.</p>'}</div></section>
+     <p class="pfLinks">${play}</p></section>`);
+    wirePublic();
+  } catch (err) { console.warn('profile-links', err); }
+}
+function wirePublic() {
+  try { const b = $('[data-pf-play]'); if (b) b.onclick = leavePublic; } catch (err) { console.warn('profile-links', err); }
+}
+function leavePublic() {
+  try {
+    pubSeq++; pubName = null; pubData = null; pubError = ''; pubBusy = false; pubShown = false;
+    clearLink(); B.go('home');
+  } catch (err) { console.warn('profile-links', err); }
+}
+
 /* ---------------------------------------------------------------- Entry points */
 function friendsButtons(data) {
   for (const f of data?.friends || []) {
@@ -255,6 +366,10 @@ function friendsButtons(data) {
   }
 }
 function onFrame() {
+  try {
+    if (B.view === 'publicProfile') { const name = linkName(); if (name && name !== pubName) openPublic(name); }
+    else if (pubShown) { pubShown = false; pubName = null; pubData = null; pubError = ''; clearLink(); }
+  } catch (err) { console.warn('profile-links', err); }
   if (B.view === 'achievements' && !$('.pfAchLink')) {
     const hero = $('#app .hero'); if (hero) hero.insertAdjacentHTML('beforeend', '<p class="pfAchLink"><button type="button" class="pfBtn gold" data-go="profile">👤 My Profile</button><small>Show off your cards and pick a frame, background and badges.</small></p>');
     B.bind();
@@ -265,10 +380,13 @@ function onFrame() {
 if (B) {
   B.registerView('profile', () => { shareMsg = ''; renderMine(); });
   B.registerView('friendProfile', renderFriend);
+  B.registerView('publicProfile', renderPublic);
   addEventListener('ember:frame', () => requestAnimationFrame(onFrame));
   addEventListener('ember:friends', e => { friendsButtons(e.detail); publish(); });
   window.EmberProfile = { open: () => B.go('profile'), openFriend: openFriendProfile, autoPick, payload };
   injectCSS();
+  // A shared link in the address opens the public card straight away.
+  const linked = linkName(); if (linked !== null) openPublic(linked);
 }
 
 /* ---------------------------------------------------------------- Styles (original CSS/SVG art) */
@@ -379,6 +497,19 @@ body.reducedMotion .pfFrame::before{animation:none}
 .pfLinks{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0}
 .pfAchLink{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px}
 .pfAchLink small{color:#cbbfa8}
+/* Public share link */
+.pfPublic{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.pfPublicLbl{font:700 16px system-ui,sans-serif;color:#f1e6cf}
+.pfSwitch{position:relative;min-width:80px;min-height:44px;padding:0 14px 0 40px;border-radius:99px;border:1px solid #e9b75a88;background:#3a2c18;color:#f2e8d6;font:800 15px system-ui,sans-serif;cursor:pointer;text-align:left}
+.pfSwitch::before{content:"";position:absolute;left:7px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:50%;background:#8a7a64;transition:background .2s}
+.pfSwitch[aria-checked="true"]{background:linear-gradient(#5fbf6a,#2f8a3d);border-color:#9fe3a8}
+.pfSwitch[aria-checked="true"]::before{background:#fff}
+.pfSwitch:disabled{opacity:.55;cursor:not-allowed}
+.pfSwitch:focus-visible{outline:3px solid #ffd27a;outline-offset:2px}
+.pfBtn:disabled{opacity:.5;cursor:not-allowed}
+.pfBtn:disabled:hover{background:#1d2534}
+.pfPublicNote{flex-basis:100%;margin:0;font-size:13px;color:#cbbfa8}
+@media (prefers-reduced-motion:reduce){.pfSwitch::before{transition:none}}
 .pfFriendBtn{min-height:44px;padding:6px 14px;border-radius:10px;border:1px solid #e9b75a99;background:#1d2534;color:#ffe6b0;font:700 14px system-ui,sans-serif;cursor:pointer;white-space:nowrap}
 .friendActions .pfFriendBtn{min-height:32px;padding:4px 14px;font-size:14px}
 @media (pointer:coarse){.friendActions .pfFriendBtn{min-height:44px}}
