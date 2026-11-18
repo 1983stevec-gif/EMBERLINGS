@@ -61,7 +61,20 @@ function currentLook() {
   const cardBack = CARD_BACKS.find(x => x.id === p.cardBack && unlocked(x)) ? p.cardBack : 'ember', ring = AVATAR_RINGS.find(x => x.id === p.ring && unlocked(x)) ? p.ring : 'gold';
   return { frame, background, badges, cardBack, ring };
 }
-function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
+function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements, ...battleNumbers() } }; }
+// Battle numbers for the friends leaderboard, read from the stats the game already records (public/stats.js).
+// Every number is bounded and falls back to 0, so an older save without stats still sends a valid payload.
+function battleNumbers() {
+  let agg = null;
+  try { agg = window.EmberStats?.stats?.().agg || null; } catch { /* stats not ready yet */ }
+  if (!agg) { try { const a = B.state?.ember?.stats?.agg; if (a && typeof a === 'object') agg = a; } catch { /* ignore */ } }
+  const num = (v, hi) => Math.min(hi, Math.max(0, Math.floor(Number(v) || 0)));
+  const winsIn = m => num(Array.isArray(agg?.battles?.[m]) ? agg.battles[m][0] : 0, 1e7);
+  return {
+    winStreak: num(agg?.streak, 1e7), bestStreak: num(agg?.bestStreak, 1e7),
+    bossClears: winsIn('b'), biggestHit: num(Array.isArray(agg?.hit) ? agg.hit[0] : 0, 9999)
+  };
+}
 
 /* ---------------------------------------------------------------- Sharing with friends */
 const hash = s => { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
