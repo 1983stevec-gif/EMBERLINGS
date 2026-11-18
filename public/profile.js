@@ -64,8 +64,7 @@ function currentLook() {
   const cardBack = CARD_BACKS.find(x => x.id === p.cardBack && unlocked(x)) ? p.cardBack : 'ember', ring = AVATAR_RINGS.find(x => x.id === p.ring && unlocked(x)) ? p.ring : 'gold';
   return { frame, background, badges, cardBack, ring };
 }
-<<<<<<< HEAD
-function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements, ...battleNumbers() } }; }
+function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), share: shareOn(), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements, ...battleNumbers() } }; }
 // Battle numbers for the friends leaderboard, read from the stats the game already records (public/stats.js).
 // Every number is bounded and falls back to 0, so an older save without stats still sends a valid payload.
 function battleNumbers() {
@@ -79,9 +78,6 @@ function battleNumbers() {
     bossClears: winsIn('b'), biggestHit: num(Array.isArray(agg?.hit) ? agg.hit[0] : 0, 9999)
   };
 }
-=======
-function payload() { const s = myStats(), ava = avatarCard(); return { cards: showcaseCards().map(snap), share: shareOn(), ...currentLook(), ...(ava ? { avatar: snap(ava) } : {}), stats: { cards: Math.min(1e6, s.cards), species: s.species, wins: Math.min(1e7, s.wins), achievements: s.achievements } }; }
->>>>>>> profile-links
 
 /* ---------------------------------------------------------------- Sharing with friends */
 const hash = s => { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
@@ -384,8 +380,12 @@ function friendsButtons(data) {
 }
 function onFrame() {
   try {
-    if (B.view === 'publicProfile') { const name = linkName(); if (name && name !== pubName) openPublic(name); }
-    else if (pubShown) { pubShown = false; pubName = null; pubData = null; pubError = ''; clearLink(); }
+    const linked = linkName();
+    // While a shared link sits in the address bar, that page wins over the game's own boot and
+    // navigation (the Play button clears the link to leave). Re-assert it after the boot redirect.
+    if (linked !== null && B.view !== 'publicProfile' && !pubBusy) { pubName = null; openPublic(linked); }
+    else if (linked !== null && B.view === 'publicProfile' && linked !== pubName) openPublic(linked);
+    else if (linked === null && pubShown) { pubShown = false; pubName = null; pubData = null; pubError = ''; }
   } catch (err) { console.warn('profile-links', err); }
   if (B.view === 'achievements' && !$('.pfAchLink')) {
     const hero = $('#app .hero'); if (hero) hero.insertAdjacentHTML('beforeend', '<p class="pfAchLink"><button type="button" class="pfBtn gold" data-go="profile">👤 My Profile</button><small>Show off your cards and pick a frame, background and badges.</small></p>');
