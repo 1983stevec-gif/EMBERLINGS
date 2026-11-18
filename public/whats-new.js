@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-hints',
+    date: 'November 2026',
+    title: 'Battle hints: a friendly suggested play',
+    items: [
+      { icon: '💡', text: 'During card battles, a Suggested line points at a good next move — which card to play, evolve, or attack with.', go: 'settings', show: 'Settings' },
+      { icon: '🎮', text: 'The hint never plays for you: every move is still yours to make.' },
+      { icon: '⚙️', text: 'Turn it off any time in Settings under Battle hints.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
