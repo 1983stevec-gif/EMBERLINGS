@@ -249,3 +249,7 @@ Online features (friends, trades) need two separate browser contexts signed in a
 - Everything in `V2-PLAN.md`: item drops, the training rework, the login streak upgrade, heroes, pets, and the new player introduction.
 - Two trade safety checks have no newer test yet (see `tests/retired/README.md`): recovering a lost "accept" reply, and a stale accept asking for review again.
 - Phone layouts for the newest pages (tablet and desktop are covered).
+
+## 10. Open work, 18 November 2026
+
+PR #90 (audit fixes) is merged. Open, all GitHub-CI green, awaiting "merge": PR #91 battle hints; PR #93 friend leaderboards; PR #94 duel emotes; PR #95 offline-clock and idle-shine fixes; PR #96 profile share links; PR #97 anonymous crash reports (carries **migration 0010**, documented in PUBLISH-CODEX.md section 3); PR #98 the interactive rules demo; PR #92 this file's companion plan (`NEXT-BUILD-PLAN.md`) with a progress block and a suggested merge order. Suggested order: #91, #93, #94, #95, #97, #98, then the docs. Expected conflicts when merging: one line each in the include list (`game/index.html`), the test list (`tests/run-card-edition.mjs`), the What's New head and the social route block — keep both sides, rebuild, rerun `npm test` after each merge. Round 5.2 (push notifications) is the only Round-5 item left and waits for publish-time keys. Round 8 (gameplay) starts only on the owner's "start v2".

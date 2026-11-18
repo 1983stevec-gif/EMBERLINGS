@@ -5,6 +5,14 @@ hints are open (PR #91). This plan supersedes the "next" sections of `NEXT-ENHAN
 (its Round 4 shipped) and keeps the same rules: one feature, one PR, one module in `public/`;
 save data only under `state.ember.*`; the save key never changes; merge only on "merge".
 
+**Progress, 18 November (evening):** items 5.1, 5.3, 5.4, 5.5, 6.4 and the two Round-7 quick
+fixes are built and open as PRs #93 (leaderboards), #94 (duel emotes), #95 (quick fixes),
+#96 (profile links), #97 (crash reports — carries migration 0010) and #98 (rules demo). All
+pass GitHub CI. 5.2 (push notifications) is the only Round-5 item left, and it waits for
+publish-time keys. Suggested merge order: #91 → #93 → #94 → #95 → #97 → #98 → this plan;
+the only conflicts to expect are one line each in the include list, the test list, the What's
+New head and the social route block — keep both sides, re-run the build and tests after each.
+
 Effort: **S** a day or two · **M** about a week · **L** several weeks. "DB" means a migration is
 needed; Codex applies migrations when publishing.
 
