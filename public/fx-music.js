@@ -464,10 +464,10 @@ if (B && !window.EmberMusic) {
   function hideHint() { $('#fxMusicHint')?.remove(); }
   function maybeHint() {
     const e = ext();
-    if (hintT || e.music?.hinted || e.music?.on || B.view !== 'home' || B.state.guidedTour?.active) return;
+    if (hintT || e.music?.hinted || e.music?.on || B.view !== 'home' || B.state.guidedTour?.active || window.EmberComfort?.quiet?.()) return;
     hintT = setTimeout(() => {
       hintT = 0;
-      if (ext().music?.hinted || B.view !== 'home' || $('#dailyPanel, #guidedTour, .uiMenu, #fxMusicHint') || B.state.guidedTour?.active) return;
+      if (ext().music?.hinted || B.view !== 'home' || $('#dailyPanel, #guidedTour, .uiMenu, #fxMusicHint') || B.state.guidedTour?.active || window.EmberComfort?.quiet?.()) return;
       const cur = ext().music || {}; ext().music = { on: !!cur.on, vol: MUSIC_VOL[cur.vol] ? cur.vol : 'med', ...cur, hinted: true };
       try { B.save(); } catch { /* ignore */ }
       const h = document.createElement('div'); h.id = 'fxMusicHint'; h.setAttribute('role', 'status');

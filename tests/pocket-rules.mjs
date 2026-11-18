@@ -22,4 +22,34 @@ test('Printed abilities work from the Bench without ending turn and cannot repea
 test('Forced switching requires a different Bench card and resumes the same turn after the choice',()=>{const s=ready(match()),side=s.turn,q=s.sides[1-side],old=q.active;ensureBench(s,1-side);const next=q.bench[0],guide=putHand(s,side,c=>c.trainer==='guide');cardAction(s,side,{type:'trainer',cardId:guide.id},2);assert.equal(s.replacementReason,'switch');assert.throws(()=>cardAction(s,1-side,{type:'select',cardId:old},3));cardAction(s,1-side,{type:'select',cardId:next},4);assert.equal(q.active,next);assert.equal(s.phase,'turn');assert.equal(s.turn,side);assert(!s.switchPrevious)});
 test('Long gaps advance each timed-out turn and charge the correct individual clocks',()=>{const s=ready(match());tickCardMatch(s,180002,()=>.2);assert.equal(s.turnNumber,3);assert(s.clocks[0]<=1110000&&s.clocks[0]>=1109998);assert.equal(s.clocks[1],1110000)});
 test('Trainers with no legal target cannot be discarded or consume the Supporter allowance',()=>{const s=ready(match()),side=s.turn,p=s.sides[side],c=active(s);const tonic=putHand(s,side,c=>c.trainer==='tonic'),before=p.hand.length;assert.throws(()=>cardAction(s,side,{type:'trainer',cardId:tonic.id,targetId:c.id},2));assert.equal(p.hand.length,before);assert(!p.discard.includes(tonic.id));assert(!p.supporterUsed)});
+test('A bad Bench target rejects the whole attack before any damage lands; a good one hits Active and Bench once',()=>{
+ // Both sides play only kind 8 (its skill also strikes one enemy Benched Mythling), so the scenario is deterministic.
+ const mk=(p)=>Array.from({length:10},(_,i)=>({id:p+i,kind:8,level:2,rarity:'Common'}));
+ const mine=mk('m'),theirs=mk('t');
+ const selection=buildBattleDeck(mine).map(c=>c.cardType==='trainer'?'t-'+c.trainer:c.template);
+ const s=createCardMatch([mine,theirs],{selections:[selection,selection],now:0,rng:()=>.2});
+ for(let i=0;i<30&&s.phase==='setup';i++)for(let side=0;side<2;side++){const a=chooseAI(s,side,3,()=>.2);if(a)cardAction(s,side,a,1,()=>.2)}
+ assert.equal(s.turn,0,'side 0 won the deterministic coin flip and starts');
+ // The kind-8 deck holds few Basics, so put one on the opponent's Bench the way other cases do.
+ ensureBench(s,1);
+ // Bank and attach two Fire Merfling across side 0's first two turns so its skill can be paid.
+ cardAction(s,0,{type:'end'},1,()=>.2);cardAction(s,1,{type:'end'},1,()=>.2);
+ cardAction(s,0,{type:'attach',targetId:s.sides[0].active},1,()=>.2);cardAction(s,0,{type:'end'},1,()=>.2);
+ cardAction(s,1,{type:'end'},1,()=>.2);
+ cardAction(s,0,{type:'attach',targetId:s.sides[0].active},1,()=>.2);
+ const q=s.sides[1],rev=s.revision,foeBefore=active(s,1).hp,benchBefore=q.bench.map(id=>q.cards.find(c=>c.id===id).hp);
+ assert.ok(benchBefore.length,'the opponent Benched Basics during setup');
+ // A hostile or broken client names a target that is not on the enemy Bench: nothing may change.
+ assert.throws(()=>cardAction(s,0,{type:'attack',move:'skill',benchTarget:'not-a-card',revision:s.revision},1,()=>.2),/Bench target/);
+ assert.equal(s.revision,rev,'a rejected attack must not bump the revision');
+ assert.equal(s.turn,0,'a rejected attack must not pass the turn');
+ assert.equal(active(s,1).hp,foeBefore,'no main damage before validation');
+ assert.deepEqual(q.bench.map(id=>q.cards.find(c=>c.id===id).hp),benchBefore,'no bench damage before validation');
+ // The same attack with the default target: main and bench damage land once each, and the turn ends.
+ cardAction(s,0,{type:'attack',move:'skill',revision:s.revision},1,()=>.2);
+ assert.ok(active(s,1).hp<foeBefore,'the enemy Active took the main damage');
+ assert.deepEqual(q.bench.map(id=>q.cards.find(c=>c.id===id).hp),benchBefore.map(h=>h-10),'the enemy Bench took exactly 10 damage');
+ assert.ok(s.revision>rev,'a finished attack bumps the revision');
+ assert.notEqual(s.turn,0,'the turn passed');
+});
 console.log(n+' Pocket-format rules cases passed');

@@ -2005,6 +2005,9 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
   .uiCVPager button{min-width:44px;min-height:44px}
   .uiRulesLink{min-height:40px}
   body:not(.uiExact) :is(#leaveCards,#energyTarget,#attachPocketEnergy,#usePocketStadium,#readyPocket,#showPocketRules){min-height:42px}
+  /* Attack buttons and the retreat panel's buttons are battle actions: on touch they get real height,
+     not just a tap layer, because their text keeps them recognisable at 40px. */
+  body:not(.uiExact) :is(.attackPanel .attackRune,.retreatPanel .button){min-height:40px}
 }
 /* ---------- Polish pass 2 (fit and tap areas) ----------
    1. My Binder: the cover swings open in 3D and, for a moment, pokes past the right edge of the window, which made
@@ -2017,10 +2020,10 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
 @media (pointer:coarse){
   /* (only buttons that sit in normal flow get position:relative; the others are already placed absolutely) */
   .uiX :is(.uiXPackBtn,.uiXBtn,.uiXFFuse,.uiXMBtn,.uiXAPager button,.uiXFPager button,.uiXMPager button,.uiXMCardPager button){position:relative}
-  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select]),.uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select]){position:relative}
+  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,#showPocketRules,.retreatPanel .button,.attackRune,[data-bench],[data-hand-select]),.uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,#showPocketRules,.retreatPanel .button,.attackRune,[data-bench],[data-hand-select]){position:relative}
   .uiX :is(.uiHot,.uiXPackBtn,.uiXBtn,.uiXRTab,.uiXFFuse,.uiXMBtn,.thOpen,.uiXAPager button,.uiXFPager button,.uiXMPager button,.uiXMCardPager button,.uiXTRClear,.tradeX)::after,
-  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select])::after,
-  .uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,[data-bench],[data-hand-select])::after,
+  .uiXBattle :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,#showPocketRules,.retreatPanel .button,.attackRune,[data-bench],[data-hand-select])::after,
+  .uiXBattleTab :is(#leaveCards,#attachPocketEnergy,#endPocketTurn,#usePocketStadium,#readyPocket,#showPocketRules,.retreatPanel .button,.attackRune,[data-bench],[data-hand-select])::after,
   #uiXTRDecline::after,#tradeAccept::after{content:'';position:absolute;top:min(0px,calc((100% - 44px) / 2));bottom:min(0px,calc((100% - 44px) / 2));left:min(0px,calc((100% - 44px) / 2));right:min(0px,calc((100% - 44px) / 2));border-radius:inherit;background:none}
   /* Map stops sit close together: grow them to 40 px only (neighbours are about that far apart on tablets). */
   .uiXNode.node::after{content:'';position:absolute;top:min(0px,calc((100% - 40px) / 2));bottom:min(0px,calc((100% - 40px) / 2));left:min(0px,calc((100% - 40px) / 2));right:min(0px,calc((100% - 40px) / 2));border-radius:50%}

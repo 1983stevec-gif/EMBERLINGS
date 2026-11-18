@@ -283,6 +283,6 @@ if (B) {
   addEventListener('ember:levelUp', onLevelUp);
   document.addEventListener('click', onClaimClick, true);
   new MutationObserver(list => { for (const m of list) for (const n of m.addedNodes) if (n.nodeType === 1 && n.classList.contains('uiLvUp')) decorateLevelUp(n); }).observe(document.body, { childList: true });
-  setInterval(watchCoins, 400);
+  setInterval(() => { if (!document.hidden) watchCoins(); }, 400);
   last = Math.floor(Number(B.state?.coins) || 0);
 }

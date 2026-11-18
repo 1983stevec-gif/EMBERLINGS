@@ -89,7 +89,7 @@ function check(pause = 0) {
 function schedule() { if (!timer) timer = setInterval(tryShow, 600); }
 function tryShow() {
   if (!queue.length) { clearInterval(timer); timer = 0; return; }
-  if (Date.now() < waitUntil || $('#msBanner') || BUSY(B.view) || !B.state?.tutorialComplete || $(BLOCKERS)) return;
+  if (Date.now() < waitUntil || $('#msBanner') || BUSY(B.view) || !B.state?.tutorialComplete || $(BLOCKERS) || window.EmberComfort?.quiet?.()) return;
   // Biggest first: species, then rarity sets, then mutation sets; the rest are named under it.
   const rank = { species: 0, rarity: 1, mutation: 2 }, list = queue.splice(0).sort((a, b) => rank[a.type] - rank[b.type]);
   clearInterval(timer); timer = 0;
@@ -115,9 +115,13 @@ function banner(m, more) {
   document.body.append(el);
   let auto = setTimeout(() => done(), 12000);
   const stop = () => { clearTimeout(auto); auto = 0; };
+  const resume = () => { if (!auto) auto = setTimeout(() => done(), 6000); };
   const done = () => { stop(); if (!el.isConnected) return; el.remove(); if (queue.length) { waitUntil = Date.now() + 400; schedule(); } };
   $('.msOk', el).onclick = done;
-  el.addEventListener('pointerdown', stop); el.addEventListener('keydown', e => { stop(); if (e.key === 'Escape') done(); });
+  // Pause the auto-dismiss only while the banner is being used: a tap on the text or tabbing past it
+  // resumes a shorter countdown, so the banner can never be left blocking the screen by accident.
+  el.addEventListener('pointerdown', stop); el.addEventListener('pointerup', e => { if (!e.target.closest('button')) resume(); });
+  el.addEventListener('keydown', e => { stop(); if (e.key === 'Escape') done(); else if (!e.target.closest('button')) resume(); });
   el.onclick = e => { if (e.target === el) done(); };
   wireShare($('.msShare', el), $('.msNote', el), m);
   const see = $('.msSee', el); if (see) see.onclick = () => { done(); B.go('collection'); };
@@ -236,10 +240,18 @@ if (B) {
   addEventListener('ember:packSummary', () => check(1800));
   addEventListener('ember:fusion', () => check(1800));
   addEventListener('ember:tradeComplete', () => check(1500));
-  let q = false;
+  let q = false, lastAuto = 0;
   addEventListener('ember:frame', e => {
     if (q) return; q = true;
-    queueMicrotask(() => { q = false; check(800); if (e.detail?.view === 'collection') panel(); else showAll = false; });
+    queueMicrotask(() => {
+      q = false;
+      // Every screen draw fires ember:frame, and frame() replaces the page, so panel() must re-run here.
+      // New milestones are pushed by the pack/fusion/trade events above; the sweep below is only a safety
+      // net for changes that fire no event (backup restore, save import), so it can run rarely.
+      const t = Date.now();
+      if (t - lastAuto > 20000) { lastAuto = t; check(800); }
+      if (e.detail?.view === 'collection') panel(); else showAll = false;
+    });
   });
   // On load (also records old completions quietly the first time).
   setTimeout(() => check(1500), 0);

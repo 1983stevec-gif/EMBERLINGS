@@ -23,7 +23,7 @@ const extra = []; // sections added by other modules
 /* ------------------------------------------------------------ Small building blocks */
 const sw = (id, label, on, sub = '') => `<div class="setRow"><div class="setRowText"><span class="setLabel" id="${id}Lbl">${label}</span>${sub ? `<small class="setSub" id="${id}Sub">${sub}</small>` : ''}</div>
   <button type="button" class="setSwitch" id="${id}" role="switch" aria-checked="${on}" aria-labelledby="${id}Lbl"${sub ? ` aria-describedby="${id}Sub"` : ''}><span>${on ? 'On' : 'Off'}</span></button></div>`;
-const radios = (name, legend, list, cur, help = '') => `<fieldset class="setRadios"><legend>${legend}</legend><div class="setSeg">${list.map(([v, t]) => `<label><input type="radio" name="${name}" value="${v}" ${v === cur ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div>${help ? `<p class="setHelp" id="${name}Help">${help}</p>` : ''}</fieldset>`;
+const radios = (name, legend, list, cur, help = '', disabled = false) => `<fieldset class="setRadios${disabled ? ' setDim' : ''}"${disabled ? ' disabled' : ''}${help ? ` aria-describedby="${name}Help"` : ''}><legend>${legend}</legend><div class="setSeg">${list.map(([v, t]) => `<label><input type="radio" name="${name}" value="${v}" ${v === cur ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div>${help ? `<p class="setHelp" id="${name}Help">${help}</p>` : ''}</fieldset>`;
 const section = (id, icon, title, body) => `<section class="setCard" id="set-${id}" aria-labelledby="set-${id}-h"><h2 id="set-${id}-h" tabindex="-1"><span aria-hidden="true">${icon}</span> ${esc(title)}</h2>${body}</section>`;
 
 /* ------------------------------------------------------------ Current values (read from each feature) */
@@ -47,7 +47,7 @@ function body() {
     ${radios('setVol', 'Music volume', VOLS, m.vol)}
     <p class="setNote" id="setMusicNote" ${m.on && muted() ? '' : 'hidden'}>Sound is off, so music stays quiet. Turn Sound on to hear it.</p>`));
   out.push(section('effects', '✨', 'Effects', radios('setFx', 'Animations and celebrations', (window.EmberFx?.levels || ['full', 'light', 'off']).map(v => [v, window.EmberFx?.labels?.[v] || v]), fx,
-    fxDevice() ? 'Your device asks for reduced motion, so effects stay off.' : FX_HELP[fx])));
+    fxDevice() ? 'Your device asks for reduced motion, so effects stay off.' : FX_HELP[fx], fxDevice())));
   out.push(section('access', '♿', 'Accessibility', `
     ${radios('setText', 'Text size', SIZES, a.text, 'Makes the words in menus, lists, pop-ups and buttons bigger.')}
     ${sw('setSym', 'Element symbols', !!a.symbols, 'Each element gets its own badge shape, and cards show their rarity in words. Helpful if some colours look alike.')}
@@ -156,6 +156,7 @@ setSwitch('setMusic', m.on); setRadio('setVol', m.vol);
   $('#setMusicNote').hidden = !(m.on && muted());
   $('#set-sound .setRadios')?.classList.toggle('setDim', !m.on);
   setRadio('setFx', fx); const h = $('#setFxHelp'); if (h) h.textContent = fxDevice() ? 'Your device asks for reduced motion, so effects stay off.' : FX_HELP[fx];
+  const fxDim = fxDevice(), fxBox = $('#setFx')?.closest('.setRadios'); if (fxBox) { fxBox.disabled = fxDim; fxBox.classList.toggle('setDim', fxDim); }
   setRadio('setText', a.text); setSwitch('setSym', !!a.symbols);
   setSwitch('setShare', sharing());
   const news = $('#setNews .setDot'); if (news && !unseenNews()) news.remove();
