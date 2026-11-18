@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-pack-replays',
+    date: 'November 2026',
+    title: 'Watch your pack openings again',
+    items: [
+      { icon: '🎁', text: 'Right after opening a pack, tap Watch this opening again to re-live the reveal card by card.', go: 'stats', show: 'My Stats' },
+      { icon: '🗂️', text: 'Your last 10 openings are kept under Pack replays on My Stats, so a great pull can be enjoyed twice.' },
+      { icon: '🔒', text: 'A replay is only a picture: it never grants cards or spends coins.' }
+    ]
+  },
+  {
     id: '2026-11-battle-replays',
     date: 'November 2026',
     title: 'Watch your battles again',
