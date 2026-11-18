@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-offline',
+    date: 'November 2026',
+    title: 'Play anywhere, even with no signal',
+    items: [
+      { icon: '📴', text: 'The whole game now works offline: quests, the binder, your collection and saved quest reward packs load with no connection at all.' },
+      { icon: '💬', text: 'A friendly note tells you when you are offline and confirms when you are back. Friends and trading simply wait until you return.' },
+      { icon: '📲', text: 'Installed as an app? Offline play works there too.', go: 'settings', show: 'Settings' }
+    ]
+  },
+  {
     id: '2026-11-pack-replays',
     date: 'November 2026',
     title: 'Watch your pack openings again',
