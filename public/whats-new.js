@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-leaderboards',
+    date: 'November 2026',
+    title: 'Friend leaderboards',
+    items: [
+      { icon: '🏆', text: 'On the Friends page, compare battle numbers with your friends: wins, win streak, best streak, bosses cleared and biggest hit.', go: 'friends', show: 'Friends' },
+      { icon: '🔒', text: 'Only friends can see your numbers, and only battle numbers are shown — nothing else.' },
+      { icon: '↕️', text: 'Tap a column heading to sort by it; tap again to flip the order.' }
+    ]
+  },
+  {
     id: '2026-11-round4-1',
     date: 'November 2026',
     title: 'A smoother, quieter, safer update',
