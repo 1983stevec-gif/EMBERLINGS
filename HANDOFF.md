@@ -184,3 +184,39 @@ No phone/tablet/desktop visual or multi-account user-flow verification is claime
 
 The release is deployed; the 32-item browser acceptance remains incomplete.
 No credentials, player saves, local databases or dependencies are committed.
+
+## Publish result - November 25, 2026 (America/Chicago): Trail look pack
+
+Published exact GitHub main commit fed6369687934d720308f6666094ef151f0ec09c
+(PR #104) as public Sites version 69 at
+https://mythlings-adventure.proud-book-0456.chatgpt.site/.
+
+- GitHub Checks push run on main: completed/success for the exact commit.
+  https://github.com/1983stevec-gif/EMBERLINGS/actions/runs/45713011649
+- Production build: PASS on retry. Initial attempt encountered a transient local
+  filesystem stat error on public/results.js; no source edits were needed.
+- npm test: PASS (exit 0), including all 8 Trail checks and 7 Look B tests.
+- Existing dependency inputs unchanged; reused the installed dependency tree.
+- Sites source helper pushed and packaged the exact fed6369 source. Saved version:
+  appgprj_6ade72f8031081918f304ef6bf4af0fb~appgver_846b5e1d731081919b653ebf6c65d734.
+- Deployment: appgdep_6b0766bb9cdc81918ac7d2d41a85c304, succeeded.
+- Archive SHA-256: eb3608df3c0fe218ce5db70453ffcfa0b3c80bf8d4e40eb606af192150c800df.
+- Live trail.js, ui-exact.js, sw.js, whats-new.js, help-data.js and all five
+  public/art/trail pictures: HTTP 200 and exact local SHA-256 match.
+- Existing public project preserved. No gameplay, artwork, rules, rewards or
+  save-key edits made during publication. No save selected, cleared or replaced.
+- The earlier pending 0010_client_errors migration was applied by Sites during
+  publication; client_errors is confirmed present afterward. No migration authored.
+
+Requested live acceptance checks remain BLOCKED / NOT VERIFIED:
+1. Five islands, quest 9/10 separation and All islands navigation: NOT VERIFIED live.
+2. Phone quest strip: NOT VERIFIED live.
+3. Guardian victory, once-only Now entering banner and gate: NOT VERIFIED live.
+4. Player-island loading screen on a slow load: NOT VERIFIED live.
+5. Settings > Effects Off: NOT VERIFIED live.
+
+The browser opened successfully but the signed-in player has a cloud/device
+save conflict requiring a choice about which progress to keep. Both summaries
+show 400 coins, 5 cards and 0 quests. Asked the owner which save to keep and
+left both untouched pending the answer. Automated Trail tests and matching live
+files are supporting evidence, not a claim that the five live flows passed.
