@@ -153,12 +153,15 @@ ${frame('url(#sl)', '#dfe6ff')}<g transform="translate(315 430)"><circle r="190"
 };
 // Backs that shimmer (only with Effects on Full and the device not asking for reduced motion).
 const SHIMMER = ['gilded', 'starfield', 'arcane', 'void'];
-export const BACK_IDS = CARD_BACKS.map(b => b.id).filter(id => DESIGNS[id]);
+// Picture backs (630x960 WebP): downloaded only when one is shown.
+export const PICTURES = Object.fromEntries(['rosette', 'lattice', 'orbit', 'compass'].map(id => [id, `/art/card-backs/${id}.webp`]));
+const known = id => !!(DESIGNS[id] || PICTURES[id]);
+export const BACK_IDS = CARD_BACKS.map(b => b.id).filter(known);
 const cache = {};
 export const backSVG = id => cache[id] || (cache[id] = (DESIGNS[id] || DESIGNS.ember)());
-export const backURL = id => `url("data:image/svg+xml,${encodeURIComponent(backSVG(id)).replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29')}")`;
+export const backURL = id => PICTURES[id] ? `url("${PICTURES[id]}")` : `url("data:image/svg+xml,${encodeURIComponent(backSVG(id)).replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29')}")`;
 // A face-down card. Without an id it shows the player's chosen back.
-export const backHTML = (id, cls = '') => `<i class="cosBack ${cls}" ${id ? `data-back="${DESIGNS[id] ? id : 'ember'}"` : ''} aria-hidden="true"></i>`;
+export const backHTML = (id, cls = '') => `<i class="cosBack ${cls}" ${id ? `data-back="${known(id) ? id : 'ember'}"` : ''} aria-hidden="true"></i>`;
 
 /* ---------------------------------------------------------------- The player's choices */
 const ext = () => (B?.state?.ember && typeof B.state.ember === 'object' ? B.state.ember : {});
@@ -179,7 +182,7 @@ const images = {};
 function image(id) {
   if (images[id]) return images[id];
   const img = new Image(); img.decoding = 'async';
-  img.src = 'data:image/svg+xml,' + encodeURIComponent(backSVG(id));
+  img.src = PICTURES[id] || 'data:image/svg+xml,' + encodeURIComponent(backSVG(id));
   return images[id] = img;
 }
 // Returns a canvas with the chosen back, or null for the default (the reveal then draws its own back).

@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-scenery',
+    date: 'November 2026',
+    title: 'Every island has its own battle scene',
+    items: [
+      { icon: '🏞️', text: 'Quest battles now show the island you are on, from the Ember Meadows sunset to the misty Shadow Realm.' },
+      { icon: '🃏', text: 'Four new card backs to earn: Golden Rosette, Moon Lattice, Orbit and Compass.', go: 'profile', show: 'My Profile' },
+      { icon: '⚙️', text: 'Prefer the usual board? Turn off Battle scenery in Settings.', go: 'settings', show: 'Settings' }
+    ]
+  },
+  {
     id: '2026-11-offline',
     date: 'November 2026',
     title: 'Play anywhere, even with no signal',

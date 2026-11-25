@@ -155,6 +155,8 @@ export const ANSWERS = [
     a: 'Yes. In battle, press 1 or 2 to attack, E to attach Merfling to your Active and Space to end your turn. The keyboard help panel lists the rest.' },
   { id: 'set-install', cat: 'settings', q: 'How do I install EMBERLINGS as an app?', to: 'settings:app', k: 'install app home screen pwa phone tablet',
     a: 'Settings › App has an Install button when your browser supports it (try Chrome, Edge or Safari on a phone or tablet). The app plays full screen and opens faster.' },
+  { id: 'set-scenery', cat: 'settings', q: 'How do I turn off the island scenes in battles?', to: 'settings:scenery', k: 'battle scenery background island scene board picture',
+    a: 'In Settings, under Battle scenery, switch off Island scenes in battles. Quest battles then use the usual board. It only changes how battles look.' },
   { id: 'set-seasons', cat: 'settings', q: 'How do I turn off the seasonal decorations?', to: 'settings:seasons', k: 'season snow leaves autumn winter decorations',
     a: 'Settings has a Seasonal decorations switch. The snow, leaves, petals and lights only change how things look.' },
   { id: 'set-news', cat: 'settings', q: 'How do I see what\'s new?', to: 'whatsnew', k: 'whats new update release notes changes',
