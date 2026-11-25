@@ -73,17 +73,18 @@ function home() {
 
 /* ---------------------------------------------------------------- Adventure HQ (mockup 1586 × 992) */
 // Level positions in mockup pixels: Ember Meadows uses the painted node spots; the other islands follow their painted terrain.
-const MEADOW = [[150, 480], [214, 497], [273, 531], [341, 549], [410, 580], [471, 541], [474, 482], [530, 451], [625, 447]];
+const MEADOW = [[150, 480], [214, 497], [273, 531], [341, 549], [410, 580], [471, 541], [474, 482], [530, 451], [575, 442]];
 function along(points, n) {
   const seg = []; let total = 0;
   for (let i = 1; i < points.length; i++) { const d = Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]); seg.push(d); total += d; }
   return Array.from({ length: n }, (_, k) => { let t = total * k / Math.max(1, n - 1), i = 0; while (i < seg.length - 1 && t > seg[i]) { t -= seg[i]; i++; } const a = points[i], b = points[i + 1], f = seg[i] ? t / seg[i] : 0; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; });
 }
+// The far islands' trails go up and down in columns of five, left to right, with the Guardian last.
+const climb = (cols, x, dx) => Array.from({ length: cols * 5 }, (_, i) => { const c = Math.floor(i / 5), k = c % 2 ? 4 - i % 5 : i % 5; return [Math.round(x + c * dx + Math.sin(k * 1.6 + c) * 24), 300 + k * 108]; });
 const ISLAND_PATHS = [null,
   [[615, 262], [700, 276], [790, 282], [880, 266], [960, 250], [1045, 225], [1075, 175], [1000, 150], [915, 172], [835, 192], [760, 196], [690, 182], [650, 140], [735, 118], [830, 108]],
-  [[812, 690], [900, 694], [985, 700], [1070, 690], [1135, 650], [1095, 605], [1015, 618], [935, 628], [860, 615], [825, 568], [885, 530], [965, 545], [1045, 558], [1120, 540], [1085, 488], [1005, 474], [930, 482], [870, 470], [950, 442], [1035, 448]],
-  [[250, 230], [340, 215], [430, 230], [520, 215], [610, 230], [700, 215], [790, 230], [880, 215], [970, 230], [1060, 215], [1060, 330], [970, 345], [880, 330], [790, 345], [700, 330], [610, 345], [520, 330], [430, 345], [340, 330], [250, 345], [250, 460], [340, 475], [430, 460], [520, 475], [610, 460]],
-  [[250, 230], [330, 215], [410, 230], [490, 215], [570, 230], [650, 215], [730, 230], [810, 215], [890, 230], [970, 215], [1050, 230], [1050, 330], [970, 345], [890, 330], [810, 345], [730, 330], [650, 345], [570, 330], [490, 345], [410, 330], [330, 345], [250, 330], [250, 440], [330, 455], [410, 440], [490, 455], [570, 440], [650, 455], [730, 440], [810, 455]]];
+  [[812, 690], [900, 694], [985, 700], [1070, 690], [1135, 650], [1095, 605], [1015, 618], [935, 628], [860, 615], [825, 568], [885, 530], [965, 545], [1045, 558], [1120, 540], [1085, 488], [1005, 474], [930, 482], [862, 468], [885, 412], [1000, 402]],
+  climb(5, 265, 195), climb(6, 255, 160)];
 function levelPos(l) {
   const r = B.regions.findIndex(x => l >= x[1] && l <= x[2]), reg = B.regions[r], i = l - reg[1];
   if (r === 0) return l === 10 ? [625, 447] : MEADOW[i];
@@ -101,17 +102,17 @@ function map() {
   if (!selected) selected = Math.min(100, max);
   if (shownRegion === null) shownRegion = regionOf(selected);
   const node = l => {
-    const [x, y] = levelPos(l), done = cleared.includes(l), locked = l > max && !done, boss = !!B.bosses[l], s = boss ? 44 : 38;
-    return `<button class="node uiXNode ${done ? 'done' : ''} ${locked ? 'locked' : ''} ${boss ? 'boss' : ''} ${l === selected ? 'uiSel' : ''}" data-level="${l}" style="${p(x - s / 2, y - (boss ? 26 : s / 2), x + s / 2, y + (boss ? 26 : s / 2))};${fs(W, boss ? 19 : 17)}" aria-label="Quest ${l}${boss ? ', boss' : ''}${done ? ', completed' : locked ? ', locked' : ', ready'}"><span>${l}</span></button>`;
+    const [x, y] = levelPos(l), done = cleared.includes(l), locked = l > max && !done, boss = !!B.bosses[l], s = boss ? 56 : 38;
+    return `<button class="node uiXNode ${done ? 'done' : ''} ${locked ? 'locked' : ''} ${boss ? 'boss' : ''} ${l === selected ? 'uiSel' : ''}" data-level="${l}" style="${p(x - s / 2, y - s / 2, x + s / 2, y + s / 2)};${fs(W, 17)}" aria-label="Quest ${l}${boss ? ', boss' : ''}${done ? ', completed' : locked ? ', locked' : ', ready'}"><span>${l}</span></button>`;
   };
   const levels = r => { const reg = B.regions[r], out = []; for (let l = reg[1]; l <= reg[2]; l++) out.push(l); return out; };
   const route = r => { const pts = levels(r).map(levelPos); return `<polyline points="${pts.map(q => q.join(',')).join(' ')}" />`; };
   const far = shownRegion >= 3;
   const mapInner = `
-   ${far ? `<div class="uiXSheet" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
+   ${far ? `<div class="uiXSheet" data-isle="${shownRegion}" style="${p(180, 160, 1150, 810)}"><h2 style="${fs(W, 34)}">${esc(B.regions[shownRegion][0])} <small>${B.regions[shownRegion][1]} – ${B.regions[shownRegion][2]}</small></h2></div>` : ''}
    <svg class="uiXRoute" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${shownRegion > 0 ? route(shownRegion) : ''}</svg>
-   ${levels(0).map(node).join('')}${shownRegion > 0 ? levels(shownRegion).map(node).join('') : ''}
-   ${hot(p(170, 712, 410, 750), 'data-region="0"', 'Ember Meadows, levels 1 to 10')}${hot(p(745, 318, 1022, 384), 'data-region="1"', 'Crystalwood Forest, levels 11 to 25')}${hot(p(860, 725, 1032, 790), 'data-region="2"', 'Frozen Peaks, levels 26 to 45')}
+   ${far ? '' : levels(0).map(node).join('')}${shownRegion > 0 ? levels(shownRegion).map(node).join('') : ''}
+   ${far ? `<button class="uiXChip" data-region="0" style="${p(196, 172, 356, 210)};${fs(W, 15)}">‹ All islands</button>` : `${hot(p(170, 712, 410, 750), 'data-region="0"', 'Ember Meadows, levels 1 to 10')}${hot(p(745, 318, 1022, 384), 'data-region="1"', 'Crystalwood Forest, levels 11 to 25')}${hot(p(860, 725, 1032, 790), 'data-region="2"', 'Frozen Peaks, levels 26 to 45')}`}
    <button class="uiXChip ${shownRegion === 3 ? 'on' : ''}" data-region="3" style="${p(490, 846, 688, 886)};${fs(W, 15)}">Thunder Valley <b>46 – 70</b></button>
    <button class="uiXChip ${shownRegion === 4 ? 'on' : ''}" data-region="4" style="${p(696, 846, 892, 886)};${fs(W, 15)}">Shadow Realm <b>71 – 100</b></button>
    ${hot(p(914, 842, 950, 878), 'id="uiXPrev"', 'Previous level')}${hot(p(959, 842, 995, 878), 'id="uiXNext"', 'Next level')}

@@ -98,6 +98,7 @@ const CORE_MODULES = [
   '/weekly-recap.js',
   '/milestones.js',
   '/look-b.js',
+  '/trail.js',
   // Imported by the modules above (modulepreload links in the page) and by the page's own script.
   '/card-engine.js',
   '/card-progression.js',

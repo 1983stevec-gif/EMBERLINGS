@@ -1,6 +1,6 @@
 # EMBERLINGS: ideas from Pokémon Trail
 
-A plan only. **Nothing here is built.** It maps what the fan game *Pokémon Trail* (pokemontrail.com, viewed November 2026) does onto EMBERLINGS, so the owner can choose what, if anything, to build.
+A plan only. **Built so far: the Trail look pack (rows 1–4 and 14), in `public/trail.js`. Nothing else here is built.** It maps what the fan game *Pokémon Trail* (pokemontrail.com, viewed November 2026) does onto EMBERLINGS, so the owner can choose what, if anything, to build.
 
 We take ideas about **structure, flow and feel** only. No Pokémon names, characters, art, music, maps or wording. Everything uses our own Mythlings, islands and art.
 
