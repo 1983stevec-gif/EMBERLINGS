@@ -37,7 +37,7 @@ cannot be tested end-to-end until Codex sets the keys at publish.
 | 6.3 | **Offline solo play** | Quests, binder and opening already-paid packs work offline | `sw.js` caching; online features say "back online soon" | M |
 | 6.4 | **Interactive rules demo** | A guided sample turn with arrows, using the real engine | Linked from Battle Rules and Help; no rewards; natural follow-up to battle hints | M |
 | 6.5 | **Smaller art for slow phones** | Lighter art loads first on slow connections | Half-size WebP variants; `navigator.connection` / `Save-Data` | S–M |
-| 6.6 | **Look pack B** | Animated Secret/Celestial cards, full-art frames, binder covers, animated wrappers, island/time-of-day battle backgrounds | Cosmetic only | M–L |
+| 6.6 | **Look pack B** | Animated Secret/Celestial cards, full-art frames, binder covers, animated wrappers, island/time-of-day battle backgrounds (island scenes and four card backs built: `public/look-b.js`; the rest is open) | Cosmetic only | M–L |
 
 Battle hints (the suggested-play line) were not on this list and shipped ahead of plan as PR #91.
 

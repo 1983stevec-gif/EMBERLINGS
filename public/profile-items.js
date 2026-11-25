@@ -43,7 +43,11 @@ export const CARD_BACKS = [
   f('magma', 'Magma', 'boss-1'),
   f('starfield', 'Starfield', 'legendary-1'),
   f('gilded', 'Gilded', 'cards-100'),
-  f('void', 'Void', 'boss-all')
+  f('void', 'Void', 'boss-all'),
+  f('rosette', 'Golden Rosette', 'duel-1'),
+  f('lattice', 'Moon Lattice', 'album-1'),
+  f('orbit', 'Orbit', 'secret-1'),
+  f('compass', 'Compass', 'species-all')
 ];
 // Avatar rings: the thin ring around your avatar in the header and on your profile picture. 'gold' is today's ring.
 export const AVATAR_RINGS = [

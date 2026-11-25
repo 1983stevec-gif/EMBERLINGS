@@ -97,6 +97,7 @@ const CORE_MODULES = [
   '/help.js',
   '/weekly-recap.js',
   '/milestones.js',
+  '/look-b.js',
   // Imported by the modules above (modulepreload links in the page) and by the page's own script.
   '/card-engine.js',
   '/card-progression.js',
