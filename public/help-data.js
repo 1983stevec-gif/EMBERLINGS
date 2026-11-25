@@ -81,6 +81,8 @@ export const ANSWERS = [
     a: 'Poison deals 10 damage between turns and Burn deals 20, then a coin may cure it. Sleep and Paralysis stop attacking and retreating, and Confusion flips a coin before attacking (tails: 30 damage to the attacker). Retreating or evolving clears them.' },
   { id: 'battle-quests', cat: 'battles', q: 'How do quests and islands work?', to: 'map', k: 'adventure hq map quest island level unlock',
     a: 'The Adventure HQ map has 100 quests on five islands: Ember Meadows (1–10), Crystalwood Forest (11–25), Frozen Peaks (26–45), Thunder Valley (46–70) and Shadow Realm (71–100). Finish earlier quests to open later ones.' },
+  { id: 'battle-gate', cat: 'battles', q: 'What are the Guardians and gates on the map?', to: 'map', k: 'guardian gate trail island now entering shut open',
+    a: 'The boss at the end of each island is its Guardian. The gate beside it opens the first time you win there, and the quests of the next island open too. Quests and rewards are the same as before.' },
   { id: 'battle-boss', cat: 'battles', q: 'What do bosses give?', to: 'map', k: 'boss magmarok thorn guardian frostfang voltitan voidra reward',
     a: 'Bosses wait at quests 10, 25, 45, 70 and 100. Your first win against each gives a Quest Pack and an Academy Pass (quest 100 also gives the Rift Champion collectible); replaying a boss pays fewer coins.' },
   { id: 'battle-cant', cat: 'battles', q: 'Why can\'t I start a quest?', to: 'map', k: 'cannot start locked five cards vault trade',

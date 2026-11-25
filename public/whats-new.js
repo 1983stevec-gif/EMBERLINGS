@@ -21,6 +21,16 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<':
  */
 export const RELEASES = [
   {
+    id: '2026-11-trail',
+    date: 'November 2026',
+    title: 'Adventure HQ is now a trail',
+    items: [
+      { icon: '🥾', text: 'Follow each island’s trail of quests through its own scenery, all the way to its Guardian.', go: 'map', show: 'Adventure HQ' },
+      { icon: '🚪', text: 'A gate stands by every Guardian. Beat the Guardian to open it and enter the next island.' },
+      { icon: '🏞️', text: 'Island scenes now appear behind the loading tips too.' }
+    ]
+  },
+  {
     id: '2026-11-scenery',
     date: 'November 2026',
     title: 'Every island has its own battle scene',
