@@ -237,3 +237,7 @@ Active card placement, Ready, target picker Cancel, and Guardian Mantle use PASS
 844px, with no page overflow and no bottom navigation covering the hand.
 Visual verification used a local solo player; the live cloud/device conflict was
 not resolved and no existing player's save was replaced.
+
+Published as public Sites version 70 from 4ddb2f3fd13ba8759a7ec016ac078f6cab4420c6.
+Deployment appgdep_6b07893116c88191b4e1193590a03fe8 succeeded at the existing live URL.
+Live theme.css and sw.js return HTTP 200 and match the release SHA-256.
