@@ -2085,3 +2085,54 @@ body.uiTheme:not(.uiExact):has(#dailyBtn) #app{padding-bottom:96px}
  body .uiTop .uiUserBtn>span[aria-hidden="true"]{display:none}
  body .uiTop .uiUserBtn{padding-left:3px!important;padding-right:3px!important;min-width:44px;justify-content:center}
 }
+/* Phone battles: keep a compact hand beside the action, with a separately scrolling board. */
+@media(max-width:699px){
+  body.uiTheme:has(.pocketArena) #app{padding:4px 6px!important}
+  body .pocketArena{height:calc(100svh - 76px);min-height:480px;display:flex;flex-direction:column;gap:4px;padding:4px!important;overflow:visible}
+  body .pocketArena>.battleBar{flex:none;margin:0;padding:3px;gap:4px}
+  body .pocketArena .battleBar time{font-size:14px;padding:3px}
+  body .pocketArena .battleBar .button{min-height:40px;padding:5px 8px}
+  body .pocketArena>.battleCaption{flex:none;margin:0;text-align:center}
+  body .pocketArena .battleCaption h1{font-size:15px;margin:2px}
+  body .pocketArena .battleCaption p{font-size:10px;margin:2px}
+  body .pocketArena>.pocketBoard{flex:1;min-height:120px;overflow:auto;overscroll-behavior-y:contain;align-content:start;gap:6px;padding:4px}
+  body .pocketArena .pocketActive .mythCard{width:108px;min-height:0;max-width:100%;margin:auto;padding:4px;border-width:3px}
+  body .pocketArena .pocketActive .cardArt{min-height:45px;aspect-ratio:1.6}
+  body .pocketArena .pocketActive .cardStage,body .pocketArena .pocketActive .cardSpecies,body .pocketArena .pocketActive .cardEdition{display:none}
+  body .pocketArena .pocketActive .printedMove{font-size:8px;gap:2px}
+  body .pocketArena .pocketActive .printedMove>strong{font-size:12px}
+  body .pocketArena .pocketActive .cardTop,body .pocketArena .pocketActive .cardTop>span{font-size:10px}
+  body .pocketArena .pocketField h2,body .pocketArena .battleIconStats{font-size:11px;margin:3px}
+  body .pocketArena .pocketField .emptyCard{height:120px}
+  body .pocketArena .pocketBench{margin-top:4px}
+  body .pocketArena .benchEmpty{min-height:44px}
+  body .pocketArena .benchCard .mythCard{min-height:0;max-height:78px}
+  body .pocketArena .attackPanel{padding:6px;gap:4px}
+  body .pocketArena .attackPanel h2{font-size:12px;margin:2px}
+  body .pocketArena .attackPanel p{margin:2px}
+  body .pocketArena .attackPanel .button,body .pocketArena .attackRune{min-height:44px;margin:0;padding:5px}
+  body .pocketArena>.pocketHand{flex:none;margin:0;padding:5px;background:#101a29;border:1px solid #927644;border-radius:10px}
+  body .pocketArena .pocketHand>h2{font-size:13px;margin:0}
+  body .pocketArena .pocketHand>p{font-size:11px;margin:2px 0}
+  body .pocketArena .handRow{gap:8px;padding:3px 6px!important;overflow-y:hidden;align-items:start}
+  body .pocketArena .handRow>.handCard{width:108px;min-width:108px;flex:0 0 108px;transform:none!important;filter:none!important}
+  body .pocketArena .handCard .mythCard{width:100%;min-height:148px;height:148px;max-height:148px;padding:4px;border-width:3px;overflow:hidden}
+  body .pocketArena .handCard .cardArt{min-height:40px;height:48px;aspect-ratio:auto}
+  body .pocketArena .handCard .cardStage,body .pocketArena .handCard .cardSpecies,body .pocketArena .handCard .cardEdition{display:none}
+  body .pocketArena .handCard .cardTop{font-size:10px;margin:1px 0}
+  body .pocketArena .handCard .cardTop>span{font-size:10px}
+  body .pocketArena .handCard .printedMoves{gap:3px}
+  body .pocketArena .handCard .trainerSeal{min-height:22px;margin:2px;font-size:22px}
+  body .pocketArena .handCard .trainerSeal .uiGlyph{width:22px;height:22px}
+  body .pocketArena .handCard .trainerCard p{font-size:9px;line-height:1.15;margin:2px}
+  body .pocketArena .handCard>.button{min-height:44px;padding:5px;margin:2px 0 0;font-size:12px}
+  body .pocketArena>details{flex:none;margin:0;padding:2px 6px;font-size:11px;max-height:100px;overflow:auto}
+  body .pocketArena>#cardError{flex:none;margin:0;font-size:11px}
+  body .pocketArena #pocketHandTarget:not(:empty){position:fixed;z-index:150;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));max-height:45svh;overflow:auto;padding:12px;background:#101a29;border:2px solid #d9b77a;border-radius:12px;box-shadow:0 -8px 28px #000a}
+  body .pocketArena #pocketHandTarget .button{min-height:44px}
+}
+@media(max-width:699px){
+  body:has(.pocketArena) .nav{display:none!important}
+  body.uiTheme:has(.pocketArena) #app{padding-bottom:4px!important}
+  body .pocketArena{height:calc(100svh - 84px)}
+}

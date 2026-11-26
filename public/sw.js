@@ -16,7 +16,7 @@
  *
  * Bump VERSION when this file's caching rules change; old caches are removed on activate.
  */
-const VERSION = 'v3';
+const VERSION = 'v4';
 const PREFIX = 'emberlings-';
 const CACHES = {
   page: `${PREFIX}page-${VERSION}`,

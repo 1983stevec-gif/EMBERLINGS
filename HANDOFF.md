@@ -220,3 +220,20 @@ save conflict requiring a choice about which progress to keep. Both summaries
 show 400 coins, 5 cards and 0 quests. Asked the owner which save to keep and
 left both untouched pending the answer. Automated Trail tests and matching live
 files are supporting evidence, not a claim that the five live flows passed.
+
+## Mobile battle usability - November 25, 2026
+
+Phone battles now keep a compact hand below an independently scrolling board.
+Hand cards are 108px wide (previous minimum 175px), with at least 44px play buttons.
+The phone navigation is hidden during battles so it cannot cover those buttons.
+Card target selection opens at the bottom with Cancel; desktop retains its normal
+scroll-to-target behavior. Rules, commands, artwork and player save key are unchanged.
+Service-worker cache version bumped to v4 for the updated interface.
+
+Validation: production build PASS; npm test PASS (exit 0). Focused Pocket client,
+client integration and offline checks also PASS. Browser at 390x844 on localhost:
+Active card placement, Ready, target picker Cancel, and Guardian Mantle use PASS
+(Aquabub HP increases 100 to 120). Hand width 108px; document width 390px and height
+844px, with no page overflow and no bottom navigation covering the hand.
+Visual verification used a local solo player; the live cloud/device conflict was
+not resolved and no existing player's save was replaced.
